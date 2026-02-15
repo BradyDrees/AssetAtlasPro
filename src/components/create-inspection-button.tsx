@@ -18,7 +18,7 @@ export function CreateInspectionButton() {
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        title="New Inspection Project"
+        title="New Inspection"
       >
         <InspectionProjectForm onClose={() => setIsOpen(false)} />
       </Modal>

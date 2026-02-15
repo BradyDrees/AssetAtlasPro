@@ -114,12 +114,12 @@ export default async function InspectionUnitPage({
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <Link
-          href={`/inspections/${projectId}/sections/${projectSectionId}`}
-          className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors"
-          title="Back to units"
+          href={`/inspections/${projectId}`}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors"
+          title="Back to project"
         >
           <svg
-            className="w-5 h-5"
+            className="w-4 h-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -128,9 +128,10 @@ export default async function InspectionUnitPage({
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M15 19l-7-7 7-7"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"
             />
           </svg>
+          Project
         </Link>
         <h1 className="text-2xl font-bold text-gray-900">
           {(unit as InspectionUnit).building} -{" "}

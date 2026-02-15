@@ -179,8 +179,8 @@ export const INSPECTION_YES_NO = {
 
 // ----- Inspection Type Labels -----
 export const INSPECTION_TYPE_LABELS: Record<string, string> = {
-  internal: "Internal / Operator",
-  bank_ready: "Bank-Ready (PCA Lite)",
+  internal: "Internal",
+  bank_ready: "Customer (PCA Lite)",
 };
 
 // ----- Asset Archetype Labels -----

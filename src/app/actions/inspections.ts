@@ -30,7 +30,7 @@ export async function createInspectionProject(data: CreateInspectionProject) {
     .select("id")
     .single();
 
-  if (projectError) throw new Error(projectError.message);
+  if (projectError) throw new Error("Step 1 (create project): " + projectError.message);
 
   // 2. Fetch all master sections
   const { data: sections, error: sectionsError } = await supabase
@@ -38,7 +38,11 @@ export async function createInspectionProject(data: CreateInspectionProject) {
     .select("id, slug, sort_order, is_default_enabled, is_unit_mode")
     .order("sort_order");
 
-  if (sectionsError) throw new Error(sectionsError.message);
+  if (sectionsError) throw new Error("Step 2 (fetch sections): " + sectionsError.message);
+
+  if (!sections || sections.length === 0) {
+    throw new Error("Step 2: No master sections found in inspection_sections table");
+  }
 
   // 3. Create project_sections for each master section
   //    Auto-rename "Units" → "Homes" for SFR archetype
@@ -56,7 +60,7 @@ export async function createInspectionProject(data: CreateInspectionProject) {
     .from("inspection_project_sections")
     .insert(projectSections);
 
-  if (insertError) throw new Error(insertError.message);
+  if (insertError) throw new Error("Step 3 (insert sections): " + insertError.message);
 
   revalidatePath("/inspections");
 

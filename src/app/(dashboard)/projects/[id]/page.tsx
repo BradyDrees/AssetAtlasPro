@@ -6,6 +6,8 @@ import { ProjectHeaderMenu } from "@/components/project-header-menu";
 import { GROUP_ORDER } from "@/lib/dd-sections";
 import type { DDProjectSectionWithDetails, DDSectionGroup } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 const statusStyles: Record<string, string> = {
   DRAFT: "bg-gray-100 text-gray-600",
   IN_PROGRESS: "bg-brand-100 text-brand-700",

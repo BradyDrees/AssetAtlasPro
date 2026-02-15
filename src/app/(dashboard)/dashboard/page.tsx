@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import { DDProjectCard } from "@/components/dd-project-card";
 import { CreateDDProjectButton } from "@/components/create-dd-project-button";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const supabase = await createClient();
 

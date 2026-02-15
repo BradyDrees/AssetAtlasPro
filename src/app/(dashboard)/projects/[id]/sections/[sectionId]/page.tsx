@@ -4,6 +4,8 @@ import { UnitListPage } from "@/components/unit-list-page";
 import { SectionItemListPage } from "@/components/section-item-list-page";
 import type { DDCapture, DDUnit, DDSectionItem } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 export default async function SectionCapturePage({
   params,
 }: {

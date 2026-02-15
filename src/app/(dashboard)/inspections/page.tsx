@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import { InspectionProjectCard } from "@/components/inspection-project-card";
 import { CreateInspectionButton } from "@/components/create-inspection-button";
 
+export const dynamic = "force-dynamic";
+
 export default async function InspectionsPage() {
   const supabase = await createClient();
   const {

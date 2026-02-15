@@ -15,6 +15,8 @@ import type {
   ProjectRole,
 } from "@/lib/inspection-types";
 
+export const dynamic = "force-dynamic";
+
 const statusStyles: Record<string, string> = {
   DRAFT: "bg-gray-100 text-gray-600",
   IN_PROGRESS: "bg-brand-100 text-brand-700",

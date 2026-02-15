@@ -5,6 +5,8 @@ import { ProjectStatusControls } from "@/components/project-status-controls";
 import { ExportButtons } from "@/components/export-buttons";
 import type { ProjectStatus } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 const statusStyles: Record<string, string> = {
   DRAFT: "bg-gray-100 text-gray-600",
   IN_PROGRESS: "bg-brand-100 text-brand-700",

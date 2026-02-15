@@ -12,6 +12,8 @@ import type {
   InspectionCapture,
 } from "@/lib/inspection-types";
 
+export const dynamic = "force-dynamic";
+
 const statusStyles: Record<string, string> = {
   DRAFT: "bg-charcoal-100 text-charcoal-600",
   IN_PROGRESS: "bg-brand-100 text-brand-700",

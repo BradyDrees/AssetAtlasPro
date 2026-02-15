@@ -10,6 +10,8 @@ import { AddSectionItemForm } from "@/components/add-section-item-form";
 import type { DDCapture } from "@/lib/types";
 import { NextItemButton } from "@/components/next-item-button";
 
+export const dynamic = "force-dynamic";
+
 export default async function ItemDetailPage({
   params,
 }: {

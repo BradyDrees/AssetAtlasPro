@@ -13,6 +13,8 @@ import { NextUnitButton } from "@/components/next-unit-button";
 import { NextSectionButton } from "@/components/next-section-button";
 import type { DDCapture } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 export default async function UnitDetailPage({
   params,
 }: {

@@ -130,7 +130,7 @@ export function DDProjectForm({ project, onClose }: DDProjectFormProps) {
               : "Creating..."
             : isEditing
             ? "Save Changes"
-            : "Create Project"}
+            : "Create Due Diligence"}
         </button>
       </div>
     </form>

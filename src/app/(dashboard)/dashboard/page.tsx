@@ -16,9 +16,9 @@ export default async function DashboardPage() {
       <div className="flex items-center justify-between mb-6 bg-gradient-to-r from-charcoal-900 to-brand-800 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl">
         <div>
           <h1 className="text-2xl font-bold text-white">
-            Due Diligence Projects
+            Due Diligence
           </h1>
-          <p className="text-gold-300 text-sm mt-0.5">Manage your inspection projects</p>
+          <p className="text-gold-300 text-sm mt-0.5">Manage your due diligence projects</p>
         </div>
         <CreateDDProjectButton />
       </div>
@@ -37,10 +37,10 @@ export default async function DashboardPage() {
             </svg>
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            No inspection projects yet
+            No due diligence projects yet
           </h3>
           <p className="text-gray-500 mb-6">
-            Create your first project to start a due diligence inspection.
+            Create your first due diligence project to get started.
           </p>
           <CreateDDProjectButton />
         </div>

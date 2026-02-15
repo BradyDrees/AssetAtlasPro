@@ -115,7 +115,7 @@ export default async function ProjectDetailPage({
           href="/dashboard"
           className="hover:text-brand-600 transition-colors"
         >
-          Projects
+          Due Diligence
         </Link>
         <span>/</span>
         <span className="text-gray-900">{project.name}</span>

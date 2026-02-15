@@ -13,12 +13,12 @@ export function CreateDDProjectButton() {
         onClick={() => setIsOpen(true)}
         className="px-4 py-2 bg-white/20 backdrop-blur-sm text-white text-sm font-medium rounded-lg hover:bg-white/30 border border-white/30 transition-all"
       >
-        + New Project
+        + New DD
       </button>
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        title="New Inspection Project"
+        title="New Due Diligence Project"
       >
         <DDProjectForm onClose={() => setIsOpen(false)} />
       </Modal>

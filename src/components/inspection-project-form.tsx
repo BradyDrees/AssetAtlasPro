@@ -58,15 +58,20 @@ export function InspectionProjectForm({
         });
         onClose();
       } else {
-        const projectId = await createInspectionProject({
+        const result = await createInspectionProject({
           name,
           property_name: propertyName,
           address,
           inspection_type: inspectionType,
           asset_archetype: assetArchetype,
         });
+        if (result.error) {
+          setError(result.error);
+          setLoading(false);
+          return;
+        }
         onClose();
-        router.push(`/inspections/${projectId}`);
+        router.push(`/inspections/${result.id}`);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");

@@ -12,59 +12,63 @@ import type {
 // Project CRUD
 // ============================================
 
-export async function createInspectionProject(data: CreateInspectionProject) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export async function createInspectionProject(data: CreateInspectionProject): Promise<{ id?: string; error?: string }> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-  if (!user) throw new Error("Not authenticated");
+    if (!user) return { error: "Not authenticated" };
 
-  // 1. Create the project
-  const { data: project, error: projectError } = await supabase
-    .from("inspection_projects")
-    .insert({
-      ...data,
-      owner_id: user.id,
-    })
-    .select("id")
-    .single();
+    // 1. Create the project
+    const { data: project, error: projectError } = await supabase
+      .from("inspection_projects")
+      .insert({
+        ...data,
+        owner_id: user.id,
+      })
+      .select("id")
+      .single();
 
-  if (projectError) throw new Error("Step 1 (create project): " + projectError.message);
+    if (projectError) return { error: "Step 1: " + projectError.message };
 
-  // 2. Fetch all master sections
-  const { data: sections, error: sectionsError } = await supabase
-    .from("inspection_sections")
-    .select("id, slug, sort_order, is_default_enabled, is_unit_mode")
-    .order("sort_order");
+    // 2. Fetch all master sections
+    const { data: sections, error: sectionsError } = await supabase
+      .from("inspection_sections")
+      .select("id, slug, sort_order, is_default_enabled, is_unit_mode")
+      .order("sort_order");
 
-  if (sectionsError) throw new Error("Step 2 (fetch sections): " + sectionsError.message);
+    if (sectionsError) return { error: "Step 2: " + sectionsError.message };
 
-  if (!sections || sections.length === 0) {
-    throw new Error("Step 2: No master sections found in inspection_sections table");
+    if (!sections || sections.length === 0) {
+      return { error: "Step 2: No master sections found" };
+    }
+
+    // 3. Create project_sections for each master section
+    //    Auto-rename "Units" → "Homes" for SFR archetype
+    const isSfr = data.asset_archetype === "sfr";
+    const projectSections = sections.map((section) => ({
+      project_id: project.id,
+      section_id: section.id,
+      enabled: section.is_default_enabled,
+      sort_order: section.sort_order,
+      display_name_override:
+        isSfr && section.is_unit_mode ? "Home Inspections" : null,
+    }));
+
+    const { error: insertError } = await supabase
+      .from("inspection_project_sections")
+      .insert(projectSections);
+
+    if (insertError) return { error: "Step 3: " + insertError.message };
+
+    revalidatePath("/inspections");
+
+    return { id: project.id };
+  } catch (err) {
+    return { error: "Unexpected: " + (err instanceof Error ? err.message : String(err)) };
   }
-
-  // 3. Create project_sections for each master section
-  //    Auto-rename "Units" → "Homes" for SFR archetype
-  const isSfr = data.asset_archetype === "sfr";
-  const projectSections = sections.map((section) => ({
-    project_id: project.id,
-    section_id: section.id,
-    enabled: section.is_default_enabled,
-    sort_order: section.sort_order,
-    display_name_override:
-      isSfr && section.is_unit_mode ? "Home Inspections" : null,
-  }));
-
-  const { error: insertError } = await supabase
-    .from("inspection_project_sections")
-    .insert(projectSections);
-
-  if (insertError) throw new Error("Step 3 (insert sections): " + insertError.message);
-
-  revalidatePath("/inspections");
-
-  return project.id;
 }
 
 export async function updateInspectionProject(

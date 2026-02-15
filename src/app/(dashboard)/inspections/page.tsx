@@ -44,7 +44,7 @@ export default async function InspectionsPage() {
           <h1 className="text-2xl font-bold text-white">
             Property Inspections
           </h1>
-          <p className="text-gold-300 text-sm mt-0.5">PCA inspection projects</p>
+          <p className="text-gold-300 text-sm mt-0.5">PCA Inspection Projects</p>
         </div>
         <CreateInspectionButton />
       </div>

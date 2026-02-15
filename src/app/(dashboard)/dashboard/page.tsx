@@ -18,7 +18,7 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-bold text-white">
             Due Diligence
           </h1>
-          <p className="text-gold-300 text-sm mt-0.5">Manage your due diligence projects</p>
+          <p className="text-gold-300 text-sm mt-0.5 capitalize">Manage Your Due Diligence Projects</p>
         </div>
         <CreateDDProjectButton />
       </div>

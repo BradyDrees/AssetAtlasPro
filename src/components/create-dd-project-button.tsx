@@ -18,7 +18,7 @@ export function CreateDDProjectButton() {
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        title="New Due Diligence Project"
+        title="New Due Diligence"
       >
         <DDProjectForm onClose={() => setIsOpen(false)} />
       </Modal>

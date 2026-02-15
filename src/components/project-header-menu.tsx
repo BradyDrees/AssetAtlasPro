@@ -1,0 +1,104 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { Modal } from "@/components/modal";
+import { DDProjectForm } from "@/components/dd-project-form";
+import { DeleteProjectModal } from "@/components/delete-project-modal";
+import type { DDProject } from "@/lib/types";
+
+interface ProjectHeaderMenuProps {
+  project: DDProject;
+}
+
+export function ProjectHeaderMenu({ project }: ProjectHeaderMenuProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
+  return (
+    <div className="relative" ref={menuRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+        aria-label="Project menu"
+      >
+        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg border border-gray-200 shadow-lg z-50 py-1">
+          <button
+            onClick={() => {
+              setIsOpen(false);
+              setShowEdit(true);
+            }}
+            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            Edit Project
+          </button>
+          <a
+            href={`/projects/${project.id}/review`}
+            onClick={() => setIsOpen(false)}
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            Review Project
+          </a>
+          <a
+            href={`/projects/${project.id}/review`}
+            onClick={() => setIsOpen(false)}
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            Export PDF
+          </a>
+          <hr className="my-1 border-gray-100" />
+          <button
+            onClick={() => {
+              setIsOpen(false);
+              setShowDelete(true);
+            }}
+            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+          >
+            Delete Project
+          </button>
+        </div>
+      )}
+
+      {/* Edit modal */}
+      {showEdit && (
+        <Modal
+          isOpen={true}
+          onClose={() => setShowEdit(false)}
+          title="Edit Project"
+        >
+          <DDProjectForm
+            project={project}
+            onClose={() => setShowEdit(false)}
+          />
+        </Modal>
+      )}
+
+      {/* Delete modal */}
+      {showDelete && (
+        <DeleteProjectModal
+          projectId={project.id}
+          projectCode={project.name}
+          onClose={() => setShowDelete(false)}
+        />
+      )}
+    </div>
+  );
+}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "@/app/actions/auth";
 import type { User } from "@supabase/supabase-js";
@@ -74,10 +75,15 @@ export function Sidebar({ user }: { user: User }) {
         {/* Header — charcoal + forest green */}
         <div className="p-4 flex items-center justify-between bg-gradient-to-br from-charcoal-950 via-charcoal-900 to-brand-900">
           {!collapsed && (
-            <div>
-              <h1 className="text-xl font-bold text-white tracking-tight">Asset Atlas Pro</h1>
-              <p className="text-xs text-gold-400 mt-0.5">See Risk. Plan Capital.</p>
-            </div>
+            <Link href="/dashboard" className="flex-shrink-0">
+              <Image
+                src="/logo-dark.png"
+                alt="Asset Atlas Pro"
+                width={160}
+                height={70}
+                className="h-10 w-auto"
+              />
+            </Link>
           )}
 
           {/* Desktop collapse toggle */}

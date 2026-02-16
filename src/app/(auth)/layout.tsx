@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function AuthLayout({
   children,
 }: {
@@ -12,9 +14,15 @@ export default function AuthLayout({
 
       <div className="relative w-full max-w-md mx-4">
         {/* Brand header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white tracking-tight">Asset Atlas Pro</h1>
-          <p className="text-gold-400 text-sm mt-1">See Risk. Plan Capital.</p>
+        <div className="flex justify-center mb-8">
+          <Image
+            src="/logo-dark.png"
+            alt="Asset Atlas Pro"
+            width={300}
+            height={130}
+            className="h-28 w-auto"
+            priority
+          />
         </div>
 
         {/* Card */}

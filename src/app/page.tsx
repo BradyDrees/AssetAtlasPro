@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -23,10 +24,16 @@ export default async function LandingPage() {
 
       {/* Nav */}
       <header className="relative z-10 flex items-center justify-between px-6 py-5 md:px-12">
-        <div>
-          <h1 className="text-xl font-bold text-white tracking-tight">Asset Atlas Pro</h1>
-          <p className="text-xs text-gold-400 hidden sm:block">See Risk. Plan Capital.</p>
-        </div>
+        <Link href="/" className="flex-shrink-0">
+          <Image
+            src="/logo-dark.png"
+            alt="Asset Atlas Pro"
+            width={180}
+            height={80}
+            className="h-12 w-auto"
+            priority
+          />
+        </Link>
         <div className="flex items-center gap-3">
           <Link
             href="/login"
@@ -44,14 +51,26 @@ export default async function LandingPage() {
       </header>
 
       {/* Hero */}
-      <section className="relative z-10 px-6 md:px-12 pt-16 md:pt-28 pb-20 max-w-5xl mx-auto">
+      <section className="relative z-10 px-6 md:px-12 pt-10 md:pt-20 pb-20 max-w-5xl mx-auto">
         <div className="text-center">
+          {/* Centered logo */}
+          <div className="flex justify-center mb-8">
+            <Image
+              src="/logo-dark.png"
+              alt="Asset Atlas Pro"
+              width={500}
+              height={220}
+              className="h-40 md:h-56 w-auto"
+              priority
+            />
+          </div>
+
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gold-500/10 border border-gold-500/20 rounded-full mb-6">
             <span className="w-2 h-2 bg-gold-400 rounded-full animate-pulse" />
             <span className="text-xs font-medium text-gold-300">Built for the field</span>
           </div>
 
-          <h2 className="text-4xl md:text-6xl font-bold text-white leading-tight tracking-tight">
+          <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight tracking-tight">
             Property Inspections,{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-300">
               Simplified
@@ -150,8 +169,8 @@ export default async function LandingPage() {
       {/* Footer */}
       <footer className="relative z-10 border-t border-white/10 px-6 md:px-12 py-8">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-white">Asset Atlas Pro</span>
+          <div className="flex items-center gap-3">
+            <Image src="/logo-dark.png" alt="Asset Atlas Pro" width={120} height={50} className="h-8 w-auto" />
             <span className="text-xs text-charcoal-400">&copy; {new Date().getFullYear()}</span>
           </div>
           <p className="text-xs text-charcoal-500">

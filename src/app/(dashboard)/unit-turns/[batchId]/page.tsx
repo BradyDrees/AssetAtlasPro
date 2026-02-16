@@ -6,6 +6,7 @@ import { UnitCard } from "@/components/unit-turn/unit-card";
 import { BATCH_STATUS_LABELS } from "@/lib/unit-turn-constants";
 import { updateBatch, deleteBatch } from "@/app/actions/unit-turns";
 import { BatchActions } from "@/components/unit-turn/batch-actions";
+import { UnitExportButtons } from "@/components/unit-turn/unit-export-buttons";
 
 export const dynamic = "force-dynamic";
 
@@ -111,6 +112,17 @@ export default async function BatchDetailPage({
       {batch.status === "OPEN" && (
         <div className="mb-6">
           <AddUnitForm batchId={batchId} />
+        </div>
+      )}
+
+      {/* Export Buttons */}
+      {allUnits.length > 0 && (
+        <div className="mb-6">
+          <UnitExportButtons
+            batchId={batchId}
+            batchName={batch.name}
+            batchLevel
+          />
         </div>
       )}
 

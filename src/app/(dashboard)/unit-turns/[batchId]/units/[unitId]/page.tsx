@@ -6,6 +6,7 @@ import { UnitStatusBar } from "@/components/unit-turn/unit-status-bar";
 import { NextTurnUnitButton } from "@/components/unit-turn/next-turn-unit-button";
 import { QuickNav } from "@/components/unit-turn/quick-nav";
 import { AddUnitInline } from "@/components/unit-turn/add-unit-inline";
+import { UnitExportButtons } from "@/components/unit-turn/unit-export-buttons";
 import type { UnitTurnCategoryData, UnitTurnUnitItemWithTemplate, UnitTurnNoteWithPhotos } from "@/lib/unit-turn-types";
 
 export const dynamic = "force-dynamic";
@@ -189,8 +190,19 @@ export default async function UnitTurnDetailPage({
         </div>
       )}
 
+      {/* Export Buttons */}
+      <div className="mt-8">
+        <UnitExportButtons
+          batchId={batchId}
+          unitId={unitId}
+          batchName={batch.name}
+          property={unit.property}
+          unitLabel={unit.unit_label}
+        />
+      </div>
+
       {/* Bottom Actions: Next Unit + Create New Unit */}
-      <div className="mt-8 mb-4 space-y-3">
+      <div className="mt-4 mb-4 space-y-3">
         <NextTurnUnitButton batchId={batchId} currentUnitId={unitId} />
         <AddUnitInline batchId={batchId} lastProperty={unit.property} />
       </div>

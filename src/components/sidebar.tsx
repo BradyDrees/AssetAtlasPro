@@ -79,9 +79,9 @@ export function Sidebar({ user }: { user: User }) {
               <Image
                 src="/logo-dark.png"
                 alt="Asset Atlas Pro"
-                width={160}
-                height={70}
-                className="h-10 w-auto"
+                width={200}
+                height={88}
+                className="h-12 w-auto mix-blend-lighten"
               />
             </Link>
           )}

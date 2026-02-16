@@ -18,9 +18,9 @@ export default function AuthLayout({
           <Image
             src="/logo-dark.png"
             alt="Asset Atlas Pro"
-            width={300}
-            height={130}
-            className="h-28 w-auto"
+            width={400}
+            height={175}
+            className="h-36 md:h-44 w-auto mix-blend-lighten"
             priority
           />
         </div>

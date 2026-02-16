@@ -28,9 +28,9 @@ export default async function LandingPage() {
           <Image
             src="/logo-dark.png"
             alt="Asset Atlas Pro"
-            width={180}
-            height={80}
-            className="h-12 w-auto"
+            width={220}
+            height={100}
+            className="h-16 w-auto mix-blend-lighten"
             priority
           />
         </Link>
@@ -54,13 +54,13 @@ export default async function LandingPage() {
       <section className="relative z-10 px-6 md:px-12 pt-10 md:pt-20 pb-20 max-w-5xl mx-auto">
         <div className="text-center">
           {/* Centered logo */}
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-10">
             <Image
               src="/logo-dark.png"
               alt="Asset Atlas Pro"
-              width={500}
-              height={220}
-              className="h-40 md:h-56 w-auto"
+              width={600}
+              height={260}
+              className="h-52 md:h-72 w-auto mix-blend-lighten"
               priority
             />
           </div>
@@ -170,7 +170,7 @@ export default async function LandingPage() {
       <footer className="relative z-10 border-t border-white/10 px-6 md:px-12 py-8">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Image src="/logo-dark.png" alt="Asset Atlas Pro" width={120} height={50} className="h-8 w-auto" />
+            <Image src="/logo-dark.png" alt="Asset Atlas Pro" width={160} height={70} className="h-10 w-auto mix-blend-lighten" />
             <span className="text-xs text-charcoal-400">&copy; {new Date().getFullYear()}</span>
           </div>
           <p className="text-xs text-charcoal-500">

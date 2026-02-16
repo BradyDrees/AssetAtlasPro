@@ -152,45 +152,51 @@ export async function generateUnitTurnExcel(
   summarySheet.views = [{ state: "frozen", ySplit: 1, xSplit: 0 }];
   addStripes(summarySheet);
 
-  // ---- Sheet 2: Item Details ----
-  const detailSheet = wb.addWorksheet("Item Details");
-
-  detailSheet.columns = [
-    { header: "Property", key: "property" },
-    { header: "Unit #", key: "unit_label" },
-    { header: "Category", key: "category" },
-    { header: "Item Name", key: "item_name" },
-    { header: "Status", key: "status" },
-    { header: "Paint Scope", key: "paint_scope" },
-    { header: "Notes", key: "notes" },
-    { header: "Photos", key: "photos" },
-  ];
-
+  // ---- Sheet 2: Full Unit Walk (one sheet per unit) ----
   for (const unit of data.units) {
+    const sheetName = `${unit.property} - ${unit.unit_label}`.slice(0, 31); // Excel 31 char limit
+    const walkSheet = wb.addWorksheet(sheetName);
+
+    walkSheet.columns = [
+      { header: "Category", key: "category" },
+      { header: "Item", key: "item_name" },
+      { header: "Selection", key: "selection" },
+      { header: "Notes", key: "notes" },
+      { header: "Photos", key: "photos" },
+    ];
+
     const items = data.itemsByUnit[unit.id] ?? [];
     const notes = data.notesByUnit[unit.id] ?? [];
 
-    for (const item of items) {
-      // Skip N/A items
-      if (item.is_na) continue;
+    // Sort items by category sort_order, then item sort_order
+    const sortedItems = [...items].sort((a, b) => {
+      const catA = data.categoryMap[a.category_id];
+      const catB = data.categoryMap[b.category_id];
+      const catSort = (catA?.sort_order ?? 0) - (catB?.sort_order ?? 0);
+      if (catSort !== 0) return catSort;
+      return a.sort_order - b.sort_order;
+    });
 
+    let lastCategory = "";
+
+    for (const item of sortedItems) {
       const cat = data.categoryMap[item.category_id];
       const isPaint = cat?.category_type === "paint";
       const isCleaning = cat?.category_type === "cleaning";
+      const catName = toTitleCase(cat?.name ?? "");
 
-      // Skip unassessed items
-      if (isPaint && item.paint_scope == null) continue;
-      if (!isPaint && item.status == null) continue;
-
-      let statusText = "";
-      if (isPaint) {
-        statusText = item.paint_scope
+      // Determine selection text
+      let selectionText = "";
+      if (item.is_na) {
+        selectionText = "N/A";
+      } else if (isPaint) {
+        selectionText = item.paint_scope
           ? PAINT_SCOPE_LABELS[item.paint_scope]?.label ?? item.paint_scope
           : "";
       } else if (isCleaning && item.status === "good") {
-        statusText = "Done";
+        selectionText = "Done";
       } else if (item.status) {
-        statusText = ITEM_STATUS_LABELS[item.status]?.label ?? item.status;
+        selectionText = ITEM_STATUS_LABELS[item.status]?.label ?? item.status;
       }
 
       // Find notes for this item
@@ -205,25 +211,40 @@ export async function generateUnitTurnExcel(
         .filter((n) => n.item_id === item.id)
         .reduce((sum, n) => sum + (n.photos?.length ?? 0), 0);
 
-      detailSheet.addRow({
-        property: unit.property,
-        unit_label: unit.unit_label,
-        category: toTitleCase(cat?.name ?? ""),
+      // Only show category name on first item of each category group
+      const showCategory = catName !== lastCategory;
+      lastCategory = catName;
+
+      walkSheet.addRow({
+        category: showCategory ? catName : "",
         item_name: toTitleCase(item.template_item?.name ?? "Unknown"),
-        status: statusText,
-        paint_scope: isPaint && item.paint_scope
-          ? PAINT_SCOPE_LABELS[item.paint_scope]?.label ?? ""
-          : "",
+        selection: selectionText,
         notes: itemNotes,
         photos: itemPhotos > 0 ? itemPhotos : "",
       });
     }
-  }
 
-  styleHeaderRow(detailSheet);
-  autoFitColumns(detailSheet);
-  detailSheet.views = [{ state: "frozen", ySplit: 1, xSplit: 0 }];
-  addStripes(detailSheet);
+    // Add category-level notes at the bottom
+    const categoryNotes = notes.filter((n) => !n.item_id && n.text && n.text.trim());
+    if (categoryNotes.length > 0) {
+      walkSheet.addRow({}); // blank separator row
+      for (const note of categoryNotes) {
+        const cat = data.categoryMap[note.category_id];
+        walkSheet.addRow({
+          category: toTitleCase(cat?.name ?? ""),
+          item_name: "Category Note",
+          selection: "",
+          notes: note.text,
+          photos: (note.photos?.length ?? 0) > 0 ? note.photos.length : "",
+        });
+      }
+    }
+
+    styleHeaderRow(walkSheet);
+    autoFitColumns(walkSheet);
+    walkSheet.views = [{ state: "frozen", ySplit: 1, xSplit: 0 }];
+    addStripes(walkSheet);
+  }
 
   // ---- Write to buffer ----
   const arrayBuffer = await wb.xlsx.writeBuffer();

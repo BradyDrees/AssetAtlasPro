@@ -103,6 +103,7 @@ export async function generateUnitTurnExcel(
     { header: "Full Paint", key: "full_paint" },
     { header: "Notes", key: "notes" },
     { header: "Photos", key: "photos" },
+    { header: "Videos", key: "videos" },
   ];
 
   for (const unit of data.units) {
@@ -129,6 +130,9 @@ export async function generateUnitTurnExcel(
     const statusLabel = unit.status.replace(/_/g, " ");
     const noteCount = notes.filter((n) => n.text && n.text.trim()).length;
 
+    const photoCount = photos.filter((p) => p.file_type !== "video").length;
+    const videoCount = photos.filter((p) => p.file_type === "video").length;
+
     summarySheet.addRow({
       property: unit.property,
       unit_label: unit.unit_label,
@@ -143,7 +147,8 @@ export async function generateUnitTurnExcel(
       touch_up: touchUp,
       full_paint: fullPaint,
       notes: noteCount > 0 ? noteCount : "",
-      photos: photos.length > 0 ? photos.length : "",
+      photos: photoCount > 0 ? photoCount : "",
+      videos: videoCount > 0 ? videoCount : "",
     });
   }
 
@@ -163,6 +168,7 @@ export async function generateUnitTurnExcel(
     { header: "Selection", key: "selection" },
     { header: "Notes", key: "notes" },
     { header: "Photos", key: "photos" },
+    { header: "Videos", key: "videos" },
   ];
 
   for (let u = 0; u < data.units.length; u++) {
@@ -182,6 +188,7 @@ export async function generateUnitTurnExcel(
       selection: unit.status.replace(/_/g, " "),
       notes: "",
       photos: "",
+      videos: "",
     });
     unitHeaderRow.eachCell((cell) => {
       cell.font = { bold: true, size: 11 };
@@ -230,10 +237,12 @@ export async function generateUnitTurnExcel(
         .filter((t) => t && t.trim())
         .join("; ");
 
-      // Count photos for this item
-      const itemPhotos = notes
+      // Count photos and videos for this item
+      const itemMediaFiles = notes
         .filter((n) => n.item_id === item.id)
-        .reduce((sum, n) => sum + (n.photos?.length ?? 0), 0);
+        .flatMap((n) => n.photos ?? []);
+      const itemPhotoCount = itemMediaFiles.filter((p) => p.file_type !== "video").length;
+      const itemVideoCount = itemMediaFiles.filter((p) => p.file_type === "video").length;
 
       // Only show category name on first item of each category group
       const showCategory = catName !== lastCategory;
@@ -246,7 +255,8 @@ export async function generateUnitTurnExcel(
         item_name: toTitleCase(item.template_item?.name ?? "Unknown"),
         selection: selectionText,
         notes: itemNotes,
-        photos: itemPhotos > 0 ? itemPhotos : "",
+        photos: itemPhotoCount > 0 ? itemPhotoCount : "",
+        videos: itemVideoCount > 0 ? itemVideoCount : "",
       });
     }
 
@@ -254,6 +264,8 @@ export async function generateUnitTurnExcel(
     const categoryNotes = notes.filter((n) => !n.item_id && n.text && n.text.trim());
     for (const note of categoryNotes) {
       const cat = data.categoryMap[note.category_id];
+      const catNotePhotos = (note.photos ?? []).filter((p) => p.file_type !== "video").length;
+      const catNoteVideos = (note.photos ?? []).filter((p) => p.file_type === "video").length;
       walkSheet.addRow({
         property: "",
         unit_label: "",
@@ -261,7 +273,8 @@ export async function generateUnitTurnExcel(
         item_name: "Category Note",
         selection: "",
         notes: note.text,
-        photos: (note.photos?.length ?? 0) > 0 ? note.photos.length : "",
+        photos: catNotePhotos > 0 ? catNotePhotos : "",
+        videos: catNoteVideos > 0 ? catNoteVideos : "",
       });
     }
   }

@@ -325,6 +325,9 @@ export async function uploadNotePhoto(formData: FormData): Promise<{ error?: str
 
     if (!file || !noteId) return { error: "Missing file or noteId" };
 
+    // Detect file type from MIME
+    const fileType = file.type.startsWith("video/") ? "video" : "image";
+
     const ext = file.name.split(".").pop() || "jpg";
     const path = `${user.id}/unit-turns/${batchId}/${unitId}/${noteId}/${Date.now()}.${ext}`;
 
@@ -339,6 +342,7 @@ export async function uploadNotePhoto(formData: FormData): Promise<{ error?: str
       .insert({
         note_id: noteId,
         image_path: path,
+        file_type: fileType,
       });
 
     if (insertErr) return { error: "Failed to save photo: " + insertErr.message };

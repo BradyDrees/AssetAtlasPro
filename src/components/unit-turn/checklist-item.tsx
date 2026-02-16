@@ -232,11 +232,21 @@ export function ChecklistItem({
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   {note.photos.map((photo) => (
                     <div key={photo.id} className="relative group">
-                      <img
-                        src={`${supabaseUrl}/storage/v1/object/public/dd-captures/${photo.image_path}`}
-                        alt=""
-                        className="w-16 h-16 object-cover rounded"
-                      />
+                      {photo.file_type === "video" ? (
+                        <video
+                          src={`${supabaseUrl}/storage/v1/object/public/dd-captures/${photo.image_path}`}
+                          className="w-16 h-16 object-cover rounded"
+                          preload="metadata"
+                          muted
+                          playsInline
+                        />
+                      ) : (
+                        <img
+                          src={`${supabaseUrl}/storage/v1/object/public/dd-captures/${photo.image_path}`}
+                          alt=""
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                      )}
                       <button
                         onClick={() => handleDeletePhoto(photo.id, photo.image_path)}
                         className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
@@ -251,7 +261,7 @@ export function ChecklistItem({
               <label className="inline-flex items-center gap-1 mt-1.5 text-xs text-gray-400 hover:text-gray-600 cursor-pointer">
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/*,video/*"
                   capture="environment"
                   className="hidden"
                   onChange={(e) => {
@@ -260,7 +270,7 @@ export function ChecklistItem({
                     e.target.value = "";
                   }}
                 />
-                + Photo
+                + Photo/Video
               </label>
             </div>
           ))}
@@ -310,7 +320,7 @@ export function ChecklistItem({
               <label className={`text-xs text-blue-600 hover:text-blue-700 cursor-pointer ${uploadingDirect ? "opacity-50" : ""}`}>
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/*,video/*"
                   capture="environment"
                   className="hidden"
                   disabled={uploadingDirect}
@@ -320,7 +330,7 @@ export function ChecklistItem({
                     e.target.value = "";
                   }}
                 />
-                {uploadingDirect ? "Uploading..." : "📷 Take Photo"}
+                {uploadingDirect ? "Uploading..." : "📷 Photo/Video"}
               </label>
             )}
           </div>

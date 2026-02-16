@@ -282,11 +282,14 @@ export async function generateUnitTurnReport(
       }
     }
 
-    // ---- Photos ----
+    // ---- Photos (skip videos — can't embed in PDF) ----
     const catPhotos: PhotoForGrid[] = [];
+    let videoCount = 0;
     for (const note of catNotes) {
       if (!note.photos || note.photos.length === 0) continue;
       for (const photo of note.photos) {
+        if (photo.file_type === "video") { videoCount++; continue; }
+
         const matchItem = note.item_id
           ? unitItems.find((i) => i.id === note.item_id)
           : null;
@@ -301,16 +304,21 @@ export async function generateUnitTurnReport(
       }
     }
 
-    if (catPhotos.length > 0) {
+    if (catPhotos.length > 0 || videoCount > 0) {
       ensureSpace(doc, cursor, 10);
       doc.setFontSize(8);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(60);
-      doc.text("Photos:", MARGIN + 2, cursor.y);
+      const mediaLabel = videoCount > 0
+        ? `Photos: (${videoCount} video${videoCount > 1 ? "s" : ""} not shown in PDF)`
+        : "Photos:";
+      doc.text(mediaLabel, MARGIN + 2, cursor.y);
       doc.setTextColor(0);
       advanceY(cursor, 5);
 
-      addPhotoGrid(doc, cursor, catPhotos);
+      if (catPhotos.length > 0) {
+        addPhotoGrid(doc, cursor, catPhotos);
+      }
     }
 
     advanceY(cursor, 6);

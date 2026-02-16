@@ -85,10 +85,13 @@ export interface UnitTurnNote {
   updated_at: string;
 }
 
+export type NotePhotoFileType = "image" | "video";
+
 export interface UnitTurnNotePhoto {
   id: string;
   note_id: string;
   image_path: string;
+  file_type: NotePhotoFileType;
   sort_order: number;
   created_at: string;
 }

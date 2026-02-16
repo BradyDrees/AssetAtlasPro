@@ -59,7 +59,7 @@ export function CaptureButton({
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
+        accept="image/*,video/*"
         onChange={handleCapture}
         className="hidden"
       />
@@ -78,7 +78,7 @@ export function CaptureButton({
                    rounded-full shadow-lg hover:bg-brand-700 active:bg-brand-800
                    disabled:opacity-50 flex items-center justify-center
                    transition-colors text-2xl"
-        aria-label={uploading ? "Uploading..." : "Capture photo"}
+        aria-label={uploading ? "Uploading..." : "Capture photo or video"}
       >
         {uploading ? (
           <span className="animate-spin rounded-full h-6 w-6 border-b-2 border-white" />

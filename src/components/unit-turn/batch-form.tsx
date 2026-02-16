@@ -1,0 +1,91 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createBatch } from "@/app/actions/unit-turns";
+
+interface BatchFormProps {
+  onClose: () => void;
+}
+
+export function BatchForm({ onClose }: BatchFormProps) {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [month, setMonth] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+
+    setLoading(true);
+    setError("");
+
+    const result = await createBatch({
+      name: name.trim(),
+      month: month || null,
+    });
+
+    if (result.error) {
+      setError(result.error);
+      setLoading(false);
+      return;
+    }
+
+    onClose();
+    router.push(`/unit-turns/${result.id}`);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Batch Name <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="e.g. Veridian Apartments"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+          autoFocus
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Date <span className="text-gray-400">(optional)</span>
+        </label>
+        <input
+          type="date"
+          value={month}
+          onChange={(e) => setMonth(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+        />
+      </div>
+
+      {error && (
+        <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
+      )}
+
+      <div className="flex justify-end gap-3 pt-2">
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          disabled={!name.trim() || loading}
+          className="px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-lg hover:bg-orange-700 disabled:opacity-50 transition-colors"
+        >
+          {loading ? "Creating..." : "Create Batch"}
+        </button>
+      </div>
+    </form>
+  );
+}

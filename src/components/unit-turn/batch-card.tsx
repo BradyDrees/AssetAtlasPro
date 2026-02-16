@@ -1,0 +1,47 @@
+"use client";
+
+import Link from "next/link";
+import { BATCH_STATUS_LABELS } from "@/lib/unit-turn-constants";
+import type { UnitTurnBatch } from "@/lib/unit-turn-types";
+
+interface BatchCardProps {
+  batch: UnitTurnBatch;
+  unitCount: number;
+}
+
+export function BatchCard({ batch, unitCount }: BatchCardProps) {
+  const statusInfo = BATCH_STATUS_LABELS[batch.status] ?? BATCH_STATUS_LABELS.OPEN;
+
+  const monthLabel = batch.month
+    ? new Date(batch.month + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    : null;
+
+  return (
+    <Link
+      href={`/unit-turns/${batch.id}`}
+      className="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md hover:border-orange-300 transition-all"
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <h3 className="text-base font-semibold text-gray-900 truncate">
+              {batch.name}
+            </h3>
+            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusInfo.color}`}>
+              {statusInfo.label}
+            </span>
+          </div>
+          <div className="flex items-center gap-3 mt-1">
+            {monthLabel && (
+              <span className="text-sm text-gray-500">{monthLabel}</span>
+            )}
+            <span className="text-sm text-gray-400">
+              {unitCount} unit{unitCount !== 1 ? "s" : ""}
+            </span>
+          </div>
+        </div>
+        <span className="text-gray-400 text-lg ml-2">→</span>
+      </div>
+    </Link>
+  );
+}

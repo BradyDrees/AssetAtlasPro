@@ -19,6 +19,12 @@ const navItems = [
     icon: "",
     matchPaths: ["/inspections"],
   },
+  {
+    href: "/unit-turns",
+    label: "Unit Turns",
+    icon: "",
+    matchPaths: ["/unit-turns"],
+  },
 ];
 
 export function Sidebar({ user }: { user: User }) {

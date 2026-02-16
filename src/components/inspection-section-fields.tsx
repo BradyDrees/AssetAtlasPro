@@ -99,13 +99,13 @@ export function InspectionSectionFields({
             <span className="text-red-500 ml-1">*</span>
           )}
         </label>
-        <div className="flex gap-2">
+        <div className="grid grid-cols-3 gap-2 md:flex">
           {[1, 2, 3, 4, 5].map((val) => (
             <button
               key={val}
               onClick={() => handleRating(val)}
               disabled={savingRating}
-              className={`flex-1 px-2 py-1.5 text-sm rounded-md border transition-colors ${
+              className={`flex-1 px-2 py-2.5 text-sm rounded-md border transition-colors ${
                 rating === val
                   ? "bg-brand-600 text-white border-brand-600"
                   : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
@@ -131,7 +131,7 @@ export function InspectionSectionFields({
               key={option}
               onClick={() => handleRul(option)}
               disabled={savingRul}
-              className={`px-3 py-1.5 text-sm rounded-md border transition-colors ${
+              className={`px-3 py-2.5 text-sm rounded-md border transition-colors ${
                 rul === option
                   ? RUL_COLORS[option as RulBucket] +
                     " border-current font-medium"

@@ -114,13 +114,13 @@ export function CategorySection({ data, batchId, unitId, supabaseUrl }: Category
                 <button
                   onClick={handleAddCategoryNote}
                   disabled={!catNoteText.trim() || addingCatNote}
-                  className="px-2 py-1 text-xs bg-orange-600 text-white rounded hover:bg-orange-700 disabled:opacity-50"
+                  className="px-3 py-2 text-xs bg-orange-600 text-white rounded hover:bg-orange-700 disabled:opacity-50"
                 >
                   {addingCatNote ? "..." : "Add"}
                 </button>
                 <button
                   onClick={() => { setShowCatNote(false); setCatNoteText(""); }}
-                  className="text-xs text-gray-400 hover:text-gray-600"
+                  className="w-8 h-8 flex items-center justify-center text-sm text-gray-400 hover:text-gray-600"
                 >
                   ✕
                 </button>

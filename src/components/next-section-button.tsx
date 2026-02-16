@@ -20,7 +20,7 @@ export function NextSectionButton({
       onClick={() =>
         router.push(`/projects/${projectId}/sections/${nextSectionId}`)
       }
-      className="fixed bottom-6 left-6 z-40 px-5 h-12 bg-green-600 text-white
+      className="fixed bottom-24 left-6 z-40 px-5 h-12 bg-green-600 text-white
                  rounded-full shadow-lg hover:bg-green-700 active:bg-green-800
                  flex items-center justify-center gap-2
                  transition-colors text-sm font-semibold max-w-[200px] truncate"

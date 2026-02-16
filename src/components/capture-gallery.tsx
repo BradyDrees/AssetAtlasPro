@@ -16,7 +16,7 @@ export function CaptureGallery({
 }: CaptureGalleryProps) {
   if (captures.length === 0) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
+      <div className="bg-white rounded-lg border border-gray-200 p-6 md:p-8 text-center">
         <p className="text-gray-500 text-sm">
           No captures yet. Tap the camera button to start.
         </p>
@@ -25,7 +25,7 @@ export function CaptureGallery({
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
       {captures.map((capture) => (
         <CaptureCard
           key={capture.id}

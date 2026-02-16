@@ -155,7 +155,7 @@ export function ChecklistItem({
       </div>
 
       {/* Status Buttons + N/A on same row */}
-      <div className="flex flex-wrap items-center gap-1.5 mb-2">
+      <div className="flex flex-wrap items-center gap-2 mb-2">
         {!isNA && (
           <>
             {isPaint
@@ -166,7 +166,7 @@ export function ChecklistItem({
                     <button
                       key={scope}
                       onClick={() => handlePaintScopeChange(scope)}
-                      className={`px-3 py-1 text-xs rounded-md border transition-colors ${
+                      className={`px-3 py-2 text-sm rounded-md border transition-colors ${
                         isActive
                           ? info.activeBg + " font-medium " + info.color
                           : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
@@ -185,7 +185,7 @@ export function ChecklistItem({
                     <button
                       key={st}
                       onClick={() => handleStatusChange(st)}
-                      className={`px-3 py-1 text-xs rounded-md border transition-colors ${
+                      className={`px-3 py-2 text-sm rounded-md border transition-colors ${
                         isActive
                           ? info.activeBg + " font-medium " + info.color
                           : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
@@ -199,7 +199,7 @@ export function ChecklistItem({
         )}
         <button
           onClick={handleNAToggle}
-          className={`px-3 py-1 text-xs rounded-md border transition-colors ${
+          className={`px-3 py-2 text-sm rounded-md border transition-colors ${
             isNA
               ? "bg-gray-200 border-gray-400 text-gray-700 font-medium"
               : "bg-white border-gray-300 text-gray-400 hover:bg-gray-50"
@@ -222,7 +222,7 @@ export function ChecklistItem({
                 <p className="text-gray-700 flex-1">{note.text || <span className="text-gray-400 italic">Photo only</span>}</p>
                 <button
                   onClick={() => handleDeleteNote(note.id)}
-                  className="text-xs text-red-400 hover:text-red-600 flex-shrink-0"
+                  className="w-8 h-8 flex items-center justify-center text-sm text-red-400 hover:text-red-600 hover:bg-red-50 rounded-full flex-shrink-0"
                 >
                   ×
                 </button>
@@ -249,7 +249,7 @@ export function ChecklistItem({
                       )}
                       <button
                         onClick={() => handleDeletePhoto(photo.id, photo.image_path)}
-                        className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                        className="absolute -top-1.5 -right-1.5 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex items-center justify-center"
                       >
                         ×
                       </button>
@@ -302,13 +302,13 @@ export function ChecklistItem({
                 <button
                   onClick={handleAddNote}
                   disabled={!noteText.trim() || addingNote}
-                  className="px-2 py-1 text-xs bg-orange-600 text-white rounded hover:bg-orange-700 disabled:opacity-50"
+                  className="px-3 py-2 text-xs bg-orange-600 text-white rounded hover:bg-orange-700 disabled:opacity-50"
                 >
                   {addingNote ? "..." : "Add"}
                 </button>
                 <button
                   onClick={() => { setShowAddNote(false); setNoteText(""); }}
-                  className="text-xs text-gray-400 hover:text-gray-600"
+                  className="w-8 h-8 flex items-center justify-center text-sm text-gray-400 hover:text-gray-600"
                 >
                   ✕
                 </button>

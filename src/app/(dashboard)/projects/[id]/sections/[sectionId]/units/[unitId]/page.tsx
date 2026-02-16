@@ -80,7 +80,7 @@ export default async function UnitDetailPage({
   const storageBaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
   return (
-    <div className="pb-24">
+    <div className="pb-36">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-gray-500 mb-4 flex-wrap">
         <Link href="/dashboard" className="hover:text-brand-600 transition-colors">

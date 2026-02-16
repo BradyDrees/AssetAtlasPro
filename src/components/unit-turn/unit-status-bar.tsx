@@ -36,7 +36,7 @@ export function UnitStatusBar({ unitId, batchId, currentStatus }: UnitStatusBarP
             <button
               key={opt}
               onClick={() => handleChange(opt)}
-              className={`flex-1 px-3 py-1.5 text-xs rounded-md border transition-colors ${
+              className={`flex-1 px-3 py-2.5 text-sm rounded-md border transition-colors ${
                 status === opt
                   ? info.color + " border-current font-medium"
                   : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"

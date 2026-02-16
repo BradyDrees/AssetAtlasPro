@@ -202,7 +202,7 @@ export function InspectionUnitDetail({
                 onChange(newVal);
                 updateField(field, newVal);
               }}
-              className={`px-2 py-1 text-xs rounded-md border transition-colors ${
+              className={`px-3 py-2 text-xs rounded-md border transition-colors ${
                 value === grade
                   ? info.color + " " + info.border
                   : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
@@ -243,7 +243,7 @@ export function InspectionUnitDetail({
                     setOccupancyStatus(opt as OccupancyStatus);
                     updateField("occupancy_status", opt);
                   }}
-                  className={`px-3 py-1.5 text-xs rounded-md border transition-colors ${
+                  className={`px-3 py-2.5 text-sm rounded-md border transition-colors ${
                     occupancyStatus === opt
                       ? info.color + " border-current font-medium"
                       : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
@@ -272,7 +272,7 @@ export function InspectionUnitDetail({
                       setWalkRequired(boolVal);
                       updateField("walk_required", boolVal);
                     }}
-                    className={`px-3 py-1.5 text-xs rounded-md border transition-colors ${
+                    className={`px-3 py-2.5 text-sm rounded-md border transition-colors ${
                       walkRequired === boolVal
                         ? boolVal
                           ? "bg-brand-600 text-white border-brand-600"
@@ -305,7 +305,7 @@ export function InspectionUnitDetail({
                         setWalkStatus(opt as WalkStatus);
                         updateField("walk_status", opt);
                       }}
-                      className={`px-3 py-1.5 text-xs rounded-md border transition-colors ${
+                      className={`px-3 py-2.5 text-sm rounded-md border transition-colors ${
                         walkStatus === opt
                           ? info.color + " border-current font-medium"
                           : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
@@ -336,7 +336,7 @@ export function InspectionUnitDetail({
                       setTurnStage(newVal);
                       updateField("turn_stage", newVal);
                     }}
-                    className={`px-3 py-1.5 text-xs rounded-md border transition-colors ${
+                    className={`px-3 py-2.5 text-sm rounded-md border transition-colors ${
                       turnStage === opt
                         ? info.color + " border-current font-medium"
                         : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
@@ -356,7 +356,7 @@ export function InspectionUnitDetail({
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Overall Condition
         </label>
-        <div className="flex gap-2">
+        <div className="grid grid-cols-3 gap-2 md:flex">
           {[1, 2, 3, 4, 5].map((val) => {
             const info = OVERALL_CONDITION_LABELS[val];
             return (
@@ -367,7 +367,7 @@ export function InspectionUnitDetail({
                   setOverallCondition(newVal);
                   updateField("overall_condition", newVal);
                 }}
-                className={`flex-1 px-2 py-1.5 text-sm rounded-md border transition-colors ${
+                className={`flex-1 px-2 py-2.5 text-sm rounded-md border transition-colors ${
                   overallCondition === val
                     ? info.color + " border-current font-medium"
                     : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
@@ -453,7 +453,7 @@ export function InspectionUnitDetail({
                   setAppliances(newVal);
                   updateField("appliances", newVal);
                 }}
-                className={`px-3 py-1.5 text-sm rounded-md border transition-colors ${
+                className={`px-3 py-2.5 text-sm rounded-md border transition-colors ${
                   isActive
                     ? "bg-brand-600 text-white border-brand-600"
                     : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
@@ -484,7 +484,7 @@ export function InspectionUnitDetail({
                       setHasLeakEvidence(boolVal);
                       updateField("has_leak_evidence", boolVal);
                     }}
-                    className={`px-3 py-1.5 text-sm rounded-md border transition-colors ${
+                    className={`px-4 py-2.5 text-sm rounded-md border transition-colors ${
                       hasLeakEvidence === boolVal
                         ? INSPECTION_YES_NO[val].color + " border-current"
                         : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
@@ -510,7 +510,7 @@ export function InspectionUnitDetail({
                       setHasMoldIndicators(boolVal);
                       updateField("has_mold_indicators", boolVal);
                     }}
-                    className={`px-3 py-1.5 text-sm rounded-md border transition-colors ${
+                    className={`px-4 py-2.5 text-sm rounded-md border transition-colors ${
                       hasMoldIndicators === boolVal
                         ? INSPECTION_YES_NO[val].color + " border-current"
                         : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
@@ -562,7 +562,7 @@ export function InspectionUnitDetail({
                   />
                   <button
                     onClick={() => handleDeleteCapture(capture)}
-                    className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                    className="absolute top-1 right-1 w-7 h-7 bg-red-500 text-white rounded-full text-xs opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex items-center justify-center"
                   >
                     ×
                   </button>
@@ -571,7 +571,7 @@ export function InspectionUnitDetail({
           </div>
         )}
         <label
-          className={`inline-flex items-center gap-1 px-3 py-1.5 text-sm border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors ${
+          className={`inline-flex items-center gap-1 px-3 py-2.5 text-sm border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors ${
             uploading ? "opacity-50" : ""
           }`}
         >
@@ -673,7 +673,7 @@ function UnitFindings({
         </h3>
         <button
           onClick={() => setShowAdd(true)}
-          className="px-3 py-1.5 bg-orange-600 text-white text-xs rounded-md hover:bg-orange-700 transition-colors"
+          className="px-3 py-2.5 bg-orange-600 text-white text-sm rounded-md hover:bg-orange-700 transition-colors"
         >
           + Add Finding
         </button>

@@ -152,21 +152,45 @@ export async function generateUnitTurnExcel(
   summarySheet.views = [{ state: "frozen", ySplit: 1, xSplit: 0 }];
   addStripes(summarySheet);
 
-  // ---- Sheet 2: Full Unit Walk (one sheet per unit) ----
-  for (const unit of data.units) {
-    const sheetName = `${unit.property} - ${unit.unit_label}`.slice(0, 31); // Excel 31 char limit
-    const walkSheet = wb.addWorksheet(sheetName);
+  // ---- Sheet 2: Full Walk — all units listed down ----
+  const walkSheet = wb.addWorksheet("Full Walk");
 
-    walkSheet.columns = [
-      { header: "Category", key: "category" },
-      { header: "Item", key: "item_name" },
-      { header: "Selection", key: "selection" },
-      { header: "Notes", key: "notes" },
-      { header: "Photos", key: "photos" },
-    ];
+  walkSheet.columns = [
+    { header: "Property", key: "property" },
+    { header: "Unit #", key: "unit_label" },
+    { header: "Category", key: "category" },
+    { header: "Item", key: "item_name" },
+    { header: "Selection", key: "selection" },
+    { header: "Notes", key: "notes" },
+    { header: "Photos", key: "photos" },
+  ];
 
+  for (let u = 0; u < data.units.length; u++) {
+    const unit = data.units[u];
     const items = data.itemsByUnit[unit.id] ?? [];
     const notes = data.notesByUnit[unit.id] ?? [];
+
+    // Blank separator row between units (not before first)
+    if (u > 0) walkSheet.addRow({});
+
+    // Unit header row
+    const unitHeaderRow = walkSheet.addRow({
+      property: unit.property,
+      unit_label: unit.unit_label,
+      category: "",
+      item_name: "",
+      selection: unit.status.replace(/_/g, " "),
+      notes: "",
+      photos: "",
+    });
+    unitHeaderRow.eachCell((cell) => {
+      cell.font = { bold: true, size: 11 };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFE5E7EB" }, // gray-200
+      };
+    });
 
     // Sort items by category sort_order, then item sort_order
     const sortedItems = [...items].sort((a, b) => {
@@ -216,6 +240,8 @@ export async function generateUnitTurnExcel(
       lastCategory = catName;
 
       walkSheet.addRow({
+        property: "",
+        unit_label: "",
         category: showCategory ? catName : "",
         item_name: toTitleCase(item.template_item?.name ?? "Unknown"),
         selection: selectionText,
@@ -224,27 +250,25 @@ export async function generateUnitTurnExcel(
       });
     }
 
-    // Add category-level notes at the bottom
+    // Category-level notes
     const categoryNotes = notes.filter((n) => !n.item_id && n.text && n.text.trim());
-    if (categoryNotes.length > 0) {
-      walkSheet.addRow({}); // blank separator row
-      for (const note of categoryNotes) {
-        const cat = data.categoryMap[note.category_id];
-        walkSheet.addRow({
-          category: toTitleCase(cat?.name ?? ""),
-          item_name: "Category Note",
-          selection: "",
-          notes: note.text,
-          photos: (note.photos?.length ?? 0) > 0 ? note.photos.length : "",
-        });
-      }
+    for (const note of categoryNotes) {
+      const cat = data.categoryMap[note.category_id];
+      walkSheet.addRow({
+        property: "",
+        unit_label: "",
+        category: toTitleCase(cat?.name ?? ""),
+        item_name: "Category Note",
+        selection: "",
+        notes: note.text,
+        photos: (note.photos?.length ?? 0) > 0 ? note.photos.length : "",
+      });
     }
-
-    styleHeaderRow(walkSheet);
-    autoFitColumns(walkSheet);
-    walkSheet.views = [{ state: "frozen", ySplit: 1, xSplit: 0 }];
-    addStripes(walkSheet);
   }
+
+  styleHeaderRow(walkSheet);
+  autoFitColumns(walkSheet);
+  walkSheet.views = [{ state: "frozen", ySplit: 1, xSplit: 0 }];
 
   // ---- Write to buffer ----
   const arrayBuffer = await wb.xlsx.writeBuffer();

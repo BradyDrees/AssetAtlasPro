@@ -50,7 +50,8 @@ export default async function UnitTurnDetailPage({
       template_item:unit_turn_template_items(*)
     `)
     .eq("unit_id", unitId)
-    .order("sort_order");
+    .order("sort_order")
+    .order("id");
 
   // Fetch all notes with photos
   const { data: notes } = await supabase

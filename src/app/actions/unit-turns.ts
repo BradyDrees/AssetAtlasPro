@@ -184,7 +184,7 @@ export async function updateUnitItemStatus(
       .eq("id", itemId);
 
     if (error) return { error: error.message };
-    revalidatePath(`/unit-turns/${batchId}/units/${unitId}`);
+    // No revalidatePath — client manages status state locally
     return {};
   } catch (err) {
     return { error: "Unexpected: " + (err instanceof Error ? err.message : String(err)) };
@@ -215,7 +215,7 @@ export async function updateUnitItemNA(
       .eq("id", itemId);
 
     if (error) return { error: error.message };
-    revalidatePath(`/unit-turns/${batchId}/units/${unitId}`);
+    // No revalidatePath — client manages N/A state locally
     return {};
   } catch (err) {
     return { error: "Unexpected: " + (err instanceof Error ? err.message : String(err)) };
@@ -236,7 +236,7 @@ export async function updatePaintScope(
       .eq("id", itemId);
 
     if (error) return { error: error.message };
-    revalidatePath(`/unit-turns/${batchId}/units/${unitId}`);
+    // No revalidatePath — client manages paint scope state locally
     return {};
   } catch (err) {
     return { error: "Unexpected: " + (err instanceof Error ? err.message : String(err)) };

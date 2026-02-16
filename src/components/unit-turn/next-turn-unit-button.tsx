@@ -15,6 +15,8 @@ export function NextTurnUnitButton({ batchId, currentUnitId }: NextTurnUnitButto
   const [nextId, setNextId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const batchUrl = `/unit-turns/${batchId}`;
+
   useEffect(() => {
     async function fetchUnits() {
       const supabase = createClient();
@@ -45,26 +47,24 @@ export function NextTurnUnitButton({ batchId, currentUnitId }: NextTurnUnitButto
   return (
     <div className="flex gap-3">
       <button
-        onClick={() => prevId && router.push(`/unit-turns/${batchId}/units/${prevId}`)}
-        disabled={!prevId}
+        onClick={() => router.push(prevId ? `/unit-turns/${batchId}/units/${prevId}` : batchUrl)}
         className={`flex-1 py-3 text-sm font-medium rounded-lg transition-colors ${
           prevId
             ? "bg-charcoal-800 text-white hover:bg-charcoal-700"
-            : "bg-gray-200 text-gray-400 cursor-not-allowed"
+            : "bg-charcoal-600 text-white hover:bg-charcoal-500"
         }`}
       >
-        ← Previous Unit
+        {prevId ? "← Previous Unit" : "← Batch"}
       </button>
       <button
-        onClick={() => nextId && router.push(`/unit-turns/${batchId}/units/${nextId}`)}
-        disabled={!nextId}
+        onClick={() => router.push(nextId ? `/unit-turns/${batchId}/units/${nextId}` : batchUrl)}
         className={`flex-1 py-3 text-sm font-medium rounded-lg transition-colors ${
           nextId
             ? "bg-orange-600 text-white hover:bg-orange-700"
-            : "bg-gray-200 text-gray-400 cursor-not-allowed"
+            : "bg-orange-600 text-white hover:bg-orange-700"
         }`}
       >
-        Next Unit →
+        {nextId ? "Next Unit →" : "Batch →"}
       </button>
     </div>
   );

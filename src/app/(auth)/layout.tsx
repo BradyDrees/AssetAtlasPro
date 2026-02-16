@@ -12,15 +12,15 @@ export default function AuthLayout({
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-gold-500/5 rounded-full translate-x-1/3 translate-y-1/3" />
       <div className="absolute top-1/2 right-1/4 w-40 h-40 bg-brand-400/5 rounded-full" />
 
-      <div className="relative w-full max-w-lg mx-4">
+      <div className="relative w-full max-w-xl mx-4">
         {/* Brand header */}
         <div className="flex justify-center mb-6">
           <Image
             src="/logo-dark.png"
             alt="Asset Atlas Pro"
-            width={700}
-            height={310}
-            className="h-56 md:h-80 w-auto mix-blend-lighten"
+            width={900}
+            height={400}
+            className="h-72 md:h-96 w-auto mix-blend-lighten"
             priority
           />
         </div>

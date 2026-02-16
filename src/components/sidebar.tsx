@@ -81,7 +81,7 @@ export function Sidebar({ user }: { user: User }) {
                 alt="Asset Atlas Pro"
                 width={200}
                 height={88}
-                className="h-12 w-auto mix-blend-lighten"
+                className="h-12 w-auto logo-fade"
               />
             </Link>
           )}

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { FeatureCards } from "@/components/feature-cards";
 
 export default async function LandingPage() {
   // If already logged in, go straight to dashboard
@@ -20,7 +21,13 @@ export default async function LandingPage() {
       <div className="fixed top-0 left-0 w-[500px] h-[500px] bg-brand-600/8 rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
       <div className="fixed bottom-0 right-0 w-[400px] h-[400px] bg-gold-500/5 rounded-full translate-x-1/3 translate-y-1/3 pointer-events-none" />
       <div className="fixed top-1/3 right-1/4 w-48 h-48 bg-brand-400/5 rounded-full pointer-events-none" />
-      <div className="fixed bottom-1/3 left-1/5 w-32 h-32 bg-gold-400/5 rounded-full pointer-events-none" />
+      <div className="fixed bottom-1/3 left-[8%] w-32 h-32 bg-gold-400/5 rounded-full pointer-events-none" />
+      <div className="fixed top-[15%] right-[10%] w-64 h-64 bg-brand-500/6 rounded-full pointer-events-none" />
+      <div className="fixed top-[60%] left-[5%] w-56 h-56 bg-brand-400/4 rounded-full pointer-events-none" />
+      <div className="fixed top-[80%] right-[15%] w-40 h-40 bg-gold-500/6 rounded-full pointer-events-none" />
+      <div className="fixed top-[10%] left-[40%] w-24 h-24 bg-gold-400/4 rounded-full pointer-events-none" />
+      <div className="fixed top-[45%] right-[5%] w-36 h-36 bg-brand-600/5 rounded-full pointer-events-none" />
+      <div className="fixed bottom-[15%] left-[30%] w-20 h-20 bg-brand-300/5 rounded-full pointer-events-none" />
 
       {/* Nav */}
       <header className="relative z-10 flex items-center justify-between px-6 py-5 md:px-12">
@@ -30,7 +37,7 @@ export default async function LandingPage() {
             alt="Asset Atlas Pro"
             width={220}
             height={100}
-            className="h-16 w-auto mix-blend-screen"
+            className="h-16 w-auto logo-fade"
             priority
           />
         </Link>
@@ -60,7 +67,7 @@ export default async function LandingPage() {
               alt="Asset Atlas Pro"
               width={1200}
               height={530}
-              className="h-80 md:h-[28rem] w-auto mix-blend-screen"
+              className="h-80 md:h-[28rem] w-auto logo-fade"
               priority
             />
           </div>
@@ -78,8 +85,8 @@ export default async function LandingPage() {
           </h2>
 
           <p className="mt-6 text-lg md:text-xl text-charcoal-300 max-w-2xl mx-auto leading-relaxed">
-            Due diligence, property inspections, and unit turns &mdash; all in one
-            mobile-first platform designed for multifamily real estate professionals.
+            Due Diligence, Property Inspections, and Unit Turns &mdash; All in One
+            Mobile-First Platform Designed for Multifamily Real Estate Professionals.
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -101,49 +108,7 @@ export default async function LandingPage() {
 
       {/* Feature cards */}
       <section className="relative z-10 px-6 md:px-12 pb-24 max-w-5xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-6">
-          {/* Due Diligence */}
-          <div className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/8 hover:border-white/20 transition-all">
-            <div className="w-12 h-12 bg-brand-600/20 rounded-xl flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
-            </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Due Diligence</h3>
-            <p className="text-sm text-charcoal-300 leading-relaxed">
-              Capture photos, rate conditions, and document every section of a
-              property with structured inspection templates.
-            </p>
-          </div>
-
-          {/* Inspections */}
-          <div className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/8 hover:border-white/20 transition-all">
-            <div className="w-12 h-12 bg-gold-500/20 rounded-xl flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-              </svg>
-            </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Inspections</h3>
-            <p className="text-sm text-charcoal-300 leading-relaxed">
-              Grade units, identify findings, assess risk &mdash; with photo
-              documentation and severity tracking built in.
-            </p>
-          </div>
-
-          {/* Unit Turns */}
-          <div className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/8 hover:border-white/20 transition-all">
-            <div className="w-12 h-12 bg-brand-400/20 rounded-xl flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-brand-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Unit Turns</h3>
-            <p className="text-sm text-charcoal-300 leading-relaxed">
-              Track make-ready checklists, paint scopes, and condition assessments
-              with exportable reports in PDF and Excel.
-            </p>
-          </div>
-        </div>
+        <FeatureCards />
       </section>
 
       {/* Bottom CTA */}
@@ -169,7 +134,7 @@ export default async function LandingPage() {
       {/* Footer */}
       <footer className="relative z-10 px-6 md:px-12 py-8">
         <div className="max-w-5xl mx-auto flex flex-col items-center gap-4">
-          <Image src="/logo-dark.png" alt="Asset Atlas Pro" width={800} height={350} className="h-40 md:h-52 w-auto mix-blend-screen" />
+          <Image src="/logo-dark.png" alt="Asset Atlas Pro" width={800} height={350} className="h-40 md:h-52 w-auto logo-fade" />
           <span className="text-sm text-charcoal-400">&copy; 2026</span>
         </div>
       </footer>

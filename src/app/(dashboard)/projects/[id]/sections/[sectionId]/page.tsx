@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { UnitListPage } from "@/components/unit-list-page";
 import { SectionItemListPage } from "@/components/section-item-list-page";
+import { DD_GROUP_SLUGS } from "@/lib/dd-sections";
 import type { DDCapture, DDUnit, DDSectionItem } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -35,6 +36,8 @@ export default async function SectionCapturePage({
     .single();
 
   if (!projectSection) notFound();
+
+  const groupSlug = DD_GROUP_SLUGS[projectSection.section.group_name] ?? "";
 
   // Fetch all enabled sections for "Next Section" navigation
   const { data: allEnabledSections } = await supabase
@@ -95,6 +98,7 @@ export default async function SectionCapturePage({
         captureCounts={unitCaptureCounts}
         nextSectionId={nextSectionId}
         nextSectionName={nextSectionName}
+        groupSlug={groupSlug}
       />
     );
   }
@@ -135,6 +139,7 @@ export default async function SectionCapturePage({
       captureCounts={itemCaptureCounts}
       nextSectionId={nextSectionId}
       nextSectionName={nextSectionName}
+      groupSlug={groupSlug}
     />
   );
 }

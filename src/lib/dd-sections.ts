@@ -10,3 +10,15 @@ export const GROUP_ORDER = [
   "Amenities",
   "Units",
 ] as const;
+
+/**
+ * URL-safe slug for each DD group name.
+ * Used for scroll-to-group memory when navigating back to the project page.
+ */
+export const DD_GROUP_SLUGS: Record<string, string> = {
+  "Site & Exterior": "site-exterior",
+  "Mechanical & Infrastructure": "mechanical",
+  "Common Areas": "common-areas",
+  "Amenities": "amenities",
+  "Units": "units",
+};

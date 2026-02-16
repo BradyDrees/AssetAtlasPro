@@ -5,6 +5,7 @@ import { InspectionSectionFields } from "@/components/inspection-section-fields"
 import { InspectionChecklistPanel } from "@/components/inspection-checklist-panel";
 import { InspectionFindingsList } from "@/components/inspection-findings-list";
 import { InspectionUnitList } from "@/components/inspection-unit-list";
+import { INSPECTION_GROUP_SLUGS } from "@/lib/inspection-sections";
 import type {
   InspectionProjectSectionWithDetails,
   InspectionChecklistItem,
@@ -48,6 +49,7 @@ export default async function InspectionSectionPage({
 
   const ps = projectSection as InspectionProjectSectionWithDetails;
   const isUnitMode = ps.section.is_unit_mode;
+  const groupSlug = INSPECTION_GROUP_SLUGS[ps.section.group_name] ?? "";
 
   // Fetch checklist items for this section (master template)
   const { data: checklistItems } = await supabase
@@ -111,7 +113,7 @@ export default async function InspectionSectionPage({
         </Link>
         <span>/</span>
         <Link
-          href={`/inspections/${projectId}`}
+          href={`/inspections/${projectId}?group=${groupSlug}`}
           className="hover:text-brand-600 transition-colors"
         >
           {project.name}
@@ -124,7 +126,7 @@ export default async function InspectionSectionPage({
       <div className="mb-6">
         <div className="flex items-center gap-3">
           <Link
-            href={`/inspections/${projectId}`}
+            href={`/inspections/${projectId}?group=${groupSlug}`}
             className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors"
             title="Back to project"
           >

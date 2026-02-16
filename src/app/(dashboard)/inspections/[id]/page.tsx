@@ -31,10 +31,13 @@ const statusLabels: Record<string, string> = {
 
 export default async function InspectionDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ group?: string }>;
 }) {
   const { id } = await params;
+  const { group: scrollToGroup } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -232,6 +235,7 @@ export default async function InspectionDetailPage({
         inspectionType={project.inspection_type}
         role={role}
         currentUserId={currentUserId}
+        scrollToGroup={scrollToGroup}
       />
     </div>
   );

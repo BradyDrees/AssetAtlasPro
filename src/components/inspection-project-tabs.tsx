@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { InspectionGroupChecklist } from "@/components/inspection-group-checklist";
 import type {
@@ -128,9 +128,22 @@ export function InspectionProjectTabs({
   inspectionType,
   role = "owner",
   currentUserId,
-}: InspectionProjectTabsProps) {
+  scrollToGroup,
+}: InspectionProjectTabsProps & { scrollToGroup?: string }) {
   // Track which groups are collapsed (all expanded by default)
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+
+  // Auto-scroll to group when returning from a sub-page
+  useEffect(() => {
+    if (scrollToGroup) {
+      const el = document.getElementById(`group-${scrollToGroup}`);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      }
+    }
+  }, [scrollToGroup]);
 
   if (groups.length === 0) {
     return (

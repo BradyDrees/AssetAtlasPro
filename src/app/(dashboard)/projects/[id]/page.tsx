@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { SectionGroup } from "@/components/section-group";
 import { ProjectHeaderMenu } from "@/components/project-header-menu";
-import { GROUP_ORDER } from "@/lib/dd-sections";
+import { ScrollToGroup } from "@/components/scroll-to-group";
+import { GROUP_ORDER, DD_GROUP_SLUGS } from "@/lib/dd-sections";
 import type { DDProjectSectionWithDetails, DDSectionGroup } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -22,10 +23,13 @@ const statusLabels: Record<string, string> = {
 
 export default async function ProjectDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ group?: string }>;
 }) {
   const { id } = await params;
+  const { group: scrollToGroup } = await searchParams;
   const supabase = await createClient();
 
   // Fetch project
@@ -150,6 +154,9 @@ export default async function ProjectDetailPage({
         </Link>
       </div>
 
+      {/* Auto-scroll to remembered group */}
+      {scrollToGroup && <ScrollToGroup groupSlug={scrollToGroup} />}
+
       {/* Section groups */}
       <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
         Inspection Sections
@@ -159,6 +166,7 @@ export default async function ProjectDetailPage({
           <SectionGroup
             key={group.group_name}
             groupName={group.group_name}
+            groupSlug={DD_GROUP_SLUGS[group.group_name]}
             sections={group.sections}
             projectId={id}
             captureCounts={captureCounts}

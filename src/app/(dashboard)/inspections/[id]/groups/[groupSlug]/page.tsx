@@ -133,7 +133,7 @@ export default async function InspectionGroupPage({
         </Link>
         <span>/</span>
         <Link
-          href={`/inspections/${projectId}`}
+          href={`/inspections/${projectId}?group=${groupSlug}`}
           className="hover:text-brand-600 transition-colors"
         >
           {project.name}
@@ -146,7 +146,7 @@ export default async function InspectionGroupPage({
       <div className="mb-6">
         <div className="flex items-center gap-3">
           <Link
-            href={`/inspections/${projectId}`}
+            href={`/inspections/${projectId}?group=${groupSlug}`}
             className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors"
             title="Back to project"
           >

@@ -16,6 +16,7 @@ interface UnitListPageProps {
   captureCounts: Record<string, number>;
   nextSectionId?: string | null;
   nextSectionName?: string | null;
+  groupSlug?: string;
 }
 
 export function UnitListPage({
@@ -27,6 +28,7 @@ export function UnitListPage({
   captureCounts,
   nextSectionId,
   nextSectionName,
+  groupSlug,
 }: UnitListPageProps) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -63,7 +65,7 @@ export function UnitListPage({
         </Link>
         <span>/</span>
         <Link
-          href={`/projects/${projectId}`}
+          href={`/projects/${projectId}${groupSlug ? `?group=${groupSlug}` : ""}`}
           className="hover:text-brand-600 transition-colors"
         >
           {projectName}
@@ -75,7 +77,7 @@ export function UnitListPage({
       {/* Back button + Section header */}
       <div className="mb-6">
         <Link
-          href={`/projects/${projectId}`}
+          href={`/projects/${projectId}${groupSlug ? `?group=${groupSlug}` : ""}`}
           className="inline-flex items-center gap-1.5 text-sm text-brand-600 font-medium mb-2 hover:text-brand-800 transition-colors"
         >
           <span>&larr;</span> Back to {projectName}

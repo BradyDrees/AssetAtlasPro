@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { InspectionUnitDetail } from "@/components/inspection-unit-detail";
+import { INSPECTION_GROUP_SLUGS } from "@/lib/inspection-sections";
 import type {
   InspectionUnit,
   InspectionCapture,
@@ -42,6 +43,7 @@ export default async function InspectionUnitPage({
   if (!projectSection) notFound();
 
   const ps = projectSection as InspectionProjectSectionWithDetails;
+  const groupSlug = INSPECTION_GROUP_SLUGS[ps.section.group_name] ?? "";
 
   // Fetch this unit
   const { data: unit } = await supabase
@@ -94,7 +96,7 @@ export default async function InspectionUnitPage({
         </Link>
         <span>/</span>
         <Link
-          href={`/inspections/${projectId}`}
+          href={`/inspections/${projectId}?group=${groupSlug}`}
           className="hover:text-brand-600 transition-colors"
         >
           {project.name}
@@ -116,7 +118,7 @@ export default async function InspectionUnitPage({
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <Link
-          href={`/inspections/${projectId}`}
+          href={`/inspections/${projectId}?group=${groupSlug}`}
           className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors"
           title="Back to project"
         >

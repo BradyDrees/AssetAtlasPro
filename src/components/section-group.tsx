@@ -6,6 +6,7 @@ import type { DDProjectSectionWithDetails } from "@/lib/types";
 
 interface SectionGroupProps {
   groupName: string;
+  groupSlug?: string;
   sections: DDProjectSectionWithDetails[];
   projectId: string;
   captureCounts?: Record<string, number>;
@@ -15,6 +16,7 @@ interface SectionGroupProps {
 
 export function SectionGroup({
   groupName,
+  groupSlug,
   sections,
   projectId,
   captureCounts = {},
@@ -44,7 +46,7 @@ export function SectionGroup({
   );
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <div id={groupSlug ? `group-${groupSlug}` : undefined} className="scroll-mt-4 bg-white rounded-lg border border-gray-200 overflow-hidden">
       {/* Group header - clickable to expand/collapse */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}

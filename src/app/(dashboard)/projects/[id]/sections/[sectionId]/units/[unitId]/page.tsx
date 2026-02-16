@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { DD_GROUP_SLUGS } from "@/lib/dd-sections";
 import { UnitGradeSelector } from "@/components/unit-grade-selector";
 import { UnitBdBaSelect } from "@/components/unit-bd-ba-select";
 import { UnitAppliancesSelect } from "@/components/unit-appliances-select";
@@ -41,6 +42,8 @@ export default async function UnitDetailPage({
     .single();
 
   if (!projectSection) notFound();
+
+  const groupSlug = DD_GROUP_SLUGS[projectSection.section.group_name] ?? "";
 
   // Fetch unit
   const { data: unit } = await supabase
@@ -87,7 +90,7 @@ export default async function UnitDetailPage({
           Projects
         </Link>
         <span>/</span>
-        <Link href={`/projects/${projectId}`} className="hover:text-brand-600 transition-colors">
+        <Link href={`/projects/${projectId}?group=${groupSlug}`} className="hover:text-brand-600 transition-colors">
           {project.name}
         </Link>
         <span>/</span>

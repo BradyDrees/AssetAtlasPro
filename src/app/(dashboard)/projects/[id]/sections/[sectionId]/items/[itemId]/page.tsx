@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { DD_GROUP_SLUGS } from "@/lib/dd-sections";
 import { ItemRating } from "@/components/item-rating";
 import { ItemNotes } from "@/components/item-notes";
 import { CaptureButton } from "@/components/capture-button";
@@ -42,6 +43,8 @@ export default async function ItemDetailPage({
     .single();
 
   if (!projectSection) notFound();
+
+  const groupSlug = DD_GROUP_SLUGS[projectSection.section.group_name] ?? "";
 
   // Fetch section item
   const { data: item } = await supabase
@@ -92,7 +95,7 @@ export default async function ItemDetailPage({
         </Link>
         <span>/</span>
         <Link
-          href={`/projects/${projectId}`}
+          href={`/projects/${projectId}?group=${groupSlug}`}
           className="hover:text-brand-600 transition-colors"
         >
           {project.name}

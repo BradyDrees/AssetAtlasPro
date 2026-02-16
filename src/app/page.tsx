@@ -58,16 +58,16 @@ export default async function LandingPage() {
             <Image
               src="/logo-dark.png"
               alt="Asset Atlas Pro"
-              width={600}
-              height={260}
-              className="h-52 md:h-72 w-auto mix-blend-lighten"
+              width={1200}
+              height={530}
+              className="h-80 md:h-[28rem] w-auto mix-blend-lighten"
               priority
             />
           </div>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gold-500/10 border border-gold-500/20 rounded-full mb-6">
-            <span className="w-2 h-2 bg-gold-400 rounded-full animate-pulse" />
-            <span className="text-xs font-medium text-gold-300">Built for the field</span>
+          <div className="inline-flex items-center gap-2 mb-6">
+            <span className="w-2.5 h-2.5 bg-gold-400 rounded-full animate-pulse" />
+            <span className="text-sm font-medium text-gold-300">Built for the field</span>
           </div>
 
           <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight tracking-tight">
@@ -167,15 +167,10 @@ export default async function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-white/10 px-6 md:px-12 py-8">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Image src="/logo-dark.png" alt="Asset Atlas Pro" width={160} height={70} className="h-10 w-auto mix-blend-lighten" />
-            <span className="text-xs text-charcoal-400">&copy; {new Date().getFullYear()}</span>
-          </div>
-          <p className="text-xs text-charcoal-500">
-            Built for multifamily real estate professionals.
-          </p>
+      <footer className="relative z-10 px-6 md:px-12 py-8">
+        <div className="max-w-5xl mx-auto flex flex-col items-center gap-4">
+          <Image src="/logo-dark.png" alt="Asset Atlas Pro" width={800} height={350} className="h-40 md:h-52 w-auto mix-blend-lighten" />
+          <span className="text-sm text-charcoal-400">&copy; 2026</span>
         </div>
       </footer>
     </div>

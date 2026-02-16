@@ -63,7 +63,7 @@ export default async function DashboardPage() {
       href: "/unit-turns",
       count: utCount,
       countLabel: "Batches",
-      gradient: "from-charcoal-900 to-brand-800",
+      gradient: "from-brand-800 to-charcoal-900",
       iconColor: "text-brand-300",
       icon: (
         <path
@@ -79,7 +79,7 @@ export default async function DashboardPage() {
   return (
     <div>
       {/* Page header */}
-      <div className="mb-8 bg-gradient-to-r from-charcoal-950 to-brand-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-6 md:px-6 rounded-b-xl flex flex-col items-center justify-center overflow-visible">
+      <div className="mb-8 bg-gradient-to-r from-brand-900 via-charcoal-950 to-brand-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-6 md:px-6 rounded-b-xl flex flex-col items-center justify-center overflow-visible">
         <Image
           src="/logo-dark.png"
           alt="Asset Atlas Pro"

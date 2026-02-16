@@ -41,7 +41,7 @@ export default async function UnitTurnsPage() {
   return (
     <div>
       {/* Page header */}
-      <div className="flex items-center justify-between mb-6 bg-gradient-to-r from-charcoal-900 to-brand-800 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl">
+      <div className="flex items-center justify-between mb-6 bg-[radial-gradient(ellipse_at_top_left,_var(--brand-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--brand-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl">
         <div>
           <h1 className="text-2xl font-bold text-white">Unit Turns</h1>
           <p className="text-gold-300 text-sm mt-0.5">Turn Batch Management</p>

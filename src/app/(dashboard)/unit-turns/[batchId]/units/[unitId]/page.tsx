@@ -89,7 +89,7 @@ export default async function UnitTurnDetailPage({
   return (
     <div>
       {/* Header */}
-      <div className="bg-gradient-to-r from-charcoal-950 via-charcoal-900 to-brand-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl mb-6">
+      <div className="bg-[radial-gradient(ellipse_at_top_left,_var(--brand-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--brand-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl mb-6">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-brand-300 mb-3">
           <Link href="/unit-turns" className="hover:text-white transition-colors">

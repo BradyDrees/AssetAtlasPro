@@ -374,23 +374,23 @@ export function InspectionGroupChecklist({
             : "bg-surface-tertiary text-content-tertiary border-edge-primary";
 
         const sectionBorder = isNa
-          ? "border-l-gray-300"
+          ? "border-gray-300/40"
           : health
             ? health.score >= 4.5
-              ? "border-l-green-500"
+              ? "border-green-500/40"
               : health.score >= 3.5
-                ? "border-l-lime-500"
+                ? "border-lime-500/40"
                 : health.score >= 2.5
-                  ? "border-l-yellow-500"
+                  ? "border-yellow-500/40"
                   : health.score >= 1.5
-                    ? "border-l-orange-500"
-                    : "border-l-red-500"
-            : "border-l-gray-300";
+                    ? "border-orange-500/40"
+                    : "border-red-500/40"
+            : "border-gray-300/40";
 
         return (
           <div
             key={projectSection.id}
-            className={`bg-surface-primary rounded-lg border border-edge-primary border-l-4 ${sectionBorder} overflow-hidden shadow-sm ${isNa ? "opacity-60" : ""}`}
+            className={`bg-surface-primary rounded-lg border-2 ${sectionBorder} overflow-hidden shadow-sm ${isNa ? "opacity-60" : ""}`}
           >
             {/* Sub-section header */}
             <div className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-gray-50 to-white">

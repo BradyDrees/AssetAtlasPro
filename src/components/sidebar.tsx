@@ -80,7 +80,7 @@ export function Sidebar({ user }: { user: User }) {
         className={`bg-surface-primary border-r border-edge-primary flex flex-col flex-shrink-0 transition-all duration-200 fixed inset-y-0 left-0 z-50 ${isOpen ? "translate-x-0" : "-translate-x-full"} w-64 md:relative md:translate-x-0 ${collapsed ? "md:w-16" : "md:w-64"}`}
       >
         {/* Header — charcoal + forest green */}
-        <div className="p-4 flex items-center justify-between bg-gradient-to-br from-charcoal-950 via-charcoal-900 to-brand-900">
+        <div className="p-4 flex items-center justify-between bg-[radial-gradient(ellipse_at_top_left,_var(--brand-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--brand-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900">
           {!collapsed && (
             <Link href="/dashboard" className="flex-shrink-0">
               <div>

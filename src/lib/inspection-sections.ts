@@ -5,7 +5,7 @@
  */
 export const INSPECTION_GROUP_ORDER = [
   "Site & Exterior",
-  "Structure & Envelope",
+  "Structure",
   "Life Safety",
   "Mechanical / Electrical / Plumbing",
   "Common Areas",
@@ -18,7 +18,7 @@ export const INSPECTION_GROUP_ORDER = [
  */
 export const INSPECTION_GROUP_SLUGS: Record<string, string> = {
   "Site & Exterior": "site-exterior",
-  "Structure & Envelope": "structure-envelope",
+  "Structure": "structure-envelope",
   "Life Safety": "life-safety",
   "Mechanical / Electrical / Plumbing": "mep",
   "Common Areas": "common-areas",

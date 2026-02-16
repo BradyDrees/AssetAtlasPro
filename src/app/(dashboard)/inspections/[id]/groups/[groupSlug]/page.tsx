@@ -124,7 +124,7 @@ export default async function InspectionGroupPage({
   return (
     <div>
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+      <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4">
         <Link
           href="/inspections"
           className="hover:text-brand-600 transition-colors"
@@ -139,7 +139,7 @@ export default async function InspectionGroupPage({
           {project.name}
         </Link>
         <span>/</span>
-        <span className="text-gray-900">{groupName}</span>
+        <span className="text-content-primary">{groupName}</span>
       </div>
 
       {/* Group header */}
@@ -167,12 +167,12 @@ export default async function InspectionGroupPage({
           </Link>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-gray-900">{groupName}</h1>
+              <h1 className="text-2xl font-bold text-content-primary">{groupName}</h1>
               <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gold-100 text-gold-800">
                 {INSPECTION_TYPE_LABELS[project.inspection_type]}
               </span>
             </div>
-            <p className="text-sm text-gray-500 mt-0.5">
+            <p className="text-sm text-content-quaternary mt-0.5">
               {groupSections.length} sub-section
               {groupSections.length !== 1 ? "s" : ""} &middot; Tap items to
               inspect

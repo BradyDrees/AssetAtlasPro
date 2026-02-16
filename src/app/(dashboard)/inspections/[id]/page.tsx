@@ -18,7 +18,7 @@ import type {
 export const dynamic = "force-dynamic";
 
 const statusStyles: Record<string, string> = {
-  DRAFT: "bg-gray-100 text-gray-600",
+  DRAFT: "bg-surface-tertiary text-content-tertiary",
   IN_PROGRESS: "bg-brand-100 text-brand-700",
   COMPLETE: "bg-green-100 text-green-700",
 };

@@ -60,10 +60,10 @@ export function ItemNotes({
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label className="block text-sm font-medium text-content-secondary mb-2">
         Notes
         {saving && (
-          <span className="ml-2 text-xs font-normal text-gray-400">
+          <span className="ml-2 text-xs font-normal text-content-muted">
             Saving...
           </span>
         )}
@@ -78,7 +78,7 @@ export function ItemNotes({
         onChange={handleChange}
         placeholder="Observations for this item..."
         rows={3}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm
+        className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm
                    focus:outline-none focus:ring-2 focus:ring-brand-500 resize-y"
       />
     </div>

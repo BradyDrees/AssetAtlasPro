@@ -104,7 +104,7 @@ export default async function InspectionSectionPage({
   return (
     <div>
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+      <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4">
         <Link
           href="/inspections"
           className="hover:text-brand-600 transition-colors"
@@ -119,7 +119,7 @@ export default async function InspectionSectionPage({
           {project.name}
         </Link>
         <span>/</span>
-        <span className="text-gray-900">{ps.section.name}</span>
+        <span className="text-content-primary">{ps.section.name}</span>
       </div>
 
       {/* Section header */}
@@ -146,10 +146,10 @@ export default async function InspectionSectionPage({
             Project
           </Link>
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wide">
+            <p className="text-xs text-content-quaternary uppercase tracking-wide">
               {ps.section.group_name}
             </p>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-content-primary">
               {ps.section.name}
             </h1>
           </div>

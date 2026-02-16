@@ -47,10 +47,10 @@ export function UnitAppliancesSelect({
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label className="block text-sm font-medium text-content-secondary mb-2">
         Appliances
         {saving && (
-          <span className="ml-2 text-xs font-normal text-gray-400">Saving...</span>
+          <span className="ml-2 text-xs font-normal text-content-muted">Saving...</span>
         )}
       </label>
       <div className="flex flex-wrap gap-2">
@@ -65,7 +65,7 @@ export function UnitAppliancesSelect({
                 disabled:opacity-50 border-2 ${
                   isSelected
                     ? "bg-brand-600 text-white border-brand-600"
-                    : "bg-white text-gray-600 border-gray-300 hover:border-brand-400"
+                    : "bg-surface-primary text-content-tertiary border-edge-secondary hover:border-brand-400"
                 }`}
             >
               {option}

@@ -146,10 +146,10 @@ export function ChecklistItem({
   const itemNotes = notes.filter((n) => n.item_id === item.id);
 
   return (
-    <div id={`item-${item.id}`} data-assessed={status != null || isNA || (isPaint && paintScope != null) ? "true" : "false"} className={`border-b border-gray-100 last:border-b-0 py-3 px-4 transition-all ${isNA ? "opacity-50" : ""}`}>
+    <div id={`item-${item.id}`} data-assessed={status != null || isNA || (isPaint && paintScope != null) ? "true" : "false"} className={`border-b border-edge-tertiary last:border-b-0 py-3 px-4 transition-all ${isNA ? "opacity-50" : ""}`}>
       {/* Item Name */}
       <div className="mb-2">
-        <span className="text-sm text-gray-800">
+        <span className="text-sm text-content-primary">
           {toTitleCase(item.template_item?.name ?? "Unknown Item")}
         </span>
       </div>
@@ -169,7 +169,7 @@ export function ChecklistItem({
                       className={`px-3 py-2 text-sm rounded-md border transition-colors ${
                         isActive
                           ? info.activeBg + " font-medium " + info.color
-                          : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                          : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                       }`}
                     >
                       {info.label}
@@ -188,7 +188,7 @@ export function ChecklistItem({
                       className={`px-3 py-2 text-sm rounded-md border transition-colors ${
                         isActive
                           ? info.activeBg + " font-medium " + info.color
-                          : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                          : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                       }`}
                     >
                       {label}
@@ -201,8 +201,8 @@ export function ChecklistItem({
           onClick={handleNAToggle}
           className={`px-3 py-2 text-sm rounded-md border transition-colors ${
             isNA
-              ? "bg-gray-200 border-gray-400 text-gray-700 font-medium"
-              : "bg-white border-gray-300 text-gray-400 hover:bg-gray-50"
+              ? "bg-gray-200 border-gray-400 text-content-secondary font-medium"
+              : "bg-surface-primary border-edge-secondary text-content-muted hover:bg-surface-secondary"
           }`}
         >
           N/A
@@ -210,16 +210,16 @@ export function ChecklistItem({
       </div>
 
       {/* Saving indicator */}
-      {saving && <span className="text-xs text-gray-400">Saving...</span>}
+      {saving && <span className="text-xs text-content-muted">Saving...</span>}
 
       {/* Notes + Photos — always available (not required) */}
       {!isNA && (
         <div className="mt-2 ml-2 space-y-2">
           {/* Existing notes */}
           {itemNotes.map((note) => (
-            <div key={note.id} className="bg-gray-50 rounded-lg p-2.5 text-sm">
+            <div key={note.id} className="bg-surface-secondary rounded-lg p-2.5 text-sm">
               <div className="flex items-start justify-between gap-2">
-                <p className="text-gray-700 flex-1">{note.text || <span className="text-gray-400 italic">Photo only</span>}</p>
+                <p className="text-content-secondary flex-1">{note.text || <span className="text-content-muted italic">Photo only</span>}</p>
                 <button
                   onClick={() => handleDeleteNote(note.id)}
                   className="w-8 h-8 flex items-center justify-center text-sm text-red-400 hover:text-red-600 hover:bg-red-50 rounded-full flex-shrink-0"
@@ -258,7 +258,7 @@ export function ChecklistItem({
                 </div>
               )}
               {/* Add photo to this note */}
-              <label className="inline-flex items-center gap-1 mt-1.5 text-xs text-gray-400 hover:text-gray-600 cursor-pointer">
+              <label className="inline-flex items-center gap-1 mt-1.5 text-xs text-content-muted hover:text-content-tertiary cursor-pointer">
                 <input
                   type="file"
                   accept="image/*,video/*"
@@ -281,7 +281,7 @@ export function ChecklistItem({
             {!showAddNote ? (
               <button
                 onClick={() => setShowAddNote(true)}
-                className="text-xs text-orange-600 hover:text-orange-700"
+                className="text-xs text-brand-600 hover:text-brand-700"
               >
                 + Add Note
               </button>
@@ -292,7 +292,7 @@ export function ChecklistItem({
                   value={noteText}
                   onChange={(e) => setNoteText(e.target.value)}
                   placeholder="Note..."
-                  className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-orange-500"
+                  className="flex-1 px-2 py-1 text-xs border border-edge-secondary rounded focus:outline-none focus:ring-1 focus:ring-brand-500"
                   autoFocus
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && noteText.trim()) handleAddNote();
@@ -302,13 +302,13 @@ export function ChecklistItem({
                 <button
                   onClick={handleAddNote}
                   disabled={!noteText.trim() || addingNote}
-                  className="px-3 py-2 text-xs bg-orange-600 text-white rounded hover:bg-orange-700 disabled:opacity-50"
+                  className="px-3 py-2 text-xs bg-brand-600 text-white rounded hover:bg-brand-700 disabled:opacity-50"
                 >
                   {addingNote ? "..." : "Add"}
                 </button>
                 <button
                   onClick={() => { setShowAddNote(false); setNoteText(""); }}
-                  className="w-8 h-8 flex items-center justify-center text-sm text-gray-400 hover:text-gray-600"
+                  className="w-8 h-8 flex items-center justify-center text-sm text-content-muted hover:text-content-tertiary"
                 >
                   ✕
                 </button>

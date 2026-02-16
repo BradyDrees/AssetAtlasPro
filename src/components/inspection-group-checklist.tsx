@@ -360,7 +360,7 @@ export function InspectionGroupChecklist({
         // Get health for this sub-section
         const health = healthScores.find((h) => h.name === sectionName);
         const healthColor = isNa
-          ? "bg-gray-100 text-gray-400 border-gray-200"
+          ? "bg-surface-tertiary text-content-muted border-edge-primary"
           : health
             ? health.score >= 4.5
               ? "bg-green-100 text-green-700 border-green-200"
@@ -371,7 +371,7 @@ export function InspectionGroupChecklist({
                   : health.score >= 1.5
                     ? "bg-orange-100 text-orange-700 border-orange-200"
                     : "bg-red-100 text-red-700 border-red-200"
-            : "bg-gray-100 text-gray-600 border-gray-200";
+            : "bg-surface-tertiary text-content-tertiary border-edge-primary";
 
         const sectionBorder = isNa
           ? "border-l-gray-300"
@@ -390,7 +390,7 @@ export function InspectionGroupChecklist({
         return (
           <div
             key={projectSection.id}
-            className={`bg-white rounded-lg border border-gray-200 border-l-4 ${sectionBorder} overflow-hidden shadow-sm ${isNa ? "opacity-60" : ""}`}
+            className={`bg-surface-primary rounded-lg border border-edge-primary border-l-4 ${sectionBorder} overflow-hidden shadow-sm ${isNa ? "opacity-60" : ""}`}
           >
             {/* Sub-section header */}
             <div className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-gray-50 to-white">
@@ -406,16 +406,16 @@ export function InspectionGroupChecklist({
                 className="flex items-center gap-2 flex-1 min-w-0 hover:opacity-80 transition-opacity"
               >
                 <span
-                  className={`text-xs text-gray-500 transition-transform ${
+                  className={`text-xs text-content-quaternary transition-transform ${
                     isCollapsed ? "" : "rotate-90"
                   }`}
                 >
                   ▶
                 </span>
-                <h3 className={`text-sm font-bold ${isNa ? "text-gray-400 line-through" : "text-gray-900"}`}>
+                <h3 className={`text-sm font-bold ${isNa ? "text-content-muted line-through" : "text-content-primary"}`}>
                   {sectionName}
                 </h3>
-                <span className="text-xs text-gray-400 font-medium">
+                <span className="text-xs text-content-muted font-medium">
                   {checklistItems.length} item{checklistItems.length !== 1 ? "s" : ""}
                 </span>
               </button>
@@ -439,12 +439,12 @@ export function InspectionGroupChecklist({
                   title={isNa ? "Section marked N/A — click to re-enable" : "Mark section as N/A (not applicable)"}
                 >
                   <span
-                    className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-sm transition-transform ${
+                    className={`inline-block h-3.5 w-3.5 transform rounded-full bg-surface-primary shadow-sm transition-transform ${
                       isNa ? "translate-x-4" : "translate-x-0.5"
                     }`}
                   />
                 </button>
-                <span className={`text-xs font-medium ${isNa ? "text-gray-500" : "text-gray-400"}`}>
+                <span className={`text-xs font-medium ${isNa ? "text-content-quaternary" : "text-content-muted"}`}>
                   N/A
                 </span>
               </div>
@@ -452,7 +452,7 @@ export function InspectionGroupChecklist({
 
             {/* Checklist items */}
             {!isCollapsed && (
-              <div className="border-t border-gray-100">
+              <div className="border-t border-edge-tertiary">
                 {checklistItems.map((item) => {
                   const itemFindings = findingsByChecklist.get(item.id) ?? [];
                   const hasFindings = itemFindings.length > 0;
@@ -493,12 +493,12 @@ export function InspectionGroupChecklist({
                           handleChecklistItemClick(item, sectionData)
                         }
                         disabled={isCreating}
-                        className={`w-full flex items-center justify-between px-4 py-2.5 transition-all disabled:opacity-50 border-b border-gray-100 last:border-b-0 ${
+                        className={`w-full flex items-center justify-between px-4 py-2.5 transition-all disabled:opacity-50 border-b border-edge-tertiary last:border-b-0 ${
                           isExpanded
                             ? "bg-brand-50/50"
                             : hasFindings
                               ? "hover:bg-brand-50/30"
-                              : "hover:bg-gray-50"
+                              : "hover:bg-surface-secondary"
                         }`}
                       >
                         <div className="flex items-center gap-2.5 min-w-0 flex-1">
@@ -513,13 +513,13 @@ export function InspectionGroupChecklist({
                                 : "bg-charcoal-300"
                             }`}
                           />
-                          <span className={`text-sm text-left ${hasFindings ? "text-gray-900 font-medium" : "text-gray-600"}`}>
+                          <span className={`text-sm text-left ${hasFindings ? "text-content-primary font-medium" : "text-content-tertiary"}`}>
                             {item.name}
                           </span>
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
                           {isCreating ? (
-                            <span className="text-xs text-gray-400">
+                            <span className="text-xs text-content-muted">
                               Creating...
                             </span>
                           ) : hasFindings ? (
@@ -625,11 +625,11 @@ export function InspectionGroupChecklist({
                             return next;
                           })
                         }
-                        className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-50 transition-colors border-b border-gray-50"
+                        className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-surface-secondary transition-colors border-b border-gray-50"
                       >
                         <div className="flex items-center gap-2 min-w-0 flex-1">
                           <span className="w-2 h-2 rounded-full flex-shrink-0 bg-gold-500" />
-                          <span className="text-sm text-gray-800 text-left italic">
+                          <span className="text-sm text-content-primary text-left italic">
                             {finding.title}
                           </span>
                           <span className="text-xs text-gold-600">Custom</span>
@@ -686,7 +686,7 @@ export function InspectionGroupChecklist({
                 })}
 
                 {/* Add custom finding */}
-                <div className="px-4 py-2 border-t border-gray-100">
+                <div className="px-4 py-2 border-t border-edge-tertiary">
                   {customFindingSections.has(projectSection.id) ? (
                     <div className="flex items-center gap-2">
                       <input
@@ -700,7 +700,7 @@ export function InspectionGroupChecklist({
                           })
                         }
                         placeholder="Custom finding title..."
-                        className="flex-1 px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                        className="flex-1 px-3 py-1.5 text-sm border border-edge-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                         autoFocus
                         onKeyDown={(e) => {
                           if (
@@ -746,7 +746,7 @@ export function InspectionGroupChecklist({
                             return next;
                           });
                         }}
-                        className="px-2 py-1.5 text-sm text-gray-500 hover:text-gray-700"
+                        className="px-2 py-1.5 text-sm text-content-quaternary hover:text-content-secondary"
                       >
                         Cancel
                       </button>

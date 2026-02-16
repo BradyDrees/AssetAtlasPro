@@ -196,11 +196,11 @@ export function FindingCard({
     : null;
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <div className="bg-surface-primary rounded-lg border border-edge-primary overflow-hidden">
       {/* Finding header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 hover:bg-surface-secondary transition-colors"
       >
         <div className="flex items-center gap-2 min-w-0 flex-1">
           <span
@@ -210,11 +210,11 @@ export function FindingCard({
           >
             ▶
           </span>
-          <span className="text-sm font-medium text-gray-900">
+          <span className="text-sm font-medium text-content-primary">
             {finding.title || "Untitled Finding"}
           </span>
           {finding.location && (
-            <span className="text-xs text-gray-400 truncate max-w-[120px]">
+            <span className="text-xs text-content-muted truncate max-w-[120px]">
               📍 {finding.location}
             </span>
           )}
@@ -232,7 +232,7 @@ export function FindingCard({
             </span>
           )}
           {exposureBucket && (
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-content-quaternary">
               {exposureBucket === "custom" && exposureCustom
                 ? `$${exposureCustom.toLocaleString()}`
                 : EXPOSURE_LABELS[exposureBucket as ExposureBucket]}
@@ -245,16 +245,16 @@ export function FindingCard({
           )}
         </div>
         {saving && (
-          <span className="text-xs text-gray-400 mr-2">Saving...</span>
+          <span className="text-xs text-content-muted mr-2">Saving...</span>
         )}
       </button>
 
       {/* Expanded content */}
       {isExpanded && (
-        <div className="border-t border-gray-100 p-4 space-y-4">
+        <div className="border-t border-edge-tertiary p-4 space-y-4">
           {/* Location */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="block text-xs font-medium text-content-tertiary mb-1">
               Location
             </label>
             <input
@@ -263,14 +263,14 @@ export function FindingCard({
               onChange={(e) => setLocation(e.target.value)}
               onBlur={handleLocationBlur}
               placeholder="e.g. South of Building 24, Kitchen, North parking lot..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
               readOnly={!canEdit}
             />
           </div>
 
           {/* Priority */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1.5">
+            <label className="block text-xs font-medium text-content-tertiary mb-1.5">
               Priority
               {isBankReady && <span className="text-red-500 ml-0.5">*</span>}
             </label>
@@ -285,7 +285,7 @@ export function FindingCard({
                     className={`px-2.5 py-2 text-xs rounded-md border transition-colors ${
                       priority === val
                         ? info.bgColor + " border-current font-medium"
-                        : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                        : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                     } ${!canEdit ? "opacity-60 cursor-not-allowed" : ""}`}
                   >
                     {val} - {info.label}
@@ -298,7 +298,7 @@ export function FindingCard({
                 className={`px-2.5 py-2 text-xs rounded-md border transition-colors ${
                   priority === null
                     ? GOOD_LABEL.bgColor + " border-current font-medium"
-                    : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                    : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                 } ${!canEdit ? "opacity-60 cursor-not-allowed" : ""}`}
               >
                 Good
@@ -309,7 +309,7 @@ export function FindingCard({
           {/* Exposure (show when priority 1-3 or always for bank-ready) */}
           {(priority !== null && priority <= 3) || isBankReady ? (
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1.5">
+              <label className="block text-xs font-medium text-content-tertiary mb-1.5">
                 Exposure Estimate
                 {isBankReady && priority !== null && priority <= 3 && (
                   <span className="text-red-500 ml-0.5">*</span>
@@ -324,7 +324,7 @@ export function FindingCard({
                     className={`px-2.5 py-2 text-xs rounded-md border transition-colors ${
                       exposureBucket === option
                         ? "bg-brand-600 text-white border-brand-600"
-                        : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                        : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                     } ${!canEdit ? "opacity-60 cursor-not-allowed" : ""}`}
                   >
                     {EXPOSURE_LABELS[option]}
@@ -333,7 +333,7 @@ export function FindingCard({
               </div>
               {exposureBucket === "custom" && (
                 <div className="mt-2 flex items-center gap-2">
-                  <span className="text-sm text-gray-500">$</span>
+                  <span className="text-sm text-content-quaternary">$</span>
                   <input
                     type="number"
                     value={exposureCustom ?? ""}
@@ -344,7 +344,7 @@ export function FindingCard({
                     }
                     onBlur={handleExposureCustom}
                     placeholder="Enter amount"
-                    className="w-32 px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-32 px-2 py-1 text-sm border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
                 </div>
               )}
@@ -353,10 +353,10 @@ export function FindingCard({
 
           {/* Risk Flags */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1.5">
+            <label className="block text-xs font-medium text-content-tertiary mb-1.5">
               Risk Flags
               {isBankReady && (
-                <span className="text-xs text-gray-400 ml-1">
+                <span className="text-xs text-content-muted ml-1">
                   (select all that apply)
                 </span>
               )}
@@ -373,7 +373,7 @@ export function FindingCard({
                     className={`px-2.5 py-2 text-xs rounded-md border transition-colors ${
                       isActive
                         ? info.color + " border-current font-medium"
-                        : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                        : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                     } ${!canEdit ? "opacity-60 cursor-not-allowed" : ""}`}
                   >
                     {info.label}
@@ -385,7 +385,7 @@ export function FindingCard({
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="block text-xs font-medium text-content-tertiary mb-1">
               Notes
             </label>
             <textarea
@@ -394,14 +394,14 @@ export function FindingCard({
               onBlur={handleNotesBlur}
               rows={2}
               placeholder="Describe the finding..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
               readOnly={!canEdit}
             />
           </div>
 
           {/* Photos */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1.5">
+            <label className="block text-xs font-medium text-content-tertiary mb-1.5">
               Photos
               {isBankReady && priority !== null && priority <= 2 && (
                 <span className="text-red-500 ml-0.5">*</span>
@@ -431,7 +431,7 @@ export function FindingCard({
               </div>
             )}
             <label
-              className={`inline-flex items-center gap-1 px-3 py-2.5 text-sm border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors ${
+              className={`inline-flex items-center gap-1 px-3 py-2.5 text-sm border border-edge-secondary rounded-md cursor-pointer hover:bg-surface-secondary transition-colors ${
                 uploading ? "opacity-50" : ""
               }`}
             >
@@ -448,7 +448,7 @@ export function FindingCard({
           </div>
 
           {/* Add Finding / Delete Finding */}
-          <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
+          <div className="pt-2 border-t border-edge-tertiary flex items-center justify-between">
             {onAddFinding ? (
               <button
                 onClick={onAddFinding}

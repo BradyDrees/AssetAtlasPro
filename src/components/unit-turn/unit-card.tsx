@@ -22,15 +22,15 @@ export function UnitCard({ unit, batchId, totalItems, assessedItems }: UnitCardP
   return (
     <Link
       href={`/unit-turns/${batchId}/units/${unit.id}`}
-      className="block bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md hover:border-orange-300 transition-all"
+      className="block bg-surface-primary rounded-lg border border-edge-primary p-4 hover:shadow-md hover:border-brand-300 transition-all"
     >
       <div className="flex items-center justify-between">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
+            <span className="text-xs font-medium text-content-quaternary bg-surface-tertiary px-2 py-0.5 rounded">
               {unit.property}
             </span>
-            <h3 className="text-sm font-semibold text-gray-900">Unit {unit.unit_label}</h3>
+            <h3 className="text-sm font-semibold text-content-primary">Unit {unit.unit_label}</h3>
             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusInfo.color}`}>
               {statusInfo.label}
             </span>
@@ -39,17 +39,17 @@ export function UnitCard({ unit, batchId, totalItems, assessedItems }: UnitCardP
             <div className="flex items-center gap-2">
               <div className="flex-1 bg-gray-200 rounded-full h-1.5">
                 <div
-                  className="bg-orange-500 h-1.5 rounded-full transition-all"
+                  className="bg-brand-500 h-1.5 rounded-full transition-all"
                   style={{ width: `${pct}%` }}
                 />
               </div>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-content-quaternary">
                 {assessedItems}/{totalItems} ({pct}%)
               </span>
             </div>
           </div>
         </div>
-        <span className="text-gray-400 text-lg ml-3">→</span>
+        <span className="text-content-muted text-lg ml-3">→</span>
       </div>
     </Link>
   );

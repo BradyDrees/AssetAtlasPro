@@ -35,7 +35,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
         onClick={onClose}
       />
       {/* Modal content */}
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden max-h-[85vh] flex flex-col">
+      <div className="relative bg-surface-primary rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden max-h-[85vh] flex flex-col">
         {/* Header with gradient */}
         <div className="bg-gradient-to-r from-brand-800 to-brand-600 px-6 py-4 flex items-center justify-between flex-shrink-0">
           <h2 className="text-lg font-bold text-white">{title}</h2>

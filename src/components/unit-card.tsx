@@ -53,18 +53,18 @@ export function UnitCard({
   return (
     <Link
       href={`/projects/${projectId}/sections/${unit.project_section_id}/units/${unit.id}`}
-      className={`block bg-white rounded-lg border border-gray-200 p-3 hover:bg-gray-50
+      className={`block bg-surface-primary rounded-lg border border-edge-primary p-3 hover:bg-surface-secondary
                   transition-colors ${deleting ? "opacity-50 pointer-events-none" : ""}`}
     >
       <div className="flex items-start justify-between">
         <div className="min-w-0 flex-1">
           {/* Building + Unit */}
           <div className="flex items-center gap-2 mb-1">
-            <span className="font-semibold text-gray-900 text-sm">
+            <span className="font-semibold text-content-primary text-sm">
               B{unit.building} — {unit.unit_number}
             </span>
             {unit.bd_ba && (
-              <span className="text-xs text-gray-500">{unit.bd_ba}</span>
+              <span className="text-xs text-content-quaternary">{unit.bd_ba}</span>
             )}
           </div>
 
@@ -93,7 +93,7 @@ export function UnitCard({
 
           {/* Photo count */}
           {captureCount > 0 && (
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-content-muted">
               {captureCount} photo{captureCount !== 1 ? "s" : ""}
             </span>
           )}
@@ -103,7 +103,7 @@ export function UnitCard({
         <button
           onClick={handleDelete}
           disabled={deleting || isListBusy}
-          className="text-gray-300 hover:text-red-500 transition-colors p-1 flex-shrink-0 disabled:opacity-30"
+          className="text-content-muted hover:text-red-500 transition-colors p-1 flex-shrink-0 disabled:opacity-30"
           aria-label="Delete unit"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

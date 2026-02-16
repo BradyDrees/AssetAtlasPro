@@ -41,10 +41,10 @@ export default async function UnitTurnsPage() {
   return (
     <div>
       {/* Page header */}
-      <div className="flex items-center justify-between mb-6 bg-gradient-to-r from-orange-900 to-orange-700 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl">
+      <div className="flex items-center justify-between mb-6 bg-gradient-to-r from-charcoal-900 to-brand-800 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl">
         <div>
           <h1 className="text-2xl font-bold text-white">Unit Turns</h1>
-          <p className="text-orange-200 text-sm mt-0.5">Turn Batch Management</p>
+          <p className="text-gold-300 text-sm mt-0.5">Turn Batch Management</p>
         </div>
         <CreateBatchButton />
       </div>
@@ -54,7 +54,7 @@ export default async function UnitTurnsPage() {
           {/* Open batches */}
           {openBatches.length > 0 && (
             <div>
-              <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
+              <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">
                 Open Batches
               </h2>
               <div className="space-y-3">
@@ -72,7 +72,7 @@ export default async function UnitTurnsPage() {
           {/* Closed batches */}
           {closedBatches.length > 0 && (
             <div>
-              <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
+              <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">
                 Closed Batches
               </h2>
               <div className="space-y-3">
@@ -88,16 +88,16 @@ export default async function UnitTurnsPage() {
           )}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm">
-          <div className="w-16 h-16 bg-orange-50 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-            <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="bg-surface-primary rounded-xl border border-edge-primary p-12 text-center shadow-sm">
+          <div className="w-16 h-16 bg-brand-50 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <svg className="w-8 h-8 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg font-semibold text-content-primary mb-2">
             No turn batches yet
           </h3>
-          <p className="text-gray-500 mb-6">
+          <p className="text-content-quaternary mb-6">
             Create your first turn batch to start tracking unit turns.
           </p>
           <CreateBatchButton />

@@ -62,10 +62,10 @@ export function InspectionSectionToggle({
   const rulBucket = projectSection.rul_bucket;
 
   const content = (
-    <div className="flex items-center justify-between px-4 py-2.5 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-b-0">
+    <div className="flex items-center justify-between px-4 py-2.5 hover:bg-surface-secondary transition-colors border-b border-gray-50 last:border-b-0">
       <div className="flex items-center gap-2 min-w-0 flex-1 flex-wrap">
         <span
-          className={`text-sm ${enabled ? "text-gray-900" : "text-gray-400"}`}
+          className={`text-sm ${enabled ? "text-content-primary" : "text-content-muted"}`}
         >
           {projectSection.display_name_override ?? projectSection.section.name}
         </span>
@@ -82,7 +82,7 @@ export function InspectionSectionToggle({
         {enabled && rulBucket && (
           <span
             className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${
-              RUL_COLORS[rulBucket as keyof typeof RUL_COLORS] ?? "bg-gray-100 text-gray-600"
+              RUL_COLORS[rulBucket as keyof typeof RUL_COLORS] ?? "bg-surface-tertiary text-content-tertiary"
             }`}
           >
             RUL: {rulBucket}
@@ -119,7 +119,7 @@ export function InspectionSectionToggle({
         aria-checked={enabled}
       >
         <span
-          className={`inline-block h-4.5 w-4.5 transform rounded-full bg-white transition-transform ${
+          className={`inline-block h-4.5 w-4.5 transform rounded-full bg-surface-primary transition-transform ${
             enabled ? "translate-x-5.5" : "translate-x-0.5"
           }`}
         />

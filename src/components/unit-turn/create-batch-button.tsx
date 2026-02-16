@@ -17,8 +17,8 @@ export function CreateBatchButton() {
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">New Turn Batch</h2>
+          <div className="bg-surface-primary rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
+            <h2 className="text-lg font-bold text-content-primary mb-4">New Turn Batch</h2>
             <BatchForm onClose={() => setOpen(false)} />
           </div>
         </div>

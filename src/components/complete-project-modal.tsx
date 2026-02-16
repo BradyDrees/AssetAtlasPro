@@ -41,7 +41,7 @@ export function CompleteProjectModal({
       <div className="space-y-4">
         {warnings.length > 0 ? (
           <>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-content-tertiary">
               The following items may need attention before completing:
             </p>
             <div className="max-h-48 overflow-y-auto space-y-1">
@@ -55,7 +55,7 @@ export function CompleteProjectModal({
                 </div>
               ))}
             </div>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-content-muted">
               You can still complete the project and address these later.
             </p>
           </>
@@ -69,7 +69,7 @@ export function CompleteProjectModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+            className="px-4 py-2 text-sm text-content-tertiary hover:text-content-primary"
           >
             Cancel
           </button>

@@ -63,7 +63,7 @@ export function CategorySection({ data, batchId, unitId, supabaseUrl }: Category
 
       {/* Items */}
       {!collapsed && (
-        <div className={`border border-t-0 ${colors.border} rounded-b-xl bg-white`}>
+        <div className={`border border-t-0 ${colors.border} rounded-b-xl bg-surface-primary`}>
           {items.map((item) => (
             <ChecklistItem
               key={item.id}
@@ -78,13 +78,13 @@ export function CategorySection({ data, batchId, unitId, supabaseUrl }: Category
           ))}
 
           {/* Category-level notes */}
-          <div className="px-4 py-3 border-t border-gray-100">
+          <div className="px-4 py-3 border-t border-edge-tertiary">
             {categoryNotes.length > 0 && (
               <div className="space-y-2 mb-2">
                 {categoryNotes.map((note) => (
                   <div key={note.id} className="bg-amber-50 rounded-lg p-2.5 text-sm">
-                    <p className="text-gray-700">{note.text}</p>
-                    <span className="text-xs text-gray-400 mt-1 block">Category note</span>
+                    <p className="text-content-secondary">{note.text}</p>
+                    <span className="text-xs text-content-muted mt-1 block">Category note</span>
                   </div>
                 ))}
               </div>
@@ -93,7 +93,7 @@ export function CategorySection({ data, batchId, unitId, supabaseUrl }: Category
             {!showCatNote ? (
               <button
                 onClick={() => setShowCatNote(true)}
-                className="text-xs text-orange-600 hover:text-orange-700"
+                className="text-xs text-brand-600 hover:text-brand-700"
               >
                 + Category Note
               </button>
@@ -104,7 +104,7 @@ export function CategorySection({ data, batchId, unitId, supabaseUrl }: Category
                   value={catNoteText}
                   onChange={(e) => setCatNoteText(e.target.value)}
                   placeholder="Category-level note..."
-                  className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-orange-500"
+                  className="flex-1 px-2 py-1 text-xs border border-edge-secondary rounded focus:outline-none focus:ring-1 focus:ring-brand-500"
                   autoFocus
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && catNoteText.trim()) handleAddCategoryNote();
@@ -114,13 +114,13 @@ export function CategorySection({ data, batchId, unitId, supabaseUrl }: Category
                 <button
                   onClick={handleAddCategoryNote}
                   disabled={!catNoteText.trim() || addingCatNote}
-                  className="px-3 py-2 text-xs bg-orange-600 text-white rounded hover:bg-orange-700 disabled:opacity-50"
+                  className="px-3 py-2 text-xs bg-brand-600 text-white rounded hover:bg-brand-700 disabled:opacity-50"
                 >
                   {addingCatNote ? "..." : "Add"}
                 </button>
                 <button
                   onClick={() => { setShowCatNote(false); setCatNoteText(""); }}
-                  className="w-8 h-8 flex items-center justify-center text-sm text-gray-400 hover:text-gray-600"
+                  className="w-8 h-8 flex items-center justify-center text-sm text-content-muted hover:text-content-tertiary"
                 >
                   ✕
                 </button>

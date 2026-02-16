@@ -8,7 +8,7 @@ import type { ProjectStatus } from "@/lib/types";
 export const dynamic = "force-dynamic";
 
 const statusStyles: Record<string, string> = {
-  DRAFT: "bg-gray-100 text-gray-600",
+  DRAFT: "bg-surface-tertiary text-content-tertiary",
   IN_PROGRESS: "bg-brand-100 text-brand-700",
   COMPLETE: "bg-green-100 text-green-700",
 };
@@ -174,7 +174,7 @@ export default async function ReviewPage({
   return (
     <div className="pb-12">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-gray-500 mb-4 flex-wrap">
+      <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4 flex-wrap">
         <Link href="/dashboard" className="hover:text-brand-600 transition-colors">
           Projects
         </Link>
@@ -186,13 +186,13 @@ export default async function ReviewPage({
           {project.name}
         </Link>
         <span>/</span>
-        <span className="text-gray-900">Review</span>
+        <span className="text-content-primary">Review</span>
       </div>
 
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-1">
-          <h1 className="text-2xl font-bold text-gray-900">{project.name}</h1>
+          <h1 className="text-2xl font-bold text-content-primary">{project.name}</h1>
           <span
             className={`text-xs px-2 py-0.5 rounded-full font-medium ${
               statusStyles[project.status]
@@ -201,33 +201,33 @@ export default async function ReviewPage({
             {statusLabels[project.status]}
           </span>
         </div>
-        <p className="text-gray-600">{project.property_name}</p>
+        <p className="text-content-tertiary">{project.property_name}</p>
         {project.address && (
-          <p className="text-sm text-gray-400 mt-0.5">{project.address}</p>
+          <p className="text-sm text-content-muted mt-0.5">{project.address}</p>
         )}
-        <p className="text-xs text-gray-400 mt-1">Last updated: {formattedDate}</p>
+        <p className="text-xs text-content-muted mt-1">Last updated: {formattedDate}</p>
       </div>
 
       {/* Summary Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
         {/* Sections card */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+          <h3 className="text-xs font-semibold text-content-quaternary uppercase tracking-wide mb-2">
             Sections
           </h3>
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Enabled</span>
+              <span className="text-content-tertiary">Enabled</span>
               <span className="font-medium">{enabledSections.length}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">With activity</span>
+              <span className="text-content-tertiary">With activity</span>
               <span className="font-medium text-green-600">
                 {sectionsWithActivity.length}
               </span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Untouched</span>
+              <span className="text-content-tertiary">Untouched</span>
               <span
                 className={`font-medium ${
                   sectionsUntouched.length > 0 ? "text-orange-600" : "text-green-600"
@@ -240,21 +240,21 @@ export default async function ReviewPage({
         </div>
 
         {/* Units card */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+          <h3 className="text-xs font-semibold text-content-quaternary uppercase tracking-wide mb-2">
             Units
           </h3>
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Total</span>
+              <span className="text-content-tertiary">Total</span>
               <span className="font-medium">{allUnits.length}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">With photos</span>
+              <span className="text-content-tertiary">With photos</span>
               <span className="font-medium">{unitsWithPhotos.length}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Missing grades</span>
+              <span className="text-content-tertiary">Missing grades</span>
               <span
                 className={`font-medium ${
                   unitsMissingGrades.length > 0 ? "text-orange-600" : "text-green-600"
@@ -264,7 +264,7 @@ export default async function ReviewPage({
               </span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Missing BD/BA</span>
+              <span className="text-content-tertiary">Missing BD/BA</span>
               <span
                 className={`font-medium ${
                   unitsMissingBdBa.length > 0 ? "text-orange-600" : "text-green-600"
@@ -277,26 +277,26 @@ export default async function ReviewPage({
         </div>
 
         {/* Captures card */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+          <h3 className="text-xs font-semibold text-content-quaternary uppercase tracking-wide mb-2">
             Captures
           </h3>
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Total</span>
+              <span className="text-content-tertiary">Total</span>
               <span className="font-medium">{allCaptures.length}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Unit photos</span>
+              <span className="text-content-tertiary">Unit photos</span>
               <span className="font-medium">{unitLevelCaptures.length}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Item photos</span>
+              <span className="text-content-tertiary">Item photos</span>
               <span className="font-medium">{itemLevelCaptures.length}</span>
             </div>
             {sectionLevelCaptures.length > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Section-level</span>
+                <span className="text-content-tertiary">Section-level</span>
                 <span className="font-medium">{sectionLevelCaptures.length}</span>
               </div>
             )}
@@ -307,10 +307,10 @@ export default async function ReviewPage({
       {/* Needs Attention */}
       {warnings.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          <h2 className="text-sm font-semibold text-content-quaternary uppercase tracking-wide mb-3">
             Needs Attention ({warnings.length})
           </h2>
-          <div className="bg-white rounded-lg border border-gray-200 divide-y divide-gray-100">
+          <div className="bg-surface-primary rounded-lg border border-edge-primary divide-y divide-edge-tertiary">
             {/* Jump to first missing item */}
             <Link
               href={warnings[0].href}
@@ -324,11 +324,11 @@ export default async function ReviewPage({
               <Link
                 key={i}
                 href={w.href}
-                className="flex items-center gap-2 px-4 py-2.5 hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-2 px-4 py-2.5 hover:bg-surface-secondary transition-colors"
               >
                 <span className="text-orange-500 text-sm">⚠</span>
-                <span className="text-sm text-gray-700">{w.label}</span>
-                <span className="ml-auto text-gray-400 text-xs">&rarr;</span>
+                <span className="text-sm text-content-secondary">{w.label}</span>
+                <span className="ml-auto text-content-muted text-xs">&rarr;</span>
               </Link>
             ))}
           </div>
@@ -358,7 +358,7 @@ export default async function ReviewPage({
         />
         <Link
           href={`/projects/${projectId}`}
-          className="px-5 py-2.5 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+          className="px-5 py-2.5 text-sm text-content-tertiary hover:text-content-primary transition-colors"
         >
           Back to Project
         </Link>

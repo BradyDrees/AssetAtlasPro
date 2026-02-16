@@ -36,12 +36,12 @@ export function InspectionProjectCard({ project, isShared }: InspectionProjectCa
   return (
     <Link
       href={`/inspections/${project.id}`}
-      className={`block bg-white rounded-lg border border-gray-200 border-l-4 ${borderColors[project.status]} p-4 hover:shadow-lg hover:border-gray-300 transition-all`}
+      className={`block bg-surface-primary rounded-lg border border-edge-primary border-l-4 ${borderColors[project.status]} p-4 hover:shadow-lg hover:border-edge-secondary transition-all`}
     >
       <div className="flex items-start justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="font-semibold text-gray-900">{project.name}</h3>
+            <h3 className="font-semibold text-content-primary">{project.name}</h3>
             <span
               className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusStyles[project.status]}`}
             >
@@ -56,17 +56,17 @@ export function InspectionProjectCard({ project, isShared }: InspectionProjectCa
               </span>
             )}
           </div>
-          <p className="text-sm text-gray-600 mt-0.5">
+          <p className="text-sm text-content-tertiary mt-0.5">
             {project.property_name}
           </p>
           {project.address && (
-            <p className="text-xs text-gray-400 mt-0.5">{project.address}</p>
+            <p className="text-xs text-content-muted mt-0.5">{project.address}</p>
           )}
-          <span className="text-xs text-gray-400 mt-1 block md:hidden">
+          <span className="text-xs text-content-muted mt-1 block md:hidden">
             {formattedDate}
           </span>
         </div>
-        <span className="text-xs text-gray-400 whitespace-nowrap ml-4 hidden md:block">
+        <span className="text-xs text-content-muted whitespace-nowrap ml-4 hidden md:block">
           {formattedDate}
         </span>
       </div>

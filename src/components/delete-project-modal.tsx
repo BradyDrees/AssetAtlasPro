@@ -50,7 +50,7 @@ export function DeleteProjectModal({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-content-secondary mb-1">
             Type <span className="font-bold">{projectCode}</span> to confirm
           </label>
           <input
@@ -58,7 +58,7 @@ export function DeleteProjectModal({
             value={confirmation}
             onChange={(e) => setConfirmation(e.target.value)}
             placeholder={projectCode}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm
+            className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm
                        focus:outline-none focus:ring-2 focus:ring-red-500"
             autoFocus
           />
@@ -70,7 +70,7 @@ export function DeleteProjectModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+            className="px-4 py-2 text-sm text-content-tertiary hover:text-content-primary"
           >
             Cancel
           </button>

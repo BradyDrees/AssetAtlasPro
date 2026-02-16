@@ -86,7 +86,7 @@ export default async function ItemDetailPage({
   return (
     <div className="pb-36">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-gray-500 mb-4 flex-wrap">
+      <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4 flex-wrap">
         <Link
           href="/dashboard"
           className="hover:text-brand-600 transition-colors"
@@ -108,7 +108,7 @@ export default async function ItemDetailPage({
           {projectSection.section.name}
         </Link>
         <span>/</span>
-        <span className="text-gray-900">{item.name}</span>
+        <span className="text-content-primary">{item.name}</span>
       </div>
 
       {/* Back button + Item header */}
@@ -119,8 +119,8 @@ export default async function ItemDetailPage({
         >
           <span>&larr;</span> Back to {projectSection.section.name}
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">{item.name}</h1>
-        <p className="text-sm text-gray-400 mt-0.5">
+        <h1 className="text-2xl font-bold text-content-primary">{item.name}</h1>
+        <p className="text-sm text-content-muted mt-0.5">
           {projectSection.section.name}
         </p>
       </div>
@@ -128,7 +128,7 @@ export default async function ItemDetailPage({
       {/* Inspection fields */}
       <div className="space-y-4">
         {/* Condition rating */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <ItemRating
             itemId={itemId}
             projectId={projectId}
@@ -138,7 +138,7 @@ export default async function ItemDetailPage({
         </div>
 
         {/* Notes */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <ItemNotes
             itemId={itemId}
             projectId={projectId}
@@ -148,7 +148,7 @@ export default async function ItemDetailPage({
         </div>
 
         {/* Photos & Media */}
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 pt-2">
+        <h2 className="text-sm font-semibold text-content-quaternary uppercase tracking-wide mb-3 pt-2">
           Photos & Media
         </h2>
         <CaptureGallery

@@ -64,10 +64,10 @@ export function UnitGradeSelector({
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label className="block text-sm font-medium text-content-secondary mb-2">
         {label}
         {selectedInfo && (
-          <span className="ml-2 text-xs font-normal text-gray-400">
+          <span className="ml-2 text-xs font-normal text-content-muted">
             {selectedInfo.label}
             {"desc" in selectedInfo && selectedInfo.desc
               ? ` — ${selectedInfo.desc}`
@@ -88,7 +88,7 @@ export function UnitGradeSelector({
                 disabled:opacity-50 ${
                   isSelected
                     ? config.color
-                    : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                    : "bg-surface-tertiary text-content-muted hover:bg-gray-200"
                 }`}
               aria-label={`Grade ${grade}`}
             >

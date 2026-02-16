@@ -85,7 +85,7 @@ export default async function UnitDetailPage({
   return (
     <div className="pb-36">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-gray-500 mb-4 flex-wrap">
+      <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4 flex-wrap">
         <Link href="/dashboard" className="hover:text-brand-600 transition-colors">
           Projects
         </Link>
@@ -101,7 +101,7 @@ export default async function UnitDetailPage({
           {projectSection.section.name}
         </Link>
         <span>/</span>
-        <span className="text-gray-900">
+        <span className="text-content-primary">
           B{unit.building} — {unit.unit_number}
         </span>
       </div>
@@ -114,10 +114,10 @@ export default async function UnitDetailPage({
         >
           <span>&larr;</span> Back to {projectSection.section.name}
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-content-primary">
           Building {unit.building} / Unit {unit.unit_number}
         </h1>
-        <p className="text-sm text-gray-400 mt-0.5">
+        <p className="text-sm text-content-muted mt-0.5">
           {projectSection.section.name}
         </p>
       </div>
@@ -125,7 +125,7 @@ export default async function UnitDetailPage({
       {/* ===== Inspection Fields ===== */}
       <div className="space-y-4">
         {/* BD/BA */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <UnitBdBaSelect
             unitId={unitId}
             projectId={projectId}
@@ -135,7 +135,7 @@ export default async function UnitDetailPage({
         </div>
 
         {/* Appliances */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <UnitAppliancesSelect
             unitId={unitId}
             projectId={projectId}
@@ -145,7 +145,7 @@ export default async function UnitDetailPage({
         </div>
 
         {/* Tenant Grade */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <UnitGradeSelector
             unitId={unitId}
             projectId={projectId}
@@ -158,7 +158,7 @@ export default async function UnitDetailPage({
         </div>
 
         {/* Unit Grade */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <UnitGradeSelector
             unitId={unitId}
             projectId={projectId}
@@ -171,7 +171,7 @@ export default async function UnitDetailPage({
         </div>
 
         {/* Cabinets */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <UnitCabinetSelect
             unitId={unitId}
             projectId={projectId}
@@ -183,7 +183,7 @@ export default async function UnitDetailPage({
         </div>
 
         {/* Countertop */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <UnitCabinetSelect
             unitId={unitId}
             projectId={projectId}
@@ -195,7 +195,7 @@ export default async function UnitDetailPage({
         </div>
 
         {/* Flooring */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <UnitCabinetSelect
             unitId={unitId}
             projectId={projectId}
@@ -207,7 +207,7 @@ export default async function UnitDetailPage({
         </div>
 
         {/* Mold */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <UnitToggleField
             unitId={unitId}
             projectId={projectId}
@@ -219,7 +219,7 @@ export default async function UnitDetailPage({
         </div>
 
         {/* Washer/Dryer Connection */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <UnitToggleField
             unitId={unitId}
             projectId={projectId}
@@ -232,7 +232,7 @@ export default async function UnitDetailPage({
         </div>
 
         {/* Notes */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <UnitNotes
             unitId={unitId}
             projectId={projectId}
@@ -242,7 +242,7 @@ export default async function UnitDetailPage({
         </div>
 
         {/* Photos & Media */}
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 pt-2">
+        <h2 className="text-sm font-semibold text-content-quaternary uppercase tracking-wide mb-3 pt-2">
           Photos & Media
         </h2>
         <CaptureGallery

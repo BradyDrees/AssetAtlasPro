@@ -47,7 +47,7 @@ export function UnitToggleField({
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label className="block text-sm font-medium text-content-secondary mb-2">
         {label}
       </label>
       <div className="flex gap-2">
@@ -58,7 +58,7 @@ export function UnitToggleField({
             disabled:opacity-50 ${
               value === true
                 ? yesColor
-                : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                : "bg-surface-tertiary text-content-muted hover:bg-gray-200"
             }`}
         >
           Yes
@@ -70,7 +70,7 @@ export function UnitToggleField({
             disabled:opacity-50 ${
               value === false
                 ? noColor
-                : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                : "bg-surface-tertiary text-content-muted hover:bg-gray-200"
             }`}
         >
           No

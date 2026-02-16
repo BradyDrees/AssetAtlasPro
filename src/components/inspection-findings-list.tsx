@@ -26,7 +26,7 @@ export function InspectionFindingsList({
 }: InspectionFindingsListProps) {
   if (findings.length === 0) {
     return (
-      <div className="bg-gray-50 rounded-lg border border-gray-200 p-6 text-center text-sm text-gray-500">
+      <div className="bg-surface-secondary rounded-lg border border-edge-primary p-6 text-center text-sm text-content-quaternary">
         No findings yet. Use the checklist above to add findings.
       </div>
     );
@@ -34,7 +34,7 @@ export function InspectionFindingsList({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+      <h3 className="text-sm font-semibold text-content-secondary uppercase tracking-wide">
         Findings ({findings.length})
       </h3>
       {findings.map((finding) => (

@@ -40,7 +40,7 @@ export function BatchForm({ onClose }: BatchFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-content-secondary mb-1">
           Batch Name <span className="text-red-500">*</span>
         </label>
         <input
@@ -48,21 +48,21 @@ export function BatchForm({ onClose }: BatchFormProps) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. Veridian Apartments"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full px-3 py-2 border border-edge-secondary rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
           autoFocus
           required
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Date <span className="text-gray-400">(optional)</span>
+        <label className="block text-sm font-medium text-content-secondary mb-1">
+          Date <span className="text-content-muted">(optional)</span>
         </label>
         <input
           type="date"
           value={month}
           onChange={(e) => setMonth(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full px-3 py-2 border border-edge-secondary rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>
 
@@ -74,14 +74,14 @@ export function BatchForm({ onClose }: BatchFormProps) {
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+          className="px-4 py-2 text-sm text-content-tertiary hover:text-content-primary"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={!name.trim() || loading}
-          className="px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-lg hover:bg-orange-700 disabled:opacity-50 transition-colors"
+          className="px-4 py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 disabled:opacity-50 transition-colors"
         >
           {loading ? "Creating..." : "Create Batch"}
         </button>

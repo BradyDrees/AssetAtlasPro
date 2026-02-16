@@ -80,8 +80,8 @@ export function InspectionReviewContent({
   return (
     <div className="space-y-6">
       {/* Status Control */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <h3 className="text-sm font-semibold text-gray-700 mb-2">
+      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+        <h3 className="text-sm font-semibold text-content-secondary mb-2">
           Project Status
         </h3>
         <div className="flex gap-2">
@@ -97,7 +97,7 @@ export function InspectionReviewContent({
                     : s === "IN_PROGRESS"
                     ? "bg-brand-600 text-white border-brand-600"
                     : "bg-gray-600 text-white border-gray-600"
-                  : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                  : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
               } disabled:opacity-50`}
             >
               {s === "IN_PROGRESS" ? "In Progress" : s === "COMPLETE" ? "Complete" : "Draft"}
@@ -130,26 +130,26 @@ export function InspectionReviewContent({
       </div>
 
       {/* Exposure Summary */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <h3 className="text-sm font-semibold text-gray-700 mb-3">
+      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+        <h3 className="text-sm font-semibold text-content-secondary mb-3">
           Repair Exposure Summary
         </h3>
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <p className="text-xs text-gray-500">Immediate Repairs</p>
+            <p className="text-xs text-content-quaternary">Immediate Repairs</p>
             <p className="text-lg font-bold text-red-700">
               {fmtCurrency(metrics.immediateExposure)}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Short-Term (0–6 months)</p>
+            <p className="text-xs text-content-quaternary">Short-Term (0–6 months)</p>
             <p className="text-lg font-bold text-orange-700">
               {fmtCurrency(metrics.shortTermExposure)}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Total Identified</p>
-            <p className="text-lg font-bold text-gray-900">
+            <p className="text-xs text-content-quaternary">Total Identified</p>
+            <p className="text-lg font-bold text-content-primary">
               {fmtCurrency(metrics.totalExposure)}
             </p>
           </div>
@@ -158,8 +158,8 @@ export function InspectionReviewContent({
 
       {/* Risk Flags — expandable */}
       {Object.keys(metrics.riskFlagCounts).length > 0 && (
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+          <h3 className="text-sm font-semibold text-content-secondary mb-3">
             Risk Flags
           </h3>
           <div className="space-y-2">
@@ -181,7 +181,7 @@ export function InspectionReviewContent({
                       })
                     }
                     className={`inline-flex items-center gap-1.5 px-3 py-1 text-sm rounded-full font-medium transition-all ${
-                      info?.color ?? "bg-gray-100 text-gray-600"
+                      info?.color ?? "bg-surface-tertiary text-content-tertiary"
                     } ${isExpanded ? "ring-2 ring-offset-1 ring-current" : "hover:opacity-80"}`}
                   >
                     <span
@@ -194,7 +194,7 @@ export function InspectionReviewContent({
                     {info?.label ?? flag}: {count}
                   </button>
                   {isExpanded && flagFindings.length > 0 && (
-                    <div className="mt-2 ml-2 space-y-1.5 border-l-2 border-gray-200 pl-3">
+                    <div className="mt-2 ml-2 space-y-1.5 border-l-2 border-edge-primary pl-3">
                       {flagFindings.map((f) => {
                         const pInfo = f.priority
                           ? PRIORITY_LABELS[f.priority as PriorityLevel]
@@ -214,20 +214,20 @@ export function InspectionReviewContent({
                                 P{f.priority}
                               </span>
                             ) : (
-                              <span className="text-xs px-1.5 py-0.5 rounded-full font-medium bg-gray-100 text-gray-500">
+                              <span className="text-xs px-1.5 py-0.5 rounded-full font-medium bg-surface-tertiary text-content-quaternary">
                                 Good
                               </span>
                             )}
-                            <span className="text-gray-800 font-medium">
+                            <span className="text-content-primary font-medium">
                               {f.title || "Untitled"}
                             </span>
                             {f.location && (
-                              <span className="text-xs text-gray-400">
+                              <span className="text-xs text-content-muted">
                                 📍 {f.location}
                               </span>
                             )}
                             {sectionPs && (
-                              <span className="text-xs text-gray-400">
+                              <span className="text-xs text-content-muted">
                                 — {sectionPs.section.name}
                               </span>
                             )}
@@ -244,13 +244,13 @@ export function InspectionReviewContent({
       )}
 
       {/* Activity by Section — expandable */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <h3 className="text-sm font-semibold text-gray-700 mb-3">
+      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+        <h3 className="text-sm font-semibold text-content-secondary mb-3">
           Activity by Section
         </h3>
         {groupedSections.map((group) => (
           <div key={group.group_name} className="mb-4 last:mb-0">
-            <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+            <h4 className="text-xs font-semibold text-content-quaternary uppercase tracking-wide mb-2">
               {group.group_name}
             </h4>
             <div className="space-y-1">
@@ -283,24 +283,24 @@ export function InspectionReviewContent({
                         })
                       }
                       className={`w-full flex items-center justify-between py-1.5 px-2 rounded transition-colors ${
-                        isExpanded ? "bg-gray-100" : "hover:bg-gray-50"
+                        isExpanded ? "bg-surface-tertiary" : "hover:bg-surface-secondary"
                       }`}
                     >
                       <div className="flex items-center gap-2">
                         {hasDetails && (
                           <span
-                            className={`text-[10px] text-gray-400 transition-transform ${
+                            className={`text-[10px] text-content-muted transition-transform ${
                               isExpanded ? "rotate-90" : ""
                             }`}
                           >
                             ▶
                           </span>
                         )}
-                        <span className="text-sm text-gray-800">
+                        <span className="text-sm text-content-primary">
                           {section.section.name}
                         </span>
                         {section.is_na && (
-                          <span className="text-xs bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded-full">
+                          <span className="text-xs bg-surface-tertiary text-content-muted px-1.5 py-0.5 rounded-full">
                             N/A
                           </span>
                         )}
@@ -314,7 +314,7 @@ export function InspectionReviewContent({
                             className={`text-xs px-1.5 py-0.5 rounded-full ${
                               RUL_COLORS[
                                 rulBucket as keyof typeof RUL_COLORS
-                              ] ?? "bg-gray-100 text-gray-600"
+                              ] ?? "bg-surface-tertiary text-content-tertiary"
                             }`}
                           >
                             {rulBucket}
@@ -339,7 +339,7 @@ export function InspectionReviewContent({
                     </button>
                     {/* Expanded details */}
                     {isExpanded && hasDetails && (
-                      <div className="ml-6 mt-1 mb-2 space-y-1 border-l-2 border-gray-200 pl-3">
+                      <div className="ml-6 mt-1 mb-2 space-y-1 border-l-2 border-edge-primary pl-3">
                         {sectionFindings.map((f) => {
                           const pInfo = f.priority
                             ? PRIORITY_LABELS[f.priority as PriorityLevel]
@@ -356,20 +356,20 @@ export function InspectionReviewContent({
                                   P{f.priority}
                                 </span>
                               ) : (
-                                <span className="text-xs px-1.5 py-0.5 rounded-full font-medium bg-gray-100 text-gray-500">
+                                <span className="text-xs px-1.5 py-0.5 rounded-full font-medium bg-surface-tertiary text-content-quaternary">
                                   Good
                                 </span>
                               )}
-                              <span className="text-gray-800">
+                              <span className="text-content-primary">
                                 {f.title || "Untitled"}
                               </span>
                               {f.location && (
-                                <span className="text-xs text-gray-400">
+                                <span className="text-xs text-content-muted">
                                   📍 {f.location}
                                 </span>
                               )}
                               {f.notes && (
-                                <span className="text-xs text-gray-400 truncate max-w-[200px]">
+                                <span className="text-xs text-content-muted truncate max-w-[200px]">
                                   — {f.notes}
                                 </span>
                               )}
@@ -378,20 +378,20 @@ export function InspectionReviewContent({
                         })}
                         {sectionUnits.length > 0 && (
                           <div className="pt-1">
-                            <span className="text-xs font-medium text-gray-500">
+                            <span className="text-xs font-medium text-content-quaternary">
                               Units:
                             </span>
                             <div className="flex flex-wrap gap-1 mt-1">
                               {sectionUnits.slice(0, 20).map((u) => (
                                 <span
                                   key={u.id}
-                                  className="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded"
+                                  className="text-xs bg-surface-tertiary text-content-tertiary px-1.5 py-0.5 rounded"
                                 >
                                   {u.building}-{u.unit_number}
                                 </span>
                               ))}
                               {sectionUnits.length > 20 && (
-                                <span className="text-xs text-gray-400">
+                                <span className="text-xs text-content-muted">
                                   +{sectionUnits.length - 20} more
                                 </span>
                               )}
@@ -444,9 +444,9 @@ export function InspectionReviewContent({
       )}
 
       {/* Totals bar */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
         <div className="flex items-center justify-between">
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-content-tertiary">
             {metrics.totalUnits} units &bull; {metrics.totalFindings} findings
             &bull; {metrics.totalCaptures} captures
           </div>
@@ -455,7 +455,7 @@ export function InspectionReviewContent({
 
       {/* Disclaimer */}
       {isBankReady && (
-        <div className="text-xs text-gray-400 italic leading-relaxed">
+        <div className="text-xs text-content-muted italic leading-relaxed">
           Repair Exposure Estimate — Visual Assessment Only. This report
           provides preliminary cost estimates based on visual observations
           during a limited property inspection. Actual repair costs may vary
@@ -470,15 +470,15 @@ export function InspectionReviewContent({
 function MetricCard({
   label,
   value,
-  color = "text-gray-900",
+  color = "text-content-primary",
 }: {
   label: string;
   value: string;
   color?: string;
 }) {
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
-      <p className="text-xs text-gray-500">{label}</p>
+    <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+      <p className="text-xs text-content-quaternary">{label}</p>
       <p className={`text-2xl font-bold ${color}`}>{value}</p>
     </div>
   );
@@ -491,7 +491,7 @@ function BankReadyCheck({ label, ok }: { label: string; ok: boolean }) {
         {ok ? "✓" : "✗"}
       </span>
       <span
-        className={`text-sm ${ok ? "text-gray-700" : "text-red-700 font-medium"}`}
+        className={`text-sm ${ok ? "text-content-secondary" : "text-red-700 font-medium"}`}
       >
         {label}
       </span>

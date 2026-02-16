@@ -2,17 +2,23 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "@/app/actions/auth";
+import { useTheme } from "@/components/theme-provider";
 import type { User } from "@supabase/supabase-js";
 
 const navItems = [
   {
     href: "/dashboard",
+    label: "Home",
+    icon: "",
+    matchPaths: ["/dashboard"],
+  },
+  {
+    href: "/projects",
     label: "Due Diligence",
     icon: "",
-    matchPaths: ["/dashboard", "/projects"],
+    matchPaths: ["/projects"],
   },
   {
     href: "/inspections",
@@ -30,6 +36,7 @@ const navItems = [
 
 export function Sidebar({ user }: { user: User }) {
   const pathname = usePathname();
+  const { theme, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -52,10 +59,10 @@ export function Sidebar({ user }: { user: User }) {
       {/* Mobile hamburger button — visible only on small screens */}
       <button
         onClick={() => setIsOpen(true)}
-        className="md:hidden fixed top-3 left-3 z-50 p-2 bg-white rounded-lg border border-gray-200 shadow-sm"
+        className="md:hidden fixed top-3 left-3 z-50 p-2 bg-surface-primary rounded-lg border border-edge-primary shadow-sm"
         aria-label="Open menu"
       >
-        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 text-content-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
@@ -70,19 +77,16 @@ export function Sidebar({ user }: { user: User }) {
 
       {/* Sidebar */}
       <aside
-        className={`bg-white border-r border-gray-200 flex flex-col flex-shrink-0 transition-all duration-200 fixed inset-y-0 left-0 z-50 ${isOpen ? "translate-x-0" : "-translate-x-full"} w-64 md:relative md:translate-x-0 ${collapsed ? "md:w-16" : "md:w-64"}`}
+        className={`bg-surface-primary border-r border-edge-primary flex flex-col flex-shrink-0 transition-all duration-200 fixed inset-y-0 left-0 z-50 ${isOpen ? "translate-x-0" : "-translate-x-full"} w-64 md:relative md:translate-x-0 ${collapsed ? "md:w-16" : "md:w-64"}`}
       >
         {/* Header — charcoal + forest green */}
         <div className="p-4 flex items-center justify-between bg-gradient-to-br from-charcoal-950 via-charcoal-900 to-brand-900">
           {!collapsed && (
             <Link href="/dashboard" className="flex-shrink-0">
-              <Image
-                src="/logo-dark.png"
-                alt="Asset Atlas Pro"
-                width={200}
-                height={88}
-                className="h-12 w-auto logo-fade"
-              />
+              <div>
+                <h1 className="text-xl font-bold text-white leading-tight">Asset <span className="text-brand-500">Atlas</span> Pro</h1>
+                <p className="text-sm text-gold-400">See Risk. Plan Capital.</p>
+              </div>
             </Link>
           )}
 
@@ -127,7 +131,7 @@ export function Sidebar({ user }: { user: User }) {
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                   isActive
                     ? "bg-brand-50 text-brand-700 shadow-sm border border-brand-100"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    : "text-content-tertiary hover:bg-surface-secondary hover:text-content-primary"
                 } ${collapsed ? "md:justify-center md:px-0" : ""}`}
                 title={collapsed ? item.label : undefined}
               >
@@ -138,10 +142,29 @@ export function Sidebar({ user }: { user: User }) {
           })}
         </nav>
 
-        {/* User info and sign out */}
-        <div className="p-4 border-t border-gray-200 bg-gray-50/50">
+        {/* Theme toggle + User info + sign out */}
+        <div className="p-4 border-t border-edge-primary bg-surface-secondary/50">
+          {/* Theme toggle */}
+          {!collapsed ? (
+            <button
+              onClick={toggleTheme}
+              className="flex items-center justify-between w-full px-1 py-1.5 text-sm text-content-tertiary hover:text-content-primary rounded transition-colors mb-2"
+            >
+              <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+              <span className="text-base">{theme === "dark" ? "\u2600\uFE0F" : "\uD83C\uDF19"}</span>
+            </button>
+          ) : (
+            <button
+              onClick={toggleTheme}
+              className="w-full text-center py-1.5 text-base mb-2"
+              title={theme === "dark" ? "Switch to Light" : "Switch to Dark"}
+            >
+              {theme === "dark" ? "\u2600\uFE0F" : "\uD83C\uDF19"}
+            </button>
+          )}
+
           {!collapsed && (
-            <p className="text-sm text-gray-600 truncate mb-2">{user.email}</p>
+            <p className="text-sm text-content-tertiary truncate mb-2">{user.email}</p>
           )}
           <form action={signOut}>
             <button

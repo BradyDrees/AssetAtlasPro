@@ -87,7 +87,7 @@ export default async function InspectionUnitPage({
   return (
     <div>
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+      <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4">
         <Link
           href="/inspections"
           className="hover:text-brand-600 transition-colors"
@@ -109,7 +109,7 @@ export default async function InspectionUnitPage({
           {ps.section.name}
         </Link>
         <span>/</span>
-        <span className="text-gray-900">
+        <span className="text-content-primary">
           {(unit as InspectionUnit).building} -{" "}
           {(unit as InspectionUnit).unit_number}
         </span>
@@ -137,7 +137,7 @@ export default async function InspectionUnitPage({
           </svg>
           Project
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-content-primary">
           {(unit as InspectionUnit).building} -{" "}
           {(unit as InspectionUnit).unit_number}
         </h1>

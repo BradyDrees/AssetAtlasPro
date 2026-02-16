@@ -85,7 +85,7 @@ export function ShareInspectionModal({
       {/* Email input form */}
       <form onSubmit={handleShare} className="space-y-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-content-secondary mb-1">
             Invite by email
           </label>
           <div className="flex gap-2">
@@ -98,7 +98,7 @@ export function ShareInspectionModal({
                 setSuccess(null);
               }}
               placeholder="colleague@company.com"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+              className="flex-1 px-3 py-2 border border-edge-secondary rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
               disabled={sharing}
             />
             <button
@@ -125,14 +125,14 @@ export function ShareInspectionModal({
 
       {/* Current collaborators */}
       <div className="mt-5">
-        <h3 className="text-sm font-semibold text-gray-700 mb-2">
+        <h3 className="text-sm font-semibold text-content-secondary mb-2">
           Collaborators
         </h3>
 
         {loadingShares ? (
-          <p className="text-sm text-gray-400">Loading...</p>
+          <p className="text-sm text-content-muted">Loading...</p>
         ) : shares.length === 0 ? (
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-content-muted">
             No collaborators yet. Share this inspection to let others contribute.
           </p>
         ) : (
@@ -140,20 +140,20 @@ export function ShareInspectionModal({
             {shares.map((share) => (
               <div
                 key={share.id}
-                className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2"
+                className="flex items-center justify-between bg-surface-secondary rounded-lg px-3 py-2"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-gray-900 truncate">
+                  <p className="text-sm font-medium text-content-primary truncate">
                     {share.profile.full_name || share.profile.email}
                   </p>
                   {share.profile.full_name && (
-                    <p className="text-xs text-gray-500 truncate">
+                    <p className="text-xs text-content-quaternary truncate">
                       {share.profile.email}
                     </p>
                   )}
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                  <span className="text-xs text-gray-400 font-medium">
+                  <span className="text-xs text-content-muted font-medium">
                     Collaborator
                   </span>
                   <button
@@ -171,7 +171,7 @@ export function ShareInspectionModal({
       </div>
 
       {/* Info note */}
-      <p className="mt-4 text-xs text-gray-400">
+      <p className="mt-4 text-xs text-content-muted">
         Collaborators can add findings and photos but cannot delete other
         people&apos;s inputs or change project settings.
       </p>

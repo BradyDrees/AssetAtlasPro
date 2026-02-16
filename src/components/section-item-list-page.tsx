@@ -45,7 +45,7 @@ export function SectionItemListPage({
   return (
     <div className="pb-24">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-gray-500 mb-4 flex-wrap">
+      <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4 flex-wrap">
         <Link
           href="/dashboard"
           className="hover:text-brand-600 transition-colors"
@@ -60,7 +60,7 @@ export function SectionItemListPage({
           {projectName}
         </Link>
         <span>/</span>
-        <span className="text-gray-900">{sectionName}</span>
+        <span className="text-content-primary">{sectionName}</span>
       </div>
 
       {/* Back button + Section header */}
@@ -71,16 +71,16 @@ export function SectionItemListPage({
         >
           <span>&larr;</span> Back to {projectName}
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">{sectionName}</h1>
-        <p className="text-sm text-gray-400 mt-0.5">
+        <h1 className="text-2xl font-bold text-content-primary">{sectionName}</h1>
+        <p className="text-sm text-content-muted mt-0.5">
           {items.length} item{items.length !== 1 ? "s" : ""} inspected
         </p>
       </div>
 
       {/* Item list */}
       {sortedItems.length === 0 ? (
-        <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
-          <p className="text-gray-500 text-sm">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-8 text-center">
+          <p className="text-content-quaternary text-sm">
             No items yet. Tap the + button to add your first item.
           </p>
         </div>

@@ -90,7 +90,7 @@ export function InspectionProjectForm({
 
       {/* Inspection Type Toggle */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-content-secondary mb-2">
           Inspection Type
         </label>
         <div className="flex gap-2">
@@ -103,7 +103,7 @@ export function InspectionProjectForm({
                 className={`flex-1 px-3 py-2 text-sm rounded-md border transition-colors ${
                   inspectionType === value
                     ? "bg-brand-600 text-white border-brand-600"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                    : "bg-surface-primary text-content-secondary border-edge-secondary hover:bg-surface-secondary"
                 }`}
               >
                 {label}
@@ -121,7 +121,7 @@ export function InspectionProjectForm({
 
       {/* Asset Archetype Toggle */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-content-secondary mb-2">
           Asset Type
         </label>
         <div className="flex gap-2">
@@ -134,7 +134,7 @@ export function InspectionProjectForm({
                 className={`flex-1 px-3 py-2 text-sm rounded-md border transition-colors ${
                   assetArchetype === value
                     ? "bg-brand-600 text-white border-brand-600"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                    : "bg-surface-primary text-content-secondary border-edge-secondary hover:bg-surface-secondary"
                 }`}
               >
                 {info.label}
@@ -153,7 +153,7 @@ export function InspectionProjectForm({
       <div>
         <label
           htmlFor="name"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-content-secondary mb-1"
         >
           Project Code
         </label>
@@ -164,9 +164,9 @@ export function InspectionProjectForm({
           onChange={(e) => setName(e.target.value.toUpperCase())}
           required
           placeholder="VERIDIAN"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 uppercase"
+          className="w-full px-3 py-2 border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 uppercase"
         />
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-content-quaternary mt-1">
           Short identifier used in exports
         </p>
       </div>
@@ -174,7 +174,7 @@ export function InspectionProjectForm({
       <div>
         <label
           htmlFor="propertyName"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-content-secondary mb-1"
         >
           Property Name
         </label>
@@ -185,14 +185,14 @@ export function InspectionProjectForm({
           onChange={(e) => setPropertyName(e.target.value)}
           required
           placeholder="Veridian Residences"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="w-full px-3 py-2 border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>
 
       <div>
         <label
           htmlFor="address"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-content-secondary mb-1"
         >
           Address
         </label>
@@ -202,7 +202,7 @@ export function InspectionProjectForm({
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           placeholder="123 Main St, Denver CO 80202"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="w-full px-3 py-2 border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>
 
@@ -210,7 +210,7 @@ export function InspectionProjectForm({
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+          className="px-4 py-2 text-sm text-content-tertiary hover:text-content-primary transition-colors"
         >
           Cancel
         </button>

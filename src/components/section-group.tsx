@@ -46,11 +46,11 @@ export function SectionGroup({
   );
 
   return (
-    <div id={groupSlug ? `group-${groupSlug}` : undefined} className="scroll-mt-4 bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <div id={groupSlug ? `group-${groupSlug}` : undefined} className="scroll-mt-4 bg-surface-primary rounded-lg border border-edge-primary overflow-hidden">
       {/* Group header - clickable to expand/collapse */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 hover:bg-surface-secondary transition-colors"
       >
         <div className="flex items-center gap-2">
           <span
@@ -60,7 +60,7 @@ export function SectionGroup({
           >
             ▶
           </span>
-          <h3 className="font-semibold text-gray-900 text-sm">{groupName}</h3>
+          <h3 className="font-semibold text-content-primary text-sm">{groupName}</h3>
         </div>
         <div className="flex items-center gap-3">
           {totalUnits > 0 && (
@@ -78,7 +78,7 @@ export function SectionGroup({
               {totalCaptures} capture{totalCaptures !== 1 ? "s" : ""}
             </span>
           )}
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-content-muted">
             {enabledCount}/{sections.length} enabled
           </span>
         </div>
@@ -86,7 +86,7 @@ export function SectionGroup({
 
       {/* Section list */}
       {isExpanded && (
-        <div className="border-t border-gray-100">
+        <div className="border-t border-edge-tertiary">
           {sections.map((ps) => (
             <SectionToggle
               key={ps.id}

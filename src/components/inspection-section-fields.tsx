@@ -90,10 +90,10 @@ export function InspectionSectionFields({
   }, [notes, projectSection.id, projectSection.notes, projectId]);
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6 space-y-4">
+    <div className="bg-surface-primary rounded-lg border border-edge-primary p-4 mb-6 space-y-4">
       {/* Condition Rating */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-content-secondary mb-2">
           Condition Rating
           {isBankReady && (
             <span className="text-red-500 ml-1">*</span>
@@ -108,7 +108,7 @@ export function InspectionSectionFields({
               className={`flex-1 px-2 py-2.5 text-sm rounded-md border transition-colors ${
                 rating === val
                   ? "bg-brand-600 text-white border-brand-600"
-                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                  : "bg-surface-primary text-content-secondary border-edge-secondary hover:bg-surface-secondary"
               } disabled:opacity-50`}
             >
               {val} - {INSPECTION_CONDITION_LABELS[val]}
@@ -119,7 +119,7 @@ export function InspectionSectionFields({
 
       {/* Remaining Useful Life (RUL) */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-content-secondary mb-2">
           Remaining Useful Life
           {isBankReady && (
             <span className="text-red-500 ml-1">*</span>
@@ -135,7 +135,7 @@ export function InspectionSectionFields({
                 rul === option
                   ? RUL_COLORS[option as RulBucket] +
                     " border-current font-medium"
-                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                  : "bg-surface-primary text-content-secondary border-edge-secondary hover:bg-surface-secondary"
               } disabled:opacity-50`}
             >
               {option}
@@ -146,10 +146,10 @@ export function InspectionSectionFields({
 
       {/* Notes */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-content-secondary mb-1">
           Section Notes
           {savingNotes && (
-            <span className="text-xs text-gray-400 ml-2">Saving...</span>
+            <span className="text-xs text-content-muted ml-2">Saving...</span>
           )}
         </label>
         <textarea
@@ -158,7 +158,7 @@ export function InspectionSectionFields({
           onBlur={handleNotesBlur}
           rows={3}
           placeholder="General notes about this section..."
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>
     </div>

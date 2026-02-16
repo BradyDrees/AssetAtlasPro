@@ -31,7 +31,7 @@ export function ProjectHeaderMenu({ project }: ProjectHeaderMenuProps) {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+        className="p-2 text-content-muted hover:text-content-tertiary hover:bg-surface-tertiary rounded-lg transition-colors"
         aria-label="Project menu"
       >
         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -40,31 +40,31 @@ export function ProjectHeaderMenu({ project }: ProjectHeaderMenuProps) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg border border-gray-200 shadow-lg z-50 py-1">
+        <div className="absolute right-0 top-full mt-1 w-48 bg-surface-primary rounded-lg border border-edge-primary shadow-lg z-50 py-1">
           <button
             onClick={() => {
               setIsOpen(false);
               setShowEdit(true);
             }}
-            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+            className="w-full text-left px-4 py-2 text-sm text-content-secondary hover:bg-surface-secondary transition-colors"
           >
             Edit Project
           </button>
           <a
             href={`/projects/${project.id}/review`}
             onClick={() => setIsOpen(false)}
-            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+            className="block px-4 py-2 text-sm text-content-secondary hover:bg-surface-secondary transition-colors"
           >
             Review Project
           </a>
           <a
             href={`/projects/${project.id}/review`}
             onClick={() => setIsOpen(false)}
-            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+            className="block px-4 py-2 text-sm text-content-secondary hover:bg-surface-secondary transition-colors"
           >
             Export PDF
           </a>
-          <hr className="my-1 border-gray-100" />
+          <hr className="my-1 border-edge-tertiary" />
           <button
             onClick={() => {
               setIsOpen(false);

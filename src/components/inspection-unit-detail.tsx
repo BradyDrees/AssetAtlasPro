@@ -189,7 +189,7 @@ export function InspectionUnitDetail({
     field: string;
   }) => (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1.5">
+      <label className="block text-xs font-medium text-content-tertiary mb-1.5">
         {label}
       </label>
       <div className="flex flex-wrap gap-1">
@@ -205,7 +205,7 @@ export function InspectionUnitDetail({
               className={`px-3 py-2 text-xs rounded-md border transition-colors ${
                 value === grade
                   ? info.color + " " + info.border
-                  : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                  : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
               }`}
             >
               {grade}
@@ -219,18 +219,18 @@ export function InspectionUnitDetail({
   return (
     <div className="space-y-6">
       {saving && (
-        <div className="text-xs text-gray-400 text-right">Saving...</div>
+        <div className="text-xs text-content-muted text-right">Saving...</div>
       )}
 
       {/* Occupancy & Walk Status */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
-        <h3 className="text-sm font-semibold text-gray-700">
+      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4 space-y-4">
+        <h3 className="text-sm font-semibold text-content-secondary">
           Occupancy & Walk Status
         </h3>
 
         {/* Occupancy Status */}
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1.5">
+          <label className="block text-xs font-medium text-content-tertiary mb-1.5">
             Occupancy Status
           </label>
           <div className="flex flex-wrap gap-1.5">
@@ -246,7 +246,7 @@ export function InspectionUnitDetail({
                   className={`px-3 py-2.5 text-sm rounded-md border transition-colors ${
                     occupancyStatus === opt
                       ? info.color + " border-current font-medium"
-                      : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                      : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                   }`}
                 >
                   {info.label}
@@ -259,7 +259,7 @@ export function InspectionUnitDetail({
         {/* Walk Required toggle (only for vacant/down) */}
         {(occupancyStatus === "VACANT" || occupancyStatus === "DOWN") && (
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1.5">
+            <label className="block text-xs font-medium text-content-tertiary mb-1.5">
               Walk Required
             </label>
             <div className="flex gap-2">
@@ -277,7 +277,7 @@ export function InspectionUnitDetail({
                         ? boolVal
                           ? "bg-brand-600 text-white border-brand-600"
                           : "bg-gray-600 text-white border-gray-600"
-                        : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                        : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                     }`}
                   >
                     {val}
@@ -292,7 +292,7 @@ export function InspectionUnitDetail({
         {(occupancyStatus === "VACANT" || occupancyStatus === "DOWN") &&
           walkRequired && (
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1.5">
+              <label className="block text-xs font-medium text-content-tertiary mb-1.5">
                 Walk Status
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -308,7 +308,7 @@ export function InspectionUnitDetail({
                       className={`px-3 py-2.5 text-sm rounded-md border transition-colors ${
                         walkStatus === opt
                           ? info.color + " border-current font-medium"
-                          : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                          : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                       }`}
                     >
                       {info.label}
@@ -322,7 +322,7 @@ export function InspectionUnitDetail({
         {/* Turn Stage (only for vacant/down) */}
         {(occupancyStatus === "VACANT" || occupancyStatus === "DOWN") && (
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1.5">
+            <label className="block text-xs font-medium text-content-tertiary mb-1.5">
               Turn Stage
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -339,7 +339,7 @@ export function InspectionUnitDetail({
                     className={`px-3 py-2.5 text-sm rounded-md border transition-colors ${
                       turnStage === opt
                         ? info.color + " border-current font-medium"
-                        : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                        : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                     }`}
                   >
                     {info.label}
@@ -352,8 +352,8 @@ export function InspectionUnitDetail({
       </div>
 
       {/* Overall Condition */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+        <label className="block text-sm font-medium text-content-secondary mb-2">
           Overall Condition
         </label>
         <div className="grid grid-cols-3 gap-2 md:flex">
@@ -370,7 +370,7 @@ export function InspectionUnitDetail({
                 className={`flex-1 px-2 py-2.5 text-sm rounded-md border transition-colors ${
                   overallCondition === val
                     ? info.color + " border-current font-medium"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                    : "bg-surface-primary text-content-secondary border-edge-secondary hover:bg-surface-secondary"
                 }`}
               >
                 {val} - {info.label}
@@ -381,8 +381,8 @@ export function InspectionUnitDetail({
       </div>
 
       {/* Component Grades */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
-        <h3 className="text-sm font-semibold text-gray-700">
+      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4 space-y-4">
+        <h3 className="text-sm font-semibold text-content-secondary">
           Component Grades
         </h3>
         <GradeSelector
@@ -436,8 +436,8 @@ export function InspectionUnitDetail({
       </div>
 
       {/* Appliances */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+        <label className="block text-sm font-medium text-content-secondary mb-2">
           Appliances
         </label>
         <div className="flex flex-wrap gap-2">
@@ -456,7 +456,7 @@ export function InspectionUnitDetail({
                 className={`px-3 py-2.5 text-sm rounded-md border transition-colors ${
                   isActive
                     ? "bg-brand-600 text-white border-brand-600"
-                    : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                    : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                 }`}
               >
                 {option}
@@ -467,11 +467,11 @@ export function InspectionUnitDetail({
       </div>
 
       {/* Toggles */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
-        <h3 className="text-sm font-semibold text-gray-700">Indicators</h3>
+      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4 space-y-3">
+        <h3 className="text-sm font-semibold text-content-secondary">Indicators</h3>
         <div className="flex gap-4">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="block text-xs font-medium text-content-tertiary mb-1">
               Evidence of Leaks
             </label>
             <div className="flex gap-2">
@@ -487,7 +487,7 @@ export function InspectionUnitDetail({
                     className={`px-4 py-2.5 text-sm rounded-md border transition-colors ${
                       hasLeakEvidence === boolVal
                         ? INSPECTION_YES_NO[val].color + " border-current"
-                        : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                        : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                     }`}
                   >
                     {val}
@@ -497,7 +497,7 @@ export function InspectionUnitDetail({
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="block text-xs font-medium text-content-tertiary mb-1">
               Mold Indicators
             </label>
             <div className="flex gap-2">
@@ -513,7 +513,7 @@ export function InspectionUnitDetail({
                     className={`px-4 py-2.5 text-sm rounded-md border transition-colors ${
                       hasMoldIndicators === boolVal
                         ? INSPECTION_YES_NO[val].color + " border-current"
-                        : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                        : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                     }`}
                   >
                     {val}
@@ -526,8 +526,8 @@ export function InspectionUnitDetail({
       </div>
 
       {/* Notes */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+        <label className="block text-sm font-medium text-content-secondary mb-1">
           Unit Notes
         </label>
         <textarea
@@ -540,13 +540,13 @@ export function InspectionUnitDetail({
           }}
           rows={3}
           placeholder="Notes about this unit..."
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>
 
       {/* Photos */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+        <label className="block text-sm font-medium text-content-secondary mb-2">
           Photos ({captures.length})
         </label>
         {captures.length > 0 && (
@@ -571,7 +571,7 @@ export function InspectionUnitDetail({
           </div>
         )}
         <label
-          className={`inline-flex items-center gap-1 px-3 py-2.5 text-sm border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors ${
+          className={`inline-flex items-center gap-1 px-3 py-2.5 text-sm border border-edge-secondary rounded-md cursor-pointer hover:bg-surface-secondary transition-colors ${
             uploading ? "opacity-50" : ""
           }`}
         >
@@ -666,9 +666,9 @@ function UnitFindings({
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
+    <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-gray-700">
+        <h3 className="text-sm font-semibold text-content-secondary">
           Unit Findings ({unitFindings.length})
         </h3>
         <button
@@ -686,7 +686,7 @@ function UnitFindings({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Finding title..."
-            className="flex-1 px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
+            className="flex-1 px-3 py-1.5 text-sm border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
             autoFocus
             onKeyDown={(e) => {
               if (e.key === "Enter" && title.trim()) handleAddFinding();
@@ -708,7 +708,7 @@ function UnitFindings({
               setShowAdd(false);
               setTitle("");
             }}
-            className="px-2 py-1.5 text-sm text-gray-500 hover:text-gray-700"
+            className="px-2 py-1.5 text-sm text-content-quaternary hover:text-content-secondary"
           >
             Cancel
           </button>
@@ -726,7 +726,7 @@ function UnitFindings({
         />
       ) : (
         !showAdd && (
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-content-muted">
             No findings for this unit yet.
           </p>
         )

@@ -41,7 +41,7 @@ export default async function InspectionsPage() {
   return (
     <div>
       {/* Page header with gradient */}
-      <div className="flex items-center justify-between mb-6 bg-gradient-to-r from-brand-900 to-brand-700 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl">
+      <div className="flex items-center justify-between mb-6 bg-gradient-to-r from-charcoal-900 to-brand-800 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl">
         <div>
           <h1 className="text-2xl font-bold text-white">
             Property Inspections
@@ -56,7 +56,7 @@ export default async function InspectionsPage() {
           {/* My Inspections */}
           {ownedProjects && ownedProjects.length > 0 && (
             <div>
-              <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
+              <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">
                 My Inspections
               </h2>
               <div className="space-y-3">
@@ -70,7 +70,7 @@ export default async function InspectionsPage() {
           {/* Shared with Me */}
           {sharedProjects && sharedProjects.length > 0 && (
             <div>
-              <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
+              <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">
                 Shared with Me
               </h2>
               <div className="space-y-3">
@@ -86,16 +86,16 @@ export default async function InspectionsPage() {
           )}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm">
+        <div className="bg-surface-primary rounded-xl border border-edge-primary p-12 text-center shadow-sm">
           <div className="w-16 h-16 bg-brand-50 rounded-2xl mx-auto mb-4 flex items-center justify-center">
             <svg className="w-8 h-8 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg font-semibold text-content-primary mb-2">
             No inspections yet
           </h3>
-          <p className="text-gray-500 mb-6">
+          <p className="text-content-quaternary mb-6">
             Create your first inspection project to start a property walkthrough.
           </p>
           <CreateInspectionButton />

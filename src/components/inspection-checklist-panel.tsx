@@ -73,8 +73,8 @@ export function InspectionChecklistPanel({
   if (checklistItems.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-      <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+    <div className="bg-surface-primary rounded-lg border border-edge-primary p-4 mb-6">
+      <h3 className="text-sm font-semibold text-content-secondary uppercase tracking-wide mb-3">
         Checklist Items
       </h3>
       <div className="space-y-1">
@@ -85,7 +85,7 @@ export function InspectionChecklistPanel({
           return (
             <div
               key={item.id}
-              className="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-50 transition-colors"
+              className="flex items-center justify-between px-3 py-2 rounded-md hover:bg-surface-secondary transition-colors"
             >
               <div className="flex items-center gap-2 min-w-0 flex-1">
                 <span
@@ -93,7 +93,7 @@ export function InspectionChecklistPanel({
                     hasFinding ? "bg-orange-500" : "bg-gray-300"
                   }`}
                 />
-                <span className="text-sm text-gray-800">{item.name}</span>
+                <span className="text-sm text-content-primary">{item.name}</span>
                 {hasFinding && (
                   <span className="text-xs text-orange-600 font-medium">
                     {itemFindings.length} finding
@@ -114,7 +114,7 @@ export function InspectionChecklistPanel({
       </div>
 
       {/* Custom finding */}
-      <div className="mt-3 pt-3 border-t border-gray-100">
+      <div className="mt-3 pt-3 border-t border-edge-tertiary">
         {showAddCustom ? (
           <div className="flex items-center gap-2">
             <input
@@ -122,7 +122,7 @@ export function InspectionChecklistPanel({
               value={customTitle}
               onChange={(e) => setCustomTitle(e.target.value)}
               placeholder="Custom finding title..."
-              className="flex-1 px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="flex-1 px-3 py-1.5 text-sm border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
               autoFocus
               onKeyDown={(e) => {
                 if (e.key === "Enter" && customTitle.trim()) {
@@ -146,7 +146,7 @@ export function InspectionChecklistPanel({
                 setShowAddCustom(false);
                 setCustomTitle("");
               }}
-              className="px-2 py-1.5 text-sm text-gray-500 hover:text-gray-700"
+              className="px-2 py-1.5 text-sm text-content-quaternary hover:text-content-secondary"
             >
               Cancel
             </button>

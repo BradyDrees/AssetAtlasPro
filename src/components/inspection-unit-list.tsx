@@ -75,7 +75,7 @@ export function InspectionUnitList({
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+        <h3 className="text-sm font-semibold text-content-secondary uppercase tracking-wide">
           Units ({units.length})
         </h3>
         <button
@@ -88,10 +88,10 @@ export function InspectionUnitList({
 
       {/* Add unit form */}
       {showAdd && (
-        <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4">
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4 mb-4">
           <div className="flex gap-3">
             <div className="flex-1">
-              <label className="block text-xs font-medium text-gray-600 mb-1">
+              <label className="block text-xs font-medium text-content-tertiary mb-1">
                 Building
               </label>
               <input
@@ -99,12 +99,12 @@ export function InspectionUnitList({
                 value={building}
                 onChange={(e) => setBuilding(e.target.value)}
                 placeholder="B1"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
                 autoFocus
               />
             </div>
             <div className="flex-1">
-              <label className="block text-xs font-medium text-gray-600 mb-1">
+              <label className="block text-xs font-medium text-content-tertiary mb-1">
                 Unit Number
               </label>
               <input
@@ -112,7 +112,7 @@ export function InspectionUnitList({
                 value={unitNumber}
                 onChange={(e) => setUnitNumber(e.target.value)}
                 placeholder="101"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleAddUnit();
                   if (e.key === "Escape") {
@@ -131,7 +131,7 @@ export function InspectionUnitList({
                 setBuilding("");
                 setUnitNumber("");
               }}
-              className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800"
+              className="px-3 py-1.5 text-sm text-content-tertiary hover:text-content-primary"
             >
               Cancel
             </button>
@@ -159,18 +159,18 @@ export function InspectionUnitList({
               <Link
                 key={unit.id}
                 href={`/inspections/${projectId}/sections/${projectSectionId}/units/${unit.id}`}
-                className="block bg-white rounded-lg border border-gray-200 p-3 hover:shadow-md transition-shadow"
+                className="block bg-surface-primary rounded-lg border border-edge-primary p-3 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0 flex-1 flex-wrap">
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-content-primary">
                       {unit.building} - {unit.unit_number}
                     </span>
                     {/* Occupancy status badge */}
                     {unit.occupancy_status && unit.occupancy_status !== "UNKNOWN" && (
                       <span
                         className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${
-                          OCCUPANCY_STATUS_LABELS[unit.occupancy_status]?.color ?? "bg-gray-100 text-gray-600"
+                          OCCUPANCY_STATUS_LABELS[unit.occupancy_status]?.color ?? "bg-surface-tertiary text-content-tertiary"
                         }`}
                       >
                         {OCCUPANCY_STATUS_LABELS[unit.occupancy_status]?.label ?? unit.occupancy_status}
@@ -181,7 +181,7 @@ export function InspectionUnitList({
                       unit.walk_status !== "NOT_STARTED" && (
                         <span
                           className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${
-                            WALK_STATUS_LABELS[unit.walk_status]?.color ?? "bg-gray-100 text-gray-600"
+                            WALK_STATUS_LABELS[unit.walk_status]?.color ?? "bg-surface-tertiary text-content-tertiary"
                           }`}
                         >
                           {WALK_STATUS_LABELS[unit.walk_status]?.label ?? unit.walk_status}
@@ -211,7 +211,7 @@ export function InspectionUnitList({
                     )}
                   </div>
                   <svg
-                    className="w-4 h-4 text-gray-400 flex-shrink-0"
+                    className="w-4 h-4 text-content-muted flex-shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -229,7 +229,7 @@ export function InspectionUnitList({
           })}
         </div>
       ) : (
-        <div className="bg-gray-50 rounded-lg border border-gray-200 p-6 text-center text-sm text-gray-500">
+        <div className="bg-surface-secondary rounded-lg border border-edge-primary p-6 text-center text-sm text-content-quaternary">
           No units added yet. Click &quot;+ Add Unit&quot; to start.
         </div>
       )}

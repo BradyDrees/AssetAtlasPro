@@ -61,7 +61,7 @@ export function DDProjectForm({ project, onClose }: DDProjectFormProps) {
       <div>
         <label
           htmlFor="name"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-content-secondary mb-1"
         >
           Project Code
         </label>
@@ -72,16 +72,16 @@ export function DDProjectForm({ project, onClose }: DDProjectFormProps) {
           onChange={(e) => setName(e.target.value.toUpperCase())}
           required
           placeholder="VERIDIAN"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 uppercase"
+          className="w-full px-3 py-2 border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 uppercase"
         />
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-content-quaternary mt-1">
           Short identifier used in exports
         </p>
       </div>
       <div>
         <label
           htmlFor="propertyName"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-content-secondary mb-1"
         >
           Property Name
         </label>
@@ -92,13 +92,13 @@ export function DDProjectForm({ project, onClose }: DDProjectFormProps) {
           onChange={(e) => setPropertyName(e.target.value)}
           required
           placeholder="Veridian Residences"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="w-full px-3 py-2 border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>
       <div>
         <label
           htmlFor="address"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-content-secondary mb-1"
         >
           Address
         </label>
@@ -108,14 +108,14 @@ export function DDProjectForm({ project, onClose }: DDProjectFormProps) {
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           placeholder="123 Main St, Denver CO 80202"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="w-full px-3 py-2 border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>
       <div className="flex gap-3 justify-end">
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+          className="px-4 py-2 text-sm text-content-tertiary hover:text-content-primary transition-colors"
         >
           Cancel
         </button>

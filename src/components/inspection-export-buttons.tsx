@@ -120,8 +120,8 @@ export function InspectionExportButtons({
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
-      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+    <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+      <h2 className="text-sm font-semibold text-content-quaternary uppercase tracking-wide mb-3">
         Export
       </h2>
 
@@ -134,7 +134,7 @@ export function InspectionExportButtons({
             className={`flex items-center gap-3 px-3 py-3 rounded-lg border text-left transition-colors ${
               activeFormat === opt.format
                 ? "border-brand-300 bg-brand-50"
-                : "border-gray-200 hover:bg-gray-50"
+                : "border-edge-primary hover:bg-surface-secondary"
             } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             <span className="text-xl flex-shrink-0">
@@ -145,10 +145,10 @@ export function InspectionExportButtons({
               )}
             </span>
             <div>
-              <span className="text-sm font-medium text-gray-900 block">
+              <span className="text-sm font-medium text-content-primary block">
                 {opt.label}
               </span>
-              <span className="text-xs text-gray-500">{opt.description}</span>
+              <span className="text-xs text-content-quaternary">{opt.description}</span>
             </div>
           </button>
         ))}

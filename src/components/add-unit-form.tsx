@@ -60,7 +60,7 @@ export function AddUnitForm({
     <Modal isOpen={true} onClose={onClose} title="Add Unit">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-content-secondary mb-1">
             Building
           </label>
           <input
@@ -68,14 +68,14 @@ export function AddUnitForm({
             value={building}
             onChange={(e) => setBuilding(e.target.value)}
             placeholder="e.g. 1, A, Building 1"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm
+            className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm
                        focus:outline-none focus:ring-2 focus:ring-brand-500"
             autoFocus={!lastBuilding}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-content-secondary mb-1">
             Unit Number
           </label>
           <input
@@ -83,7 +83,7 @@ export function AddUnitForm({
             value={unitNumber}
             onChange={(e) => setUnitNumber(e.target.value)}
             placeholder="e.g. 101, 201A"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm
+            className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm
                        focus:outline-none focus:ring-2 focus:ring-brand-500"
             autoFocus={!!lastBuilding}
           />
@@ -97,7 +97,7 @@ export function AddUnitForm({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+            className="px-4 py-2 text-sm text-content-tertiary hover:text-content-primary"
           >
             Cancel
           </button>

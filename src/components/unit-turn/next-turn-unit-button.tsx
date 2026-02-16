@@ -112,8 +112,8 @@ export function NextTurnUnitButton({ batchId, currentUnitId }: NextTurnUnitButto
           onClick={handleNext}
           className={`flex-1 py-3 text-sm font-medium rounded-lg transition-colors ${
             nextId
-              ? "bg-orange-600 text-white hover:bg-orange-700"
-              : "bg-orange-600 text-white hover:bg-orange-700"
+              ? "bg-brand-600 text-white hover:bg-brand-700"
+              : "bg-brand-600 text-white hover:bg-brand-700"
           }`}
         >
           {nextId ? "Next Unit →" : "Batch →"}

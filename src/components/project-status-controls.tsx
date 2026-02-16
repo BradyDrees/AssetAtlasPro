@@ -75,7 +75,7 @@ export function ProjectStatusControls({
     <button
       onClick={() => handleStatusChange("IN_PROGRESS")}
       disabled={loading}
-      className="px-5 py-2.5 bg-gray-200 text-gray-700 text-sm font-semibold rounded-lg
+      className="px-5 py-2.5 bg-gray-200 text-content-secondary text-sm font-semibold rounded-lg
                  hover:bg-gray-300 disabled:opacity-50 transition-colors"
     >
       {loading ? "Reopening..." : "Reopen Project"}

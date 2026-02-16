@@ -24,10 +24,10 @@ export function UnitStatusBar({ unitId, batchId, currentStatus }: UnitStatusBarP
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-3">
+    <div className="bg-surface-primary rounded-lg border border-edge-primary p-3">
       <div className="flex items-center justify-between">
-        <label className="text-xs font-medium text-gray-500">Unit Status</label>
-        {saving && <span className="text-xs text-gray-400">Saving...</span>}
+        <label className="text-xs font-medium text-content-quaternary">Unit Status</label>
+        {saving && <span className="text-xs text-content-muted">Saving...</span>}
       </div>
       <div className="flex gap-2 mt-2">
         {STATUS_OPTIONS.map((opt) => {
@@ -39,7 +39,7 @@ export function UnitStatusBar({ unitId, batchId, currentStatus }: UnitStatusBarP
               className={`flex-1 px-3 py-2.5 text-sm rounded-md border transition-colors ${
                 status === opt
                   ? info.color + " border-current font-medium"
-                  : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                  : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
               }`}
             >
               {info.label}

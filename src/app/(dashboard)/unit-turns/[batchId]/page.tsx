@@ -69,13 +69,13 @@ export default async function BatchDetailPage({
   return (
     <div>
       {/* Header */}
-      <div className="bg-gradient-to-r from-charcoal-950 via-charcoal-900 to-orange-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl mb-6">
+      <div className="bg-gradient-to-r from-charcoal-950 via-charcoal-900 to-brand-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl mb-6">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-orange-300 mb-3">
+        <div className="flex items-center gap-2 text-sm text-brand-300 mb-3">
           <Link href="/unit-turns" className="hover:text-white transition-colors">
             Unit Turns
           </Link>
-          <span className="text-orange-500">/</span>
+          <span className="text-brand-500">/</span>
           <span className="text-white font-medium">{batch.name}</span>
         </div>
 
@@ -97,9 +97,9 @@ export default async function BatchDetailPage({
                 </span>
               </div>
               {monthLabel && (
-                <p className="text-orange-200 mt-1">{monthLabel}</p>
+                <p className="text-gold-300 mt-1">{monthLabel}</p>
               )}
-              <p className="text-sm text-orange-300/70 mt-0.5">
+              <p className="text-sm text-brand-300/70 mt-0.5">
                 {allUnits.length} unit{allUnits.length !== 1 ? "s" : ""}
               </p>
             </div>
@@ -143,7 +143,7 @@ export default async function BatchDetailPage({
           })}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-sm text-gray-500">
+        <div className="bg-surface-primary rounded-xl border border-edge-primary p-8 text-center text-sm text-content-quaternary">
           No units yet. Add your first unit above.
         </div>
       )}

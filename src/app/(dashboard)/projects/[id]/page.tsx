@@ -10,7 +10,7 @@ import type { DDProjectSectionWithDetails, DDSectionGroup } from "@/lib/types";
 export const dynamic = "force-dynamic";
 
 const statusStyles: Record<string, string> = {
-  DRAFT: "bg-gray-100 text-gray-600",
+  DRAFT: "bg-surface-tertiary text-content-tertiary",
   IN_PROGRESS: "bg-brand-100 text-brand-700",
   COMPLETE: "bg-green-100 text-green-700",
 };
@@ -116,7 +116,7 @@ export default async function ProjectDetailPage({
   return (
     <div>
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+      <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4">
         <Link
           href="/dashboard"
           className="hover:text-brand-600 transition-colors"
@@ -124,14 +124,14 @@ export default async function ProjectDetailPage({
           Due Diligence
         </Link>
         <span>/</span>
-        <span className="text-gray-900">{project.name}</span>
+        <span className="text-content-primary">{project.name}</span>
       </div>
 
       {/* Project header */}
       <div className="mb-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-gray-900">{project.name}</h1>
+            <h1 className="text-2xl font-bold text-content-primary">{project.name}</h1>
             <span
               className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                 statusStyles[project.status]
@@ -142,9 +142,9 @@ export default async function ProjectDetailPage({
           </div>
           <ProjectHeaderMenu project={project} />
         </div>
-        <p className="text-gray-600 mt-0.5">{project.property_name}</p>
+        <p className="text-content-tertiary mt-0.5">{project.property_name}</p>
         {project.address && (
-          <p className="text-sm text-gray-400 mt-0.5">{project.address}</p>
+          <p className="text-sm text-content-muted mt-0.5">{project.address}</p>
         )}
         <Link
           href={`/projects/${id}/review`}
@@ -158,7 +158,7 @@ export default async function ProjectDetailPage({
       {scrollToGroup && <ScrollToGroup groupSlug={scrollToGroup} />}
 
       {/* Section groups */}
-      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+      <h2 className="text-sm font-semibold text-content-quaternary uppercase tracking-wide mb-3">
         Inspection Sections
       </h2>
       <div className="space-y-4">

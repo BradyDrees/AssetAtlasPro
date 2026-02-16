@@ -38,19 +38,19 @@ export function UnitBdBaSelect({
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label className="block text-sm font-medium text-content-secondary mb-2">
         BD / BA
         {saving && (
-          <span className="ml-2 text-xs font-normal text-gray-400">Saving...</span>
+          <span className="ml-2 text-xs font-normal text-content-muted">Saving...</span>
         )}
       </label>
       <select
         value={value}
         onChange={handleChange}
         disabled={saving}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm
+        className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm
                    focus:outline-none focus:ring-2 focus:ring-brand-500
-                   disabled:opacity-50 bg-white"
+                   disabled:opacity-50 bg-surface-primary"
       >
         <option value="">Select BD/BA...</option>
         {BD_BA_OPTIONS.map((opt) => (

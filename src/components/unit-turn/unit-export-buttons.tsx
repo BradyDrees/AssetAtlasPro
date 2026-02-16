@@ -130,8 +130,8 @@ export function UnitExportButtons({
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
-      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+    <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+      <h2 className="text-sm font-semibold text-content-quaternary uppercase tracking-wide mb-3">
         Export
       </h2>
 
@@ -143,22 +143,22 @@ export function UnitExportButtons({
             disabled={activeFormat !== null}
             className={`flex items-center gap-3 px-3 py-3 rounded-lg border text-left transition-colors ${
               activeFormat === opt.format
-                ? "border-orange-300 bg-orange-50"
-                : "border-gray-200 hover:bg-gray-50"
+                ? "border-brand-300 bg-brand-50"
+                : "border-edge-primary hover:bg-surface-secondary"
             } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             <span className="text-xl flex-shrink-0">
               {activeFormat === opt.format ? (
-                <span className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-orange-600" />
+                <span className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-brand-600" />
               ) : (
                 opt.icon
               )}
             </span>
             <div>
-              <span className="text-sm font-medium text-gray-900 block">
+              <span className="text-sm font-medium text-content-primary block">
                 {opt.label}
               </span>
-              <span className="text-xs text-gray-500">{opt.description}</span>
+              <span className="text-xs text-content-quaternary">{opt.description}</span>
             </div>
           </button>
         ))}

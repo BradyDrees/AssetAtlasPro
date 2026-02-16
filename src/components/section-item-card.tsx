@@ -57,14 +57,14 @@ export function SectionItemCard({
   return (
     <Link
       href={`/projects/${projectId}/sections/${projectSectionId}/items/${item.id}`}
-      className={`block bg-white rounded-lg border border-gray-200 p-3 hover:bg-gray-50
+      className={`block bg-surface-primary rounded-lg border border-edge-primary p-3 hover:bg-surface-secondary
                   transition-colors ${deleting ? "opacity-50 pointer-events-none" : ""}`}
     >
       <div className="flex items-start justify-between">
         <div className="min-w-0 flex-1">
           {/* Item name */}
           <div className="flex items-center gap-2 mb-1">
-            <span className="font-semibold text-gray-900 text-sm">
+            <span className="font-semibold text-content-primary text-sm">
               {item.name}
             </span>
           </div>
@@ -85,7 +85,7 @@ export function SectionItemCard({
 
           {/* Photo count */}
           {captureCount > 0 && (
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-content-muted">
               {captureCount} photo{captureCount !== 1 ? "s" : ""}
             </span>
           )}
@@ -95,7 +95,7 @@ export function SectionItemCard({
         <button
           onClick={handleDelete}
           disabled={deleting || isListBusy}
-          className="text-gray-300 hover:text-red-500 transition-colors p-1 flex-shrink-0 disabled:opacity-30"
+          className="text-content-muted hover:text-red-500 transition-colors p-1 flex-shrink-0 disabled:opacity-30"
           aria-label="Delete item"
         >
           <svg

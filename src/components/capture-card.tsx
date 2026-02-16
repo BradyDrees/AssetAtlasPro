@@ -58,12 +58,12 @@ export function CaptureCard({
 
   return (
     <div
-      className={`bg-white rounded-lg border border-gray-200 overflow-hidden ${
+      className={`bg-surface-primary rounded-lg border border-edge-primary overflow-hidden ${
         deleting ? "opacity-50 pointer-events-none" : ""
       }`}
     >
       {/* Media area */}
-      <div className="aspect-square relative bg-gray-100">
+      <div className="aspect-square relative bg-surface-tertiary">
         {capture.file_type === "image" && (
           <img
             src={mediaUrl}
@@ -81,7 +81,7 @@ export function CaptureCard({
           />
         )}
         {capture.file_type === "pdf" && (
-          <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
+          <div className="w-full h-full flex flex-col items-center justify-center text-content-muted">
             <span className="text-4xl mb-2">{"\u{1F4C4}"}</span>
             <span className="text-xs text-center px-2 truncate max-w-full">
               PDF Document
@@ -111,7 +111,7 @@ export function CaptureCard({
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
               placeholder="Add caption..."
-              className="flex-1 text-xs px-2 py-1 border border-gray-300 rounded
+              className="flex-1 text-xs px-2 py-1 border border-edge-secondary rounded
                          focus:outline-none focus:ring-1 focus:ring-brand-500"
               autoFocus
               onKeyDown={(e) => {
@@ -134,13 +134,13 @@ export function CaptureCard({
         ) : (
           <button
             onClick={() => setIsEditing(true)}
-            className="w-full text-left text-xs text-gray-500 hover:text-gray-700
+            className="w-full text-left text-xs text-content-quaternary hover:text-content-secondary
                        transition-colors py-1 truncate"
           >
             {caption || "Tap to add caption..."}
           </button>
         )}
-        <p className="text-[10px] text-gray-300 mt-1">
+        <p className="text-[10px] text-content-muted mt-1">
           {new Date(capture.created_at).toLocaleTimeString("en-US", {
             hour: "numeric",
             minute: "2-digit",

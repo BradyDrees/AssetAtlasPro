@@ -55,9 +55,9 @@ export function InspectionSectionGroup({
   const hasEnabledSections = enabledCount > 0;
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <div className="bg-surface-primary rounded-lg border border-edge-primary overflow-hidden">
       {/* Group header */}
-      <div className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors">
+      <div className="flex items-center justify-between px-4 py-3 hover:bg-surface-secondary transition-colors">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="flex items-center gap-2 flex-1 min-w-0"
@@ -69,7 +69,7 @@ export function InspectionSectionGroup({
           >
             ▶
           </span>
-          <h3 className="font-semibold text-gray-900 text-sm">{groupName}</h3>
+          <h3 className="font-semibold text-content-primary text-sm">{groupName}</h3>
           <div className="flex items-center gap-2 ml-2">
             {totalUnits > 0 && (
               <span className="text-xs text-green-600 font-medium">
@@ -86,7 +86,7 @@ export function InspectionSectionGroup({
                 {totalCaptures} photo{totalCaptures !== 1 ? "s" : ""}
               </span>
             )}
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-content-muted">
               {enabledCount}/{sections.length}
             </span>
           </div>
@@ -106,7 +106,7 @@ export function InspectionSectionGroup({
 
       {/* Section list (toggles for enable/disable) */}
       {isExpanded && (
-        <div className="border-t border-gray-100">
+        <div className="border-t border-edge-tertiary">
           {sections.map((ps) => (
             <InspectionSectionToggle
               key={ps.id}

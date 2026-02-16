@@ -147,7 +147,7 @@ export function InspectionProjectTabs({
 
   if (groups.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-sm text-gray-500 shadow-sm">
+      <div className="bg-surface-primary rounded-xl border border-edge-primary p-8 text-center text-sm text-content-quaternary shadow-sm">
         No enabled sections. Go to project settings to enable inspection
         sections.
       </div>
@@ -166,7 +166,7 @@ export function InspectionProjectTabs({
   return (
     <div className="space-y-5">
       {/* Quick-nav: sticky jump links */}
-      <div className="sticky top-0 z-10 bg-gray-100/95 backdrop-blur-sm -mx-4 px-4 py-2.5 md:-mx-6 md:px-6 border-b border-gray-200 shadow-sm">
+      <div className="sticky top-0 z-10 bg-surface-tertiary/95 backdrop-blur-sm -mx-4 px-4 py-2.5 md:-mx-6 md:px-6 border-b border-edge-primary shadow-sm">
         <div className="flex gap-2 overflow-x-auto pb-0.5">
           {groups.map((group) => {
             const colors = GROUP_COLORS[group.groupSlug] ?? DEFAULT_COLORS;
@@ -240,7 +240,7 @@ export function InspectionProjectTabs({
 
             {/* Group content */}
             {!isCollapsed && (
-              <div className={`border border-t-0 ${colors.border} rounded-b-xl bg-white ${group.isUnitMode ? "p-4" : ""}`}>
+              <div className={`border border-t-0 ${colors.border} rounded-b-xl bg-surface-primary ${group.isUnitMode ? "p-4" : ""}`}>
                 {!group.isUnitMode ? (
                   <InspectionGroupChecklist
                     sections={group.sectionsData}
@@ -256,19 +256,19 @@ export function InspectionProjectTabs({
                       <Link
                         key={s.projectSection.id}
                         href={`/inspections/${projectId}/sections/${s.projectSection.id}`}
-                        className={`block bg-white rounded-lg border border-gray-200 p-4 ${colors.unitCard} hover:shadow-md transition-all`}
+                        className={`block bg-surface-primary rounded-lg border border-edge-primary p-4 ${colors.unitCard} hover:shadow-md transition-all`}
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <h3 className="text-sm font-semibold text-gray-900">
+                            <h3 className="text-sm font-semibold text-content-primary">
                               {s.projectSection.display_name_override ??
                                 s.projectSection.section.name}
                             </h3>
-                            <p className="text-xs text-gray-500 mt-0.5">
+                            <p className="text-xs text-content-quaternary mt-0.5">
                               Unit-based inspection — tap to manage units
                             </p>
                           </div>
-                          <span className="text-gray-400 text-lg">→</span>
+                          <span className="text-content-muted text-lg">→</span>
                         </div>
                       </Link>
                     ))}

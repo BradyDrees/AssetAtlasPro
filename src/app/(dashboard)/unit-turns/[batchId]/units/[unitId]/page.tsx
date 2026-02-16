@@ -89,17 +89,17 @@ export default async function UnitTurnDetailPage({
   return (
     <div>
       {/* Header */}
-      <div className="bg-gradient-to-r from-charcoal-950 via-charcoal-900 to-orange-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl mb-6">
+      <div className="bg-gradient-to-r from-charcoal-950 via-charcoal-900 to-brand-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl mb-6">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-orange-300 mb-3">
+        <div className="flex items-center gap-2 text-sm text-brand-300 mb-3">
           <Link href="/unit-turns" className="hover:text-white transition-colors">
             Unit Turns
           </Link>
-          <span className="text-orange-500">/</span>
+          <span className="text-brand-500">/</span>
           <Link href={`/unit-turns/${batchId}`} className="hover:text-white transition-colors">
             {batch.name}
           </Link>
-          <span className="text-orange-500">/</span>
+          <span className="text-brand-500">/</span>
           <span className="text-white font-medium">Unit {unit.unit_label}</span>
         </div>
 
@@ -107,7 +107,7 @@ export default async function UnitTurnDetailPage({
           <div className="flex items-center gap-3">
             <Link
               href={`/unit-turns/${batchId}`}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-orange-200 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gold-300 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
               title="Back to batch"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -117,12 +117,12 @@ export default async function UnitTurnDetailPage({
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-orange-300 bg-white/10 px-2 py-0.5 rounded">
+                <span className="text-xs font-medium text-brand-300 bg-white/10 px-2 py-0.5 rounded">
                   {unit.property}
                 </span>
                 <h1 className="text-2xl font-bold text-white">Unit {unit.unit_label}</h1>
               </div>
-              <p className="text-sm text-orange-300/70 mt-0.5">
+              <p className="text-sm text-brand-300/70 mt-0.5">
                 {assessedItems}/{totalItems} Items Assessed ({totalItems > 0 ? Math.round((assessedItems / totalItems) * 100) : 0}%)
               </p>
             </div>
@@ -155,7 +155,7 @@ export default async function UnitTurnDetailPage({
       {/* Paint Section */}
       {paintCategories.length > 0 && (
         <div className="mt-8">
-          <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Paint</h2>
+          <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">Paint</h2>
           <div className="space-y-5">
             {paintCategories.map((cd) => (
               <div key={cd.category.id} id={`cat-${cd.category.slug}`}>
@@ -174,7 +174,7 @@ export default async function UnitTurnDetailPage({
       {/* Cleaning Section */}
       {cleaningCategories.length > 0 && (
         <div className="mt-8">
-          <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Cleaning</h2>
+          <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">Cleaning</h2>
           <div className="space-y-5">
             {cleaningCategories.map((cd) => (
               <div key={cd.category.id} id={`cat-${cd.category.slug}`}>

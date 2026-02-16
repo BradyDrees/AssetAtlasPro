@@ -16,8 +16,8 @@ export function CaptureGallery({
 }: CaptureGalleryProps) {
   if (captures.length === 0) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-6 md:p-8 text-center">
-        <p className="text-gray-500 text-sm">
+      <div className="bg-surface-primary rounded-lg border border-edge-primary p-6 md:p-8 text-center">
+        <p className="text-content-quaternary text-sm">
           No captures yet. Tap the camera button to start.
         </p>
       </div>

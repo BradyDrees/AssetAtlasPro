@@ -6,6 +6,7 @@ import { ChecklistItem } from "./checklist-item";
 import { createNote } from "@/app/actions/unit-turns";
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from "@/lib/unit-turn-constants";
 import type { UnitTurnCategoryData } from "@/lib/unit-turn-types";
+import { toTitleCase } from "@/lib/utils";
 
 interface CategorySectionProps {
   data: UnitTurnCategoryData;
@@ -53,7 +54,7 @@ export function CategorySection({ data, batchId, unitId, supabaseUrl }: Category
       >
         <div className="flex items-center gap-2">
           <span className={`text-xs transition-transform ${collapsed ? "" : "rotate-90"}`}>▶</span>
-          <h3 className="text-sm font-bold tracking-wide">{category.name}</h3>
+          <h3 className="text-sm font-bold tracking-wide">{toTitleCase(category.name)}</h3>
         </div>
         <span className="text-xs text-white/70">
           {assessed}/{total}

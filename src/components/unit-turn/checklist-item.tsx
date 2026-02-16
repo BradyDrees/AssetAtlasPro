@@ -22,6 +22,7 @@ import type {
   UnitTurnNoteWithPhotos,
   CategoryType,
 } from "@/lib/unit-turn-types";
+import { toTitleCase } from "@/lib/utils";
 
 interface ChecklistItemProps {
   item: UnitTurnUnitItemWithTemplate;
@@ -149,7 +150,7 @@ export function ChecklistItem({
       {/* Item Name */}
       <div className="mb-2">
         <span className="text-sm text-gray-800">
-          {item.template_item?.name ?? "Unknown Item"}
+          {toTitleCase(item.template_item?.name ?? "Unknown Item")}
         </span>
       </div>
 

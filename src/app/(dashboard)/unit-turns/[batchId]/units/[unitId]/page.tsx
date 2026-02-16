@@ -121,7 +121,7 @@ export default async function UnitTurnDetailPage({
                 <h1 className="text-2xl font-bold text-white">Unit {unit.unit_label}</h1>
               </div>
               <p className="text-sm text-orange-300/70 mt-0.5">
-                {assessedItems}/{totalItems} items assessed ({totalItems > 0 ? Math.round((assessedItems / totalItems) * 100) : 0}%)
+                {assessedItems}/{totalItems} Items Assessed ({totalItems > 0 ? Math.round((assessedItems / totalItems) * 100) : 0}%)
               </p>
             </div>
           </div>

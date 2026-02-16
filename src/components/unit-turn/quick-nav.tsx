@@ -1,6 +1,7 @@
 "use client";
 
 import type { UnitTurnCategory } from "@/lib/unit-turn-types";
+import { toTitleCase } from "@/lib/utils";
 
 interface QuickNavProps {
   categories: UnitTurnCategory[];
@@ -18,7 +19,7 @@ export function QuickNav({ categories }: QuickNavProps) {
             }}
             className="flex-shrink-0 px-3 py-1.5 text-xs font-semibold border rounded-full bg-white border-gray-200 text-gray-700 hover:bg-orange-50 hover:border-orange-300 transition-all"
           >
-            {cat.name.split(" – ")[0]}
+            {toTitleCase(cat.name.split(" – ")[0])}
           </button>
         ))}
       </div>

@@ -26,7 +26,7 @@ export function NextTurnUnitButton({ batchId, currentUnitId }: NextTurnUnitButto
         .order("property")
         .order("unit_label");
 
-      if (units && units.length > 1) {
+      if (units && units.length > 0) {
         const idx = units.findIndex((u: { id: string }) => u.id === currentUnitId);
         if (idx > 0) {
           setPrevId(units[idx - 1].id);
@@ -40,30 +40,32 @@ export function NextTurnUnitButton({ batchId, currentUnitId }: NextTurnUnitButto
     fetchUnits();
   }, [batchId, currentUnitId]);
 
-  if (loading || (!prevId && !nextId)) return null;
+  if (loading) return null;
 
   return (
     <div className="flex gap-3">
-      {prevId ? (
-        <button
-          onClick={() => router.push(`/unit-turns/${batchId}/units/${prevId}`)}
-          className="flex-1 py-3 bg-charcoal-800 text-white text-sm font-medium rounded-lg hover:bg-charcoal-700 transition-colors"
-        >
-          ← Previous Unit
-        </button>
-      ) : (
-        <div className="flex-1" />
-      )}
-      {nextId ? (
-        <button
-          onClick={() => router.push(`/unit-turns/${batchId}/units/${nextId}`)}
-          className="flex-1 py-3 bg-orange-600 text-white text-sm font-medium rounded-lg hover:bg-orange-700 transition-colors"
-        >
-          Next Unit →
-        </button>
-      ) : (
-        <div className="flex-1" />
-      )}
+      <button
+        onClick={() => prevId && router.push(`/unit-turns/${batchId}/units/${prevId}`)}
+        disabled={!prevId}
+        className={`flex-1 py-3 text-sm font-medium rounded-lg transition-colors ${
+          prevId
+            ? "bg-charcoal-800 text-white hover:bg-charcoal-700"
+            : "bg-gray-200 text-gray-400 cursor-not-allowed"
+        }`}
+      >
+        ← Previous Unit
+      </button>
+      <button
+        onClick={() => nextId && router.push(`/unit-turns/${batchId}/units/${nextId}`)}
+        disabled={!nextId}
+        className={`flex-1 py-3 text-sm font-medium rounded-lg transition-colors ${
+          nextId
+            ? "bg-orange-600 text-white hover:bg-orange-700"
+            : "bg-gray-200 text-gray-400 cursor-not-allowed"
+        }`}
+      >
+        Next Unit →
+      </button>
     </div>
   );
 }

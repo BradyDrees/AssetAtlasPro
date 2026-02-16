@@ -15,12 +15,12 @@ export default async function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-charcoal-950 via-charcoal-900 to-brand-950 relative overflow-x-hidden">
-      {/* Background decorative shapes */}
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-brand-600/8 rounded-full -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-gold-500/5 rounded-full translate-x-1/3 translate-y-1/3" />
-      <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-brand-400/5 rounded-full" />
-      <div className="absolute bottom-1/3 left-1/5 w-32 h-32 bg-gold-400/5 rounded-full" />
+    <div className="min-h-screen bg-gradient-to-br from-charcoal-950 via-charcoal-900 to-brand-950 relative">
+      {/* Background decorative shapes — fixed so they don't affect scroll */}
+      <div className="fixed top-0 left-0 w-[500px] h-[500px] bg-brand-600/8 rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+      <div className="fixed bottom-0 right-0 w-[400px] h-[400px] bg-gold-500/5 rounded-full translate-x-1/3 translate-y-1/3 pointer-events-none" />
+      <div className="fixed top-1/3 right-1/4 w-48 h-48 bg-brand-400/5 rounded-full pointer-events-none" />
+      <div className="fixed bottom-1/3 left-1/5 w-32 h-32 bg-gold-400/5 rounded-full pointer-events-none" />
 
       {/* Nav */}
       <header className="relative z-10 flex items-center justify-between px-6 py-5 md:px-12">
@@ -30,7 +30,7 @@ export default async function LandingPage() {
             alt="Asset Atlas Pro"
             width={220}
             height={100}
-            className="h-16 w-auto mix-blend-lighten"
+            className="h-16 w-auto mix-blend-screen"
             priority
           />
         </Link>
@@ -54,13 +54,13 @@ export default async function LandingPage() {
       <section className="relative z-10 px-6 md:px-12 pt-10 md:pt-20 pb-20 max-w-5xl mx-auto">
         <div className="text-center">
           {/* Centered logo */}
-          <div className="flex justify-center mb-10">
+          <div className="flex justify-center mb-2">
             <Image
               src="/logo-dark.png"
               alt="Asset Atlas Pro"
               width={1200}
               height={530}
-              className="h-80 md:h-[28rem] w-auto mix-blend-lighten"
+              className="h-80 md:h-[28rem] w-auto mix-blend-screen"
               priority
             />
           </div>
@@ -169,7 +169,7 @@ export default async function LandingPage() {
       {/* Footer */}
       <footer className="relative z-10 px-6 md:px-12 py-8">
         <div className="max-w-5xl mx-auto flex flex-col items-center gap-4">
-          <Image src="/logo-dark.png" alt="Asset Atlas Pro" width={800} height={350} className="h-40 md:h-52 w-auto mix-blend-lighten" />
+          <Image src="/logo-dark.png" alt="Asset Atlas Pro" width={800} height={350} className="h-40 md:h-52 w-auto mix-blend-screen" />
           <span className="text-sm text-charcoal-400">&copy; 2026</span>
         </div>
       </footer>

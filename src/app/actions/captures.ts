@@ -97,6 +97,18 @@ export async function deleteCapture(
   projectSectionId: string
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  // Verify ownership
+  const { data: project } = await supabase
+    .from("dd_projects")
+    .select("owner_id")
+    .eq("id", projectId)
+    .single();
+  if (!project || project.owner_id !== user.id) throw new Error("Not authorized");
 
   const { error: storageError } = await supabase.storage
     .from("dd-captures")
@@ -120,6 +132,10 @@ export async function updateCaptureCaption(
   projectSectionId: string
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
 
   const { error } = await supabase
     .from("dd_captures")
@@ -136,6 +152,10 @@ export async function updateSectionRating(
   conditionRating: number | null
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
 
   const { error } = await supabase
     .from("dd_project_sections")
@@ -153,6 +173,10 @@ export async function updateSectionNotes(
   notes: string
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
 
   const { error } = await supabase
     .from("dd_project_sections")

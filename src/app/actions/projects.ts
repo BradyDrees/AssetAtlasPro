@@ -53,6 +53,18 @@ export async function createDDProject(data: CreateDDProject) {
 
 export async function updateDDProject(id: string, data: UpdateDDProject) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  // Verify ownership
+  const { data: project } = await supabase
+    .from("dd_projects")
+    .select("owner_id")
+    .eq("id", id)
+    .single();
+  if (!project || project.owner_id !== user.id) throw new Error("Not authorized");
 
   const { error } = await supabase
     .from("dd_projects")
@@ -67,6 +79,18 @@ export async function updateDDProject(id: string, data: UpdateDDProject) {
 
 export async function updateProjectStatus(id: string, status: ProjectStatus) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  // Verify ownership
+  const { data: project } = await supabase
+    .from("dd_projects")
+    .select("owner_id")
+    .eq("id", id)
+    .single();
+  if (!project || project.owner_id !== user.id) throw new Error("Not authorized");
 
   const { error } = await supabase
     .from("dd_projects")
@@ -82,6 +106,18 @@ export async function updateProjectStatus(id: string, status: ProjectStatus) {
 
 export async function deleteDDProject(id: string) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  // Verify ownership
+  const { data: project } = await supabase
+    .from("dd_projects")
+    .select("owner_id")
+    .eq("id", id)
+    .single();
+  if (!project || project.owner_id !== user.id) throw new Error("Not authorized");
 
   // First, collect all capture storage paths for this project
   const { data: sectionIds } = await supabase

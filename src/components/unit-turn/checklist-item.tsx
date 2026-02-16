@@ -146,7 +146,7 @@ export function ChecklistItem({
   const itemNotes = notes.filter((n) => n.item_id === item.id);
 
   return (
-    <div className={`border-b border-gray-100 last:border-b-0 py-3 px-4 ${isNA ? "opacity-50" : ""}`}>
+    <div id={`item-${item.id}`} data-assessed={status != null || isNA ? "true" : "false"} className={`border-b border-gray-100 last:border-b-0 py-3 px-4 transition-all ${isNA ? "opacity-50" : ""}`}>
       {/* Item Name */}
       <div className="mb-2">
         <span className="text-sm text-gray-800">

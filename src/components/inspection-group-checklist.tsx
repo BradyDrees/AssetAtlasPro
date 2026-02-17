@@ -393,7 +393,7 @@ export function InspectionGroupChecklist({
             className={`bg-surface-primary rounded-lg border-2 ${sectionBorder} overflow-hidden shadow-sm ${isNa ? "opacity-60" : ""}`}
           >
             {/* Sub-section header */}
-            <div className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-gray-50 to-white">
+            <div className="w-full flex items-center justify-between px-4 py-3 bg-[#3d3520]">
               <button
                 onClick={() =>
                   setCollapsedSections((prev) => {
@@ -453,7 +453,7 @@ export function InspectionGroupChecklist({
             {/* Checklist items */}
             {!isCollapsed && (
               <div className="border-t border-edge-tertiary">
-                {checklistItems.map((item) => {
+                {checklistItems.map((item, itemIdx) => {
                   const itemFindings = findingsByChecklist.get(item.id) ?? [];
                   const hasFindings = itemFindings.length > 0;
                   const isExpanded = expandedItems.has(item.id);
@@ -493,12 +493,12 @@ export function InspectionGroupChecklist({
                           handleChecklistItemClick(item, sectionData)
                         }
                         disabled={isCreating}
-                        className={`w-full flex items-center justify-between px-4 py-2.5 transition-all disabled:opacity-50 border-b border-edge-tertiary last:border-b-0 ${
+                        className={`w-full flex items-center justify-between px-4 py-2.5 transition-all disabled:opacity-50 border-b border-edge-tertiary last:border-b-0 hover:bg-brand-50/30 ${
                           isExpanded
                             ? "bg-brand-50/50"
                             : hasFindings
-                              ? "hover:bg-brand-50/30"
-                              : "hover:bg-surface-secondary"
+                              ? ""
+                              : "bg-surface-secondary/40 border-l-2 border-l-brand-500"
                         }`}
                       >
                         <div className="flex items-center gap-2.5 min-w-0 flex-1">

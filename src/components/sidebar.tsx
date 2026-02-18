@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "@/app/actions/auth";
 import { useTheme } from "@/components/theme-provider";
+import { useOffline } from "@/components/offline-provider";
 import type { User } from "@supabase/supabase-js";
 
 const navItems = [
@@ -37,6 +38,7 @@ const navItems = [
 export function Sidebar({ user }: { user: User }) {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
+  const { isFieldMode, isOnline, pendingCount, isSyncing, toggleFieldMode, startSync } = useOffline();
   const [isOpen, setIsOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -142,8 +144,69 @@ export function Sidebar({ user }: { user: User }) {
           })}
         </nav>
 
-        {/* Theme toggle + User info + sign out */}
+        {/* Field Mode + Theme toggle + User info + sign out */}
         <div className="p-4 border-t border-edge-primary bg-surface-secondary/50">
+          {/* Field Mode toggle */}
+          {!collapsed ? (
+            <button
+              onClick={toggleFieldMode}
+              className={`flex items-center justify-between w-full px-1 py-1.5 text-sm rounded transition-colors mb-2 ${
+                isFieldMode
+                  ? "text-gold-400 font-medium"
+                  : "text-content-tertiary hover:text-content-primary"
+              }`}
+            >
+              <span className="flex items-center gap-2">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
+                </svg>
+                {isFieldMode ? "Go Online" : "Field Mode"}
+              </span>
+              <span className="flex items-center gap-1.5">
+                {pendingCount > 0 && (
+                  <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full bg-gold-500/20 text-gold-400">
+                    {pendingCount}
+                  </span>
+                )}
+                {!isOnline && (
+                  <span className="w-2 h-2 rounded-full bg-red-500" title="Offline" />
+                )}
+              </span>
+            </button>
+          ) : (
+            <button
+              onClick={toggleFieldMode}
+              className={`w-full text-center py-1.5 text-base mb-2 relative ${isFieldMode ? "text-gold-400" : ""}`}
+              title={isFieldMode ? "Go Online" : "Field Mode"}
+            >
+              <svg className="w-4 h-4 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
+              </svg>
+              {pendingCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 text-[10px] font-bold rounded-full bg-gold-500/20 text-gold-400 flex items-center justify-center">
+                  {pendingCount}
+                </span>
+              )}
+            </button>
+          )}
+
+          {/* Sync button — shows when there are pending items and we're online */}
+          {pendingCount > 0 && isOnline && !isFieldMode && !isSyncing && !collapsed && (
+            <button
+              onClick={() => startSync()}
+              className="flex items-center justify-center gap-2 w-full px-1 py-1.5 text-sm text-brand-400 hover:text-brand-300 rounded transition-colors mb-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Sync Now
+            </button>
+          )}
+
+          {isSyncing && !collapsed && (
+            <p className="text-xs text-brand-400 mb-2 px-1">Syncing...</p>
+          )}
+
           {/* Theme toggle */}
           {!collapsed ? (
             <button

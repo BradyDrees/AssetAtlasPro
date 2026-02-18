@@ -29,8 +29,14 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // Refresh the auth token
-  await supabase.auth.getUser();
+  // Refresh the auth token — wrapped in try/catch so offline
+  // navigation still works with the cached session cookie.
+  try {
+    await supabase.auth.getUser();
+  } catch {
+    // Supabase unreachable (offline or network error).
+    // Allow the request to proceed with whatever session cookie exists.
+  }
 
   return supabaseResponse;
 }

@@ -15,6 +15,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Asset Atlas Pro",
   description: "Due diligence field inspection for multifamily real estate",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Atlas Pro",
+  },
 };
 
 export const viewport: Viewport = {
@@ -22,6 +27,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   viewportFit: "cover",
+  themeColor: "#1a3a2a",
 };
 
 export default function RootLayout({

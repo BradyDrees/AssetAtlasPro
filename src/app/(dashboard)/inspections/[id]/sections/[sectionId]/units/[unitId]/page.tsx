@@ -24,59 +24,53 @@ export default async function InspectionUnitPage({
   } = await params;
   const supabase = await createClient();
 
-  // Fetch project
-  const { data: project } = await supabase
-    .from("inspection_projects")
-    .select("*")
-    .eq("id", projectId)
-    .single();
+  // Fire all 6 queries in parallel instead of sequentially
+  const [
+    { data: project },
+    { data: projectSection },
+    { data: unit },
+    { data: captures },
+    { data: findingsData },
+    { data: allUnits },
+  ] = await Promise.all([
+    supabase
+      .from("inspection_projects")
+      .select("*")
+      .eq("id", projectId)
+      .single(),
+    supabase
+      .from("inspection_project_sections")
+      .select("*, section:inspection_sections(*)")
+      .eq("id", projectSectionId)
+      .single(),
+    supabase
+      .from("inspection_units")
+      .select("*")
+      .eq("id", unitId)
+      .single(),
+    supabase
+      .from("inspection_captures")
+      .select("*")
+      .eq("unit_id", unitId)
+      .order("sort_order"),
+    supabase
+      .from("inspection_findings")
+      .select("*")
+      .eq("project_section_id", projectSectionId)
+      .order("sort_order"),
+    supabase
+      .from("inspection_units")
+      .select("id, building, unit_number")
+      .eq("project_section_id", projectSectionId)
+      .order("building")
+      .order("unit_number"),
+  ]);
 
-  if (!project) notFound();
-
-  // Fetch project section + master section
-  const { data: projectSection } = await supabase
-    .from("inspection_project_sections")
-    .select("*, section:inspection_sections(*)")
-    .eq("id", projectSectionId)
-    .single();
-
-  if (!projectSection) notFound();
+  if (!project || !projectSection || !unit) notFound();
 
   const ps = projectSection as InspectionProjectSectionWithDetails;
   const groupSlug = INSPECTION_GROUP_SLUGS[ps.section.group_name] ?? "";
-
-  // Fetch this unit
-  const { data: unit } = await supabase
-    .from("inspection_units")
-    .select("*")
-    .eq("id", unitId)
-    .single();
-
-  if (!unit) notFound();
-
-  // Fetch captures for this unit
-  const { data: captures } = await supabase
-    .from("inspection_captures")
-    .select("*")
-    .eq("unit_id", unitId)
-    .order("sort_order");
-
-  // Fetch findings for this project section (will filter to unit in component)
-  const { data: findingsData } = await supabase
-    .from("inspection_findings")
-    .select("*")
-    .eq("project_section_id", projectSectionId)
-    .order("sort_order");
-
   const findings = (findingsData ?? []) as InspectionFinding[];
-
-  // Get all units for next unit navigation
-  const { data: allUnits } = await supabase
-    .from("inspection_units")
-    .select("id, building, unit_number")
-    .eq("project_section_id", projectSectionId)
-    .order("building")
-    .order("unit_number");
 
   const currentIdx = (allUnits ?? []).findIndex((u: any) => u.id === unitId);
   const nextUnit =

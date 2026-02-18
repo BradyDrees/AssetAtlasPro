@@ -34,55 +34,48 @@ export default async function InspectionReviewPage({
   const { id } = await params;
   const supabase = await createClient();
 
-  // Fetch project
-  const { data: project } = await supabase
-    .from("inspection_projects")
-    .select("*")
-    .eq("id", id)
-    .single();
+  // Fire all queries in parallel for speed
+  const [
+    { data: project },
+    { data: projectSections },
+    { data: findingsData },
+    { data: unitsData },
+    { data: capturesData },
+  ] = await Promise.all([
+    supabase
+      .from("inspection_projects")
+      .select("*")
+      .eq("id", id)
+      .single(),
+    supabase
+      .from("inspection_project_sections")
+      .select("*, section:inspection_sections(*)")
+      .eq("project_id", id)
+      .order("sort_order"),
+    supabase
+      .from("inspection_findings")
+      .select("*")
+      .eq("project_id", id)
+      .order("sort_order"),
+    supabase
+      .from("inspection_units")
+      .select("*")
+      .eq("project_id", id)
+      .order("building")
+      .order("unit_number"),
+    supabase
+      .from("inspection_captures")
+      .select("*")
+      .eq("project_id", id),
+  ]);
 
   if (!project) notFound();
-
-  // Fetch project sections
-  const { data: projectSections } = await supabase
-    .from("inspection_project_sections")
-    .select("*, section:inspection_sections(*)")
-    .eq("project_id", id)
-    .order("sort_order");
 
   const sections = (projectSections ??
     []) as InspectionProjectSectionWithDetails[];
   const enabledSections = sections.filter((s) => s.enabled);
-  const sectionIds = enabledSections.map((s) => s.id);
-
-  // Fetch all findings
-  const { data: findingsData } = await supabase
-    .from("inspection_findings")
-    .select("*")
-    .eq("project_id", id)
-    .order("sort_order");
-
   const findings = (findingsData ?? []) as InspectionFinding[];
-
-  // Fetch all units
-  const { data: unitsData } = await supabase
-    .from("inspection_units")
-    .select("*")
-    .eq("project_id", id)
-    .order("building")
-    .order("unit_number");
-
   const units = (unitsData ?? []) as InspectionUnit[];
-
-  // Fetch all captures
-  const { data: capturesData } =
-    sectionIds.length > 0
-      ? await supabase
-          .from("inspection_captures")
-          .select("*")
-          .in("project_section_id", sectionIds)
-      : { data: [] };
-
   const allCaptures = (capturesData ?? []) as InspectionCapture[];
 
   // Compute metrics

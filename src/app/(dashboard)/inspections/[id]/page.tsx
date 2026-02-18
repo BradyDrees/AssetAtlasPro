@@ -39,16 +39,26 @@ export default async function InspectionDetailPage({
   const { id } = await params;
   const { group: scrollToGroup } = await searchParams;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
-  // Fetch project
-  const { data: project } = await supabase
-    .from("inspection_projects")
-    .select("*")
-    .eq("id", id)
-    .single();
+  // Phase 1: Fetch user, project, and sections in parallel
+  const [
+    { data: { user } },
+    { data: project },
+    { data: projectSections },
+  ] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase
+      .from("inspection_projects")
+      .select("*")
+      .eq("id", id)
+      .single(),
+    supabase
+      .from("inspection_project_sections")
+      .select("*, section:inspection_sections(*)")
+      .eq("project_id", id)
+      .eq("enabled", true)
+      .order("sort_order"),
+  ]);
 
   if (!project) notFound();
 
@@ -56,55 +66,37 @@ export default async function InspectionDetailPage({
   const currentUserId = user?.id ?? "";
   const role: ProjectRole = project.owner_id === currentUserId ? "owner" : "collaborator";
 
-  // Fetch ALL enabled project sections joined with master section data
-  const { data: projectSections } = await supabase
-    .from("inspection_project_sections")
-    .select(
-      `
-      *,
-      section:inspection_sections(*)
-    `
-    )
-    .eq("project_id", id)
-    .eq("enabled", true)
-    .order("sort_order");
-
   const allSections = (projectSections ?? []) as InspectionProjectSectionWithDetails[];
-
-  // Batch fetch: ALL checklist items for all enabled sections
   const masterSectionIds = [...new Set(allSections.map((ps) => ps.section_id))];
-  let allChecklistItems: InspectionChecklistItem[] = [];
-  if (masterSectionIds.length > 0) {
-    const { data } = await supabase
-      .from("inspection_checklist_items")
-      .select("*")
-      .in("section_id", masterSectionIds)
-      .order("sort_order");
-    allChecklistItems = (data ?? []) as InspectionChecklistItem[];
-  }
-
-  // Batch fetch: ALL findings for all enabled sections
   const projectSectionIds = allSections.map((ps) => ps.id);
-  let allFindings: InspectionFinding[] = [];
-  if (projectSectionIds.length > 0) {
-    const { data } = await supabase
-      .from("inspection_findings")
-      .select("*")
-      .in("project_section_id", projectSectionIds)
-      .order("sort_order");
-    allFindings = (data ?? []) as InspectionFinding[];
-  }
 
-  // Batch fetch: ALL captures for all enabled sections
-  let allCaptures: InspectionCapture[] = [];
-  if (projectSectionIds.length > 0) {
-    const { data } = await supabase
-      .from("inspection_captures")
-      .select("*")
-      .in("project_section_id", projectSectionIds)
-      .order("sort_order");
-    allCaptures = (data ?? []) as InspectionCapture[];
-  }
+  // Phase 2: Fetch checklist items, findings, and captures in parallel
+  const [checklistResult, findingsResult, capturesResult] =
+    projectSectionIds.length > 0
+      ? await Promise.all([
+          masterSectionIds.length > 0
+            ? supabase
+                .from("inspection_checklist_items")
+                .select("*")
+                .in("section_id", masterSectionIds)
+                .order("sort_order")
+            : Promise.resolve({ data: [] }),
+          supabase
+            .from("inspection_findings")
+            .select("*")
+            .in("project_section_id", projectSectionIds)
+            .order("sort_order"),
+          supabase
+            .from("inspection_captures")
+            .select("*")
+            .in("project_section_id", projectSectionIds)
+            .order("sort_order"),
+        ])
+      : [{ data: [] }, { data: [] }, { data: [] }];
+
+  const allChecklistItems = (checklistResult.data ?? []) as InspectionChecklistItem[];
+  const allFindings = (findingsResult.data ?? []) as InspectionFinding[];
+  const allCaptures = (capturesResult.data ?? []) as InspectionCapture[];
 
   // Group sections by group_name, maintaining order
   // For each group, build the sectionsData array that InspectionGroupChecklist expects

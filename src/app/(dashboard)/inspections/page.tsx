@@ -10,19 +10,20 @@ export default async function InspectionsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Fetch projects owned by current user
-  const { data: ownedProjects } = await supabase
-    .from("inspection_projects")
-    .select("*")
-    .eq("owner_id", user?.id ?? "")
-    .order("created_at", { ascending: false });
+  // Fire owned projects + share lookup in parallel
+  const [{ data: ownedProjects }, { data: shares }] = await Promise.all([
+    supabase
+      .from("inspection_projects")
+      .select("*")
+      .eq("owner_id", user?.id ?? "")
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("inspection_project_shares")
+      .select("project_id")
+      .eq("shared_with_user_id", user?.id ?? ""),
+  ]);
 
-  // Fetch projects shared with current user
-  const { data: shares } = await supabase
-    .from("inspection_project_shares")
-    .select("project_id")
-    .eq("shared_with_user_id", user?.id ?? "");
-
+  // Fetch shared projects (depends on shares result)
   const sharedProjectIds = (shares ?? []).map((s: { project_id: string }) => s.project_id);
   let sharedProjects: typeof ownedProjects = [];
   if (sharedProjectIds.length > 0) {

@@ -117,6 +117,19 @@ export interface LocalUnit {
   isDeletedPending: boolean;
 }
 
+export interface PageSnapshot {
+  /** e.g. "section:{projectId}:{sectionId}" or "unit:{projectId}:{sectionId}:{unitId}" */
+  pageId: string;
+  pageType: "section" | "unit";
+  /** Full page data stored as plain object — Dexie handles serialization */
+  data: Record<string, unknown>;
+  /** Stable fingerprint — skip write if unchanged */
+  dataVersion: string;
+  snapshotAt: number;
+  /** For future-proofing snapshot shape evolution */
+  schemaVersion: number;
+}
+
 // ============================================
 // Database
 // ============================================
@@ -128,6 +141,7 @@ export class OfflineDB extends Dexie {
   localNotes!: Table<LocalNote, string>;
   localNotePhotos!: Table<LocalNotePhoto, string>;
   localUnits!: Table<LocalUnit, string>;
+  pageSnapshots!: Table<PageSnapshot, string>;
 
   constructor() {
     super("asset-atlas-offline");
@@ -155,6 +169,19 @@ export class OfflineDB extends Dexie {
         "&localId, projectId, projectSectionId, syncStatus, building, unitNumber",
       // projectSnapshots removed — was never used
       projectSnapshots: null,
+    });
+
+    this.version(3).stores({
+      syncQueue: "&id, status, createdAt",
+      localFindings:
+        "&localId, projectId, projectSectionId, syncStatus",
+      localCaptures:
+        "&localId, projectId, findingLocalId, syncStatus",
+      localNotes: "&localId, batchId, unitId, syncStatus",
+      localNotePhotos: "&localId, noteLocalId, syncStatus",
+      localUnits:
+        "&localId, projectId, projectSectionId, syncStatus, building, unitNumber",
+      pageSnapshots: "&pageId, pageType, snapshotAt",
     });
   }
 }

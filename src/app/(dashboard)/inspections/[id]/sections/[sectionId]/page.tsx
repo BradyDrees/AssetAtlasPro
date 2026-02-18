@@ -5,6 +5,7 @@ import { InspectionSectionFields } from "@/components/inspection-section-fields"
 import { InspectionChecklistPanel } from "@/components/inspection-checklist-panel";
 import { InspectionFindingsList } from "@/components/inspection-findings-list";
 import { InspectionUnitList } from "@/components/inspection-unit-list";
+import { SnapshotSync } from "@/components/snapshot-sync";
 import { INSPECTION_GROUP_SLUGS } from "@/lib/inspection-sections";
 import type {
   InspectionProjectSectionWithDetails,
@@ -109,6 +110,25 @@ export default async function InspectionSectionPage({
 
   return (
     <div>
+      {/* Silently cache page data to Dexie for offline access */}
+      <SnapshotSync
+        pageId={`section:${projectId}:${projectSectionId}`}
+        pageType="section"
+        dataVersion={`${projectSectionId}:${(findings ?? []).length}:${(captures ?? []).length}:${units.length}`}
+        data={{
+          project,
+          projectSection: ps,
+          checklistItems: (checklistItems ?? []) as InspectionChecklistItem[],
+          findings: (findings ?? []) as InspectionFinding[],
+          captures: (captures ?? []) as InspectionCapture[],
+          units,
+          nextSection,
+          allSections,
+          isUnitMode,
+          groupSlug,
+        }}
+      />
+
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4">
         <Link

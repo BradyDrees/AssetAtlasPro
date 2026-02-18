@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { InspectionUnitDetail } from "@/components/inspection-unit-detail";
+import { SnapshotSync } from "@/components/snapshot-sync";
 import { INSPECTION_GROUP_SLUGS } from "@/lib/inspection-sections";
 import type {
   InspectionUnit,
@@ -123,6 +124,25 @@ export default async function InspectionUnitPage({
 
   return (
     <div>
+      {/* Silently cache page data to Dexie for offline access */}
+      <SnapshotSync
+        pageId={`unit:${projectId}:${projectSectionId}:${unitId}`}
+        pageType="unit"
+        dataVersion={`${unitId}:${(captures ?? []).length}:${(allUnits ?? []).length}:${turnCategoryData.length}`}
+        data={{
+          project,
+          projectSection: ps,
+          unit: unit as InspectionUnit,
+          captures: (captures ?? []) as InspectionCapture[],
+          allUnits: unitsList,
+          turnCategoryData,
+          supabaseUrl,
+          groupSlug,
+          prevUnit,
+          nextUnit,
+        }}
+      />
+
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4">
         <Link

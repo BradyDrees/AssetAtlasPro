@@ -61,7 +61,8 @@ export function Sidebar({ user }: { user: User }) {
       {/* Mobile hamburger button — visible only on small screens */}
       <button
         onClick={() => setIsOpen(true)}
-        className="md:hidden fixed top-3 left-3 z-50 p-2 bg-surface-primary rounded-lg border border-edge-primary shadow-sm"
+        className="md:hidden fixed left-3 z-50 p-2 bg-surface-primary rounded-lg border border-edge-primary shadow-sm"
+        style={{ top: "calc(env(safe-area-inset-top, 0px) + 12px)" }}
         aria-label="Open menu"
       >
         <svg className="w-5 h-5 text-content-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,7 +83,10 @@ export function Sidebar({ user }: { user: User }) {
         className={`bg-surface-primary border-r border-edge-primary flex flex-col flex-shrink-0 transition-all duration-200 fixed inset-y-0 left-0 z-50 ${isOpen ? "translate-x-0" : "-translate-x-full"} w-64 md:relative md:translate-x-0 ${collapsed ? "md:w-16" : "md:w-64"}`}
       >
         {/* Header — charcoal + forest green */}
-        <div className="p-4 flex items-center justify-between bg-[radial-gradient(ellipse_at_top_left,_var(--brand-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--brand-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900">
+        <div
+          className="p-4 flex items-center justify-between bg-[radial-gradient(ellipse_at_top_left,_var(--brand-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--brand-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900"
+          style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 16px)" }}
+        >
           {!collapsed && (
             <Link href="/dashboard" className="flex-shrink-0">
               <div>

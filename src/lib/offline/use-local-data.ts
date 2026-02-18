@@ -5,9 +5,10 @@ import { useOffline } from "@/components/offline-provider";
 import {
   getLocalFindings,
   getLocalCaptures,
+  getLocalUnits,
   createLocalCaptureUrl,
 } from "./actions";
-import type { LocalFinding, LocalCapture } from "./db";
+import type { LocalFinding, LocalCapture, LocalUnit } from "./db";
 
 /**
  * Returns locally-stored findings for a project section.
@@ -78,4 +79,24 @@ export function useLocalCaptures(
   }, [localCaptures]);
 
   return { captures: localCaptures, urlMap: urlMapRef.current };
+}
+
+/**
+ * Returns locally-stored units for a project section.
+ * Only returns data when isFieldMode is true.
+ * Excludes soft-deleted units.
+ */
+export function useLocalUnits(projectSectionId: string): LocalUnit[] {
+  const { isFieldMode, localRevision } = useOffline();
+  const [localUnits, setLocalUnits] = useState<LocalUnit[]>([]);
+
+  useEffect(() => {
+    if (!isFieldMode) {
+      setLocalUnits([]);
+      return;
+    }
+    getLocalUnits(projectSectionId).then(setLocalUnits);
+  }, [isFieldMode, projectSectionId, localRevision]);
+
+  return localUnits;
 }

@@ -17,6 +17,9 @@ import {
   saveUnitCheckOffline,
   addCaptureOffline,
   deleteCaptureOffline,
+  deleteInspectionUnitOffline,
+  provisionTurnChecklistOffline,
+  createInspectionUnitOffline,
 } from "@/lib/offline/actions";
 import { CategorySection } from "@/components/unit-turn/category-section";
 import {
@@ -162,7 +165,16 @@ export function InspectionUnitDetail({
     if (!confirm("Delete this unit and all its photos?")) return;
     setDeleting(true);
     try {
-      await deleteInspectionUnit(unit.id, projectId, projectSectionId);
+      if (isFieldMode) {
+        await deleteInspectionUnitOffline({
+          unitId: unit.id,
+          projectId,
+          projectSectionId,
+        });
+        await refreshPending();
+      } else {
+        await deleteInspectionUnit(unit.id, projectId, projectSectionId);
+      }
       router.push(
         `/inspections/${projectId}/sections/${projectSectionId}`
       );
@@ -180,18 +192,31 @@ export function InspectionUnitDetail({
         setProvisioning(true);
         setProvisionError("");
         try {
-          const res = await provisionTurnChecklist(
-            unit.id,
-            projectId,
-            unit.building,
-            unit.unit_number
-          );
-          if (res.error) {
-            console.error("Provision error:", res.error);
-            setProvisionError(res.error);
-          } else if (res.turnUnitId) {
-            setTurnUnitId(res.turnUnitId);
+          if (isFieldMode) {
+            const localTurnId = await provisionTurnChecklistOffline({
+              inspectionUnitId: unit.id,
+              projectId,
+              building: unit.building,
+              unitNumber: unit.unit_number,
+              createdBy: currentUserId ?? "",
+            });
+            setTurnUnitId(localTurnId);
+            await refreshPending();
             router.refresh();
+          } else {
+            const res = await provisionTurnChecklist(
+              unit.id,
+              projectId,
+              unit.building,
+              unit.unit_number
+            );
+            if (res.error) {
+              console.error("Provision error:", res.error);
+              setProvisionError(res.error);
+            } else if (res.turnUnitId) {
+              setTurnUnitId(res.turnUnitId);
+              router.refresh();
+            }
           }
         } catch (err) {
           console.error("Failed to provision turn checklist:", err);
@@ -208,22 +233,35 @@ export function InspectionUnitDetail({
     if (turnUnitId) return; // already provisioned
     setProvisioning(true);
     try {
-      const res = await provisionTurnChecklist(
-        unit.id,
-        projectId,
-        unit.building,
-        unit.unit_number
-      );
-      if (res.turnUnitId) {
-        setTurnUnitId(res.turnUnitId);
-        router.refresh(); // reload page to get checklist data from server
+      if (isFieldMode) {
+        const localTurnId = await provisionTurnChecklistOffline({
+          inspectionUnitId: unit.id,
+          projectId,
+          building: unit.building,
+          unitNumber: unit.unit_number,
+          createdBy: currentUserId ?? "",
+        });
+        setTurnUnitId(localTurnId);
+        await refreshPending();
+        router.refresh();
+      } else {
+        const res = await provisionTurnChecklist(
+          unit.id,
+          projectId,
+          unit.building,
+          unit.unit_number
+        );
+        if (res.turnUnitId) {
+          setTurnUnitId(res.turnUnitId);
+          router.refresh();
+        }
       }
     } catch (err) {
       console.error("Failed to provision turn checklist:", err);
     } finally {
       setProvisioning(false);
     }
-  }, [turnUnitId, unit.id, unit.building, unit.unit_number, projectId, router]);
+  }, [turnUnitId, unit.id, unit.building, unit.unit_number, projectId, router, isFieldMode, currentUserId, refreshPending]);
 
   return (
     <div className="space-y-6">
@@ -312,15 +350,28 @@ export function InspectionUnitDetail({
                       if (newVal === false && !turnUnitId) {
                         setProvisioning(true);
                         try {
-                          const res = await provisionTurnChecklist(
-                            unit.id,
-                            projectId,
-                            unit.building,
-                            unit.unit_number
-                          );
-                          if (res.turnUnitId) {
-                            setTurnUnitId(res.turnUnitId);
+                          if (isFieldMode) {
+                            const localTurnId = await provisionTurnChecklistOffline({
+                              inspectionUnitId: unit.id,
+                              projectId,
+                              building: unit.building,
+                              unitNumber: unit.unit_number,
+                              createdBy: currentUserId ?? "",
+                            });
+                            setTurnUnitId(localTurnId);
+                            await refreshPending();
                             router.refresh();
+                          } else {
+                            const res = await provisionTurnChecklist(
+                              unit.id,
+                              projectId,
+                              unit.building,
+                              unit.unit_number
+                            );
+                            if (res.turnUnitId) {
+                              setTurnUnitId(res.turnUnitId);
+                              router.refresh();
+                            }
                           }
                         } catch (err) {
                           console.error("Failed to provision turn checklist:", err);
@@ -460,6 +511,16 @@ export function InspectionUnitDetail({
                 </div>
               )}
             </div>
+          ) : turnUnitId && isFieldMode ? (
+            <div className="bg-surface-primary rounded-lg border border-amber-200 p-6 text-center">
+              <svg className="w-8 h-8 text-amber-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              <p className="text-sm text-amber-700 font-medium">Checklist queued for sync</p>
+              <p className="text-xs text-content-muted mt-1">
+                Connect to the internet to load checklist items.
+              </p>
+            </div>
           ) : (
             <div className="bg-surface-primary rounded-lg border border-edge-primary p-6 text-center">
               {provisionError ? (
@@ -476,6 +537,7 @@ export function InspectionUnitDetail({
       <AddUnitInline
         projectId={projectId}
         projectSectionId={projectSectionId}
+        currentUserId={currentUserId}
       />
 
       {/* Delete unit */}
@@ -496,11 +558,14 @@ export function InspectionUnitDetail({
 function AddUnitInline({
   projectId,
   projectSectionId,
+  currentUserId,
 }: {
   projectId: string;
   projectSectionId: string;
+  currentUserId?: string;
 }) {
   const router = useFieldRouter();
+  const { isFieldMode, refreshPending } = useOffline();
   const [open, setOpen] = useState(false);
   const [building, setBuilding] = useState("");
   const [unitNumber, setUnitNumber] = useState("");
@@ -514,15 +579,30 @@ function AddUnitInline({
     setLoading(true);
     setError("");
     try {
-      const newId = await createInspectionUnit({
-        project_id: projectId,
-        project_section_id: projectSectionId,
-        building: building.trim(),
-        unit_number: unitNumber.trim(),
-      });
-      router.push(
-        `/inspections/${projectId}/sections/${projectSectionId}/units/${newId}`
-      );
+      if (isFieldMode) {
+        await createInspectionUnitOffline({
+          projectId,
+          projectSectionId,
+          building: building.trim(),
+          unitNumber: unitNumber.trim(),
+          createdBy: currentUserId ?? "",
+        });
+        await refreshPending();
+        // Stay on section page — local unit appears in merged list
+        router.push(
+          `/inspections/${projectId}/sections/${projectSectionId}`
+        );
+      } else {
+        const newId = await createInspectionUnit({
+          project_id: projectId,
+          project_section_id: projectSectionId,
+          building: building.trim(),
+          unit_number: unitNumber.trim(),
+        });
+        router.push(
+          `/inspections/${projectId}/sections/${projectSectionId}/units/${newId}`
+        );
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create unit");
       setLoading(false);

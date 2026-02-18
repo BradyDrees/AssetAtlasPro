@@ -484,8 +484,209 @@ export async function deleteNotePhotoOffline(params: {
 }
 
 // ============================================
+// Inspection Units (offline CRUD)
+// ============================================
+
+/**
+ * Create an inspection unit locally and queue for sync.
+ * Returns the local ID immediately.
+ */
+export async function createInspectionUnitOffline(params: {
+  projectId: string;
+  projectSectionId: string;
+  building: string;
+  unitNumber: string;
+  createdBy: string;
+}): Promise<string> {
+  const localId = localUUID();
+  const now = Date.now();
+
+  await offlineDB.localUnits.add({
+    localId,
+    projectId: params.projectId,
+    projectSectionId: params.projectSectionId,
+    building: params.building.trim(),
+    unitNumber: params.unitNumber.trim(),
+    occupancyStatus: "UNKNOWN",
+    walkStatus: "NOT_STARTED",
+    rentReady: null,
+    daysVacant: null,
+    turnUnitLocalId: null,
+    notes: "",
+    createdBy: params.createdBy,
+    createdAt: now,
+    syncStatus: "pending",
+    isDeletedPending: false,
+  });
+
+  await enqueue("UNIT_CREATE", {
+    localId,
+    projectId: params.projectId,
+    projectSectionId: params.projectSectionId,
+    building: params.building.trim(),
+    unitNumber: params.unitNumber.trim(),
+    createdBy: params.createdBy,
+  });
+
+  return localId;
+}
+
+/**
+ * Delete an inspection unit offline.
+ * - Local-only (no serverId): hard-delete + cascade + prune full queue chain
+ * - Server entity (has serverId): soft-delete, enqueue UNIT_DELETE
+ */
+export async function deleteInspectionUnitOffline(params: {
+  unitId: string;
+  projectId: string;
+  projectSectionId: string;
+}): Promise<void> {
+  const localUnit = await offlineDB.localUnits.get(params.unitId);
+
+  if (localUnit && !localUnit.serverId) {
+    // Local-only: hard-delete + cascade everything
+    const unitLocalId = params.unitId;
+    const turnLocalId = localUnit.turnUnitLocalId;
+
+    await offlineDB.localUnits.delete(unitLocalId);
+
+    // Cascade: delete local captures referencing this unit
+    const relatedCaptures = await offlineDB.localCaptures
+      .where("projectId")
+      .equals(params.projectId)
+      .filter((c) => c.unitId === unitLocalId)
+      .toArray();
+    if (relatedCaptures.length > 0) {
+      await offlineDB.localCaptures.bulkDelete(
+        relatedCaptures.map((c) => c.localId)
+      );
+    }
+
+    // Cascade: delete local findings referencing this unit
+    const relatedFindings = await offlineDB.localFindings
+      .where("projectId")
+      .equals(params.projectId)
+      .filter((f) => f.unitId === unitLocalId)
+      .toArray();
+    if (relatedFindings.length > 0) {
+      await offlineDB.localFindings.bulkDelete(
+        relatedFindings.map((f) => f.localId)
+      );
+    }
+
+    // Cascade: delete local notes/photos tied to this unit's turn checklist
+    if (turnLocalId) {
+      const relatedNotes = await offlineDB.localNotes
+        .where("unitId")
+        .equals(turnLocalId)
+        .toArray();
+      if (relatedNotes.length > 0) {
+        for (const note of relatedNotes) {
+          const notePhotos = await offlineDB.localNotePhotos
+            .where("noteLocalId")
+            .equals(note.localId)
+            .toArray();
+          if (notePhotos.length > 0) {
+            await offlineDB.localNotePhotos.bulkDelete(
+              notePhotos.map((p) => p.localId)
+            );
+          }
+        }
+        await offlineDB.localNotes.bulkDelete(
+          relatedNotes.map((n) => n.localId)
+        );
+      }
+    }
+
+    // Prune ALL queue items referencing this unit (create→edit→provision→delete chain)
+    await pruneQueue((item) => {
+      const p = item.payload;
+      return (
+        p.localId === unitLocalId ||
+        p.unitId === unitLocalId ||
+        p.inspectionUnitId === unitLocalId ||
+        (turnLocalId && p.localTurnUnitId === turnLocalId) ||
+        relatedCaptures.some((c) => c.localId === p.captureLocalId) ||
+        relatedFindings.some(
+          (f) => f.localId === p.localId || f.localId === p.findingLocalId
+        )
+      );
+    });
+
+    return;
+  }
+
+  if (localUnit && localUnit.serverId) {
+    // Server entity: soft-delete — hide from UI, keep until sync confirms
+    await offlineDB.localUnits.update(params.unitId, {
+      isDeletedPending: true,
+    });
+  }
+
+  // Enqueue server deletion
+  await enqueue("UNIT_DELETE", {
+    unitId: localUnit?.serverId ?? params.unitId,
+    projectId: params.projectId,
+    projectSectionId: params.projectSectionId,
+  });
+}
+
+/**
+ * Provision a turn checklist offline.
+ * Generates a local turnUnitId, stores on the local unit record,
+ * and enqueues for server provisioning.
+ * Returns the local turnUnitId.
+ */
+export async function provisionTurnChecklistOffline(params: {
+  inspectionUnitId: string;
+  projectId: string;
+  building: string;
+  unitNumber: string;
+  createdBy: string;
+}): Promise<string> {
+  const localTurnUnitId = localUUID();
+
+  // Update the local unit record with the turn unit reference
+  const localUnit = await offlineDB.localUnits.get(params.inspectionUnitId);
+  if (localUnit) {
+    await offlineDB.localUnits.update(params.inspectionUnitId, {
+      turnUnitLocalId: localTurnUnitId,
+    });
+  }
+
+  // Enqueue — depends on UNIT_CREATE if the unit is local-only
+  const dependsOn = localUnit && !localUnit.serverId
+    ? [params.inspectionUnitId]
+    : undefined;
+
+  await enqueue(
+    "PROVISION_TURN_CHECKLIST",
+    {
+      localTurnUnitId,
+      inspectionUnitId: params.inspectionUnitId,
+      projectId: params.projectId,
+      building: params.building,
+      unitNumber: params.unitNumber,
+      createdBy: params.createdBy,
+    },
+    dependsOn
+  );
+
+  return localTurnUnitId;
+}
+
+// ============================================
 // Helpers
 // ============================================
+
+/** Get all locally-stored units for a given section (excludes soft-deleted). */
+export async function getLocalUnits(projectSectionId: string) {
+  return offlineDB.localUnits
+    .where("projectSectionId")
+    .equals(projectSectionId)
+    .filter((u) => !u.isDeletedPending)
+    .toArray();
+}
 
 /** Get all locally-stored findings for a given section. */
 export async function getLocalFindings(projectSectionId: string) {

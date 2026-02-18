@@ -6,9 +6,17 @@ import { markSynced, markFailed, purgeSynced } from "./write";
 type ProgressCallback = (synced: number, total: number) => void;
 
 // Map local IDs → server IDs as they're resolved during sync
+// Covers both unit IDs and turn_unit IDs
 const idMap = new Map<string, string>();
 
 const MAX_RETRIES = 3;
+
+/** Resolve a payload ID from the idMap (local → server). Falls back to the original value. */
+function resolveId(value: unknown): string {
+  const id = value as string;
+  if (!id) return id;
+  return idMap.get(id) ?? id;
+}
 
 /**
  * Process the entire sync queue, oldest-first.
@@ -77,6 +85,9 @@ async function syncItem(item: SyncQueueItem): Promise<void> {
     UNIT_ITEM_STATUS: syncUnitItemStatus,
     UNIT_ITEM_NA: syncUnitItemNA,
     PAINT_SCOPE: syncPaintScope,
+    UNIT_CREATE: syncUnitCreate,
+    UNIT_DELETE: syncUnitDelete,
+    PROVISION_TURN_CHECKLIST: syncProvisionTurnChecklist,
   };
 
   const handler = handlers[item.action];
@@ -86,17 +97,91 @@ async function syncItem(item: SyncQueueItem): Promise<void> {
 }
 
 // ============================================
-// Individual sync handlers
+// Inspection Unit CRUD handlers (NEW)
+// ============================================
+
+async function syncUnitCreate(payload: Record<string, unknown>): Promise<void> {
+  const { createInspectionUnit } = await import("@/app/actions/inspection-units");
+
+  const serverId = await createInspectionUnit({
+    project_id: payload.projectId as string,
+    project_section_id: payload.projectSectionId as string,
+    building: payload.building as string,
+    unit_number: payload.unitNumber as string,
+  });
+
+  // Map local unit ID → server unit ID
+  const localId = payload.localId as string;
+  idMap.set(localId, serverId);
+
+  // Update local unit with server ID
+  await offlineDB.localUnits.update(localId, {
+    serverId,
+    syncStatus: "synced",
+  });
+}
+
+async function syncUnitDelete(payload: Record<string, unknown>): Promise<void> {
+  const { deleteInspectionUnit } = await import("@/app/actions/inspection-units");
+
+  const unitId = resolveId(payload.unitId);
+  await deleteInspectionUnit(
+    unitId,
+    payload.projectId as string,
+    payload.projectSectionId as string
+  );
+
+  // Hard-delete the local row now that server deletion is confirmed
+  // Try to find local record by serverId match
+  const locals = await offlineDB.localUnits
+    .where("projectId")
+    .equals(payload.projectId as string)
+    .filter((u) => u.serverId === unitId || u.localId === unitId)
+    .toArray();
+  for (const lu of locals) {
+    await offlineDB.localUnits.delete(lu.localId);
+  }
+}
+
+async function syncProvisionTurnChecklist(payload: Record<string, unknown>): Promise<void> {
+  const { provisionTurnChecklist } = await import("@/app/actions/inspection-units");
+
+  // Resolve inspection unit ID — may be a local ID that synced earlier
+  const inspectionUnitId = resolveId(payload.inspectionUnitId);
+
+  const result = await provisionTurnChecklist(
+    inspectionUnitId,
+    payload.projectId as string,
+    payload.building as string,
+    payload.unitNumber as string
+  );
+
+  if (result.error) {
+    throw new Error(result.error);
+  }
+
+  // Map local turn_unit_id → server turn_unit_id
+  const localTurnUnitId = payload.localTurnUnitId as string;
+  if (result.turnUnitId) {
+    idMap.set(localTurnUnitId, result.turnUnitId);
+  }
+}
+
+// ============================================
+// Finding sync handlers
 // ============================================
 
 async function syncFindingCreate(payload: Record<string, unknown>): Promise<void> {
   const { createInspectionFinding } = await import("@/app/actions/inspection-findings");
 
+  // Resolve unitId — may be a local unit ID
+  const unitId = payload.unitId ? resolveId(payload.unitId) : null;
+
   const serverId = await createInspectionFinding({
     project_id: payload.projectId as string,
     project_section_id: payload.projectSectionId as string,
     checklist_item_id: (payload.checklistItemId as string) || null,
-    unit_id: (payload.unitId as string) || null,
+    unit_id: unitId || null,
     title: payload.title as string,
   });
 
@@ -130,6 +215,19 @@ async function syncFindingUpdate(payload: Record<string, unknown>): Promise<void
   );
 }
 
+async function syncFindingDelete(payload: Record<string, unknown>): Promise<void> {
+  const { deleteInspectionFinding } = await import("@/app/actions/inspection-findings");
+  await deleteInspectionFinding(
+    resolveId(payload.findingId),
+    payload.projectId as string,
+    payload.projectSectionId as string
+  );
+}
+
+// ============================================
+// Capture sync handlers
+// ============================================
+
 async function syncCaptureUpload(payload: Record<string, unknown>): Promise<void> {
   const { uploadInspectionCapture } = await import("@/app/actions/inspection-captures");
 
@@ -143,6 +241,9 @@ async function syncCaptureUpload(payload: Record<string, unknown>): Promise<void
     findingId = idMap.get(payload.findingLocalId as string) ?? null;
   }
 
+  // Resolve unit ID from idMap
+  const unitId = payload.unitId ? resolveId(payload.unitId) : null;
+
   // Build FormData for the server action
   const ext = capture.mime.split("/")[1] || "jpg";
   const file = new File([capture.blob], `offline-${captureLocalId}.${ext}`, {
@@ -155,7 +256,7 @@ async function syncCaptureUpload(payload: Record<string, unknown>): Promise<void
   formData.append("projectId", payload.projectId as string);
   formData.append("sectionSlug", payload.sectionSlug as string);
   if (findingId) formData.append("findingId", findingId);
-  if (payload.unitId) formData.append("unitId", payload.unitId as string);
+  if (unitId) formData.append("unitId", unitId);
 
   await uploadInspectionCapture(formData);
 
@@ -165,11 +266,25 @@ async function syncCaptureUpload(payload: Record<string, unknown>): Promise<void
   });
 }
 
+async function syncCaptureDelete(payload: Record<string, unknown>): Promise<void> {
+  const { deleteInspectionCapture } = await import("@/app/actions/inspection-captures");
+  await deleteInspectionCapture(
+    payload.captureId as string,
+    payload.imagePath as string,
+    payload.projectId as string,
+    payload.projectSectionId as string
+  );
+}
+
+// ============================================
+// Inspection Unit field save handlers
+// ============================================
+
 async function syncUnitCheckSave(payload: Record<string, unknown>): Promise<void> {
   const { updateInspectionUnitField } = await import("@/app/actions/inspection-units");
 
   await updateInspectionUnitField(
-    payload.unitId as string,
+    resolveId(payload.unitId),
     payload.projectId as string,
     payload.projectSectionId as string,
     payload.field as string,
@@ -181,7 +296,7 @@ async function syncUnitGradeSave(payload: Record<string, unknown>): Promise<void
   const { updateInspectionUnitField } = await import("@/app/actions/inspection-units");
 
   await updateInspectionUnitField(
-    payload.unitId as string,
+    resolveId(payload.unitId),
     payload.projectId as string,
     payload.projectSectionId as string,
     payload.field as string,
@@ -189,12 +304,29 @@ async function syncUnitGradeSave(payload: Record<string, unknown>): Promise<void
   );
 }
 
+// ============================================
+// Section toggle handler
+// ============================================
+
+async function syncSectionNAToggle(payload: Record<string, unknown>): Promise<void> {
+  const { toggleInspectionSectionNA } = await import("@/app/actions/inspections");
+  await toggleInspectionSectionNA(
+    payload.projectSectionId as string,
+    payload.projectId as string,
+    payload.isNa as boolean
+  );
+}
+
+// ============================================
+// Unit Turn sync handlers
+// ============================================
+
 async function syncNoteCreate(payload: Record<string, unknown>): Promise<void> {
   const { createNote } = await import("@/app/actions/unit-turns");
 
   const result = await createNote(
     {
-      unit_id: payload.unitId as string,
+      unit_id: resolveId(payload.unitId),
       category_id: payload.categoryId as string,
       text: payload.text as string,
     },
@@ -240,7 +372,7 @@ async function syncNotePhotoUpload(payload: Record<string, unknown>): Promise<vo
   formData.append("file", file);
   formData.append("noteId", noteId);
   formData.append("batchId", payload.batchId as string);
-  formData.append("unitId", payload.unitId as string);
+  formData.append("unitId", resolveId(payload.unitId));
 
   await uploadNotePhoto(formData);
 
@@ -249,49 +381,13 @@ async function syncNotePhotoUpload(payload: Record<string, unknown>): Promise<vo
   });
 }
 
-// ============================================
-// Delete sync handlers
-// ============================================
-
-async function syncFindingDelete(payload: Record<string, unknown>): Promise<void> {
-  const { deleteInspectionFinding } = await import("@/app/actions/inspection-findings");
-  await deleteInspectionFinding(
-    payload.findingId as string,
-    payload.projectId as string,
-    payload.projectSectionId as string
-  );
-}
-
-async function syncCaptureDelete(payload: Record<string, unknown>): Promise<void> {
-  const { deleteInspectionCapture } = await import("@/app/actions/inspection-captures");
-  await deleteInspectionCapture(
-    payload.captureId as string,
-    payload.imagePath as string,
-    payload.projectId as string,
-    payload.projectSectionId as string
-  );
-}
-
-async function syncSectionNAToggle(payload: Record<string, unknown>): Promise<void> {
-  const { toggleInspectionSectionNA } = await import("@/app/actions/inspections");
-  await toggleInspectionSectionNA(
-    payload.projectSectionId as string,
-    payload.projectId as string,
-    payload.isNa as boolean
-  );
-}
-
-// ============================================
-// Unit Turn sync handlers
-// ============================================
-
 async function syncUnitItemStatus(payload: Record<string, unknown>): Promise<void> {
   const { updateUnitItemStatus } = await import("@/app/actions/unit-turns");
   await updateUnitItemStatus(
     payload.itemId as string,
     payload.status as string | null,
     payload.batchId as string,
-    payload.unitId as string
+    resolveId(payload.unitId)
   );
 }
 
@@ -301,7 +397,7 @@ async function syncUnitItemNA(payload: Record<string, unknown>): Promise<void> {
     payload.itemId as string,
     payload.isNA as boolean,
     payload.batchId as string,
-    payload.unitId as string
+    resolveId(payload.unitId)
   );
 }
 
@@ -311,7 +407,7 @@ async function syncPaintScope(payload: Record<string, unknown>): Promise<void> {
     payload.itemId as string,
     payload.scope as string | null,
     payload.batchId as string,
-    payload.unitId as string
+    resolveId(payload.unitId)
   );
 }
 
@@ -320,7 +416,7 @@ async function syncNoteDelete(payload: Record<string, unknown>): Promise<void> {
   await deleteNote(
     payload.noteId as string,
     payload.batchId as string,
-    payload.unitId as string
+    resolveId(payload.unitId)
   );
 }
 
@@ -330,6 +426,6 @@ async function syncNotePhotoDelete(payload: Record<string, unknown>): Promise<vo
     payload.photoId as string,
     payload.imagePath as string,
     payload.batchId as string,
-    payload.unitId as string
+    resolveId(payload.unitId)
   );
 }

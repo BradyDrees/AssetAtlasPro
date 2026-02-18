@@ -21,7 +21,10 @@ export type QueueAction =
   | "SECTION_NA_TOGGLE"
   | "UNIT_ITEM_STATUS"
   | "UNIT_ITEM_NA"
-  | "PAINT_SCOPE";
+  | "PAINT_SCOPE"
+  | "UNIT_CREATE"
+  | "UNIT_DELETE"
+  | "PROVISION_TURN_CHECKLIST";
 
 export interface SyncQueueItem {
   id: string;
@@ -94,6 +97,26 @@ export interface LocalNotePhoto {
   syncStatus: SyncStatus;
 }
 
+export interface LocalUnit {
+  localId: string;
+  serverId?: string;
+  projectId: string;
+  projectSectionId: string;
+  building: string;
+  unitNumber: string;
+  occupancyStatus: string;
+  walkStatus: string;
+  rentReady: boolean | null;
+  daysVacant: number | null;
+  turnUnitLocalId: string | null;
+  notes: string;
+  createdBy: string;
+  createdAt: number;
+  syncStatus: SyncStatus;
+  /** Soft-delete flag — server entities are hidden from UI but kept until sync confirms */
+  isDeletedPending: boolean;
+}
+
 export interface ProjectSnapshot {
   projectId: string;
   updatedAt: number;
@@ -111,6 +134,7 @@ export class OfflineDB extends Dexie {
   localNotes!: Table<LocalNote, string>;
   localNotePhotos!: Table<LocalNotePhoto, string>;
   projectSnapshots!: Table<ProjectSnapshot, string>;
+  localUnits!: Table<LocalUnit, string>;
 
   constructor() {
     super("asset-atlas-offline");
@@ -124,6 +148,19 @@ export class OfflineDB extends Dexie {
       localNotes: "&localId, batchId, unitId, syncStatus",
       localNotePhotos: "&localId, noteLocalId, syncStatus",
       projectSnapshots: "&projectId, updatedAt",
+    });
+
+    this.version(2).stores({
+      syncQueue: "&id, status, createdAt",
+      localFindings:
+        "&localId, projectId, projectSectionId, syncStatus",
+      localCaptures:
+        "&localId, projectId, findingLocalId, syncStatus",
+      localNotes: "&localId, batchId, unitId, syncStatus",
+      localNotePhotos: "&localId, noteLocalId, syncStatus",
+      projectSnapshots: "&projectId, updatedAt",
+      localUnits:
+        "&localId, projectId, projectSectionId, syncStatus, building, unitNumber",
     });
   }
 }

@@ -24,12 +24,18 @@ export default async function InspectionSectionPage({
   const { id: projectId, sectionId: projectSectionId } = await params;
   const supabase = await createClient();
 
-  // Fetch project
-  const { data: project } = await supabase
-    .from("inspection_projects")
-    .select("*")
-    .eq("id", projectId)
-    .single();
+  // Fetch user + project in parallel
+  const [
+    { data: { user } },
+    { data: project },
+  ] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase
+      .from("inspection_projects")
+      .select("*")
+      .eq("id", projectId)
+      .single(),
+  ]);
 
   if (!project) notFound();
 
@@ -173,6 +179,7 @@ export default async function InspectionSectionPage({
           projectId={projectId}
           projectSectionId={projectSectionId}
           sectionSlug={ps.section.slug}
+          currentUserId={user?.id}
         />
       ) : (
         <>

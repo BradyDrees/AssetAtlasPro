@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   createInspectionUnit,
   deleteInspectionUnit,
 } from "@/app/actions/inspection-units";
+import { useFieldRouter } from "@/lib/offline/use-field-router";
+import { useOffline } from "@/components/offline-provider";
+import { useLocalUnits } from "@/lib/offline/use-local-data";
+import { createInspectionUnitOffline } from "@/lib/offline/actions";
 import { BulkUnitUpload } from "@/components/bulk-unit-upload";
 import {
   INSPECTION_UNIT_GRADES,
@@ -25,6 +28,7 @@ interface InspectionUnitListProps {
   projectId: string;
   projectSectionId: string;
   sectionSlug: string;
+  currentUserId?: string;
 }
 
 export function InspectionUnitList({
@@ -33,8 +37,11 @@ export function InspectionUnitList({
   projectId,
   projectSectionId,
   sectionSlug,
+  currentUserId,
 }: InspectionUnitListProps) {
-  const router = useRouter();
+  const router = useFieldRouter();
+  const { isFieldMode, refreshPending } = useOffline();
+  const localUnits = useLocalUnits(projectSectionId);
   const [showAdd, setShowAdd] = useState(false);
   const [showBulk, setShowBulk] = useState(false);
   const [building, setBuilding] = useState("");
@@ -49,24 +56,79 @@ export function InspectionUnitList({
     }
   });
 
+  // Merge server units with local-only units (field mode)
+  const mergedUnits: (InspectionUnit & { _isLocal?: boolean })[] = [
+    ...units,
+    ...localUnits
+      .filter((lu) => lu.syncStatus !== "synced")
+      .map((lu) => ({
+        id: lu.localId,
+        project_id: lu.projectId,
+        project_section_id: lu.projectSectionId,
+        building: lu.building,
+        unit_number: lu.unitNumber,
+        occupancy_status: lu.occupancyStatus as any,
+        walk_status: lu.walkStatus as any,
+        walk_required: false,
+        turn_stage: null,
+        overall_condition: null,
+        tenant_housekeeping: null,
+        floors: null,
+        cabinets: null,
+        countertops: null,
+        appliances: [],
+        plumbing_fixtures: null,
+        electrical_fixtures: null,
+        windows_doors: null,
+        bath_condition: null,
+        has_leak_evidence: false,
+        has_mold_indicators: false,
+        blinds_down: false,
+        toilet_seat_down: false,
+        rent_ready: lu.rentReady,
+        days_vacant: lu.daysVacant,
+        turn_unit_id: lu.turnUnitLocalId,
+        description: "",
+        notes: lu.notes,
+        created_at: new Date(lu.createdAt).toISOString(),
+        updated_at: new Date(lu.createdAt).toISOString(),
+        _isLocal: true,
+      })),
+  ];
+
   const handleAddUnit = async () => {
     if (!building.trim() || !unitNumber.trim()) return;
     setAdding(true);
     try {
-      const unitId = await createInspectionUnit({
-        project_id: projectId,
-        project_section_id: projectSectionId,
-        building: building.trim(),
-        unit_number: unitNumber.trim(),
-      });
-      setBuilding("");
-      setUnitNumber("");
-      setShowAdd(false);
-      router.refresh();
-      // Navigate to the new unit
-      router.push(
-        `/inspections/${projectId}/sections/${projectSectionId}/units/${unitId}`
-      );
+      if (isFieldMode) {
+        await createInspectionUnitOffline({
+          projectId,
+          projectSectionId,
+          building: building.trim(),
+          unitNumber: unitNumber.trim(),
+          createdBy: currentUserId ?? "",
+        });
+        await refreshPending();
+        setBuilding("");
+        setUnitNumber("");
+        setShowAdd(false);
+        router.refresh();
+        // Stay on section page — local unit appears in merged list
+      } else {
+        const unitId = await createInspectionUnit({
+          project_id: projectId,
+          project_section_id: projectSectionId,
+          building: building.trim(),
+          unit_number: unitNumber.trim(),
+        });
+        setBuilding("");
+        setUnitNumber("");
+        setShowAdd(false);
+        router.refresh();
+        router.push(
+          `/inspections/${projectId}/sections/${projectSectionId}/units/${unitId}`
+        );
+      }
     } catch (err) {
       console.error("Failed to create unit:", err);
     } finally {
@@ -78,7 +140,7 @@ export function InspectionUnitList({
     <div>
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-semibold text-content-secondary uppercase tracking-wide">
-          Units ({units.length})
+          Units ({mergedUnits.length})
         </h3>
         <div className="flex gap-2">
           <button
@@ -166,25 +228,46 @@ export function InspectionUnitList({
       )}
 
       {/* Unit list */}
-      {units.length > 0 ? (
+      {mergedUnits.length > 0 ? (
         <div className="space-y-2">
-          {units.map((unit) => {
+          {mergedUnits.map((unit) => {
             const conditionInfo = unit.overall_condition
               ? OVERALL_CONDITION_LABELS[unit.overall_condition]
               : null;
             const photoCount = capturesByUnit[unit.id] ?? 0;
+            const isLocal = (unit as any)._isLocal;
 
             return (
               <Link
                 key={unit.id}
-                href={`/inspections/${projectId}/sections/${projectSectionId}/units/${unit.id}`}
-                className="block bg-surface-primary rounded-lg border border-edge-primary p-3 hover:shadow-md transition-shadow"
+                href={
+                  isLocal
+                    ? "#" // Local units can't navigate to server page yet
+                    : `/inspections/${projectId}/sections/${projectSectionId}/units/${unit.id}`
+                }
+                onClick={(e) => {
+                  if (isLocal) e.preventDefault();
+                }}
+                className={`block bg-surface-primary rounded-lg border p-3 transition-shadow ${
+                  isLocal
+                    ? "border-brand-300 border-dashed opacity-80"
+                    : "border-edge-primary hover:shadow-md"
+                }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0 flex-1 flex-wrap">
                     <span className="text-sm font-medium text-content-primary">
                       {unit.building} - {unit.unit_number}
                     </span>
+                    {/* Pending sync badge for local units */}
+                    {isLocal && (
+                      <span className="text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-medium flex items-center gap-1">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        Pending sync
+                      </span>
+                    )}
                     {/* Occupancy status badge */}
                     {unit.occupancy_status && unit.occupancy_status !== "UNKNOWN" && (
                       <span
@@ -229,19 +312,21 @@ export function InspectionUnitList({
                       </span>
                     )}
                   </div>
-                  <svg
-                    className="w-4 h-4 text-content-muted flex-shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
+                  {!isLocal && (
+                    <svg
+                      className="w-4 h-4 text-content-muted flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  )}
                 </div>
               </Link>
             );

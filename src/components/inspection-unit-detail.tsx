@@ -13,6 +13,7 @@ import {
 } from "@/app/actions/inspection-captures";
 import { useFieldRouter } from "@/lib/offline/use-field-router";
 import { useOffline } from "@/components/offline-provider";
+import { useLocalUnitCaptures } from "@/lib/offline/use-local-data";
 import {
   saveUnitCheckOffline,
   addCaptureOffline,
@@ -57,9 +58,11 @@ export function InspectionUnitDetail({
   supabaseUrl = "",
 }: InspectionUnitDetailProps) {
   const router = useFieldRouter();
-  const { isFieldMode, refreshPending } = useOffline();
+  const { isFieldMode, refreshPending, bumpRevision } = useOffline();
+  const { captures: localCaptures, urlMap: localUrlMap } = useLocalUnitCaptures(unit.id);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [savedToast, setSavedToast] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [provisioning, setProvisioning] = useState(false);
 
@@ -118,6 +121,9 @@ export function InspectionUnitDetail({
           createdBy: currentUserId ?? "",
         });
         await refreshPending();
+        bumpRevision();
+        setSavedToast(true);
+        setTimeout(() => setSavedToast(false), 2000);
       } else {
         const formData = new FormData();
         formData.set("file", file);
@@ -423,10 +429,16 @@ export function InspectionUnitDetail({
           {/* Photos */}
           <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
             <label className="block text-sm font-medium text-content-secondary mb-2">
-              Photos ({captures.length})
+              Photos ({captures.length + localCaptures.length})
+              {localCaptures.length > 0 && (
+                <span className="ml-1.5 text-xs text-amber-600 font-normal">
+                  ({localCaptures.length} pending sync)
+                </span>
+              )}
             </label>
-            {captures.length > 0 && (
+            {(captures.length > 0 || localCaptures.length > 0) && (
               <div className="grid grid-cols-3 gap-2 mb-3">
+                {/* Server captures */}
                 {captures
                   .filter((c) => c.file_type === "image")
                   .map((capture) => (
@@ -444,23 +456,50 @@ export function InspectionUnitDetail({
                       </button>
                     </div>
                   ))}
+                {/* Local pending captures */}
+                {localCaptures
+                  .filter((c) => c.fileType === "image")
+                  .map((capture) => {
+                    const url = localUrlMap.get(capture.localId);
+                    return (
+                      <div key={capture.localId} className="relative">
+                        {url && (
+                          <img
+                            src={url}
+                            alt="Pending photo"
+                            className="w-full h-28 object-cover rounded-md border-2 border-dashed border-amber-400 opacity-80"
+                          />
+                        )}
+                        <span className="absolute bottom-1 left-1 text-[10px] bg-amber-500 text-white px-1 py-0.5 rounded font-medium">
+                          Pending
+                        </span>
+                      </div>
+                    );
+                  })}
               </div>
             )}
-            <label
-              className={`inline-flex items-center gap-1 px-3 py-2.5 text-sm border border-edge-secondary rounded-md cursor-pointer hover:bg-surface-secondary transition-colors ${
-                uploading ? "opacity-50" : ""
-              }`}
-            >
-              <input
-                type="file"
-                accept="image/*,video/*"
-                capture="environment"
-                onChange={handleUpload}
-                className="hidden"
-                disabled={uploading}
-              />
-              {uploading ? "Uploading..." : "+ Add Photo"}
-            </label>
+            <div className="flex items-center gap-2">
+              <label
+                className={`inline-flex items-center gap-1 px-3 py-2.5 text-sm border border-edge-secondary rounded-md cursor-pointer hover:bg-surface-secondary transition-colors ${
+                  uploading ? "opacity-50" : ""
+                }`}
+              >
+                <input
+                  type="file"
+                  accept="image/*,video/*"
+                  capture="environment"
+                  onChange={handleUpload}
+                  className="hidden"
+                  disabled={uploading}
+                />
+                {uploading ? "Uploading..." : "+ Add Photo"}
+              </label>
+              {savedToast && (
+                <span className="text-xs text-brand-600 font-medium animate-pulse">
+                  Saved offline
+                </span>
+              )}
+            </div>
           </div>
         </>
       )}

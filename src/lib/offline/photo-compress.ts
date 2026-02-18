@@ -1,7 +1,7 @@
 "use client";
 
-const MAX_DIMENSION = 1920;
-const JPEG_QUALITY = 0.8;
+const MAX_DIMENSION = 2560;
+const JPEG_QUALITY = 0.88;
 
 /**
  * Compress an image file to a JPEG blob that fits within MAX_DIMENSION

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useFieldRouter } from "@/lib/offline/use-field-router";
 import { useOffline } from "@/components/offline-provider";
+import { useLocalFindingCaptures } from "@/lib/offline/use-local-data";
 import {
   updateInspectionFindingField,
   deleteInspectionFinding,
@@ -69,8 +70,10 @@ export function FindingCard({
   onAddFinding,
 }: FindingCardProps) {
   const router = useFieldRouter();
-  const { isFieldMode } = useOffline();
+  const { isFieldMode, refreshPending, bumpRevision } = useOffline();
+  const { captures: localCaptures, urlMap: localUrlMap } = useLocalFindingCaptures(finding.id);
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+  const [savedToast, setSavedToast] = useState(false);
   const [priority, setPriority] = useState<number | null>(finding.priority);
   const [exposureBucket, setExposureBucket] = useState<string | null>(
     finding.exposure_bucket
@@ -174,6 +177,11 @@ export function FindingCard({
           findingServerId: finding.id,
           createdBy: currentUserId ?? "",
         });
+        await refreshPending();
+        bumpRevision();
+        // Show saved toast
+        setSavedToast(true);
+        setTimeout(() => setSavedToast(false), 2000);
       } else {
         const formData = new FormData();
         formData.set("file", file);
@@ -287,9 +295,14 @@ export function FindingCard({
                 : EXPOSURE_LABELS[exposureBucket as ExposureBucket]}
             </span>
           )}
-          {captures.length > 0 && (
-            <span className="text-xs bg-brand-100 text-brand-700 px-1.5 py-0.5 rounded-full font-medium">
-              {captures.length}
+          {(captures.length > 0 || localCaptures.length > 0) && (
+            <span className="text-xs bg-brand-100 text-brand-700 px-1.5 py-0.5 rounded-full font-medium flex items-center gap-1">
+              {captures.length + localCaptures.length}
+              {localCaptures.length > 0 && (
+                <svg className="w-3 h-3 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+              )}
             </span>
           )}
         </div>
@@ -459,8 +472,9 @@ export function FindingCard({
                 <span className="text-red-500 ml-0.5">*</span>
               )}
             </label>
-            {captures.length > 0 && (
+            {(captures.length > 0 || localCaptures.length > 0) && (
               <div className="grid grid-cols-3 gap-2 mb-2">
+                {/* Server captures */}
                 {captures
                   .filter((c) => c.file_type === "image")
                   .map((capture) => (
@@ -480,23 +494,51 @@ export function FindingCard({
                       )}
                     </div>
                   ))}
+                {/* Local pending captures */}
+                {localCaptures
+                  .filter((c) => c.fileType === "image")
+                  .map((capture) => {
+                    const url = localUrlMap.get(capture.localId);
+                    return (
+                      <div key={capture.localId} className="relative">
+                        {url && (
+                          <img
+                            src={url}
+                            alt="Pending photo"
+                            className="w-full h-24 object-cover rounded-md border-2 border-dashed border-amber-400 opacity-80"
+                          />
+                        )}
+                        <span className="absolute bottom-1 left-1 text-[10px] bg-amber-500 text-white px-1 py-0.5 rounded font-medium">
+                          Pending
+                        </span>
+                      </div>
+                    );
+                  })}
               </div>
             )}
-            <label
-              className={`inline-flex items-center gap-1 px-3 py-2.5 text-sm border border-edge-secondary rounded-md cursor-pointer hover:bg-surface-secondary transition-colors ${
-                uploading ? "opacity-50" : ""
-              }`}
-            >
-              <input
-                type="file"
-                accept="image/*,video/*"
-                capture="environment"
-                onChange={handleUpload}
-                className="hidden"
-                disabled={uploading}
-              />
-              {uploading ? "Uploading..." : "+ Add Photo"}
-            </label>
+            <div className="flex items-center gap-2">
+              <label
+                className={`inline-flex items-center gap-1 px-3 py-2.5 text-sm border border-edge-secondary rounded-md cursor-pointer hover:bg-surface-secondary transition-colors ${
+                  uploading ? "opacity-50" : ""
+                }`}
+              >
+                <input
+                  type="file"
+                  accept="image/*,video/*"
+                  capture="environment"
+                  onChange={handleUpload}
+                  className="hidden"
+                  disabled={uploading}
+                />
+                {uploading ? "Uploading..." : "+ Add Photo"}
+              </label>
+              {/* Saved toast */}
+              {savedToast && (
+                <span className="text-xs text-brand-600 font-medium animate-pulse">
+                  Saved offline
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Add Finding / Delete Finding */}

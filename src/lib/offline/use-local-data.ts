@@ -5,6 +5,8 @@ import { useOffline } from "@/components/offline-provider";
 import {
   getLocalFindings,
   getLocalCaptures,
+  getLocalCapturesForUnit,
+  getLocalCapturesForFinding,
   getLocalUnits,
   createLocalCaptureUrl,
 } from "./actions";
@@ -74,6 +76,90 @@ export function useLocalCaptures(
       for (const url of currentMap.values()) {
         URL.revokeObjectURL(url);
       }
+      currentMap.clear();
+    };
+  }, [localCaptures]);
+
+  return { captures: localCaptures, urlMap: urlMapRef.current };
+}
+
+/**
+ * Returns locally-stored captures for a unit (unit-level, not linked to a finding).
+ * Includes pre-generated Object URLs.
+ */
+export function useLocalUnitCaptures(
+  unitId: string | undefined
+): { captures: LocalCapture[]; urlMap: Map<string, string> } {
+  const { isFieldMode, localRevision } = useOffline();
+  const [localCaptures, setLocalCaptures] = useState<LocalCapture[]>([]);
+  const urlMapRef = useRef<Map<string, string>>(new Map());
+
+  useEffect(() => {
+    if (!isFieldMode || !unitId) {
+      setLocalCaptures([]);
+      return;
+    }
+    getLocalCapturesForUnit(unitId).then(setLocalCaptures);
+  }, [isFieldMode, unitId, localRevision]);
+
+  useEffect(() => {
+    const currentMap = urlMapRef.current;
+    const newIds = new Set(localCaptures.map((c) => c.localId));
+    for (const cap of localCaptures) {
+      if (!currentMap.has(cap.localId)) {
+        currentMap.set(cap.localId, createLocalCaptureUrl(cap.blob));
+      }
+    }
+    for (const [id, url] of currentMap) {
+      if (!newIds.has(id)) {
+        URL.revokeObjectURL(url);
+        currentMap.delete(id);
+      }
+    }
+    return () => {
+      for (const url of currentMap.values()) URL.revokeObjectURL(url);
+      currentMap.clear();
+    };
+  }, [localCaptures]);
+
+  return { captures: localCaptures, urlMap: urlMapRef.current };
+}
+
+/**
+ * Returns locally-stored captures for a finding (by server ID or local ID).
+ * Includes pre-generated Object URLs.
+ */
+export function useLocalFindingCaptures(
+  findingId: string | undefined
+): { captures: LocalCapture[]; urlMap: Map<string, string> } {
+  const { isFieldMode, localRevision } = useOffline();
+  const [localCaptures, setLocalCaptures] = useState<LocalCapture[]>([]);
+  const urlMapRef = useRef<Map<string, string>>(new Map());
+
+  useEffect(() => {
+    if (!isFieldMode || !findingId) {
+      setLocalCaptures([]);
+      return;
+    }
+    getLocalCapturesForFinding(findingId).then(setLocalCaptures);
+  }, [isFieldMode, findingId, localRevision]);
+
+  useEffect(() => {
+    const currentMap = urlMapRef.current;
+    const newIds = new Set(localCaptures.map((c) => c.localId));
+    for (const cap of localCaptures) {
+      if (!currentMap.has(cap.localId)) {
+        currentMap.set(cap.localId, createLocalCaptureUrl(cap.blob));
+      }
+    }
+    for (const [id, url] of currentMap) {
+      if (!newIds.has(id)) {
+        URL.revokeObjectURL(url);
+        currentMap.delete(id);
+      }
+    }
+    return () => {
+      for (const url of currentMap.values()) URL.revokeObjectURL(url);
       currentMap.clear();
     };
   }, [localCaptures]);

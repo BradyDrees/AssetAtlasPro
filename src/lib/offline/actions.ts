@@ -712,6 +712,24 @@ export async function getLocalCapturesForProject(projectId: string) {
     .toArray();
 }
 
+/** Get locally-stored captures for a specific unit (no finding link). */
+export async function getLocalCapturesForUnit(unitId: string) {
+  return offlineDB.localCaptures
+    .where("projectId")
+    .above("")
+    .filter((c) => c.unitId === unitId && !c.findingLocalId && !c.findingServerId)
+    .toArray();
+}
+
+/** Get locally-stored captures for a specific finding (server or local). */
+export async function getLocalCapturesForFinding(findingId: string) {
+  return offlineDB.localCaptures
+    .filter(
+      (c) => c.findingLocalId === findingId || c.findingServerId === findingId
+    )
+    .toArray();
+}
+
 /**
  * Create an object URL from a local capture's blob for display in <img>.
  * Caller must revoke the URL when done (URL.revokeObjectURL).

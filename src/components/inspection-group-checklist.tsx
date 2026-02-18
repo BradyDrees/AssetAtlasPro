@@ -587,11 +587,15 @@ export function InspectionGroupChecklist({
                                 >
                                   {priorityInfo.label}
                                 </span>
-                              ) : (
+                              ) : inspectionType === "bank_ready" ? (
                                 <span
                                   className={`text-xs px-2 py-0.5 rounded-full font-medium ${GOOD_LABEL.bgColor}`}
                                 >
                                   Good
+                                </span>
+                              ) : (
+                                <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-yellow-100 text-yellow-700">
+                                  Unrated
                                 </span>
                               )}
                               {allItemCaptures.length > 0 && (
@@ -693,11 +697,15 @@ export function InspectionGroupChecklist({
                             >
                               {priorityInfo.label}
                             </span>
-                          ) : (
+                          ) : inspectionType === "bank_ready" ? (
                             <span
                               className={`text-xs px-2 py-0.5 rounded-full font-medium ${GOOD_LABEL.bgColor}`}
                             >
                               Good
+                            </span>
+                          ) : (
+                            <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-yellow-100 text-yellow-700">
+                              Unrated
                             </span>
                           )}
                           <span

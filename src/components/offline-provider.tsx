@@ -44,9 +44,8 @@ export function useOffline(): OfflineContextValue {
 }
 
 export function OfflineProvider({ children }: { children: React.ReactNode }) {
-  const [isOnline, setIsOnline] = useState(
-    typeof navigator !== "undefined" ? navigator.onLine : true
-  );
+  // Always init as true to match server — update in useEffect to avoid hydration mismatch
+  const [isOnline, setIsOnline] = useState(true);
   const [isFieldMode, setIsFieldMode] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
   const [syncProgress, setSyncProgress] = useState<number | null>(null);
@@ -58,8 +57,9 @@ export function OfflineProvider({ children }: { children: React.ReactNode }) {
     setLocalRevision((r) => r + 1);
   }, []);
 
-  // Listen for online/offline events
+  // Sync actual online status on mount + listen for changes
   useEffect(() => {
+    setIsOnline(navigator.onLine);
     const goOnline = () => setIsOnline(true);
     const goOffline = () => setIsOnline(false);
 

@@ -269,11 +269,15 @@ export function FindingCard({
             >
               {priorityInfo.label}
             </span>
-          ) : (
+          ) : isBankReady ? (
             <span
               className={`text-xs px-2 py-0.5 rounded-full font-medium ${GOOD_LABEL.bgColor}`}
             >
               {GOOD_LABEL.label}
+            </span>
+          ) : (
+            <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-yellow-100 text-yellow-700">
+              Unrated
             </span>
           )}
           {exposureBucket && (
@@ -337,22 +341,25 @@ export function FindingCard({
                   </button>
                 );
               })}
-              <button
-                onClick={() => canEdit && handlePriority(null)}
-                disabled={!canEdit}
-                className={`px-2.5 py-2 text-xs rounded-md border transition-colors ${
-                  priority === null
-                    ? GOOD_LABEL.bgColor + " border-current font-medium"
-                    : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
-                } ${!canEdit ? "opacity-60 cursor-not-allowed" : ""}`}
-              >
-                Good
-              </button>
+              {/* Good button — bank-ready only (internal inspections always have a risk priority) */}
+              {isBankReady && (
+                <button
+                  onClick={() => canEdit && handlePriority(null)}
+                  disabled={!canEdit}
+                  className={`px-2.5 py-2 text-xs rounded-md border transition-colors ${
+                    priority === null
+                      ? GOOD_LABEL.bgColor + " border-current font-medium"
+                      : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
+                  } ${!canEdit ? "opacity-60 cursor-not-allowed" : ""}`}
+                >
+                  Good
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Exposure (show when priority 1-3 or always for bank-ready) */}
-          {(priority !== null && priority <= 3) || isBankReady ? (
+          {/* Exposure (bank-ready only) */}
+          {isBankReady ? (
             <div>
               <label className="block text-xs font-medium text-content-tertiary mb-1.5">
                 Exposure Estimate

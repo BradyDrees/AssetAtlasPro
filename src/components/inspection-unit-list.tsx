@@ -7,6 +7,7 @@ import {
   createInspectionUnit,
   deleteInspectionUnit,
 } from "@/app/actions/inspection-units";
+import { BulkUnitUpload } from "@/components/bulk-unit-upload";
 import {
   INSPECTION_UNIT_GRADES,
   OVERALL_CONDITION_LABELS,
@@ -35,6 +36,7 @@ export function InspectionUnitList({
 }: InspectionUnitListProps) {
   const router = useRouter();
   const [showAdd, setShowAdd] = useState(false);
+  const [showBulk, setShowBulk] = useState(false);
   const [building, setBuilding] = useState("");
   const [unitNumber, setUnitNumber] = useState("");
   const [adding, setAdding] = useState(false);
@@ -78,13 +80,30 @@ export function InspectionUnitList({
         <h3 className="text-sm font-semibold text-content-secondary uppercase tracking-wide">
           Units ({units.length})
         </h3>
-        <button
-          onClick={() => setShowAdd(true)}
-          className="px-3 py-1.5 bg-brand-600 text-white text-sm rounded-md hover:bg-brand-700 transition-colors"
-        >
-          + Add Unit
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => { setShowBulk(true); setShowAdd(false); }}
+            className="px-3 py-1.5 text-sm font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-md transition-colors border border-brand-200"
+          >
+            Import
+          </button>
+          <button
+            onClick={() => { setShowAdd(true); setShowBulk(false); }}
+            className="px-3 py-1.5 bg-brand-600 text-white text-sm rounded-md hover:bg-brand-700 transition-colors"
+          >
+            + Add Unit
+          </button>
+        </div>
       </div>
+
+      {/* Bulk import */}
+      {showBulk && (
+        <BulkUnitUpload
+          projectId={projectId}
+          projectSectionId={projectSectionId}
+          onClose={() => setShowBulk(false)}
+        />
+      )}
 
       {/* Add unit form */}
       {showAdd && (

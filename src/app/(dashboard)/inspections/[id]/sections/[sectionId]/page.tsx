@@ -156,12 +156,14 @@ export default async function InspectionSectionPage({
         </div>
       </div>
 
-      {/* Section-level fields (Condition Rating, RUL, Notes) */}
-      <InspectionSectionFields
-        projectSection={ps}
-        projectId={projectId}
-        inspectionType={project.inspection_type}
-      />
+      {/* Section-level fields (Condition Rating, RUL, Notes) — hide for unit-mode sections on internal inspections */}
+      {!(isUnitMode && project.inspection_type === "internal") && (
+        <InspectionSectionFields
+          projectSection={ps}
+          projectId={projectId}
+          inspectionType={project.inspection_type}
+        />
+      )}
 
       {/* Main content area */}
       {isUnitMode ? (

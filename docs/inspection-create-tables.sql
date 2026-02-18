@@ -88,6 +88,11 @@ CREATE TABLE inspection_units (
   bath_condition TEXT CHECK (bath_condition IS NULL OR bath_condition IN ('A','B','C','D','E','F')),
   has_leak_evidence BOOLEAN NOT NULL DEFAULT false,
   has_mold_indicators BOOLEAN NOT NULL DEFAULT false,
+  blinds_down BOOLEAN NOT NULL DEFAULT false,
+  toilet_seat_down BOOLEAN NOT NULL DEFAULT false,
+  rent_ready BOOLEAN,
+  days_vacant INT,
+  description TEXT NOT NULL DEFAULT '',
   notes TEXT NOT NULL DEFAULT '',
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()

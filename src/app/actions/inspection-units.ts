@@ -22,8 +22,44 @@ const ALLOWED_FIELDS = new Set([
   "bath_condition",
   "has_leak_evidence",
   "has_mold_indicators",
+  "blinds_down",
+  "toilet_seat_down",
+  "rent_ready",
+  "days_vacant",
+  "description",
   "notes",
 ]);
+
+/**
+ * Provision a unit turn checklist for an inspection unit.
+ * Creates a hidden batch + unit + all template items via Postgres function.
+ * Returns the turn_unit_id (unit_turn_batch_units.id).
+ */
+export async function provisionTurnChecklist(
+  inspectionUnitId: string,
+  projectId: string,
+  building: string,
+  unitNumber: string
+): Promise<{ turnUnitId?: string; error?: string }> {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { error: "Not authenticated" };
+
+    const { data, error } = await supabase.rpc("provision_inspection_turn_checklist", {
+      p_inspection_unit_id: inspectionUnitId,
+      p_project_id: projectId,
+      p_owner_id: user.id,
+      p_building: building,
+      p_unit_number: unitNumber,
+    });
+
+    if (error) return { error: error.message };
+    return { turnUnitId: data };
+  } catch (err) {
+    return { error: "Unexpected: " + (err instanceof Error ? err.message : String(err)) };
+  }
+}
 
 export async function createInspectionUnit(data: CreateInspectionUnit) {
   const supabase = await createClient();
@@ -79,6 +115,96 @@ export async function updateInspectionUnitField(
   revalidatePath(
     `/inspections/${projectId}/sections/${projectSectionId}`
   );
+}
+
+export interface BulkUnitRow {
+  building: string;
+  unit_number: string;
+  days_vacant?: number | null;
+  rent_ready?: boolean | null;
+  description?: string;
+}
+
+export async function bulkCreateInspectionUnits(
+  projectId: string,
+  projectSectionId: string,
+  rows: BulkUnitRow[]
+): Promise<{ created: number; skipped: number; errors: string[] }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  // Fetch existing units for dedup
+  const { data: existing } = await supabase
+    .from("inspection_units")
+    .select("building, unit_number")
+    .eq("project_section_id", projectSectionId);
+
+  const existingSet = new Set(
+    (existing ?? []).map(
+      (u: { building: string; unit_number: string }) =>
+        `${u.building.trim().toLowerCase()}|${u.unit_number.trim().toLowerCase()}`
+    )
+  );
+
+  let created = 0;
+  let skipped = 0;
+  const errors: string[] = [];
+
+  for (const row of rows) {
+    const bldg = (row.building ?? "").toString().trim();
+    const unit = (row.unit_number ?? "").toString().trim();
+
+    if (!bldg || !unit) {
+      errors.push(`Skipped row: missing building or unit number`);
+      skipped++;
+      continue;
+    }
+
+    const key = `${bldg.toLowerCase()}|${unit.toLowerCase()}`;
+    if (existingSet.has(key)) {
+      skipped++;
+      continue;
+    }
+
+    const insertData: Record<string, any> = {
+      project_id: projectId,
+      project_section_id: projectSectionId,
+      building: bldg,
+      unit_number: unit,
+    };
+
+    if (row.days_vacant != null) {
+      insertData.days_vacant = row.days_vacant;
+      insertData.occupancy_status = "VACANT";
+    }
+    if (row.rent_ready != null) {
+      insertData.rent_ready = row.rent_ready;
+    }
+    if (row.description) {
+      insertData.description = row.description.trim();
+    }
+
+    const { error } = await supabase
+      .from("inspection_units")
+      .insert(insertData);
+
+    if (error) {
+      errors.push(`${bldg} ${unit}: ${error.message}`);
+    } else {
+      created++;
+      existingSet.add(key);
+    }
+  }
+
+  revalidatePath(`/inspections/${projectId}`);
+  revalidatePath(
+    `/inspections/${projectId}/sections/${projectSectionId}`
+  );
+
+  return { created, skipped, errors };
 }
 
 export async function deleteInspectionUnit(

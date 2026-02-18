@@ -6,9 +6,13 @@ import { INSPECTION_GROUP_SLUGS } from "@/lib/inspection-sections";
 import type {
   InspectionUnit,
   InspectionCapture,
-  InspectionFinding,
   InspectionProjectSectionWithDetails,
 } from "@/lib/inspection-types";
+import type {
+  UnitTurnCategoryData,
+  UnitTurnUnitItemWithTemplate,
+  UnitTurnNoteWithPhotos,
+} from "@/lib/unit-turn-types";
 
 export const dynamic = "force-dynamic";
 
@@ -24,14 +28,13 @@ export default async function InspectionUnitPage({
   } = await params;
   const supabase = await createClient();
 
-  // Fire all 7 queries in parallel instead of sequentially
+  // Fire all queries in parallel
   const [
     { data: { user } },
     { data: project },
     { data: projectSection },
     { data: unit },
     { data: captures },
-    { data: findingsData },
     { data: allUnits },
   ] = await Promise.all([
     supabase.auth.getUser(),
@@ -56,11 +59,6 @@ export default async function InspectionUnitPage({
       .eq("unit_id", unitId)
       .order("sort_order"),
     supabase
-      .from("inspection_findings")
-      .select("*")
-      .eq("project_section_id", projectSectionId)
-      .order("sort_order"),
-    supabase
       .from("inspection_units")
       .select("id, building, unit_number")
       .eq("project_section_id", projectSectionId)
@@ -72,13 +70,56 @@ export default async function InspectionUnitPage({
 
   const ps = projectSection as InspectionProjectSectionWithDetails;
   const groupSlug = INSPECTION_GROUP_SLUGS[ps.section.group_name] ?? "";
-  const findings = (findingsData ?? []) as InspectionFinding[];
 
-  const currentIdx = (allUnits ?? []).findIndex((u: any) => u.id === unitId);
+  const unitsList = allUnits ?? [];
+  const currentIdx = unitsList.findIndex((u: any) => u.id === unitId);
+  const prevUnit = currentIdx > 0 ? unitsList[currentIdx - 1] : null;
   const nextUnit =
-    currentIdx >= 0 && currentIdx < (allUnits ?? []).length - 1
-      ? (allUnits ?? [])[currentIdx + 1]
+    currentIdx >= 0 && currentIdx < unitsList.length - 1
+      ? unitsList[currentIdx + 1]
       : null;
+
+  // Load unit turn checklist data if turn_unit_id exists (Rent Ready = No)
+  let turnCategoryData: UnitTurnCategoryData[] = [];
+  const typedUnit = unit as InspectionUnit;
+  if (typedUnit.turn_unit_id) {
+    const [
+      { data: categories },
+      { data: turnItems },
+      { data: turnNotes },
+    ] = await Promise.all([
+      supabase
+        .from("unit_turn_categories")
+        .select("*")
+        .order("sort_order"),
+      supabase
+        .from("unit_turn_unit_items")
+        .select("*, template_item:unit_turn_template_items(*)")
+        .eq("unit_id", typedUnit.turn_unit_id)
+        .order("sort_order")
+        .order("id"),
+      supabase
+        .from("unit_turn_notes")
+        .select("*, photos:unit_turn_note_photos(*)")
+        .eq("unit_id", typedUnit.turn_unit_id)
+        .order("created_at"),
+    ]);
+
+    const allCats = categories ?? [];
+    const allItems = (turnItems ?? []) as UnitTurnUnitItemWithTemplate[];
+    const allNotes = (turnNotes ?? []) as UnitTurnNoteWithPhotos[];
+
+    // Exclude cleaning category
+    turnCategoryData = allCats
+      .filter((cat: any) => cat.category_type !== "cleaning")
+      .map((cat: any) => ({
+        category: cat,
+        items: allItems.filter((i) => i.category_id === cat.id),
+        notes: allNotes.filter((n) => n.category_id === cat.id),
+      }));
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 
   return (
     <div>
@@ -142,24 +183,38 @@ export default async function InspectionUnitPage({
       <InspectionUnitDetail
         unit={unit as InspectionUnit}
         captures={(captures ?? []) as InspectionCapture[]}
-        findings={findings}
         projectId={projectId}
         projectSectionId={projectSectionId}
         sectionSlug={ps.section.slug}
         inspectionType={project.inspection_type}
         currentUserId={user?.id ?? ""}
+        turnCategoryData={turnCategoryData}
+        supabaseUrl={supabaseUrl}
       />
 
-      {/* Next unit navigation */}
-      {nextUnit && (
-        <div className="mt-6 flex justify-end">
-          <Link
-            href={`/inspections/${projectId}/sections/${projectSectionId}/units/${nextUnit.id}`}
-            className="px-4 py-2 bg-brand-600 text-white text-sm rounded-md hover:bg-brand-700 transition-colors"
-          >
-            Next Unit: {(nextUnit as any).building} -{" "}
-            {(nextUnit as any).unit_number} →
-          </Link>
+      {/* Prev / Next unit navigation */}
+      {(prevUnit || nextUnit) && (
+        <div className="mt-6 flex items-center justify-between">
+          {prevUnit ? (
+            <Link
+              href={`/inspections/${projectId}/sections/${projectSectionId}/units/${prevUnit.id}`}
+              className="px-4 py-2 bg-surface-secondary text-content-primary text-sm rounded-md border border-edge-secondary hover:bg-surface-tertiary transition-colors"
+            >
+              ← {(prevUnit as any).building} - {(prevUnit as any).unit_number}
+            </Link>
+          ) : (
+            <div />
+          )}
+          {nextUnit ? (
+            <Link
+              href={`/inspections/${projectId}/sections/${projectSectionId}/units/${nextUnit.id}`}
+              className="px-4 py-2 bg-brand-600 text-white text-sm rounded-md hover:bg-brand-700 transition-colors"
+            >
+              {(nextUnit as any).building} - {(nextUnit as any).unit_number} →
+            </Link>
+          ) : (
+            <div />
+          )}
         </div>
       )}
     </div>

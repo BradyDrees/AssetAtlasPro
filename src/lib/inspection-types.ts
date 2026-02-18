@@ -175,6 +175,12 @@ export interface InspectionUnit {
   bath_condition: InspectionUnitGrade | null;
   has_leak_evidence: boolean;
   has_mold_indicators: boolean;
+  blinds_down: boolean;
+  toilet_seat_down: boolean;
+  rent_ready: boolean | null;
+  days_vacant: number | null;
+  turn_unit_id: string | null;
+  description: string;
   notes: string;
   created_at: string;
   updated_at: string;

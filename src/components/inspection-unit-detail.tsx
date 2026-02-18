@@ -1,119 +1,72 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   updateInspectionUnitField,
   deleteInspectionUnit,
+  provisionTurnChecklist,
+  createInspectionUnit,
 } from "@/app/actions/inspection-units";
 import {
   uploadInspectionCapture,
   deleteInspectionCapture,
 } from "@/app/actions/inspection-captures";
-import {
-  createInspectionFinding,
-  updateInspectionFindingField,
-  deleteInspectionFinding,
-} from "@/app/actions/inspection-findings";
 import { useFieldRouter } from "@/lib/offline/use-field-router";
 import { useOffline } from "@/components/offline-provider";
 import {
   saveUnitCheckOffline,
   addCaptureOffline,
   deleteCaptureOffline,
-  createFindingOffline,
 } from "@/lib/offline/actions";
-import { InspectionFindingsList } from "@/components/inspection-findings-list";
+import { CategorySection } from "@/components/unit-turn/category-section";
 import {
-  INSPECTION_UNIT_GRADES,
-  OVERALL_CONDITION_LABELS,
-  INSPECTION_YES_NO,
-  INSPECTION_APPLIANCE_OPTIONS,
   OCCUPANCY_STATUS_LABELS,
   OCCUPANCY_OPTIONS,
-  WALK_STATUS_LABELS,
-  WALK_STATUS_OPTIONS,
-  TURN_STAGE_LABELS,
-  TURN_STAGE_OPTIONS,
 } from "@/lib/inspection-constants";
 import type {
   InspectionUnit,
   InspectionCapture,
-  InspectionFinding,
-  InspectionUnitGrade,
   OccupancyStatus,
-  WalkStatus,
-  TurnStage,
 } from "@/lib/inspection-types";
+import type { UnitTurnCategoryData } from "@/lib/unit-turn-types";
 
 interface InspectionUnitDetailProps {
   unit: InspectionUnit;
   captures: InspectionCapture[];
-  findings: InspectionFinding[];
   projectId: string;
   projectSectionId: string;
   sectionSlug: string;
   inspectionType: string;
   currentUserId?: string;
+  turnCategoryData?: UnitTurnCategoryData[];
+  supabaseUrl?: string;
 }
 
 export function InspectionUnitDetail({
   unit,
   captures,
-  findings,
   projectId,
   projectSectionId,
   sectionSlug,
   inspectionType,
   currentUserId,
+  turnCategoryData = [],
+  supabaseUrl = "",
 }: InspectionUnitDetailProps) {
   const router = useFieldRouter();
   const { isFieldMode, refreshPending } = useOffline();
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [provisioning, setProvisioning] = useState(false);
 
-  // Local state for all fields
-  const [overallCondition, setOverallCondition] = useState<number | null>(
-    unit.overall_condition
-  );
-  const [tenantHousekeeping, setTenantHousekeeping] = useState<string | null>(
-    unit.tenant_housekeeping
-  );
-  const [floors, setFloors] = useState<string | null>(unit.floors);
-  const [cabinets, setCabinets] = useState<string | null>(unit.cabinets);
-  const [countertops, setCountertops] = useState<string | null>(
-    unit.countertops
-  );
-  const [appliances, setAppliances] = useState<string[]>(
-    unit.appliances ?? []
-  );
-  const [plumbingFixtures, setPlumbingFixtures] = useState<string | null>(
-    unit.plumbing_fixtures
-  );
-  const [electricalFixtures, setElectricalFixtures] = useState<string | null>(
-    unit.electrical_fixtures
-  );
-  const [windowsDoors, setWindowsDoors] = useState<string | null>(
-    unit.windows_doors
-  );
-  const [bathCondition, setBathCondition] = useState<string | null>(
-    unit.bath_condition
-  );
-  const [hasLeakEvidence, setHasLeakEvidence] = useState(
-    unit.has_leak_evidence
-  );
-  const [hasMoldIndicators, setHasMoldIndicators] = useState(
-    unit.has_mold_indicators
-  );
+  const [rentReady, setRentReady] = useState<boolean | null>(unit.rent_ready);
+  const [daysVacant, setDaysVacant] = useState<number | null>(unit.days_vacant);
   const [notes, setNotes] = useState(unit.notes);
   const [occupancyStatus, setOccupancyStatus] = useState<OccupancyStatus>(
     unit.occupancy_status
   );
-  const [walkStatus, setWalkStatus] = useState<WalkStatus>(unit.walk_status);
-  const [walkRequired, setWalkRequired] = useState(unit.walk_required);
-  const [turnStage, setTurnStage] = useState<TurnStage | null>(
-    unit.turn_stage
-  );
+  const [turnUnitId, setTurnUnitId] = useState<string | null>(unit.turn_unit_id);
 
   const updateField = useCallback(
     async (field: string, value: any) => {
@@ -219,45 +172,58 @@ export function InspectionUnitDetail({
     }
   };
 
-  // Grade selector helper
-  const GradeSelector = ({
-    label,
-    value,
-    onChange,
-    field,
-  }: {
-    label: string;
-    value: string | null;
-    onChange: (v: string | null) => void;
-    field: string;
-  }) => (
-    <div>
-      <label className="block text-xs font-medium text-content-tertiary mb-1.5">
-        {label}
-      </label>
-      <div className="flex flex-wrap gap-1">
-        {(Object.entries(INSPECTION_UNIT_GRADES) as [InspectionUnitGrade, any][]).map(
-          ([grade, info]) => (
-            <button
-              key={grade}
-              onClick={() => {
-                const newVal = grade === value ? null : grade;
-                onChange(newVal);
-                updateField(field, newVal);
-              }}
-              className={`px-3 py-2 text-xs rounded-md border transition-colors ${
-                value === grade
-                  ? info.color + " " + info.border
-                  : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
-              }`}
-            >
-              {grade}
-            </button>
-          )
-        )}
-      </div>
-    </div>
-  );
+  // Auto-provision on mount if rent_ready is false but no checklist yet
+  const [provisionError, setProvisionError] = useState("");
+  useEffect(() => {
+    if (rentReady === false && !turnUnitId && !provisioning) {
+      (async () => {
+        setProvisioning(true);
+        setProvisionError("");
+        try {
+          const res = await provisionTurnChecklist(
+            unit.id,
+            projectId,
+            unit.building,
+            unit.unit_number
+          );
+          if (res.error) {
+            console.error("Provision error:", res.error);
+            setProvisionError(res.error);
+          } else if (res.turnUnitId) {
+            setTurnUnitId(res.turnUnitId);
+            router.refresh();
+          }
+        } catch (err) {
+          console.error("Failed to provision turn checklist:", err);
+          setProvisionError(String(err));
+        } finally {
+          setProvisioning(false);
+        }
+      })();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleProvisionChecklist = useCallback(async () => {
+    if (turnUnitId) return; // already provisioned
+    setProvisioning(true);
+    try {
+      const res = await provisionTurnChecklist(
+        unit.id,
+        projectId,
+        unit.building,
+        unit.unit_number
+      );
+      if (res.turnUnitId) {
+        setTurnUnitId(res.turnUnitId);
+        router.refresh(); // reload page to get checklist data from server
+      }
+    } catch (err) {
+      console.error("Failed to provision turn checklist:", err);
+    } finally {
+      setProvisioning(false);
+    }
+  }, [turnUnitId, unit.id, unit.building, unit.unit_number, projectId, router]);
 
   return (
     <div className="space-y-6">
@@ -277,7 +243,9 @@ export function InspectionUnitDetail({
             Occupancy Status
           </label>
           <div className="flex flex-wrap gap-1.5">
-            {OCCUPANCY_OPTIONS.map((opt) => {
+            {OCCUPANCY_OPTIONS.filter((opt) =>
+              inspectionType === "internal" ? opt !== "MODEL" && opt !== "UNKNOWN" : true
+            ).map((opt) => {
               const info = OCCUPANCY_STATUS_LABELS[opt];
               return (
                 <button
@@ -299,27 +267,73 @@ export function InspectionUnitDetail({
           </div>
         </div>
 
-        {/* Walk Required toggle (only for vacant/down) */}
+        {/* Days Vacant (only for vacant/down) */}
         {(occupancyStatus === "VACANT" || occupancyStatus === "DOWN") && (
           <div>
             <label className="block text-xs font-medium text-content-tertiary mb-1.5">
-              Walk Required
+              Days Vacant
+            </label>
+            <input
+              type="number"
+              value={daysVacant ?? ""}
+              onChange={(e) =>
+                setDaysVacant(e.target.value ? parseInt(e.target.value) : null)
+              }
+              onBlur={() => {
+                if (daysVacant !== unit.days_vacant) {
+                  updateField("days_vacant", daysVacant);
+                }
+              }}
+              min={0}
+              placeholder="e.g. 30"
+              className="w-32 px-3 py-2 text-sm border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
+            />
+          </div>
+        )}
+
+        {/* Rent Ready toggle (only for vacant/down) */}
+        {(occupancyStatus === "VACANT" || occupancyStatus === "DOWN") && (
+          <div>
+            <label className="block text-xs font-medium text-content-tertiary mb-1.5">
+              Rent Ready
             </label>
             <div className="flex gap-2">
               {(["Yes", "No"] as const).map((val) => {
                 const boolVal = val === "Yes";
+                const isActive = rentReady === boolVal;
                 return (
                   <button
                     key={val}
-                    onClick={() => {
-                      setWalkRequired(boolVal);
-                      updateField("walk_required", boolVal);
+                    onClick={async () => {
+                      const newVal = rentReady === boolVal ? null : boolVal;
+                      setRentReady(newVal);
+                      updateField("rent_ready", newVal);
+                      // Auto-provision checklist when switching to No
+                      if (newVal === false && !turnUnitId) {
+                        setProvisioning(true);
+                        try {
+                          const res = await provisionTurnChecklist(
+                            unit.id,
+                            projectId,
+                            unit.building,
+                            unit.unit_number
+                          );
+                          if (res.turnUnitId) {
+                            setTurnUnitId(res.turnUnitId);
+                            router.refresh();
+                          }
+                        } catch (err) {
+                          console.error("Failed to provision turn checklist:", err);
+                        } finally {
+                          setProvisioning(false);
+                        }
+                      }
                     }}
                     className={`px-3 py-2.5 text-sm rounded-md border transition-colors ${
-                      walkRequired === boolVal
+                      isActive
                         ? boolVal
-                          ? "bg-brand-600 text-white border-brand-600"
-                          : "bg-gray-600 text-white border-gray-600"
+                          ? "bg-green-500 text-white border-green-500 font-medium"
+                          : "bg-red-500 text-white border-red-500 font-medium"
                         : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                     }`}
                   >
@@ -331,315 +345,137 @@ export function InspectionUnitDetail({
           </div>
         )}
 
-        {/* Walk Status (only for vacant/down units that require a walk) */}
-        {(occupancyStatus === "VACANT" || occupancyStatus === "DOWN") &&
-          walkRequired && (
-            <div>
-              <label className="block text-xs font-medium text-content-tertiary mb-1.5">
-                Walk Status
-              </label>
-              <div className="flex flex-wrap gap-1.5">
-                {WALK_STATUS_OPTIONS.map((opt) => {
-                  const info = WALK_STATUS_LABELS[opt];
-                  return (
-                    <button
-                      key={opt}
-                      onClick={() => {
-                        setWalkStatus(opt as WalkStatus);
-                        updateField("walk_status", opt);
-                      }}
-                      className={`px-3 py-2.5 text-sm rounded-md border transition-colors ${
-                        walkStatus === opt
-                          ? info.color + " border-current font-medium"
-                          : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
-                      }`}
-                    >
-                      {info.label}
-                    </button>
-                  );
-                })}
+      </div>
+
+      {/* Rent Ready = Yes → Notes + Photos only */}
+      {rentReady === true && (
+        <>
+          {/* Notes */}
+          <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+            <label className="block text-sm font-medium text-content-secondary mb-1">
+              Unit Notes
+            </label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              onBlur={() => {
+                if (notes !== unit.notes) {
+                  updateField("notes", notes);
+                }
+              }}
+              rows={3}
+              placeholder="Notes about this unit..."
+              className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+            />
+          </div>
+
+          {/* Photos */}
+          <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+            <label className="block text-sm font-medium text-content-secondary mb-2">
+              Photos ({captures.length})
+            </label>
+            {captures.length > 0 && (
+              <div className="grid grid-cols-3 gap-2 mb-3">
+                {captures
+                  .filter((c) => c.file_type === "image")
+                  .map((capture) => (
+                    <div key={capture.id} className="relative group">
+                      <img
+                        src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/dd-captures/${capture.image_path}`}
+                        alt={capture.caption || "Unit photo"}
+                        className="w-full h-28 object-cover rounded-md"
+                      />
+                      <button
+                        onClick={() => handleDeleteCapture(capture)}
+                        className="absolute top-1 right-1 w-7 h-7 bg-red-500 text-white rounded-full text-xs opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
               </div>
+            )}
+            <label
+              className={`inline-flex items-center gap-1 px-3 py-2.5 text-sm border border-edge-secondary rounded-md cursor-pointer hover:bg-surface-secondary transition-colors ${
+                uploading ? "opacity-50" : ""
+              }`}
+            >
+              <input
+                type="file"
+                accept="image/*,video/*"
+                capture="environment"
+                onChange={handleUpload}
+                className="hidden"
+                disabled={uploading}
+              />
+              {uploading ? "Uploading..." : "+ Add Photo"}
+            </label>
+          </div>
+        </>
+      )}
+
+      {/* Rent Ready = No → Unit Turn Checklist */}
+      {rentReady === false && (
+        <>
+          {provisioning ? (
+            <div className="bg-surface-primary rounded-lg border border-edge-primary p-6 text-center">
+              <p className="text-sm text-content-muted">Setting up checklist...</p>
+            </div>
+          ) : turnCategoryData.length > 0 ? (
+            <div className="space-y-5">
+              {/* Standard categories */}
+              {turnCategoryData
+                .filter((cd) => cd.category.category_type === "standard")
+                .map((cd) => (
+                  <div key={cd.category.id} id={`cat-${cd.category.slug}`}>
+                    <CategorySection
+                      data={cd}
+                      batchId=""
+                      unitId={turnUnitId ?? ""}
+                      supabaseUrl={supabaseUrl}
+                      currentUserId={currentUserId}
+                    />
+                  </div>
+                ))}
+
+              {/* Paint section */}
+              {turnCategoryData.filter((cd) => cd.category.category_type === "paint").length > 0 && (
+                <div>
+                  <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">Paint</h2>
+                  <div className="space-y-5">
+                    {turnCategoryData
+                      .filter((cd) => cd.category.category_type === "paint")
+                      .map((cd) => (
+                        <div key={cd.category.id} id={`cat-${cd.category.slug}`}>
+                          <CategorySection
+                            data={cd}
+                            batchId=""
+                            unitId={turnUnitId ?? ""}
+                            supabaseUrl={supabaseUrl}
+                            currentUserId={currentUserId}
+                          />
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="bg-surface-primary rounded-lg border border-edge-primary p-6 text-center">
+              {provisionError ? (
+                <p className="text-sm text-red-500">Error: {provisionError}</p>
+              ) : (
+                <p className="text-sm text-content-muted">Setting up checklist...</p>
+              )}
             </div>
           )}
+        </>
+      )}
 
-        {/* Turn Stage (only for vacant/down) */}
-        {(occupancyStatus === "VACANT" || occupancyStatus === "DOWN") && (
-          <div>
-            <label className="block text-xs font-medium text-content-tertiary mb-1.5">
-              Turn Stage
-            </label>
-            <div className="flex flex-wrap gap-1.5">
-              {TURN_STAGE_OPTIONS.map((opt) => {
-                const info = TURN_STAGE_LABELS[opt];
-                return (
-                  <button
-                    key={opt}
-                    onClick={() => {
-                      const newVal = turnStage === opt ? null : (opt as TurnStage);
-                      setTurnStage(newVal);
-                      updateField("turn_stage", newVal);
-                    }}
-                    className={`px-3 py-2.5 text-sm rounded-md border transition-colors ${
-                      turnStage === opt
-                        ? info.color + " border-current font-medium"
-                        : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
-                    }`}
-                  >
-                    {info.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Overall Condition */}
-      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
-        <label className="block text-sm font-medium text-content-secondary mb-2">
-          Overall Condition
-        </label>
-        <div className="grid grid-cols-3 gap-2 md:flex">
-          {[1, 2, 3, 4, 5].map((val) => {
-            const info = OVERALL_CONDITION_LABELS[val];
-            return (
-              <button
-                key={val}
-                onClick={() => {
-                  const newVal = val === overallCondition ? null : val;
-                  setOverallCondition(newVal);
-                  updateField("overall_condition", newVal);
-                }}
-                className={`flex-1 px-2 py-2.5 text-sm rounded-md border transition-colors ${
-                  overallCondition === val
-                    ? info.color + " border-current font-medium"
-                    : "bg-surface-primary text-content-secondary border-edge-secondary hover:bg-surface-secondary"
-                }`}
-              >
-                {val} - {info.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Component Grades */}
-      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4 space-y-4">
-        <h3 className="text-sm font-semibold text-content-secondary">
-          Component Grades
-        </h3>
-        <GradeSelector
-          label="Tenant Housekeeping"
-          value={tenantHousekeeping}
-          onChange={setTenantHousekeeping}
-          field="tenant_housekeeping"
-        />
-        <GradeSelector
-          label="Floors"
-          value={floors}
-          onChange={setFloors}
-          field="floors"
-        />
-        <GradeSelector
-          label="Cabinets"
-          value={cabinets}
-          onChange={setCabinets}
-          field="cabinets"
-        />
-        <GradeSelector
-          label="Countertops"
-          value={countertops}
-          onChange={setCountertops}
-          field="countertops"
-        />
-        <GradeSelector
-          label="Plumbing Fixtures"
-          value={plumbingFixtures}
-          onChange={setPlumbingFixtures}
-          field="plumbing_fixtures"
-        />
-        <GradeSelector
-          label="Electrical Fixtures"
-          value={electricalFixtures}
-          onChange={setElectricalFixtures}
-          field="electrical_fixtures"
-        />
-        <GradeSelector
-          label="Windows & Doors"
-          value={windowsDoors}
-          onChange={setWindowsDoors}
-          field="windows_doors"
-        />
-        <GradeSelector
-          label="Bath Condition"
-          value={bathCondition}
-          onChange={setBathCondition}
-          field="bath_condition"
-        />
-      </div>
-
-      {/* Appliances */}
-      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
-        <label className="block text-sm font-medium text-content-secondary mb-2">
-          Appliances
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {INSPECTION_APPLIANCE_OPTIONS.map((option) => {
-            const isActive = appliances.includes(option);
-            return (
-              <button
-                key={option}
-                onClick={() => {
-                  const newVal = isActive
-                    ? appliances.filter((a) => a !== option)
-                    : [...appliances, option];
-                  setAppliances(newVal);
-                  updateField("appliances", newVal);
-                }}
-                className={`px-3 py-2.5 text-sm rounded-md border transition-colors ${
-                  isActive
-                    ? "bg-brand-600 text-white border-brand-600"
-                    : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
-                }`}
-              >
-                {option}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Toggles */}
-      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4 space-y-3">
-        <h3 className="text-sm font-semibold text-content-secondary">Indicators</h3>
-        <div className="flex gap-4">
-          <div>
-            <label className="block text-xs font-medium text-content-tertiary mb-1">
-              Evidence of Leaks
-            </label>
-            <div className="flex gap-2">
-              {(["Yes", "No"] as const).map((val) => {
-                const boolVal = val === "Yes";
-                return (
-                  <button
-                    key={val}
-                    onClick={() => {
-                      setHasLeakEvidence(boolVal);
-                      updateField("has_leak_evidence", boolVal);
-                    }}
-                    className={`px-4 py-2.5 text-sm rounded-md border transition-colors ${
-                      hasLeakEvidence === boolVal
-                        ? INSPECTION_YES_NO[val].color + " border-current"
-                        : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
-                    }`}
-                  >
-                    {val}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-content-tertiary mb-1">
-              Mold Indicators
-            </label>
-            <div className="flex gap-2">
-              {(["Yes", "No"] as const).map((val) => {
-                const boolVal = val === "Yes";
-                return (
-                  <button
-                    key={val}
-                    onClick={() => {
-                      setHasMoldIndicators(boolVal);
-                      updateField("has_mold_indicators", boolVal);
-                    }}
-                    className={`px-4 py-2.5 text-sm rounded-md border transition-colors ${
-                      hasMoldIndicators === boolVal
-                        ? INSPECTION_YES_NO[val].color + " border-current"
-                        : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
-                    }`}
-                  >
-                    {val}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Notes */}
-      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
-        <label className="block text-sm font-medium text-content-secondary mb-1">
-          Unit Notes
-        </label>
-        <textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          onBlur={() => {
-            if (notes !== unit.notes) {
-              updateField("notes", notes);
-            }
-          }}
-          rows={3}
-          placeholder="Notes about this unit..."
-          className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
-        />
-      </div>
-
-      {/* Photos */}
-      <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
-        <label className="block text-sm font-medium text-content-secondary mb-2">
-          Photos ({captures.length})
-        </label>
-        {captures.length > 0 && (
-          <div className="grid grid-cols-3 gap-2 mb-3">
-            {captures
-              .filter((c) => c.file_type === "image")
-              .map((capture) => (
-                <div key={capture.id} className="relative group">
-                  <img
-                    src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/dd-captures/${capture.image_path}`}
-                    alt={capture.caption || "Unit photo"}
-                    className="w-full h-28 object-cover rounded-md"
-                  />
-                  <button
-                    onClick={() => handleDeleteCapture(capture)}
-                    className="absolute top-1 right-1 w-7 h-7 bg-red-500 text-white rounded-full text-xs opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex items-center justify-center"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-          </div>
-        )}
-        <label
-          className={`inline-flex items-center gap-1 px-3 py-2.5 text-sm border border-edge-secondary rounded-md cursor-pointer hover:bg-surface-secondary transition-colors ${
-            uploading ? "opacity-50" : ""
-          }`}
-        >
-          <input
-            type="file"
-            accept="image/*,video/*"
-            capture="environment"
-            onChange={handleUpload}
-            className="hidden"
-            disabled={uploading}
-          />
-          {uploading ? "Uploading..." : "+ Add Photo"}
-        </label>
-      </div>
-
-      {/* Unit Findings */}
-      <UnitFindings
-        findings={findings}
-        captures={captures}
+      {/* Add Unit inline */}
+      <AddUnitInline
         projectId={projectId}
         projectSectionId={projectSectionId}
-        sectionSlug={sectionSlug}
-        unitId={unit.id}
-        inspectionType={inspectionType}
-        currentUserId={currentUserId}
       />
 
       {/* Delete unit */}
@@ -656,140 +492,118 @@ export function InspectionUnitDetail({
   );
 }
 
-// --- Unit-level Findings sub-component ---
-
-function UnitFindings({
-  findings,
-  captures,
+/* ── Add Unit Inline (inspection-specific) ── */
+function AddUnitInline({
   projectId,
   projectSectionId,
-  sectionSlug,
-  unitId,
-  inspectionType,
-  currentUserId,
 }: {
-  findings: InspectionFinding[];
-  captures: InspectionCapture[];
   projectId: string;
   projectSectionId: string;
-  sectionSlug: string;
-  unitId: string;
-  inspectionType: string;
-  currentUserId?: string;
 }) {
   const router = useFieldRouter();
-  const { isFieldMode, refreshPending } = useOffline();
-  const [showAdd, setShowAdd] = useState(false);
-  const [title, setTitle] = useState("");
-  const [adding, setAdding] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [building, setBuilding] = useState("");
+  const [unitNumber, setUnitNumber] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  // Filter findings for this unit
-  const unitFindings = findings.filter((f) => f.unit_id === unitId);
-  // Filter captures for this unit's findings
-  const findingIds = new Set(unitFindings.map((f) => f.id));
-  const unitFindingCaptures = captures.filter(
-    (c) => c.finding_id && findingIds.has(c.finding_id)
-  );
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!building.trim() || !unitNumber.trim()) return;
 
-  const handleAddFinding = async () => {
-    if (!title.trim()) return;
-    setAdding(true);
+    setLoading(true);
+    setError("");
     try {
-      if (isFieldMode) {
-        await createFindingOffline({
-          projectId,
-          projectSectionId,
-          checklistItemId: null,
-          unitId,
-          title: title.trim(),
-          createdBy: currentUserId ?? "",
-        });
-        await refreshPending();
-      } else {
-        await createInspectionFinding({
-          project_id: projectId,
-          project_section_id: projectSectionId,
-          checklist_item_id: null,
-          unit_id: unitId,
-          title: title.trim(),
-        });
-      }
-      setTitle("");
-      setShowAdd(false);
-      router.refresh();
+      const newId = await createInspectionUnit({
+        project_id: projectId,
+        project_section_id: projectSectionId,
+        building: building.trim(),
+        unit_number: unitNumber.trim(),
+      });
+      router.push(
+        `/inspections/${projectId}/sections/${projectSectionId}/units/${newId}`
+      );
     } catch (err) {
-      console.error("Failed to create unit finding:", err);
-    } finally {
-      setAdding(false);
+      setError(err instanceof Error ? err.message : "Failed to create unit");
+      setLoading(false);
     }
   };
 
-  return (
-    <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-content-secondary">
-          Unit Findings ({unitFindings.length})
-        </h3>
-        <button
-          onClick={() => setShowAdd(true)}
-          className="px-3 py-2.5 bg-orange-600 text-white text-sm rounded-md hover:bg-orange-700 transition-colors"
-        >
-          + Add Finding
-        </button>
-      </div>
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="w-full py-3 bg-surface-primary border-2 border-dashed border-brand-300 text-brand-600 text-sm font-medium rounded-lg hover:bg-brand-50 hover:border-brand-400 transition-colors"
+      >
+        + Add Unit
+      </button>
+    );
+  }
 
-      {showAdd && (
-        <div className="flex items-center gap-2 mb-4">
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="bg-surface-primary rounded-lg border border-brand-200 p-4"
+    >
+      <h3 className="text-sm font-semibold text-content-secondary mb-3">
+        Add Unit
+      </h3>
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex-1">
+          <label className="block text-xs font-medium text-content-quaternary mb-1">
+            Building
+          </label>
           <input
             type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Finding title..."
-            className="flex-1 px-3 py-1.5 text-sm border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
-            autoFocus
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && title.trim()) handleAddFinding();
-              if (e.key === "Escape") {
-                setShowAdd(false);
-                setTitle("");
-              }
-            }}
+            value={building}
+            onChange={(e) => setBuilding(e.target.value)}
+            placeholder="e.g. A"
+            className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+            required
           />
-          <button
-            onClick={handleAddFinding}
-            disabled={!title.trim() || adding}
-            className="px-3 py-1.5 text-sm bg-brand-600 text-white rounded-md hover:bg-brand-700 disabled:opacity-50"
-          >
-            {adding ? "..." : "Add"}
-          </button>
-          <button
-            onClick={() => {
-              setShowAdd(false);
-              setTitle("");
-            }}
-            className="px-2 py-1.5 text-sm text-content-quaternary hover:text-content-secondary"
-          >
-            Cancel
-          </button>
         </div>
+        <div className="flex-1">
+          <label className="block text-xs font-medium text-content-quaternary mb-1">
+            Unit #
+          </label>
+          <input
+            type="text"
+            value={unitNumber}
+            onChange={(e) => setUnitNumber(e.target.value)}
+            placeholder="e.g. 102"
+            className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+            autoFocus
+            required
+          />
+        </div>
+      </div>
+      {error && (
+        <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg mt-3">
+          {error}
+        </p>
       )}
-
-      {unitFindings.length > 0 ? (
-        <InspectionFindingsList
-          findings={unitFindings}
-          captures={unitFindingCaptures}
-          projectId={projectId}
-          projectSectionId={projectSectionId}
-          sectionSlug={sectionSlug}
-          inspectionType={inspectionType as any}
-        />
-      ) : (
-        !showAdd && (
-          <p className="text-sm text-content-muted">
-            No findings for this unit yet.
-          </p>
-        )
-      )}
-    </div>
+      <div className="flex justify-end gap-3 mt-3">
+        <button
+          type="button"
+          onClick={() => {
+            setOpen(false);
+            setError("");
+            setBuilding("");
+            setUnitNumber("");
+          }}
+          className="px-3 py-1.5 text-sm text-content-quaternary hover:text-content-secondary"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          disabled={!building.trim() || !unitNumber.trim() || loading}
+          className="px-4 py-1.5 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 disabled:opacity-50 transition-colors"
+        >
+          {loading ? "Creating..." : "Create & Open"}
+        </button>
+      </div>
+    </form>
   );
 }
+

@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { ChecklistItem } from "./checklist-item";
 import { createNote } from "@/app/actions/unit-turns";
+import { useFieldRouter } from "@/lib/offline/use-field-router";
+import { useOffline } from "@/components/offline-provider";
+import { createNoteOffline } from "@/lib/offline/actions";
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from "@/lib/unit-turn-constants";
 import type { UnitTurnCategoryData } from "@/lib/unit-turn-types";
 import { toTitleCase } from "@/lib/utils";
@@ -13,10 +15,12 @@ interface CategorySectionProps {
   batchId: string;
   unitId: string;
   supabaseUrl: string;
+  currentUserId?: string;
 }
 
-export function CategorySection({ data, batchId, unitId, supabaseUrl }: CategorySectionProps) {
-  const router = useRouter();
+export function CategorySection({ data, batchId, unitId, supabaseUrl, currentUserId }: CategorySectionProps) {
+  const router = useFieldRouter();
+  const { isFieldMode, refreshPending } = useOffline();
   const [collapsed, setCollapsed] = useState(false);
   const [showCatNote, setShowCatNote] = useState(false);
   const [catNoteText, setCatNoteText] = useState("");
@@ -35,10 +39,21 @@ export function CategorySection({ data, batchId, unitId, supabaseUrl }: Category
   const handleAddCategoryNote = async () => {
     if (!catNoteText.trim()) return;
     setAddingCatNote(true);
-    await createNote(
-      { unit_id: unitId, item_id: null, category_id: category.id, text: catNoteText.trim() },
-      batchId
-    );
+    if (isFieldMode) {
+      await createNoteOffline({
+        batchId,
+        unitId,
+        categoryId: category.id,
+        text: catNoteText.trim(),
+        createdBy: currentUserId ?? "",
+      });
+      await refreshPending();
+    } else {
+      await createNote(
+        { unit_id: unitId, item_id: null, category_id: category.id, text: catNoteText.trim() },
+        batchId
+      );
+    }
     setCatNoteText("");
     setShowCatNote(false);
     setAddingCatNote(false);
@@ -74,6 +89,7 @@ export function CategorySection({ data, batchId, unitId, supabaseUrl }: Category
               unitId={unitId}
               categoryId={category.id}
               supabaseUrl={supabaseUrl}
+              currentUserId={currentUserId}
             />
           ))}
 

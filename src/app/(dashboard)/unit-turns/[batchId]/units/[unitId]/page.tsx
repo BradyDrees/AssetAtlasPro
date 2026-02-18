@@ -19,50 +19,53 @@ export default async function UnitTurnDetailPage({
   const { batchId, unitId } = await params;
   const supabase = await createClient();
 
-  // Fetch batch
-  const { data: batch } = await supabase
-    .from("unit_turn_batches")
-    .select("id, name")
-    .eq("id", batchId)
-    .single();
+  // Fetch user, batch, unit, categories, items, and notes in parallel
+  const [
+    { data: { user } },
+    { data: batch },
+    { data: unit },
+    { data: categories },
+    { data: unitItems },
+    { data: notes },
+  ] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase
+      .from("unit_turn_batches")
+      .select("id, name")
+      .eq("id", batchId)
+      .single(),
+    supabase
+      .from("unit_turn_batch_units")
+      .select("*")
+      .eq("id", unitId)
+      .single(),
+    supabase
+      .from("unit_turn_categories")
+      .select("*")
+      .order("sort_order"),
+    supabase
+      .from("unit_turn_unit_items")
+      .select(`
+        *,
+        template_item:unit_turn_template_items(*)
+      `)
+      .eq("unit_id", unitId)
+      .order("sort_order")
+      .order("id"),
+    supabase
+      .from("unit_turn_notes")
+      .select(`
+        *,
+        photos:unit_turn_note_photos(*)
+      `)
+      .eq("unit_id", unitId)
+      .order("created_at"),
+  ]);
 
   if (!batch) notFound();
-
-  // Fetch unit
-  const { data: unit } = await supabase
-    .from("unit_turn_batch_units")
-    .select("*")
-    .eq("id", unitId)
-    .single();
-
   if (!unit) notFound();
 
-  // Fetch all categories
-  const { data: categories } = await supabase
-    .from("unit_turn_categories")
-    .select("*")
-    .order("sort_order");
-
-  // Fetch all unit items with template data
-  const { data: unitItems } = await supabase
-    .from("unit_turn_unit_items")
-    .select(`
-      *,
-      template_item:unit_turn_template_items(*)
-    `)
-    .eq("unit_id", unitId)
-    .order("sort_order")
-    .order("id");
-
-  // Fetch all notes with photos
-  const { data: notes } = await supabase
-    .from("unit_turn_notes")
-    .select(`
-      *,
-      photos:unit_turn_note_photos(*)
-    `)
-    .eq("unit_id", unitId)
-    .order("created_at");
+  const currentUserId = user?.id ?? "";
 
   const allCategories = categories ?? [];
   const allItems = (unitItems ?? []) as UnitTurnUnitItemWithTemplate[];
@@ -147,6 +150,7 @@ export default async function UnitTurnDetailPage({
               batchId={batchId}
               unitId={unitId}
               supabaseUrl={supabaseUrl}
+              currentUserId={currentUserId}
             />
           </div>
         ))}

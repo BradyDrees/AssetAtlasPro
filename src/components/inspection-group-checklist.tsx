@@ -1,9 +1,14 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import { createInspectionFinding } from "@/app/actions/inspection-findings";
 import { toggleInspectionSectionNA } from "@/app/actions/inspections";
+import { useFieldRouter } from "@/lib/offline/use-field-router";
+import { useOffline } from "@/components/offline-provider";
+import {
+  createFindingOffline,
+  toggleSectionNAOffline,
+} from "@/lib/offline/actions";
 import { FindingCard } from "@/components/inspection-finding-card";
 import {
   PRIORITY_LABELS,
@@ -119,7 +124,8 @@ export function InspectionGroupChecklist({
   role = "owner",
   currentUserId,
 }: InspectionGroupChecklistProps) {
-  const router = useRouter();
+  const router = useFieldRouter();
+  const { isFieldMode, refreshPending, bumpRevision } = useOffline();
 
   // Track expanded checklist items (by checklist item id)
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
@@ -160,7 +166,17 @@ export function InspectionGroupChecklist({
         return next;
       });
       try {
-        await toggleInspectionSectionNA(projectSectionId, projectId, newNa);
+        if (isFieldMode) {
+          await toggleSectionNAOffline({
+            projectSectionId,
+            projectId,
+            isNa: newNa,
+          });
+          await refreshPending();
+          bumpRevision();
+        } else {
+          await toggleInspectionSectionNA(projectSectionId, projectId, newNa);
+        }
       } catch (err) {
         console.error("Failed to toggle N/A:", err);
         // revert on error
@@ -171,7 +187,7 @@ export function InspectionGroupChecklist({
         });
       }
     },
-    [projectId]
+    [projectId, isFieldMode, refreshPending, bumpRevision]
   );
 
   const handlePriorityChange = useCallback(
@@ -220,13 +236,25 @@ export function InspectionGroupChecklist({
         // Create new finding and expand
         setCreatingItems((prev) => new Set(prev).add(item.id));
         try {
-          await createInspectionFinding({
-            project_id: projectId,
-            project_section_id: sectionData.projectSection.id,
-            checklist_item_id: item.id,
-            unit_id: null,
-            title: item.name,
-          });
+          if (isFieldMode) {
+            await createFindingOffline({
+              projectId,
+              projectSectionId: sectionData.projectSection.id,
+              checklistItemId: item.id,
+              unitId: null,
+              title: item.name,
+              createdBy: currentUserId ?? "",
+            });
+            await refreshPending();
+          } else {
+            await createInspectionFinding({
+              project_id: projectId,
+              project_section_id: sectionData.projectSection.id,
+              checklist_item_id: item.id,
+              unit_id: null,
+              title: item.name,
+            });
+          }
           setExpandedItems((prev) => new Set(prev).add(item.id));
           router.refresh();
         } catch (err) {
@@ -240,7 +268,7 @@ export function InspectionGroupChecklist({
         }
       }
     },
-    [projectId, router, deletedFindings]
+    [projectId, router, deletedFindings, isFieldMode, currentUserId, refreshPending]
   );
 
   // Add a sibling finding for a checklist item (called from FindingCard's "Add Finding" button)
@@ -251,19 +279,31 @@ export function InspectionGroupChecklist({
       title: string
     ) => {
       try {
-        await createInspectionFinding({
-          project_id: projectId,
-          project_section_id: sectionData.projectSection.id,
-          checklist_item_id: checklistItemId,
-          unit_id: null,
-          title,
-        });
+        if (isFieldMode) {
+          await createFindingOffline({
+            projectId,
+            projectSectionId: sectionData.projectSection.id,
+            checklistItemId,
+            unitId: null,
+            title,
+            createdBy: currentUserId ?? "",
+          });
+          await refreshPending();
+        } else {
+          await createInspectionFinding({
+            project_id: projectId,
+            project_section_id: sectionData.projectSection.id,
+            checklist_item_id: checklistItemId,
+            unit_id: null,
+            title,
+          });
+        }
         router.refresh();
       } catch (err) {
         console.error("Failed to add sibling finding:", err);
       }
     },
-    [projectId, router]
+    [projectId, router, isFieldMode, currentUserId, refreshPending]
   );
 
   const handleAddCustomFinding = useCallback(
@@ -273,13 +313,25 @@ export function InspectionGroupChecklist({
 
       setAddingCustom((prev) => new Set(prev).add(sectionData.projectSection.id));
       try {
-        await createInspectionFinding({
-          project_id: projectId,
-          project_section_id: sectionData.projectSection.id,
-          checklist_item_id: null,
-          unit_id: null,
-          title: title.trim(),
-        });
+        if (isFieldMode) {
+          await createFindingOffline({
+            projectId,
+            projectSectionId: sectionData.projectSection.id,
+            checklistItemId: null,
+            unitId: null,
+            title: title.trim(),
+            createdBy: currentUserId ?? "",
+          });
+          await refreshPending();
+        } else {
+          await createInspectionFinding({
+            project_id: projectId,
+            project_section_id: sectionData.projectSection.id,
+            checklist_item_id: null,
+            unit_id: null,
+            title: title.trim(),
+          });
+        }
         setCustomTitles((prev) => {
           const next = new Map(prev);
           next.delete(sectionData.projectSection.id);
@@ -301,7 +353,7 @@ export function InspectionGroupChecklist({
         });
       }
     },
-    [projectId, router, customTitles]
+    [projectId, router, customTitles, isFieldMode, currentUserId, refreshPending]
   );
 
   // Compute health scores (exclude N/A sections)

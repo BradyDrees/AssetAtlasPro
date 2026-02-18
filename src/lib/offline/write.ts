@@ -67,3 +67,23 @@ export async function markFailed(
 export async function purgeSynced(): Promise<number> {
   return offlineDB.syncQueue.where("status").equals("synced").delete();
 }
+
+/**
+ * Remove pending/failed queue items matching a filter.
+ * Used by delete wrappers to cancel orphaned creates/updates
+ * (e.g. user creates a finding offline then deletes it before syncing).
+ */
+export async function pruneQueue(
+  filterFn: (item: SyncQueueItem) => boolean
+): Promise<number> {
+  const pending = await offlineDB.syncQueue
+    .where("status")
+    .anyOf(["pending", "failed"])
+    .toArray();
+
+  const toDelete = pending.filter(filterFn).map((item) => item.id);
+  if (toDelete.length > 0) {
+    await offlineDB.syncQueue.bulkDelete(toDelete);
+  }
+  return toDelete.length;
+}

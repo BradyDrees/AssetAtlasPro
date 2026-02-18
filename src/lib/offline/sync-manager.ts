@@ -64,11 +64,19 @@ async function syncItem(item: SyncQueueItem): Promise<void> {
   const handlers: Record<QueueAction, (p: Record<string, unknown>) => Promise<void>> = {
     FINDING_CREATE: syncFindingCreate,
     FINDING_UPDATE: syncFindingUpdate,
+    FINDING_DELETE: syncFindingDelete,
     CAPTURE_UPLOAD: syncCaptureUpload,
+    CAPTURE_DELETE: syncCaptureDelete,
     UNIT_CHECK_SAVE: syncUnitCheckSave,
     UNIT_GRADE_SAVE: syncUnitGradeSave,
     NOTE_CREATE: syncNoteCreate,
     NOTE_PHOTO_UPLOAD: syncNotePhotoUpload,
+    NOTE_DELETE: syncNoteDelete,
+    NOTE_PHOTO_DELETE: syncNotePhotoDelete,
+    SECTION_NA_TOGGLE: syncSectionNAToggle,
+    UNIT_ITEM_STATUS: syncUnitItemStatus,
+    UNIT_ITEM_NA: syncUnitItemNA,
+    PAINT_SCOPE: syncPaintScope,
   };
 
   const handler = handlers[item.action];
@@ -239,4 +247,89 @@ async function syncNotePhotoUpload(payload: Record<string, unknown>): Promise<vo
   await offlineDB.localNotePhotos.update(photoLocalId, {
     syncStatus: "synced",
   });
+}
+
+// ============================================
+// Delete sync handlers
+// ============================================
+
+async function syncFindingDelete(payload: Record<string, unknown>): Promise<void> {
+  const { deleteInspectionFinding } = await import("@/app/actions/inspection-findings");
+  await deleteInspectionFinding(
+    payload.findingId as string,
+    payload.projectId as string,
+    payload.projectSectionId as string
+  );
+}
+
+async function syncCaptureDelete(payload: Record<string, unknown>): Promise<void> {
+  const { deleteInspectionCapture } = await import("@/app/actions/inspection-captures");
+  await deleteInspectionCapture(
+    payload.captureId as string,
+    payload.imagePath as string,
+    payload.projectId as string,
+    payload.projectSectionId as string
+  );
+}
+
+async function syncSectionNAToggle(payload: Record<string, unknown>): Promise<void> {
+  const { toggleInspectionSectionNA } = await import("@/app/actions/inspections");
+  await toggleInspectionSectionNA(
+    payload.projectSectionId as string,
+    payload.projectId as string,
+    payload.isNa as boolean
+  );
+}
+
+// ============================================
+// Unit Turn sync handlers
+// ============================================
+
+async function syncUnitItemStatus(payload: Record<string, unknown>): Promise<void> {
+  const { updateUnitItemStatus } = await import("@/app/actions/unit-turns");
+  await updateUnitItemStatus(
+    payload.itemId as string,
+    payload.status as string | null,
+    payload.batchId as string,
+    payload.unitId as string
+  );
+}
+
+async function syncUnitItemNA(payload: Record<string, unknown>): Promise<void> {
+  const { updateUnitItemNA } = await import("@/app/actions/unit-turns");
+  await updateUnitItemNA(
+    payload.itemId as string,
+    payload.isNA as boolean,
+    payload.batchId as string,
+    payload.unitId as string
+  );
+}
+
+async function syncPaintScope(payload: Record<string, unknown>): Promise<void> {
+  const { updatePaintScope } = await import("@/app/actions/unit-turns");
+  await updatePaintScope(
+    payload.itemId as string,
+    payload.scope as string | null,
+    payload.batchId as string,
+    payload.unitId as string
+  );
+}
+
+async function syncNoteDelete(payload: Record<string, unknown>): Promise<void> {
+  const { deleteNote } = await import("@/app/actions/unit-turns");
+  await deleteNote(
+    payload.noteId as string,
+    payload.batchId as string,
+    payload.unitId as string
+  );
+}
+
+async function syncNotePhotoDelete(payload: Record<string, unknown>): Promise<void> {
+  const { deleteNotePhoto } = await import("@/app/actions/unit-turns");
+  await deleteNotePhoto(
+    payload.photoId as string,
+    payload.imagePath as string,
+    payload.batchId as string,
+    payload.unitId as string
+  );
 }

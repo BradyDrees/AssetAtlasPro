@@ -1,7 +1,7 @@
 "use client";
 
 import { offlineDB } from "./db";
-import { localUUID, enqueue } from "./write";
+import { localUUID, enqueue, pruneQueue } from "./write";
 import { compressPhoto } from "./photo-compress";
 
 // ============================================
@@ -264,6 +264,223 @@ export async function uploadNotePhotoOffline(params: {
   );
 
   return localId;
+}
+
+// ============================================
+// Delete Operations (with cascade / queue pruning)
+// ============================================
+
+/**
+ * Delete a finding offline.
+ * - If local-only: remove from IndexedDB + prune related queue items + delete local captures.
+ * - If server entity: enqueue FINDING_DELETE for sync.
+ */
+export async function deleteFindingOffline(params: {
+  findingId: string;
+  projectId: string;
+  projectSectionId: string;
+}): Promise<void> {
+  // Check if this is a local-only finding
+  const localFinding = await offlineDB.localFindings.get(params.findingId);
+
+  if (localFinding) {
+    // Local-only: cascade delete everything related
+    await offlineDB.localFindings.delete(params.findingId);
+
+    // Delete local captures that belong to this finding
+    const relatedCaptures = await offlineDB.localCaptures
+      .where("findingLocalId")
+      .equals(params.findingId)
+      .toArray();
+    if (relatedCaptures.length > 0) {
+      await offlineDB.localCaptures.bulkDelete(
+        relatedCaptures.map((c) => c.localId)
+      );
+    }
+
+    // Prune all queue items related to this finding
+    await pruneQueue((item) => {
+      const p = item.payload;
+      return (
+        (p.localId === params.findingId) ||
+        (p.findingLocalId === params.findingId) ||
+        (p.captureLocalId !== undefined &&
+          relatedCaptures.some((c) => c.localId === p.captureLocalId))
+      );
+    });
+
+    return; // No server delete needed
+  }
+
+  // Server entity: queue for deletion during sync
+  await enqueue("FINDING_DELETE", {
+    findingId: params.findingId,
+    projectId: params.projectId,
+    projectSectionId: params.projectSectionId,
+  });
+}
+
+/**
+ * Delete a capture offline.
+ * - If local-only: remove blob + prune queue item.
+ * - If server entity: enqueue CAPTURE_DELETE.
+ */
+export async function deleteCaptureOffline(params: {
+  captureId: string;
+  imagePath: string;
+  projectId: string;
+  projectSectionId: string;
+}): Promise<void> {
+  const localCapture = await offlineDB.localCaptures.get(params.captureId);
+
+  if (localCapture) {
+    await offlineDB.localCaptures.delete(params.captureId);
+    await pruneQueue((item) => item.payload.captureLocalId === params.captureId);
+    return;
+  }
+
+  await enqueue("CAPTURE_DELETE", {
+    captureId: params.captureId,
+    imagePath: params.imagePath,
+    projectId: params.projectId,
+    projectSectionId: params.projectSectionId,
+  });
+}
+
+/** Toggle section N/A offline — simple enqueue. */
+export async function toggleSectionNAOffline(params: {
+  projectSectionId: string;
+  projectId: string;
+  isNa: boolean;
+}): Promise<void> {
+  await enqueue("SECTION_NA_TOGGLE", {
+    projectSectionId: params.projectSectionId,
+    projectId: params.projectId,
+    isNa: params.isNa,
+  });
+}
+
+// ============================================
+// Unit Turn Field Updates (offline)
+// ============================================
+
+export async function updateUnitItemStatusOffline(params: {
+  itemId: string;
+  status: string | null;
+  batchId: string;
+  unitId: string;
+}): Promise<void> {
+  await enqueue("UNIT_ITEM_STATUS", {
+    itemId: params.itemId,
+    status: params.status,
+    batchId: params.batchId,
+    unitId: params.unitId,
+  });
+}
+
+export async function updateUnitItemNAOffline(params: {
+  itemId: string;
+  isNA: boolean;
+  batchId: string;
+  unitId: string;
+}): Promise<void> {
+  await enqueue("UNIT_ITEM_NA", {
+    itemId: params.itemId,
+    isNA: params.isNA,
+    batchId: params.batchId,
+    unitId: params.unitId,
+  });
+}
+
+export async function updatePaintScopeOffline(params: {
+  itemId: string;
+  scope: string | null;
+  batchId: string;
+  unitId: string;
+}): Promise<void> {
+  await enqueue("PAINT_SCOPE", {
+    itemId: params.itemId,
+    scope: params.scope,
+    batchId: params.batchId,
+    unitId: params.unitId,
+  });
+}
+
+// ============================================
+// Unit Turn Delete Operations (offline)
+// ============================================
+
+/**
+ * Delete a note offline.
+ * - If local-only: remove note + photos + prune queue.
+ * - If server entity: enqueue NOTE_DELETE.
+ */
+export async function deleteNoteOffline(params: {
+  noteId: string;
+  batchId: string;
+  unitId: string;
+}): Promise<void> {
+  const localNote = await offlineDB.localNotes.get(params.noteId);
+
+  if (localNote) {
+    await offlineDB.localNotes.delete(params.noteId);
+
+    // Cascade: delete local photos for this note
+    const relatedPhotos = await offlineDB.localNotePhotos
+      .where("noteLocalId")
+      .equals(params.noteId)
+      .toArray();
+    if (relatedPhotos.length > 0) {
+      await offlineDB.localNotePhotos.bulkDelete(
+        relatedPhotos.map((p) => p.localId)
+      );
+    }
+
+    // Prune queue items for this note and its photos
+    await pruneQueue((item) => {
+      const p = item.payload;
+      return (
+        p.localId === params.noteId ||
+        p.noteLocalId === params.noteId ||
+        relatedPhotos.some((rp) => rp.localId === p.photoLocalId)
+      );
+    });
+
+    return;
+  }
+
+  await enqueue("NOTE_DELETE", {
+    noteId: params.noteId,
+    batchId: params.batchId,
+    unitId: params.unitId,
+  });
+}
+
+/**
+ * Delete a note photo offline.
+ * - If local-only: remove blob + prune queue.
+ * - If server entity: enqueue NOTE_PHOTO_DELETE.
+ */
+export async function deleteNotePhotoOffline(params: {
+  photoId: string;
+  imagePath: string;
+  batchId: string;
+  unitId: string;
+}): Promise<void> {
+  const localPhoto = await offlineDB.localNotePhotos.get(params.photoId);
+
+  if (localPhoto) {
+    await offlineDB.localNotePhotos.delete(params.photoId);
+    await pruneQueue((item) => item.payload.photoLocalId === params.photoId);
+    return;
+  }
+
+  await enqueue("NOTE_PHOTO_DELETE", {
+    photoId: params.photoId,
+    imagePath: params.imagePath,
+    batchId: params.batchId,
+    unitId: params.unitId,
+  });
 }
 
 // ============================================

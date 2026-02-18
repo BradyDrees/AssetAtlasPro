@@ -24,8 +24,9 @@ export default async function InspectionUnitPage({
   } = await params;
   const supabase = await createClient();
 
-  // Fire all 6 queries in parallel instead of sequentially
+  // Fire all 7 queries in parallel instead of sequentially
   const [
+    { data: { user } },
     { data: project },
     { data: projectSection },
     { data: unit },
@@ -33,6 +34,7 @@ export default async function InspectionUnitPage({
     { data: findingsData },
     { data: allUnits },
   ] = await Promise.all([
+    supabase.auth.getUser(),
     supabase
       .from("inspection_projects")
       .select("*")
@@ -145,6 +147,7 @@ export default async function InspectionUnitPage({
         projectSectionId={projectSectionId}
         sectionSlug={ps.section.slug}
         inspectionType={project.inspection_type}
+        currentUserId={user?.id ?? ""}
       />
 
       {/* Next unit navigation */}

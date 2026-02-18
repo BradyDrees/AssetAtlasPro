@@ -22,12 +22,17 @@ interface OfflineContextValue {
   syncProgress: number | null;
   /** Whether sync is currently running */
   isSyncing: boolean;
+  /** Monotonically increasing counter — bumped after each offline write.
+   *  Local data hooks re-run when this changes. */
+  localRevision: number;
   /** Toggle field mode on/off */
   toggleFieldMode: () => void;
   /** Manually trigger a sync attempt */
   startSync: () => Promise<void>;
   /** Refresh pending count (call after offline writes) */
   refreshPending: () => Promise<void>;
+  /** Bump local revision counter — triggers re-render for local data hooks */
+  bumpRevision: () => void;
 }
 
 const OfflineContext = createContext<OfflineContextValue | null>(null);
@@ -46,7 +51,12 @@ export function OfflineProvider({ children }: { children: React.ReactNode }) {
   const [pendingCount, setPendingCount] = useState(0);
   const [syncProgress, setSyncProgress] = useState<number | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [localRevision, setLocalRevision] = useState(0);
   const syncingRef = useRef(false);
+
+  const bumpRevision = useCallback(() => {
+    setLocalRevision((r) => r + 1);
+  }, []);
 
   // Listen for online/offline events
   useEffect(() => {
@@ -121,9 +131,11 @@ export function OfflineProvider({ children }: { children: React.ReactNode }) {
         pendingCount,
         syncProgress,
         isSyncing,
+        localRevision,
         toggleFieldMode,
         startSync,
         refreshPending,
+        bumpRevision,
       }}
     >
       {children}

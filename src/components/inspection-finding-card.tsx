@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useFieldRouter } from "@/lib/offline/use-field-router";
+import { useOffline } from "@/components/offline-provider";
 import {
   updateInspectionFindingField,
   deleteInspectionFinding,
@@ -10,6 +11,12 @@ import {
   uploadInspectionCapture,
   deleteInspectionCapture,
 } from "@/app/actions/inspection-captures";
+import {
+  updateFindingOffline,
+  addCaptureOffline,
+  deleteFindingOffline,
+  deleteCaptureOffline,
+} from "@/lib/offline/actions";
 import {
   PRIORITY_LABELS,
   GOOD_LABEL,
@@ -61,7 +68,8 @@ export function FindingCard({
   onDeleted,
   onAddFinding,
 }: FindingCardProps) {
-  const router = useRouter();
+  const router = useFieldRouter();
+  const { isFieldMode } = useOffline();
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const [priority, setPriority] = useState<number | null>(finding.priority);
   const [exposureBucket, setExposureBucket] = useState<string | null>(
@@ -90,13 +98,23 @@ export function FindingCard({
   const updateField = async (field: string, value: any) => {
     setSaving(true);
     try {
-      await updateInspectionFindingField(
-        finding.id,
-        projectId,
-        projectSectionId,
-        field,
-        value
-      );
+      if (isFieldMode) {
+        await updateFindingOffline({
+          findingServerId: finding.id,
+          projectId,
+          projectSectionId,
+          field,
+          value,
+        });
+      } else {
+        await updateInspectionFindingField(
+          finding.id,
+          projectId,
+          projectSectionId,
+          field,
+          value
+        );
+      }
     } catch (err) {
       console.error("Failed to update finding:", err);
     } finally {
@@ -147,14 +165,24 @@ export function FindingCard({
 
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.set("file", file);
-      formData.set("projectSectionId", projectSectionId);
-      formData.set("projectId", projectId);
-      formData.set("sectionSlug", sectionSlug);
-      formData.set("findingId", finding.id);
-
-      await uploadInspectionCapture(formData);
+      if (isFieldMode) {
+        await addCaptureOffline({
+          file,
+          projectId,
+          projectSectionId,
+          sectionSlug,
+          findingServerId: finding.id,
+          createdBy: currentUserId ?? "",
+        });
+      } else {
+        const formData = new FormData();
+        formData.set("file", file);
+        formData.set("projectSectionId", projectSectionId);
+        formData.set("projectId", projectId);
+        formData.set("sectionSlug", sectionSlug);
+        formData.set("findingId", finding.id);
+        await uploadInspectionCapture(formData);
+      }
       router.refresh();
     } catch (err) {
       console.error("Upload failed:", err);
@@ -166,12 +194,21 @@ export function FindingCard({
 
   const handleDeleteCapture = async (capture: InspectionCapture) => {
     try {
-      await deleteInspectionCapture(
-        capture.id,
-        capture.image_path,
-        projectId,
-        projectSectionId
-      );
+      if (isFieldMode) {
+        await deleteCaptureOffline({
+          captureId: capture.id,
+          imagePath: capture.image_path,
+          projectId,
+          projectSectionId,
+        });
+      } else {
+        await deleteInspectionCapture(
+          capture.id,
+          capture.image_path,
+          projectId,
+          projectSectionId
+        );
+      }
       router.refresh();
     } catch (err) {
       console.error("Delete capture failed:", err);
@@ -182,7 +219,15 @@ export function FindingCard({
     if (!confirm("Delete this finding and all its photos?")) return;
     setDeleting(true);
     try {
-      await deleteInspectionFinding(finding.id, projectId, projectSectionId);
+      if (isFieldMode) {
+        await deleteFindingOffline({
+          findingId: finding.id,
+          projectId,
+          projectSectionId,
+        });
+      } else {
+        await deleteInspectionFinding(finding.id, projectId, projectSectionId);
+      }
       onDeleted?.(finding.id);
       router.refresh();
     } catch (err) {

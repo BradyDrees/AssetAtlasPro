@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import {
   updateInspectionUnitField,
   deleteInspectionUnit,
@@ -15,6 +14,14 @@ import {
   updateInspectionFindingField,
   deleteInspectionFinding,
 } from "@/app/actions/inspection-findings";
+import { useFieldRouter } from "@/lib/offline/use-field-router";
+import { useOffline } from "@/components/offline-provider";
+import {
+  saveUnitCheckOffline,
+  addCaptureOffline,
+  deleteCaptureOffline,
+  createFindingOffline,
+} from "@/lib/offline/actions";
 import { InspectionFindingsList } from "@/components/inspection-findings-list";
 import {
   INSPECTION_UNIT_GRADES,
@@ -46,6 +53,7 @@ interface InspectionUnitDetailProps {
   projectSectionId: string;
   sectionSlug: string;
   inspectionType: string;
+  currentUserId?: string;
 }
 
 export function InspectionUnitDetail({
@@ -56,8 +64,10 @@ export function InspectionUnitDetail({
   projectSectionId,
   sectionSlug,
   inspectionType,
+  currentUserId,
 }: InspectionUnitDetailProps) {
-  const router = useRouter();
+  const router = useFieldRouter();
+  const { isFieldMode, refreshPending } = useOffline();
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -109,20 +119,31 @@ export function InspectionUnitDetail({
     async (field: string, value: any) => {
       setSaving(true);
       try {
-        await updateInspectionUnitField(
-          unit.id,
-          projectId,
-          projectSectionId,
-          field,
-          value
-        );
+        if (isFieldMode) {
+          await saveUnitCheckOffline({
+            unitId: unit.id,
+            projectId,
+            projectSectionId,
+            field,
+            value,
+          });
+          await refreshPending();
+        } else {
+          await updateInspectionUnitField(
+            unit.id,
+            projectId,
+            projectSectionId,
+            field,
+            value
+          );
+        }
       } catch (err) {
         console.error("Failed to update unit field:", err);
       } finally {
         setSaving(false);
       }
     },
-    [unit.id, projectId, projectSectionId]
+    [unit.id, projectId, projectSectionId, isFieldMode, refreshPending]
   );
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,14 +152,26 @@ export function InspectionUnitDetail({
 
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.set("file", file);
-      formData.set("projectSectionId", projectSectionId);
-      formData.set("projectId", projectId);
-      formData.set("sectionSlug", sectionSlug);
-      formData.set("unitId", unit.id);
+      if (isFieldMode) {
+        await addCaptureOffline({
+          file,
+          projectId,
+          projectSectionId,
+          sectionSlug,
+          unitId: unit.id,
+          createdBy: currentUserId ?? "",
+        });
+        await refreshPending();
+      } else {
+        const formData = new FormData();
+        formData.set("file", file);
+        formData.set("projectSectionId", projectSectionId);
+        formData.set("projectId", projectId);
+        formData.set("sectionSlug", sectionSlug);
+        formData.set("unitId", unit.id);
 
-      await uploadInspectionCapture(formData);
+        await uploadInspectionCapture(formData);
+      }
       router.refresh();
     } catch (err) {
       console.error("Upload failed:", err);
@@ -150,12 +183,22 @@ export function InspectionUnitDetail({
 
   const handleDeleteCapture = async (capture: InspectionCapture) => {
     try {
-      await deleteInspectionCapture(
-        capture.id,
-        capture.image_path,
-        projectId,
-        projectSectionId
-      );
+      if (isFieldMode) {
+        await deleteCaptureOffline({
+          captureId: capture.id,
+          imagePath: capture.image_path,
+          projectId,
+          projectSectionId,
+        });
+        await refreshPending();
+      } else {
+        await deleteInspectionCapture(
+          capture.id,
+          capture.image_path,
+          projectId,
+          projectSectionId
+        );
+      }
       router.refresh();
     } catch (err) {
       console.error("Delete capture failed:", err);
@@ -596,6 +639,7 @@ export function InspectionUnitDetail({
         sectionSlug={sectionSlug}
         unitId={unit.id}
         inspectionType={inspectionType}
+        currentUserId={currentUserId}
       />
 
       {/* Delete unit */}
@@ -622,6 +666,7 @@ function UnitFindings({
   sectionSlug,
   unitId,
   inspectionType,
+  currentUserId,
 }: {
   findings: InspectionFinding[];
   captures: InspectionCapture[];
@@ -630,8 +675,10 @@ function UnitFindings({
   sectionSlug: string;
   unitId: string;
   inspectionType: string;
+  currentUserId?: string;
 }) {
-  const router = useRouter();
+  const router = useFieldRouter();
+  const { isFieldMode, refreshPending } = useOffline();
   const [showAdd, setShowAdd] = useState(false);
   const [title, setTitle] = useState("");
   const [adding, setAdding] = useState(false);
@@ -648,13 +695,25 @@ function UnitFindings({
     if (!title.trim()) return;
     setAdding(true);
     try {
-      await createInspectionFinding({
-        project_id: projectId,
-        project_section_id: projectSectionId,
-        checklist_item_id: null,
-        unit_id: unitId,
-        title: title.trim(),
-      });
+      if (isFieldMode) {
+        await createFindingOffline({
+          projectId,
+          projectSectionId,
+          checklistItemId: null,
+          unitId,
+          title: title.trim(),
+          createdBy: currentUserId ?? "",
+        });
+        await refreshPending();
+      } else {
+        await createInspectionFinding({
+          project_id: projectId,
+          project_section_id: projectSectionId,
+          checklist_item_id: null,
+          unit_id: unitId,
+          title: title.trim(),
+        });
+      }
       setTitle("");
       setShowAdd(false);
       router.refresh();

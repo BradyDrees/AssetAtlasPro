@@ -9,11 +9,19 @@ export type SyncStatus = "pending" | "syncing" | "failed" | "synced";
 export type QueueAction =
   | "FINDING_CREATE"
   | "FINDING_UPDATE"
+  | "FINDING_DELETE"
   | "CAPTURE_UPLOAD"
+  | "CAPTURE_DELETE"
   | "UNIT_CHECK_SAVE"
   | "UNIT_GRADE_SAVE"
   | "NOTE_CREATE"
-  | "NOTE_PHOTO_UPLOAD";
+  | "NOTE_PHOTO_UPLOAD"
+  | "NOTE_DELETE"
+  | "NOTE_PHOTO_DELETE"
+  | "SECTION_NA_TOGGLE"
+  | "UNIT_ITEM_STATUS"
+  | "UNIT_ITEM_NA"
+  | "PAINT_SCOPE";
 
 export interface SyncQueueItem {
   id: string;

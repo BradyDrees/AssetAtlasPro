@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import {
   updateUnitItemStatus,
   updateUnitItemNA,
@@ -11,6 +10,17 @@ import {
   uploadNotePhoto,
   deleteNotePhoto,
 } from "@/app/actions/unit-turns";
+import { useFieldRouter } from "@/lib/offline/use-field-router";
+import { useOffline } from "@/components/offline-provider";
+import {
+  updateUnitItemStatusOffline,
+  updateUnitItemNAOffline,
+  updatePaintScopeOffline,
+  createNoteOffline,
+  deleteNoteOffline,
+  uploadNotePhotoOffline,
+  deleteNotePhotoOffline,
+} from "@/lib/offline/actions";
 import {
   ITEM_STATUS_OPTIONS,
   ITEM_STATUS_LABELS,
@@ -32,6 +42,7 @@ interface ChecklistItemProps {
   unitId: string;
   categoryId: string;
   supabaseUrl: string;
+  currentUserId?: string;
 }
 
 export function ChecklistItem({
@@ -42,8 +53,10 @@ export function ChecklistItem({
   unitId,
   categoryId,
   supabaseUrl,
+  currentUserId,
 }: ChecklistItemProps) {
-  const router = useRouter();
+  const router = useFieldRouter();
+  const { isFieldMode, refreshPending } = useOffline();
   const [status, setStatus] = useState(item.status);
   const [isNA, setIsNA] = useState(item.is_na);
   const [paintScope, setPaintScope] = useState(item.paint_scope);
@@ -61,10 +74,15 @@ export function ChecklistItem({
       const val = newStatus === status ? null : newStatus;
       setStatus(val as any);
       setSaving(true);
-      await updateUnitItemStatus(item.id, val, batchId, unitId);
+      if (isFieldMode) {
+        await updateUnitItemStatusOffline({ itemId: item.id, status: val, batchId, unitId });
+        await refreshPending();
+      } else {
+        await updateUnitItemStatus(item.id, val, batchId, unitId);
+      }
       setSaving(false);
     },
-    [item.id, status, batchId, unitId]
+    [item.id, status, batchId, unitId, isFieldMode, refreshPending]
   );
 
   const handleNAToggle = useCallback(async () => {
@@ -75,28 +93,49 @@ export function ChecklistItem({
       setPaintScope(null);
     }
     setSaving(true);
-    await updateUnitItemNA(item.id, newNA, batchId, unitId);
+    if (isFieldMode) {
+      await updateUnitItemNAOffline({ itemId: item.id, isNA: newNA, batchId, unitId });
+      await refreshPending();
+    } else {
+      await updateUnitItemNA(item.id, newNA, batchId, unitId);
+    }
     setSaving(false);
-  }, [item.id, isNA, batchId, unitId]);
+  }, [item.id, isNA, batchId, unitId, isFieldMode, refreshPending]);
 
   const handlePaintScopeChange = useCallback(
     async (scope: string | null) => {
       const val = scope === paintScope ? null : scope;
       setPaintScope(val as any);
       setSaving(true);
-      await updatePaintScope(item.id, val, batchId, unitId);
+      if (isFieldMode) {
+        await updatePaintScopeOffline({ itemId: item.id, scope: val, batchId, unitId });
+        await refreshPending();
+      } else {
+        await updatePaintScope(item.id, val, batchId, unitId);
+      }
       setSaving(false);
     },
-    [item.id, paintScope, batchId, unitId]
+    [item.id, paintScope, batchId, unitId, isFieldMode, refreshPending]
   );
 
   const handleAddNote = async () => {
     if (!noteText.trim()) return;
     setAddingNote(true);
-    await createNote(
-      { unit_id: unitId, item_id: item.id, category_id: categoryId, text: noteText.trim() },
-      batchId
-    );
+    if (isFieldMode) {
+      await createNoteOffline({
+        batchId,
+        unitId,
+        categoryId,
+        text: noteText.trim(),
+        createdBy: currentUserId ?? "",
+      });
+      await refreshPending();
+    } else {
+      await createNote(
+        { unit_id: unitId, item_id: item.id, category_id: categoryId, text: noteText.trim() },
+        batchId
+      );
+    }
     setNoteText("");
     setShowAddNote(false);
     setAddingNote(false);
@@ -104,42 +143,81 @@ export function ChecklistItem({
   };
 
   const handleDeleteNote = async (noteId: string) => {
-    await deleteNote(noteId, batchId, unitId);
+    if (isFieldMode) {
+      await deleteNoteOffline({ noteId, batchId, unitId });
+      await refreshPending();
+    } else {
+      await deleteNote(noteId, batchId, unitId);
+    }
     router.refresh();
   };
 
   const handleUploadPhoto = async (noteId: string, file: File) => {
-    const formData = new FormData();
-    formData.set("file", file);
-    formData.set("noteId", noteId);
-    formData.set("batchId", batchId);
-    formData.set("unitId", unitId);
-    await uploadNotePhoto(formData);
+    if (isFieldMode) {
+      await uploadNotePhotoOffline({
+        file,
+        noteLocalId: noteId,
+        batchId,
+        unitId,
+        createdBy: currentUserId ?? "",
+      });
+      await refreshPending();
+    } else {
+      const formData = new FormData();
+      formData.set("file", file);
+      formData.set("noteId", noteId);
+      formData.set("batchId", batchId);
+      formData.set("unitId", unitId);
+      await uploadNotePhoto(formData);
+    }
     router.refresh();
   };
 
   // Direct photo: auto-creates a note with empty text, attaches the photo
   const handleDirectPhoto = async (file: File) => {
     setUploadingDirect(true);
-    // Create a note first
-    const result = await createNote(
-      { unit_id: unitId, item_id: item.id, category_id: categoryId, text: "" },
-      batchId
-    );
-    if (result.id) {
-      const formData = new FormData();
-      formData.set("file", file);
-      formData.set("noteId", result.id);
-      formData.set("batchId", batchId);
-      formData.set("unitId", unitId);
-      await uploadNotePhoto(formData);
+    if (isFieldMode) {
+      // Create local note, then attach photo
+      const noteLocalId = await createNoteOffline({
+        batchId,
+        unitId,
+        categoryId,
+        text: "",
+        createdBy: currentUserId ?? "",
+      });
+      await uploadNotePhotoOffline({
+        file,
+        noteLocalId,
+        batchId,
+        unitId,
+        createdBy: currentUserId ?? "",
+      });
+      await refreshPending();
+    } else {
+      const result = await createNote(
+        { unit_id: unitId, item_id: item.id, category_id: categoryId, text: "" },
+        batchId
+      );
+      if (result.id) {
+        const formData = new FormData();
+        formData.set("file", file);
+        formData.set("noteId", result.id);
+        formData.set("batchId", batchId);
+        formData.set("unitId", unitId);
+        await uploadNotePhoto(formData);
+      }
     }
     setUploadingDirect(false);
     router.refresh();
   };
 
   const handleDeletePhoto = async (photoId: string, imagePath: string) => {
-    await deleteNotePhoto(photoId, imagePath, batchId, unitId);
+    if (isFieldMode) {
+      await deleteNotePhotoOffline({ photoId, imagePath, batchId, unitId });
+      await refreshPending();
+    } else {
+      await deleteNotePhoto(photoId, imagePath, batchId, unitId);
+    }
     router.refresh();
   };
 

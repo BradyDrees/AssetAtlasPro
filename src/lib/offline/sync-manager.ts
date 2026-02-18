@@ -1,7 +1,7 @@
 "use client";
 
 import { offlineDB, type SyncQueueItem, type QueueAction } from "./db";
-import { markSynced, markFailed, purgeSynced } from "./write";
+import { markSynced, markFailed, purgeSynced, MAX_RETRIES } from "./write";
 
 type ProgressCallback = (synced: number, total: number) => void;
 
@@ -9,12 +9,12 @@ type ProgressCallback = (synced: number, total: number) => void;
 // Covers both unit IDs and turn_unit IDs
 const idMap = new Map<string, string>();
 
-const MAX_RETRIES = 3;
-
 /** Resolve a payload ID from the idMap (local → server). Falls back to the original value. */
 function resolveId(value: unknown): string {
+  if (!value) {
+    throw new Error(`Cannot resolve empty ID: ${value}`);
+  }
   const id = value as string;
-  if (!id) return id;
   return idMap.get(id) ?? id;
 }
 
@@ -26,6 +26,9 @@ function resolveId(value: unknown): string {
 export async function processSyncQueue(
   onProgress?: ProgressCallback
 ): Promise<number> {
+  // Clear stale local→server ID mappings from previous sync batch
+  idMap.clear();
+
   const pending = await offlineDB.syncQueue
     .where("status")
     .anyOf(["pending", "failed"])
@@ -62,7 +65,39 @@ export async function processSyncQueue(
   // Clean up completed items
   await purgeSynced();
 
+  // Recover soft-deleted units whose deletion failed max retries
+  await recoverSoftDeletedUnits();
+
   return synced;
+}
+
+/**
+ * Auto-restore units that were soft-deleted but whose UNIT_DELETE
+ * sync has failed max retries. Prevents permanent "limbo" state.
+ */
+async function recoverSoftDeletedUnits(): Promise<void> {
+  const stuck = await offlineDB.syncQueue
+    .where("status")
+    .anyOf(["pending", "failed"])
+    .filter((item) => item.retryCount >= MAX_RETRIES && item.action === "UNIT_DELETE")
+    .toArray();
+
+  for (const item of stuck) {
+    const unitId = item.payload.unitId as string;
+    const units = await offlineDB.localUnits
+      .where("projectId")
+      .equals(item.payload.projectId as string)
+      .filter((u) => u.serverId === unitId || u.localId === unitId)
+      .toArray();
+
+    for (const unit of units) {
+      if (unit.isDeletedPending) {
+        await offlineDB.localUnits.update(unit.localId, {
+          isDeletedPending: false,
+        });
+      }
+    }
+  }
 }
 
 /**

@@ -8,7 +8,11 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { pendingCount as getPendingCount } from "@/lib/offline/write";
+import {
+  pendingCount as getPendingCount,
+  stuckCount as getStuckCount,
+  resetStuckItems,
+} from "@/lib/offline/write";
 import { processSyncQueue } from "@/lib/offline/sync-manager";
 
 interface OfflineContextValue {
@@ -33,6 +37,10 @@ interface OfflineContextValue {
   refreshPending: () => Promise<void>;
   /** Bump local revision counter — triggers re-render for local data hooks */
   bumpRevision: () => void;
+  /** Count of items stuck at max retries */
+  stuckCount: number;
+  /** Reset stuck items for manual retry */
+  resetStuck: () => Promise<void>;
 }
 
 const OfflineContext = createContext<OfflineContextValue | null>(null);
@@ -51,6 +59,7 @@ export function OfflineProvider({ children }: { children: React.ReactNode }) {
   const [syncProgress, setSyncProgress] = useState<number | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const [localRevision, setLocalRevision] = useState(0);
+  const [stuckCount, setStuckCount] = useState(0);
   const syncingRef = useRef(false);
 
   const bumpRevision = useCallback(() => {
@@ -73,8 +82,12 @@ export function OfflineProvider({ children }: { children: React.ReactNode }) {
 
   const refreshPending = useCallback(async () => {
     try {
-      const count = await getPendingCount();
-      setPendingCount(count);
+      const [pending, stuck] = await Promise.all([
+        getPendingCount(),
+        getStuckCount(),
+      ]);
+      setPendingCount(pending);
+      setStuckCount(stuck);
     } catch {
       // Dexie not ready yet — ignore
     }
@@ -112,12 +125,21 @@ export function OfflineProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isOnline, isFieldMode, pendingCount, startSync]);
 
+  const resetStuck = useCallback(async () => {
+    await resetStuckItems();
+    await refreshPending();
+    // Immediately try syncing the reset items
+    if (navigator.onLine) {
+      setTimeout(() => startSync().catch(console.error), 300);
+    }
+  }, [refreshPending, startSync]);
+
   const toggleFieldMode = useCallback(() => {
     setIsFieldMode((prev) => {
       const next = !prev;
       // If turning off field mode and we're online, start syncing
       if (!next && navigator.onLine) {
-        setTimeout(() => startSync(), 500);
+        setTimeout(() => startSync().catch(console.error), 500);
       }
       return next;
     });
@@ -136,6 +158,8 @@ export function OfflineProvider({ children }: { children: React.ReactNode }) {
         startSync,
         refreshPending,
         bumpRevision,
+        stuckCount,
+        resetStuck,
       }}
     >
       {children}

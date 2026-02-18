@@ -117,12 +117,6 @@ export interface LocalUnit {
   isDeletedPending: boolean;
 }
 
-export interface ProjectSnapshot {
-  projectId: string;
-  updatedAt: number;
-  data: Record<string, unknown>;
-}
-
 // ============================================
 // Database
 // ============================================
@@ -133,7 +127,6 @@ export class OfflineDB extends Dexie {
   localCaptures!: Table<LocalCapture, string>;
   localNotes!: Table<LocalNote, string>;
   localNotePhotos!: Table<LocalNotePhoto, string>;
-  projectSnapshots!: Table<ProjectSnapshot, string>;
   localUnits!: Table<LocalUnit, string>;
 
   constructor() {
@@ -158,9 +151,10 @@ export class OfflineDB extends Dexie {
         "&localId, projectId, findingLocalId, syncStatus",
       localNotes: "&localId, batchId, unitId, syncStatus",
       localNotePhotos: "&localId, noteLocalId, syncStatus",
-      projectSnapshots: "&projectId, updatedAt",
       localUnits:
         "&localId, projectId, projectSectionId, syncStatus, building, unitNumber",
+      // projectSnapshots removed — was never used
+      projectSnapshots: null,
     });
   }
 }

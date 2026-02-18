@@ -2,6 +2,8 @@
 
 import { offlineDB, type QueueAction, type SyncQueueItem } from "./db";
 
+export const MAX_RETRIES = 3;
+
 /** Generate a UUID using the Web Crypto API (works offline). */
 export function localUUID(): string {
   return crypto.randomUUID();
@@ -37,6 +39,56 @@ export async function pendingCount(): Promise<number> {
     .where("status")
     .anyOf(["pending", "failed"])
     .count();
+}
+
+/** Count items that have exhausted retries and are stuck. */
+export async function stuckCount(): Promise<number> {
+  return offlineDB.syncQueue
+    .where("status")
+    .anyOf(["pending", "failed"])
+    .filter((item) => item.retryCount >= MAX_RETRIES)
+    .count();
+}
+
+/**
+ * Reset retry count for stuck items (and their dependents) so they
+ * get another chance on the next sync run.
+ */
+export async function resetStuckItems(): Promise<number> {
+  const stuck = await offlineDB.syncQueue
+    .where("status")
+    .anyOf(["pending", "failed"])
+    .filter((item) => item.retryCount >= MAX_RETRIES)
+    .toArray();
+
+  if (stuck.length === 0) return 0;
+
+  // Also find items that depend on stuck items (stalled dependency chain)
+  const stuckIds = new Set(stuck.map((s) => s.id));
+  const allPending = await offlineDB.syncQueue
+    .where("status")
+    .anyOf(["pending", "failed"])
+    .toArray();
+
+  const dependents = allPending.filter(
+    (item) => item.dependsOn?.some((depId) => stuckIds.has(depId))
+  );
+
+  const toReset = [...stuck, ...dependents];
+  const now = Date.now();
+
+  await offlineDB.syncQueue.bulkUpdate(
+    toReset.map((item) => ({
+      key: item.id,
+      changes: {
+        retryCount: 0,
+        status: "pending" as const,
+        updatedAt: now,
+      },
+    }))
+  );
+
+  return toReset.length;
 }
 
 /** Mark a queue item as synced. */

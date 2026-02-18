@@ -38,7 +38,7 @@ const navItems = [
 export function Sidebar({ user }: { user: User }) {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
-  const { isFieldMode, isOnline, pendingCount, isSyncing, toggleFieldMode, startSync } = useOffline();
+  const { isFieldMode, isOnline, pendingCount, isSyncing, stuckCount, toggleFieldMode, startSync, resetStuck } = useOffline();
   const [isOpen, setIsOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -209,6 +209,19 @@ export function Sidebar({ user }: { user: User }) {
 
           {isSyncing && !collapsed && (
             <p className="text-xs text-brand-400 mb-2 px-1">Syncing...</p>
+          )}
+
+          {/* Retry stuck items — shows when items have failed max retries */}
+          {stuckCount > 0 && isOnline && !isSyncing && !collapsed && (
+            <button
+              onClick={() => resetStuck()}
+              className="flex items-center justify-center gap-2 w-full px-1 py-1.5 text-sm text-red-400 hover:text-red-300 rounded transition-colors mb-2 bg-red-500/10"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              Retry Failed ({stuckCount})
+            </button>
           )}
 
           {/* Theme toggle */}

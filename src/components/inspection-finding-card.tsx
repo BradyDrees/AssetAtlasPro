@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useFieldRouter } from "@/lib/offline/use-field-router";
 import { useOffline } from "@/components/offline-provider";
 import { useLocalFindingCaptures } from "@/lib/offline/use-local-data";
@@ -34,6 +35,16 @@ import type {
   ExposureBucket,
   ProjectRole,
 } from "@/lib/inspection-types";
+
+const riskFlagKey = (flag: string) => {
+  const map: Record<string, string> = {
+    life_safety: "lifeSafety",
+    water_intrusion: "waterIntrusion",
+    electrical_hazard: "electricalHazard",
+    structural: "structural",
+  };
+  return map[flag] ?? flag;
+};
 
 export interface FindingCardProps {
   finding: InspectionFinding;
@@ -69,6 +80,7 @@ export function FindingCard({
   onDeleted,
   onAddFinding,
 }: FindingCardProps) {
+  const t = useTranslations();
   const router = useFieldRouter();
   const { isFieldMode, refreshPending, bumpRevision } = useOffline();
   const { captures: localCaptures, urlMap: localUrlMap } = useLocalFindingCaptures(finding.id);
@@ -224,7 +236,7 @@ export function FindingCard({
   };
 
   const handleDeleteFinding = async () => {
-    if (!confirm("Delete this finding and all its photos?")) return;
+    if (!confirm(t("inspection.deleteConfirm"))) return;
     setDeleting(true);
     try {
       if (isFieldMode) {
@@ -264,7 +276,7 @@ export function FindingCard({
             ▶
           </span>
           <span className="text-sm font-medium text-content-primary">
-            {finding.title || "Untitled Finding"}
+            {finding.title || t("inspection.findingTitle")}
           </span>
           {finding.location && (
             <span className="text-xs text-content-muted truncate max-w-[120px]">
@@ -275,24 +287,24 @@ export function FindingCard({
             <span
               className={`text-xs px-2 py-0.5 rounded-full font-medium ${priorityInfo.bgColor}`}
             >
-              {priorityInfo.label}
+              {t(`inspection.priorityLabels.${priority}.label`)}
             </span>
           ) : isBankReady ? (
             <span
               className={`text-xs px-2 py-0.5 rounded-full font-medium ${GOOD_LABEL.bgColor}`}
             >
-              {GOOD_LABEL.label}
+              {t("inspection.good.label")}
             </span>
           ) : (
             <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-yellow-100 text-yellow-700">
-              Unrated
+              {t("inspection.unrated")}
             </span>
           )}
           {exposureBucket && (
             <span className="text-xs text-content-quaternary">
               {exposureBucket === "custom" && exposureCustom
                 ? `$${exposureCustom.toLocaleString()}`
-                : EXPOSURE_LABELS[exposureBucket as ExposureBucket]}
+                : t(`inspection.exposure.${exposureBucket}`)}
             </span>
           )}
           {(captures.length > 0 || localCaptures.length > 0) && (
@@ -307,7 +319,7 @@ export function FindingCard({
           )}
         </div>
         {saving && (
-          <span className="text-xs text-content-muted mr-2">Saving...</span>
+          <span className="text-xs text-content-muted mr-2">{t("common.saving")}</span>
         )}
       </button>
 
@@ -317,14 +329,14 @@ export function FindingCard({
           {/* Location */}
           <div>
             <label className="block text-xs font-medium text-content-tertiary mb-1">
-              Location
+              {t("inspection.location")}
             </label>
             <input
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               onBlur={handleLocationBlur}
-              placeholder="e.g. South of Building 24, Kitchen, North parking lot..."
+              placeholder={t("inspection.locationPlaceholder")}
               className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
               readOnly={!canEdit}
             />
@@ -333,7 +345,7 @@ export function FindingCard({
           {/* Priority */}
           <div>
             <label className="block text-xs font-medium text-content-tertiary mb-1.5">
-              Priority
+              {t("inspection.priority")}
               {isBankReady && <span className="text-red-500 ml-0.5">*</span>}
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -350,7 +362,7 @@ export function FindingCard({
                         : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                     } ${!canEdit ? "opacity-60 cursor-not-allowed" : ""}`}
                   >
-                    {val} - {info.label}
+                    {val} - {t(`inspection.priorityLabels.${val}.label`)}
                   </button>
                 );
               })}
@@ -365,7 +377,7 @@ export function FindingCard({
                       : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                   } ${!canEdit ? "opacity-60 cursor-not-allowed" : ""}`}
                 >
-                  Good
+                  {t("inspection.good.label")}
                 </button>
               )}
             </div>
@@ -375,7 +387,7 @@ export function FindingCard({
           {isBankReady ? (
             <div>
               <label className="block text-xs font-medium text-content-tertiary mb-1.5">
-                Exposure Estimate
+                {t("inspection.exposureEstimate")}
                 {isBankReady && priority !== null && priority <= 3 && (
                   <span className="text-red-500 ml-0.5">*</span>
                 )}
@@ -392,7 +404,7 @@ export function FindingCard({
                         : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                     } ${!canEdit ? "opacity-60 cursor-not-allowed" : ""}`}
                   >
-                    {EXPOSURE_LABELS[option]}
+                    {t(`inspection.exposure.${option}`)}
                   </button>
                 ))}
               </div>
@@ -408,7 +420,7 @@ export function FindingCard({
                       )
                     }
                     onBlur={handleExposureCustom}
-                    placeholder="Enter amount"
+                    placeholder={t("inspection.exposure.enterAmount")}
                     className="w-32 px-2 py-1 text-sm border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
                 </div>
@@ -419,10 +431,10 @@ export function FindingCard({
           {/* Risk Flags */}
           <div>
             <label className="block text-xs font-medium text-content-tertiary mb-1.5">
-              Risk Flags
+              {t("inspection.riskFlags.label")}
               {isBankReady && (
                 <span className="text-xs text-content-muted ml-1">
-                  (select all that apply)
+                  {t("inspection.riskFlags.selectAllThatApply")}
                 </span>
               )}
             </label>
@@ -441,7 +453,7 @@ export function FindingCard({
                         : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                     } ${!canEdit ? "opacity-60 cursor-not-allowed" : ""}`}
                   >
-                    {info.label}
+                    {t(`inspection.riskFlags.${riskFlagKey(flag)}`)}
                   </button>
                 );
               })}
@@ -451,14 +463,14 @@ export function FindingCard({
           {/* Notes */}
           <div>
             <label className="block text-xs font-medium text-content-tertiary mb-1">
-              Notes
+              {t("notes.notes")}
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               onBlur={handleNotesBlur}
               rows={2}
-              placeholder="Describe the finding..."
+              placeholder={t("inspection.findingNotesPlaceholder")}
               className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
               readOnly={!canEdit}
             />
@@ -467,7 +479,7 @@ export function FindingCard({
           {/* Photos */}
           <div>
             <label className="block text-xs font-medium text-content-tertiary mb-1.5">
-              Photos
+              {t("captures.photoCapture")}
               {isBankReady && priority !== null && priority <= 2 && (
                 <span className="text-red-500 ml-0.5">*</span>
               )}
@@ -481,7 +493,7 @@ export function FindingCard({
                     <div key={capture.id} className="relative group">
                       <img
                         src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/dd-captures/${capture.image_path}`}
-                        alt={capture.caption || "Finding photo"}
+                        alt={capture.caption || t("inspection.findingPhoto")}
                         className="w-full h-24 object-cover rounded-md"
                       />
                       {canDelete && (
@@ -504,12 +516,12 @@ export function FindingCard({
                         {url && (
                           <img
                             src={url}
-                            alt="Pending photo"
+                            alt={t("inspection.pendingPhoto")}
                             className="w-full h-24 object-cover rounded-md border-2 border-dashed border-amber-400 opacity-80"
                           />
                         )}
                         <span className="absolute bottom-1 left-1 text-[10px] bg-amber-500 text-white px-1 py-0.5 rounded font-medium">
-                          Pending
+                          {t("inspection.pending")}
                         </span>
                       </div>
                     );
@@ -530,12 +542,12 @@ export function FindingCard({
                   className="hidden"
                   disabled={uploading}
                 />
-                {uploading ? "Uploading..." : "+ Add Photo"}
+                {uploading ? t("inspection.uploading") : t("inspection.addPhoto")}
               </label>
               {/* Saved toast */}
               {savedToast && (
                 <span className="text-xs text-brand-600 font-medium animate-pulse">
-                  Saved offline
+                  {t("inspection.savedOffline")}
                 </span>
               )}
             </div>
@@ -548,7 +560,7 @@ export function FindingCard({
                 onClick={onAddFinding}
                 className="text-xs text-brand-600 hover:text-brand-800 font-medium transition-colors"
               >
-                + Add Finding
+                {t("inspection.addFinding")}
               </button>
             ) : (
               <span />
@@ -559,7 +571,7 @@ export function FindingCard({
                 disabled={deleting}
                 className="text-xs text-red-500 hover:text-red-700 transition-colors disabled:opacity-50"
               >
-                {deleting ? "Deleting..." : "Delete Finding"}
+                {deleting ? t("inspection.deleting") : t("inspection.deleteFinding")}
               </button>
             )}
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { createUnit } from "@/app/actions/units";
 import { Modal } from "@/components/modal";
@@ -18,6 +19,7 @@ export function AddUnitForm({
   lastBuilding = "",
   onClose,
 }: AddUnitFormProps) {
+  const t = useTranslations();
   const router = useRouter();
   const [building, setBuilding] = useState(lastBuilding);
   const [unitNumber, setUnitNumber] = useState("");
@@ -27,7 +29,7 @@ export function AddUnitForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!building.trim() || !unitNumber.trim()) {
-      setError("Both fields are required");
+      setError(t("forms.validation.bothRequired"));
       return;
     }
 
@@ -46,9 +48,9 @@ export function AddUnitForm({
       );
     } catch (err: unknown) {
       const message =
-        err instanceof Error ? err.message : "Failed to create unit";
+        err instanceof Error ? err.message : t("forms.validation.failedToCreate");
       if (message.includes("duplicate")) {
-        setError("This building + unit number already exists in this section");
+        setError(t("forms.validation.duplicateUnit"));
       } else {
         setError(message);
       }
@@ -57,17 +59,17 @@ export function AddUnitForm({
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="Add Unit">
+    <Modal isOpen={true} onClose={onClose} title={t("forms.addUnit")}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-content-secondary mb-1">
-            Building
+            {t("forms.building")}
           </label>
           <input
             type="text"
             value={building}
             onChange={(e) => setBuilding(e.target.value)}
-            placeholder="e.g. 1, A, Building 1"
+            placeholder={t("forms.placeholders.building")}
             className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm
                        focus:outline-none focus:ring-2 focus:ring-brand-500"
             autoFocus={!lastBuilding}
@@ -76,13 +78,13 @@ export function AddUnitForm({
 
         <div>
           <label className="block text-sm font-medium text-content-secondary mb-1">
-            Unit Number
+            {t("forms.unitNumber")}
           </label>
           <input
             type="text"
             value={unitNumber}
             onChange={(e) => setUnitNumber(e.target.value)}
-            placeholder="e.g. 101, 201A"
+            placeholder={t("forms.placeholders.unitNumber")}
             className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm
                        focus:outline-none focus:ring-2 focus:ring-brand-500"
             autoFocus={!!lastBuilding}
@@ -99,7 +101,7 @@ export function AddUnitForm({
             onClick={onClose}
             className="px-4 py-2 text-sm text-content-tertiary hover:text-content-primary"
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             type="submit"
@@ -107,7 +109,7 @@ export function AddUnitForm({
             className="px-4 py-2 bg-brand-600 text-white text-sm rounded-md
                        hover:bg-brand-700 disabled:opacity-50"
           >
-            {loading ? "Creating..." : "Create & Open"}
+            {loading ? t("forms.creating") : t("forms.createAndOpen")}
           </button>
         </div>
       </form>

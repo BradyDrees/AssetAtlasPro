@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useTranslations } from "next-intl";
 
 export function SignupForm() {
   const [fullName, setFullName] = useState("");
@@ -13,6 +14,7 @@ export function SignupForm() {
   const [success, setSuccess] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+  const t = useTranslations();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,16 +44,16 @@ export function SignupForm() {
     return (
       <div className="text-center">
         <div className="bg-green-50 text-green-700 p-4 rounded-md mb-4">
-          <p className="font-medium">Account created!</p>
+          <p className="font-medium">{t("auth.accountCreated")}</p>
           <p className="text-sm mt-1">
-            Check your email for a confirmation link, then sign in.
+            {t("auth.checkEmail")}
           </p>
         </div>
         <button
           onClick={() => router.push("/login")}
           className="text-brand-600 hover:text-brand-800 font-medium hover:underline text-sm"
         >
-          Go to Sign In
+          {t("auth.goToSignIn")}
         </button>
       </div>
     );
@@ -69,7 +71,7 @@ export function SignupForm() {
           htmlFor="fullName"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
-          Full Name
+          {t("auth.fullName")}
         </label>
         <input
           id="fullName"
@@ -85,7 +87,7 @@ export function SignupForm() {
           htmlFor="email"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
-          Email
+          {t("auth.email")}
         </label>
         <input
           id="email"
@@ -101,7 +103,7 @@ export function SignupForm() {
           htmlFor="password"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
-          Password
+          {t("auth.password")}
         </label>
         <input
           id="password"
@@ -113,7 +115,7 @@ export function SignupForm() {
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
         />
         <p className="text-xs text-gray-500 mt-1">
-          Must be at least 6 characters
+          {t("auth.mustBe6Chars")}
         </p>
       </div>
       <button
@@ -121,7 +123,7 @@ export function SignupForm() {
         disabled={loading}
         className="w-full py-2.5 px-4 bg-gradient-to-r from-brand-600 to-brand-700 text-white rounded-lg hover:from-brand-700 hover:to-brand-800 disabled:opacity-50 transition-all font-medium shadow-md shadow-brand-500/20"
       >
-        {loading ? "Creating account..." : "Create Account"}
+        {loading ? t("auth.creatingAccount") : t("auth.signUp")}
       </button>
     </form>
   );

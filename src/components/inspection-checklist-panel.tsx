@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { createInspectionFinding } from "@/app/actions/inspection-findings";
 import type {
   InspectionChecklistItem,
@@ -24,6 +25,7 @@ export function InspectionChecklistPanel({
   unitId,
 }: InspectionChecklistPanelProps) {
   const router = useRouter();
+  const t = useTranslations();
   const [loadingItem, setLoadingItem] = useState<string | null>(null);
   const [showAddCustom, setShowAddCustom] = useState(false);
   const [customTitle, setCustomTitle] = useState("");
@@ -75,7 +77,7 @@ export function InspectionChecklistPanel({
   return (
     <div className="bg-surface-primary rounded-lg border border-edge-primary p-4 mb-6">
       <h3 className="text-sm font-semibold text-content-secondary uppercase tracking-wide mb-3">
-        Checklist Items
+        {t("checklist.checklistItems")}
       </h3>
       <div className="space-y-1">
         {checklistItems.map((item) => {
@@ -96,8 +98,7 @@ export function InspectionChecklistPanel({
                 <span className="text-sm text-content-primary">{item.name}</span>
                 {hasFinding && (
                   <span className="text-xs text-orange-600 font-medium">
-                    {itemFindings.length} finding
-                    {itemFindings.length !== 1 ? "s" : ""}
+                    {t("common.findings", { count: itemFindings.length })}
                   </span>
                 )}
               </div>
@@ -106,7 +107,7 @@ export function InspectionChecklistPanel({
                 disabled={loadingItem === item.id}
                 className="text-xs px-2 py-1 text-brand-600 hover:bg-brand-50 rounded transition-colors disabled:opacity-50"
               >
-                {loadingItem === item.id ? "..." : "+ Finding"}
+                {loadingItem === item.id ? "..." : t("inspection.addFinding")}
               </button>
             </div>
           );
@@ -121,7 +122,7 @@ export function InspectionChecklistPanel({
               type="text"
               value={customTitle}
               onChange={(e) => setCustomTitle(e.target.value)}
-              placeholder="Custom finding title..."
+              placeholder={t("checklist.customFindingPlaceholder")}
               className="flex-1 px-3 py-1.5 text-sm border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
               autoFocus
               onKeyDown={(e) => {
@@ -139,7 +140,7 @@ export function InspectionChecklistPanel({
               disabled={!customTitle.trim() || addingCustom}
               className="px-3 py-1.5 text-sm bg-brand-600 text-white rounded-md hover:bg-brand-700 disabled:opacity-50"
             >
-              {addingCustom ? "..." : "Add"}
+              {addingCustom ? "..." : t("common.add")}
             </button>
             <button
               onClick={() => {
@@ -148,7 +149,7 @@ export function InspectionChecklistPanel({
               }}
               className="px-2 py-1.5 text-sm text-content-quaternary hover:text-content-secondary"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
           </div>
         ) : (
@@ -156,7 +157,7 @@ export function InspectionChecklistPanel({
             onClick={() => setShowAddCustom(true)}
             className="text-sm text-brand-600 hover:text-brand-800 transition-colors"
           >
-            + Add Custom Finding
+            {t("checklist.addCustomFinding")}
           </button>
         )}
       </div>

@@ -1,0 +1,830 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "loading": "Cargando...",
+    "saving": "Guardando...",
+    "saved": "Guardado",
+    "error": "Error",
+    "back": "Volver",
+    "done": "Listo",
+    "add": "Agregar",
+    "remove": "Eliminar",
+    "retry": "Reintentar",
+    "yes": "Si",
+    "no": "No",
+    "na": "N/A",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "search": "Buscar",
+    "create": "Crear",
+    "edit": "Editar",
+    "untitled": "Sin titulo",
+    "more": "+{count} mas",
+    "units": "{count} unidad | {count} unidades",
+    "findings": "{count} hallazgo | {count} hallazgos",
+    "photos": "{count} foto | {count} fotos",
+    "captures": "{count} capturas",
+    "status": "Estado",
+    "project": "Proyecto",
+    "somethingWentWrong": "Algo salio mal",
+    "draft": "Borrador",
+    "inProgress": "En progreso",
+    "complete": "Completado",
+    "generated": "Generado",
+    "showLess": "Ver menos",
+    "learnMore": "Mas informacion",
+    "pdfDocument": "Documento PDF",
+    "imageUnavailable": "Imagen no disponible",
+    "photoOnly": "Solo foto",
+    "unknownItem": "Elemento desconocido",
+    "next": "Siguiente",
+    "nextSection": "Siguiente seccion"
+  },
+  "nav": {
+    "home": "Inicio",
+    "dueDiligence": "Due Diligence",
+    "inspections": "Inspecciones",
+    "unitTurns": "Rotacion de Unidades"
+  },
+  "sidebar": {
+    "fieldMode": "Modo Campo",
+    "goOnline": "Conectar",
+    "syncNow": "Sincronizar",
+    "syncing": "Sincronizando...",
+    "retryFailed": "Reintentar fallidos ({count})",
+    "lightMode": "Modo Claro",
+    "darkMode": "Modo Oscuro",
+    "switchToLight": "Cambiar a Claro",
+    "switchToDark": "Cambiar a Oscuro",
+    "signOut": "Cerrar sesion",
+    "out": "Salir",
+    "offline": "Sin conexion",
+    "switchToSpanish": "Espanol",
+    "switchToEnglish": "English",
+    "expandSidebar": "Expandir barra lateral",
+    "collapseSidebar": "Contraer barra lateral",
+    "openMenu": "Abrir menu",
+    "closeMenu": "Cerrar menu",
+    "assetAtlasPro": "Asset Atlas Pro",
+    "tagline": "Ve el Riesgo. Planifica Capital."
+  },
+  "auth": {
+    "signIn": "Iniciar sesion",
+    "signingIn": "Iniciando sesion...",
+    "signUp": "Crear cuenta",
+    "creatingAccount": "Creando cuenta...",
+    "email": "Correo electronico",
+    "password": "Contrasena",
+    "fullName": "Nombre completo",
+    "keepLoggedIn": "Mantener sesion iniciada",
+    "mustBe6Chars": "Debe tener al menos 6 caracteres",
+    "accountCreated": "Cuenta creada!",
+    "checkEmail": "Revisa tu correo para un enlace de confirmacion y luego inicia sesion.",
+    "goToSignIn": "Ir a Iniciar sesion",
+    "getStarted": "Comenzar",
+    "startFree": "Comenzar gratis",
+    "dontHaveAccount": "No tienes una cuenta?",
+    "alreadyHaveAccount": "Ya tienes una cuenta?",
+    "signUpLink": "Registrarse",
+    "signInLink": "Iniciar sesion"
+  },
+  "landing": {
+    "builtForTheField": "Disenado para el campo",
+    "heroTitle": "Inspecciones de Propiedades,",
+    "heroTitleAccent": "Simplificadas",
+    "heroSubtitle": "Due Diligence, Inspecciones de Propiedades y Rotacion de Unidades — Todo en Una Plataforma Movil Disenada para Profesionales de Bienes Raices Multifamiliares.",
+    "readyToStreamline": "Listo para optimizar tus inspecciones?",
+    "getStartedInUnderAMinute": "Comienza en menos de un minuto. No se requiere tarjeta de credito.",
+    "createYourAccount": "Crea tu cuenta",
+    "features": {
+      "dueDiligence": {
+        "title": "Due Diligence",
+        "summary": "Inspecciones completas de adquisicion con fotos y documentacion.",
+        "detail": "Recorre cada edificio del techo a los cimientos. Fotografa las condiciones del sitio, documenta los sistemas mecanicos, el exterior, las areas comunes, las amenidades y los interiores de las unidades — todo organizado en grupos de secciones estructuradas. Exporta un informe completo listo para adquisicion con fotos cuando termines."
+      },
+      "inspections": {
+        "title": "Inspecciones",
+        "summary": "Asegura que tu propiedad se mantenga al mas alto estandar.",
+        "detail": "Inspecciona cada unidad en dormitorios, banos, cocinas, pisos, electrodomesticos, gabinetes y encimeras. Marca elementos que necesitan atencion, registra las condiciones y adjunta fotos con notas — brindando a tu equipo una imagen clara de la calidad de la propiedad y lo que necesita cada unidad."
+      },
+      "unitTurns": {
+        "title": "Rotacion de Unidades",
+        "summary": "Listas de verificacion de preparacion con paquetes de rotacion exportables.",
+        "detail": "Administra los flujos de trabajo de preparacion unidad por unidad. Realiza listas de verificacion cuarto por cuarto, evalua pintura y pisos, revisa el estado de los electrodomesticos y captura fotos de antes y despues. Exporta paquetes de rotacion completados como PDF o Excel para que equipos de mantenimiento, proveedores y propietarios esten en la misma pagina."
+      }
+    }
+  },
+  "inspection": {
+    "priority": "Prioridad",
+    "good": {
+      "label": "Bueno",
+      "timeline": "Sin problemas encontrados"
+    },
+    "goodNoIssue": "Bueno / Sin problemas",
+    "unrated": "Sin calificar",
+    "exposure": {
+      "500": "$500",
+      "1000": "$1,000",
+      "2000": "$2,000",
+      "3000": "$3,000",
+      "custom": "Personalizado",
+      "enterAmount": "Ingrese monto"
+    },
+    "exposureEstimate": "Estimado de Exposicion",
+    "riskFlags": {
+      "label": "Banderas de Riesgo",
+      "selectAllThatApply": "(seleccione todas las que apliquen)",
+      "lifeSafety": "Seguridad de Vida",
+      "waterIntrusion": "Intrusion de Agua",
+      "electricalHazard": "Peligro Electrico",
+      "structural": "Estructural"
+    },
+    "condition": {
+      "1": "Deficiente",
+      "2": "Regular",
+      "3": "Promedio",
+      "4": "Bueno",
+      "5": "Excelente"
+    },
+    "conditionRating": "Calificacion de Condicion",
+    "remainingUsefulLife": "Vida Util Restante",
+    "rul": {
+      "1_3_months": "1-3 meses",
+      "3_6_months": "3-6 meses",
+      "6_12_months": "6-12 meses",
+      "1_3_years": "1-3 anos",
+      "3_5_years": "3-5 anos"
+    },
+    "unitGrades": {
+      "A": "Excelente",
+      "B": "Bueno",
+      "C": "Promedio",
+      "D": "Por debajo del promedio",
+      "E": "Deficiente",
+      "F": "Reemplazar / Critico"
+    },
+    "overallCondition": {
+      "1": "Critico",
+      "2": "Por debajo del promedio",
+      "3": "Promedio",
+      "4": "Bueno",
+      "5": "Excelente"
+    },
+    "yesNo": {
+      "yes": "Si",
+      "no": "No"
+    },
+    "inspectionTypes": {
+      "internal": "Interna",
+      "bankReady": "Cliente (PCA Lite)"
+    },
+    "archetypes": {
+      "garden": {
+        "label": "Estilo Jardin",
+        "unitLabel": "Unidades"
+      },
+      "interior": {
+        "label": "Corredor Interior",
+        "unitLabel": "Unidades"
+      },
+      "sfr": {
+        "label": "Vivienda Unifamiliar en Renta",
+        "unitLabel": "Viviendas"
+      }
+    },
+    "occupancyStatus": {
+      "VACANT": "Vacante",
+      "OCCUPIED": "Ocupado",
+      "MODEL": "Modelo",
+      "DOWN": "Fuera de servicio",
+      "UNKNOWN": "Desconocido"
+    },
+    "walkStatus": {
+      "NOT_STARTED": "No iniciado",
+      "IN_PROGRESS": "En progreso",
+      "COMPLETE": "Completado",
+      "NO_ACCESS": "Sin acceso"
+    },
+    "turnStage": {
+      "MAKE_READY": "Preparacion",
+      "RENOVATION": "Renovacion",
+      "READY": "Listo",
+      "HOLD": "En espera"
+    },
+    "bdBaOptions": [
+      "0/1",
+      "1/1",
+      "1/1.5",
+      "2/1",
+      "2/1.5",
+      "2/2",
+      "2/2.5",
+      "3/1",
+      "3/1.5",
+      "3/2",
+      "3/2.5",
+      "3/3"
+    ],
+    "applianceOptions": {
+      "black": "Negro",
+      "white": "Blanco",
+      "stainlessSteel": "Acero inoxidable"
+    },
+    "sectionGroups": {
+      "siteExterior": "Sitio y Exterior",
+      "structure": "Estructura",
+      "lifeSafety": "Seguridad de Vida",
+      "mep": "Mecanico / Electrico / Plomeria",
+      "commonAreas": "Areas Comunes",
+      "units": "Unidades"
+    },
+    "ddGroups": {
+      "siteExterior": "Sitio y Exterior",
+      "mechanical": "Mecanico e Infraestructura",
+      "commonAreas": "Areas Comunes",
+      "amenities": "Amenidades",
+      "units": "Unidades"
+    },
+    "bankReadyMode": {
+      "description": "El modo Listo para Banco requiere prioridad, exposicion, vida util y calificaciones de condicion en todas las secciones y hallazgos.",
+      "sfrNote": "El modo Vivienda Unifamiliar etiqueta las secciones de unidades como \"Viviendas\" en lugar de \"Unidades\"."
+    },
+    "projectStatus": "Estado del Proyecto",
+    "findingTitle": "Hallazgo sin titulo",
+    "location": "Ubicacion",
+    "locationPlaceholder": "ej. Sur del Edificio 24, Cocina, Estacionamiento norte...",
+    "findingNotesPlaceholder": "Describe el hallazgo...",
+    "savedOffline": "Guardado sin conexion",
+    "pending": "Pendiente",
+    "pendingPhoto": "Foto pendiente",
+    "findingPhoto": "Foto del hallazgo",
+    "addPhoto": "+ Agregar foto",
+    "uploading": "Subiendo...",
+    "addFinding": "+ Agregar hallazgo",
+    "deleteFinding": "Eliminar hallazgo",
+    "deleting": "Eliminando...",
+    "deleteConfirm": "Eliminar este hallazgo y todas sus fotos?",
+    "activityBySection": "Actividad por Seccion",
+    "newInspection": "+ Nueva Inspección",
+    "newInspectionTitle": "Nueva Inspección",
+    "shared": "Compartido",
+    "tapToInspect": "Toca para inspeccionar",
+    "customFinding": "Personalizado",
+    "systemHealthReport": "Informe de Salud del Sistema",
+    "overallScore": "Puntuación General",
+    "priorityLabels": {
+      "1": { "label": "Inmediato", "timeline": "Reparar ahora — seguridad/código" },
+      "2": { "label": "Urgente", "timeline": "0–3 meses" },
+      "3": { "label": "Corto plazo", "timeline": "3–6 meses" },
+      "4": { "label": "Planificado", "timeline": "6–12 meses" },
+      "5": { "label": "Monitorear", "timeline": "12+ meses" }
+    }
+  },
+  "unit": {
+    "tenantGrades": {
+      "A": {
+        "label": "Parece modelo"
+      },
+      "B": {
+        "label": "Renovacion facil"
+      },
+      "C": {
+        "label": "Renovar pero cuestionable"
+      },
+      "D": {
+        "label": "No renovar pero habitable"
+      },
+      "E": {
+        "label": "Necesita correccion seria"
+      },
+      "F": {
+        "label": "Remocion de emergencia"
+      }
+    },
+    "unitGrades": {
+      "A": {
+        "label": "$750 o menos",
+        "desc": "Solo elementos menores"
+      },
+      "B": {
+        "label": "$1,500 o menos",
+        "desc": "Pintura + elementos menores"
+      },
+      "C": {
+        "label": "$3,000 o menos",
+        "desc": "Electrodomestico + pintura + cosas menores"
+      },
+      "D": {
+        "label": "$5,500 o menos",
+        "desc": "Gabinetes, electrodomestico + pintura + cosas menores"
+      },
+      "E": {
+        "label": "$7,500 o menos",
+        "desc": "Pisos, electrodomestico, pintura, cosas menores"
+      },
+      "F": {
+        "label": "$7,500+",
+        "desc": "Renovacion completa requerida"
+      },
+      "NK": {
+        "label": "Sin llave",
+        "desc": "No se pudo acceder a la unidad"
+      }
+    },
+    "itemGrades": {
+      "A": "Excelente",
+      "B": "Bueno",
+      "C": "Promedio",
+      "D": "Por debajo del promedio",
+      "E": "Deficiente",
+      "F": "Reemplazar"
+    },
+    "cabinetOptions": {
+      "Keep": "Mantener como esta",
+      "Refurbish": "Necesita restauracion",
+      "Replace": "Reemplazo completo"
+    },
+    "yesNo": {
+      "yes": "Si",
+      "no": "No"
+    },
+    "appliances": {
+      "black": "Negro",
+      "white": "Blanco",
+      "stainlessSteel": "Acero inoxidable"
+    },
+    "mold": "Moho",
+    "deleteConfirm": "Eliminar E{building} - {unitNumber}? Se eliminaran todas las fotos.",
+    "deleteUnit": "Eliminar unidad",
+    "gradeLabel": "Grado {grade}",
+    "unitsCount": "Unidades ({count})",
+    "adding": "Agregando...",
+    "pendingSync": "Sincronización pendiente",
+    "leak": "Fuga",
+    "noUnitsYet": "No hay unidades aún. Haz clic en '+ Agregar Unidad' para comenzar.",
+    "occupancyWalkStatus": "Estado de Ocupación y Recorrido",
+    "occupancyStatusLabel": "Estado de Ocupación",
+    "daysVacant": "Días Vacante",
+    "daysVacantPlaceholder": "ej. 30",
+    "rentReady": "Lista para Rentar",
+    "unitNotes": "Notas de Unidad",
+    "unitNotesPlaceholder": "Notas sobre esta unidad...",
+    "photosCount": "Fotos ({count})",
+    "pendingSyncCount": "{count} sincronización pendiente",
+    "unitPhoto": "Foto de unidad",
+    "pendingPhoto": "Foto pendiente",
+    "deleteUnitConfirm": "¿Eliminar esta unidad y todas sus fotos?",
+    "settingUpChecklist": "Configurando lista de verificación...",
+    "checklistQueuedForSync": "Lista de verificación en cola para sincronizar",
+    "connectToInternet": "Conéctese a internet para cargar los elementos de la lista.",
+    "addUnit": "Agregar Unidad",
+    "paint": "Pintura"
+  },
+  "unitTurn": {
+    "batchStatus": {
+      "OPEN": "Abierto",
+      "CLOSED": "Cerrado"
+    },
+    "unitStatus": {
+      "NOT_STARTED": "No iniciado",
+      "IN_PROGRESS": "En progreso",
+      "COMPLETE": "Completado"
+    },
+    "unitStatusLabel": "Estado de la Unidad",
+    "itemStatus": {
+      "good": "Bueno",
+      "repair": "Reparar",
+      "replace": "Reemplazar"
+    },
+    "paintScope": {
+      "touchUp": "Retoque",
+      "fullPaint": "Pintura completa"
+    },
+    "cleaningStatus": {
+      "good": "Hecho"
+    },
+    "categoryNote": "Nota de categoria",
+    "addCategoryNote": "+ Nota de categoria",
+    "categoryNotePlaceholder": "Nota a nivel de categoria...",
+    "addNote": "+ Agregar nota",
+    "notePlaceholder": "Nota...",
+    "photoVideo": "Foto/Video",
+    "addPhotoVideo": "+ Foto/Video",
+    "done": "Hecho",
+    "unknownItem": "Elemento desconocido",
+    "photoOnly": "Solo foto",
+    "uploading": "Subiendo...",
+    "takePhotoVideo": "Foto/Video",
+    "categories": {
+      "kitchen": "Cocina",
+      "bathroom": "Bano",
+      "electricalFixtures": "Electrico y Accesorios",
+      "doorsHardwareWindows": "Puertas, Herrajes y Ventanas",
+      "flooringFinish": "Pisos y Acabados",
+      "mechanicalSafety": "Mecanico y Seguridad",
+      "laundry": "Lavanderia",
+      "paint": "Pintura",
+      "cleaning": "Limpieza"
+    }
+  },
+  "export": {
+    "title": "Exportar",
+    "formats": {
+      "full": {
+        "label": "Informe completo",
+        "description": "Informe completo con tablas y fotos"
+      },
+      "summary": {
+        "label": "Solo resumen",
+        "description": "Metricas y matriz de unidades, sin fotos"
+      },
+      "photos": {
+        "label": "Album de fotos",
+        "description": "Todas las fotos organizadas por seccion"
+      },
+      "zip": {
+        "label": "Descargar fotos",
+        "description": "Archivo ZIP con archivos renombrados"
+      },
+      "excel": {
+        "label": "Hoja de calculo Excel",
+        "description": "Calificacion de unidades + elementos de seccion (.xlsx)"
+      }
+    },
+    "unitReport": {
+      "label": "Informe de Unidad",
+      "description": "Lista de verificacion imprimible con fotos"
+    },
+    "unitPhotos": {
+      "label": "Fotos de Unidad",
+      "description": "Archivo ZIP con fotos etiquetadas"
+    },
+    "batchExcel": {
+      "label": "Hoja de calculo Excel",
+      "description": "Todas las unidades con detalles de elementos (.xlsx)"
+    },
+    "allPhotos": {
+      "label": "Todas las Fotos",
+      "description": "Archivo ZIP de todo el lote"
+    },
+    "exportTimedOut": "La exportacion expiro. Intente de nuevo con menos fotos.",
+    "timedOut": "La exportacion expiro. Intente Resumen o Excel para proyectos grandes.",
+    "failed": "La exportacion fallo. Intente de nuevo.",
+    "fullReport": {
+      "label": "Informe completo",
+      "description": "Informe completo con tablas y fotos",
+      "inspectionDescription": "Informe completo con hallazgos, fotos y metricas"
+    },
+    "summary": {
+      "label": "Solo resumen",
+      "description": "Metricas y matriz de unidades, sin fotos",
+      "inspectionDescription": "Matriz de hallazgos y grados de unidades, sin fotos"
+    },
+    "photoBook": {
+      "label": "Album de fotos",
+      "description": "Todas las fotos organizadas por seccion"
+    },
+    "downloadPhotos": {
+      "label": "Descargar fotos",
+      "description": "Archivo ZIP con archivos renombrados",
+      "inspectionDescription": "Archivo ZIP con carpetas organizadas"
+    },
+    "excel": {
+      "label": "Hoja de calculo Excel",
+      "description": "Calificacion de unidades + elementos de seccion (.xlsx)",
+      "inspectionDescription": "Hallazgos, calificacion de unidades y secciones (.xlsx)"
+    },
+    "timeoutError": "La exportacion expiro. Intente Resumen o Excel para proyectos grandes.",
+    "exportFailed": "La exportacion fallo. Intente de nuevo.",
+    "exportFailedWithStatus": "La exportacion fallo ({status})"
+  },
+  "modals": {
+    "deleteProject": {
+      "title": "Eliminar proyecto",
+      "body": "Esto eliminara permanentemente todas las secciones, unidades, capturas y fotos.",
+      "cannotUndo": "Esta accion no se puede deshacer.",
+      "typeToConfirm": "Escriba {code} para confirmar",
+      "deleting": "Eliminando...",
+      "deleteButton": "Eliminar proyecto",
+      "failed": "No se pudo eliminar el proyecto. Intente de nuevo."
+    },
+    "deleteInspection": {
+      "title": "Eliminar inspeccion",
+      "body": "Esto eliminara permanentemente todas las secciones, hallazgos, unidades, capturas y fotos.",
+      "cannotUndo": "Esta accion no se puede deshacer.",
+      "typeToConfirm": "Escriba {code} para confirmar",
+      "deleting": "Eliminando...",
+      "deleteButton": "Eliminar inspeccion",
+      "failed": "No se pudo eliminar la inspeccion. Intente de nuevo."
+    },
+    "completeProject": {
+      "title": "Marcar proyecto como completado",
+      "warningIntro": "Los siguientes elementos pueden necesitar atencion antes de completar:",
+      "completeAnyway": "Completar de todos modos",
+      "completing": "Completando...",
+      "canStillComplete": "Aun puede completar el proyecto y atender estos elementos despues.",
+      "allComplete": "Todas las secciones tienen actividad y todas las unidades tienen calificaciones. Esta inspeccion se ve completa!",
+      "completeButton": "Completar proyecto"
+    },
+    "share": {
+      "title": "Compartir {code}",
+      "inviteByEmail": "Invitar por correo electronico",
+      "emailPlaceholder": "colega@empresa.com",
+      "sharing": "Compartiendo...",
+      "shareButton": "Compartir",
+      "sharedWith": "Compartido con {email}",
+      "failedToShare": "No se pudo compartir",
+      "collaborators": "Colaboradores",
+      "loadingCollaborators": "Cargando...",
+      "noCollaborators": "Aun no hay colaboradores. Comparte esta inspeccion para que otros contribuyan.",
+      "collaboratorRole": "Colaborador",
+      "removing": "...",
+      "removeButton": "Eliminar",
+      "failedToRemove": "No se pudo eliminar",
+      "permissionsNote": "Los colaboradores pueden agregar hallazgos y fotos pero no pueden eliminar las entradas de otras personas ni cambiar la configuracion del proyecto."
+    }
+  },
+  "forms": {
+    "projectCode": "Codigo del proyecto",
+    "projectCodeHint": "Identificador corto usado en exportaciones",
+    "propertyName": "Nombre de la propiedad",
+    "address": "Direccion",
+    "inspectionType": "Tipo de inspeccion",
+    "assetType": "Tipo de activo",
+    "building": "Edificio",
+    "unitNumber": "Numero de unidad",
+    "placeholders": {
+      "projectCode": "VERIDIAN",
+      "propertyName": "Residencias Veridian",
+      "address": "123 Calle Principal, Denver CO 80202",
+      "building": "ej. 1, A, Edificio 1",
+      "unitNumber": "ej. 101, 201A",
+      "batchName": "ej. Apartamentos Veridian"
+    },
+    "validation": {
+      "bothRequired": "Ambos campos son obligatorios",
+      "duplicateUnit": "Este edificio + numero de unidad ya existe en esta seccion",
+      "failedToCreate": "No se pudo crear la unidad"
+    },
+    "createAndOpen": "Crear y abrir",
+    "creating": "Creando...",
+    "addUnit": "Agregar unidad",
+    "savingChanges": "Guardando...",
+    "saveChanges": "Guardar cambios",
+    "createInspection": "Crear inspeccion",
+    "createDueDiligence": "Crear Due Diligence",
+    "batchName": "Nombre del lote",
+    "date": "Fecha",
+    "dateOptional": "(opcional)",
+    "createBatch": "Crear lote",
+    "required": "*"
+  },
+  "pdf": {
+    "summary": "Resumen",
+    "needsAttention": "Necesita atencion ({count})",
+    "allFindings": "Todos los hallazgos ({count})",
+    "unitGrading": "Calificacion de unidades ({count} unidades)",
+    "sectionOverview": "Resumen de secciones",
+    "findingPrioritySummary": "Resumen de prioridad de hallazgos",
+    "repairExposureSummary": "Resumen de exposicion de reparaciones",
+    "riskFlags": "Banderas de riesgo",
+    "immediateRepairs": "Reparaciones inmediatas (P1)",
+    "shortTerm": "Corto plazo 0–6 meses (P1–P3)",
+    "totalIdentified": "Total identificado",
+    "total": "TOTAL",
+    "reportTruncated": "Informe truncado",
+    "reportTruncatedBody": "Este informe contiene {total} fotos pero solo {max} fueron incluidas.",
+    "usePhotoBook": "Use Album de fotos o exportacion ZIP para el conjunto completo de fotos.",
+    "tableHeaders": {
+      "bldg": "Edif.",
+      "unit": "Unidad",
+      "bdBa": "Rec/Ban",
+      "tenant": "Inquilino",
+      "unitGrade": "Grado",
+      "cabinets": "Gabinetes",
+      "counter": "Encimera",
+      "floor": "Piso",
+      "mold": "Moho",
+      "wd": "Lav/Sec",
+      "occupancy": "Ocupacion",
+      "condition": "Condicion",
+      "housekeep": "Limpieza",
+      "floors": "Pisos",
+      "counters": "Encimeras",
+      "bath": "Bano",
+      "leak": "Fuga",
+      "section": "Seccion",
+      "checklistItem": "Elemento de lista",
+      "finding": "Hallazgo",
+      "priority": "Prioridad",
+      "exposure": "Exposicion",
+      "riskFlags": "Banderas de riesgo",
+      "items": "Elementos",
+      "avgCondition": "Cond. promedio",
+      "group": "Grupo",
+      "rul": "VUR",
+      "findings": "Hallazgos",
+      "photos": "Fotos",
+      "notes": "Notas",
+      "timeline": "Plazo",
+      "count": "Cantidad"
+    },
+    "conditionLabel": "Condicion: {rating}/5 — {label}",
+    "notesLabel": "Notas: {text}",
+    "checklist": "Lista de verificacion: {name}",
+    "priorityLabel": "Prioridad: P{level} — {label} ({timeline})",
+    "priorityGood": "Prioridad: Bueno / Sin problemas",
+    "exposureLabel": "Exposicion: {amount}",
+    "riskFlagsLabel": "Banderas de riesgo: {flags}",
+    "sections": "Secciones: {enabled} habilitadas, {withActivity} con actividad, {untouched} sin tocar",
+    "unitsLine": "Unidades: {total} total, {withPhotos} con fotos, {missingGrades} sin calificacion",
+    "capturesLine": "Capturas: {total} total ({unit} unidad, {item} elemento, {section} nivel de seccion)",
+    "disclaimer": "Estimado de Exposicion de Reparaciones — Solo Evaluacion Visual. Este informe proporciona estimaciones preliminares de costos basadas en observaciones visuales durante una inspeccion limitada de la propiedad. Los costos reales de reparacion pueden variar significativamente. Esto no sustituye una Evaluacion Completa de Condicion de Propiedad (PCA) segun ASTM E2018."
+  },
+  "captures": {
+    "capturePhoto": "Capturar foto o video",
+    "uploading": "Subiendo...",
+    "uploadFailed": "Error al subir. Intente de nuevo.",
+    "deletePhoto": "Eliminar captura",
+    "deleteConfirm": "Eliminar esta captura?",
+    "deleting": "Eliminando...",
+    "noPhotos": "Aun no hay capturas. Toca el boton de camara para comenzar.",
+    "addCaption": "Agregar descripcion...",
+    "tapToAddCaption": "Toca para agregar descripcion...",
+    "photoCapture": "Foto capturada"
+  },
+  "notes": {
+    "notes": "Notas",
+    "sectionNotes": "Notas de seccion",
+    "observationsPlaceholder": "Observaciones para este elemento...",
+    "sectionObservationsPlaceholder": "Observaciones generales para esta seccion...",
+    "unitObservationsPlaceholder": "Observaciones de la unidad, problemas, etc...",
+    "generalSectionNotes": "Notas generales sobre esta seccion...",
+    "saving": "Guardando...",
+    "saved": "Guardado"
+  },
+  "offline": {
+    "loadingOfflineData": "Cargando datos sin conexion...",
+    "noDataTitle": "No hay datos sin conexion disponibles",
+    "noDataDescription": "Esta pagina aun no ha sido almacenada para uso sin conexion. Visitala mientras estes conectado para guardar los datos.",
+    "noUnitDataDescription": "Esta pagina de unidad aun no ha sido almacenada para uso sin conexion. Visitala mientras estes conectado para guardar los datos.",
+    "noOfflineData": "No hay datos sin conexion disponibles",
+    "noOfflineDataDesc": "Esta pagina aun no ha sido almacenada para uso sin conexion. Visitala mientras estes conectado para guardar los datos.",
+    "noOfflineUnitData": "Esta pagina de unidad aun no ha sido almacenada para uso sin conexion. Visitala mientras estes conectado para guardar los datos.",
+    "offlineBanner": "Sin conexion — usando datos guardados de {time}",
+    "offlineCachedData": "Sin conexion — usando datos guardados de {time}",
+    "backToInspections": "Volver a inspecciones",
+    "backToSection": "Volver a seccion",
+    "retry": "Reintentar",
+    "offlineFinding": "Hallazgo sin conexion",
+    "customFinding": "Hallazgo personalizado",
+    "nextSection": "Siguiente seccion"
+  },
+  "review": {
+    "sections": "Secciones",
+    "units": "Unidades",
+    "captures": "Capturas",
+    "enabled": "Habilitadas",
+    "withActivity": "Con actividad",
+    "untouched": "Sin tocar",
+    "total": "Total",
+    "withPhotos": "Con fotos",
+    "missingGrades": "Sin calificacion",
+    "missingBdBa": "Sin Rec/Bano",
+    "unitPhotos": "Fotos de unidad",
+    "itemPhotos": "Fotos de elemento",
+    "sectionLevel": "Nivel de seccion",
+    "needsAttention": "Necesita atencion ({count})",
+    "jumpToFirst": "Ir al primer elemento faltante",
+    "noActivity": "{name} — sin actividad",
+    "missingGradesLabel": "E{building} - {unit} — sin calificacion",
+    "missingBdBaLabel": "E{building} - {unit} — sin Rec/Bano",
+    "allComplete": "Todas las secciones tienen actividad y todas las unidades tienen calificaciones. Esta inspeccion se ve completa!",
+    "lastUpdated": "Ultima actualizacion: {date}",
+    "reviewTitle": "Revision",
+    "backToProject": "Volver al Proyecto",
+    "statusLabels": {
+      "DRAFT": "Borrador",
+      "IN_PROGRESS": "En Progreso",
+      "COMPLETE": "Completado"
+    },
+    "totalFindings": "Total de hallazgos",
+    "immediateP1": "Inmediato (P1)",
+    "urgentP2": "Urgente (P2)",
+    "shortTermP3": "Corto plazo (P3)",
+    "repairExposureSummary": "Resumen de exposicion de reparaciones",
+    "immediateRepairs": "Reparaciones inmediatas",
+    "shortTermMonths": "Corto plazo (0–6 meses)",
+    "totalIdentified": "Total identificado",
+    "riskFlags": "Banderas de riesgo",
+    "bankReadyValidation": "Validacion Listo para Banco",
+    "allFindingsHavePriority": "Todos los hallazgos tienen prioridad asignada",
+    "p1to3HaveExposure": "Hallazgos prioridad 1-3 tienen exposicion",
+    "allSectionsHaveCondition": "Todas las secciones tienen calificacion de condicion",
+    "allSectionsHaveRul": "Todas las secciones tienen vida util restante",
+    "p1to2HavePhotos": "Hallazgos prioridad 1-2 tienen fotos"
+  },
+  "bulkUpload": {
+    "title": "Importar unidades desde hoja de calculo",
+    "dropOrBrowse": "Arrastra un archivo o haz clic para buscar",
+    "fileTypes": ".xlsx, .xls o .csv",
+    "acceptedFormats": ".xlsx, .xls o .csv",
+    "expectedColumns": "Columnas esperadas:",
+    "columnsDescription": "Unidad (obligatorio), Edificio (opcional, predeterminado \"A\"), Dias vacante (opcional), Listo para rentar (Si/No, opcional), Descripcion (opcional)",
+    "unitRequired": "Unidad",
+    "required": "(obligatorio)",
+    "buildingOptional": "Edificio",
+    "buildingDefault": "(opcional, predeterminado \"A\")",
+    "daysVacant": "Dias vacante",
+    "optional": "(opcional)",
+    "rentReady": "Listo para rentar",
+    "rentReadyFormat": "(Si/No, opcional)",
+    "description": "Descripcion",
+    "unitsFound": "{fileName} — {count} unidad(es) encontrada(s)",
+    "importing": "Importando...",
+    "importUnits": "Importar {count} unidad(es)",
+    "importComplete": "Importacion completa: {created} creada(s)",
+    "skippedDuplicates": ", {skipped} omitida(s) (duplicados)",
+    "errors": "Errores:",
+    "importFailed": "La importacion fallo",
+    "emptySpreadsheet": "La hoja de calculo esta vacia o no tiene filas de datos.",
+    "failedToParse": "No se pudo analizar el archivo",
+    "noUnitColumn": "No se encontro una columna \"Unidad\". Encabezados encontrados: [{headers}]. Se esperaba uno de: Unidad, Unidad #, No. Unidad, Apt, Apartamento, Suite, Espacio, Numero",
+    "columns": {
+      "building": "Edificio",
+      "unit": "Unidad",
+      "daysVacant": "Dias vacante",
+      "rentReady": "Listo para rentar",
+      "description": "Descripcion"
+    },
+    "columnHeaders": {
+      "building": "Edificio",
+      "unit": "Unidad",
+      "daysVacant": "Dias vacante",
+      "rentReady": "Listo para rentar",
+      "description": "Descripcion"
+    },
+    "importButton": "Importar"
+  },
+  "findings": {
+    "noFindingsYet": "Sin hallazgos aún. Usa la lista de verificación arriba para agregar hallazgos.",
+    "findingsCount": "Hallazgos ({count})"
+  },
+  "checklist": {
+    "checklistItems": "Elementos de Lista",
+    "customFindingPlaceholder": "Título del hallazgo personalizado...",
+    "addCustomFinding": "+ Agregar Hallazgo Personalizado",
+    "finding": "Hallazgo",
+    "addFinding": "+ Hallazgo"
+  },
+  "dashboard": {
+    "selectModule": "Selecciona un modulo para comenzar.",
+    "openModule": "Abrir {title}",
+    "ddDescription": "Inspecciones completas de adquisicion de propiedades",
+    "inspDescription": "Seguimiento de calidad y condicion de propiedades",
+    "utDescription": "Flujos de trabajo de preparacion y paquetes de rotacion",
+    "projects": "Proyectos",
+    "batches": "Lotes",
+    "manageDDProjects": "Administra tus proyectos de Due Diligence",
+    "noDDProjects": "Aun no hay proyectos de due diligence",
+    "createFirstDD": "Crea tu primer proyecto de due diligence para comenzar.",
+    "propertyInspections": "Inspecciones de Propiedades",
+    "pcaProjects": "Proyectos de Inspeccion PCA",
+    "myInspections": "Mis Inspecciones",
+    "sharedWithMe": "Compartidos conmigo",
+    "noInspections": "Aun no hay inspecciones",
+    "createFirstInspection": "Crea tu primer proyecto de inspeccion para comenzar un recorrido de propiedad.",
+    "turnBatchManagement": "Gestion de Lotes de Rotacion",
+    "openBatches": "Lotes Abiertos",
+    "closedBatches": "Lotes Cerrados",
+    "noTurnBatches": "Aun no hay lotes de rotacion",
+    "createFirstBatch": "Crea tu primer lote de rotacion para comenzar a rastrear rotaciones de unidades.",
+    "reviewAndExport": "Revision y Exportacion",
+    "inspectionSections": "Secciones de Inspeccion",
+    "backToInspections": "Volver a todas las inspecciones",
+    "backToInspection": "Volver a la inspeccion",
+    "backToProject": "Volver al proyecto",
+    "backToBatch": "Volver al lote",
+    "backTo": "← Volver a {name}",
+    "batch": "Lote",
+    "nextLabel": "Siguiente: {name} →",
+    "subSections": "{count, plural, one {# sub-seccion} other {# sub-secciones}}",
+    "unitCount": "{count, plural, one {# unidad} other {# unidades}}",
+    "noUnitsYet": "Aun no hay unidades. Agrega tu primera unidad arriba.",
+    "itemsAssessed": "Elementos Evaluados",
+    "buildingUnit": "Edificio {building} / Unidad {unit}",
+    "tenantGrade": "Grado del Inquilino",
+    "unitGrade": "Grado de la Unidad",
+    "wdConnection": "Conexion de Lavadora/Secadora",
+    "photosAndMedia": "Fotos y Medios",
+    "pageNotFound": "Pagina no encontrada",
+    "goToDashboard": "Ir al Panel",
+    "unexpectedError": "Ocurrio un error inesperado al cargar esta pagina.",
+    "unexpectedUnitError": "Ocurrio un error inesperado al cargar esta unidad.",
+    "photoCount": "{count, plural, one {# foto} other {# fotos}}",
+    "photo": "foto",
+    "photos": "fotos"
+  }
+}

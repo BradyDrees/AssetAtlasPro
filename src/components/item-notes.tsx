@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { updateSectionItemField } from "@/app/actions/section-items";
 
 interface ItemNotesProps {
@@ -16,6 +17,7 @@ export function ItemNotes({
   projectSectionId,
   initialNotes,
 }: ItemNotesProps) {
+  const t = useTranslations();
   const [notes, setNotes] = useState(initialNotes);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -61,22 +63,22 @@ export function ItemNotes({
   return (
     <div>
       <label className="block text-sm font-medium text-content-secondary mb-2">
-        Notes
+        {t("notes.notes")}
         {saving && (
           <span className="ml-2 text-xs font-normal text-content-muted">
-            Saving...
+            {t("notes.saving")}
           </span>
         )}
         {saved && !saving && (
           <span className="ml-2 text-xs font-normal text-green-500">
-            Saved
+            {t("notes.saved")}
           </span>
         )}
       </label>
       <textarea
         value={notes}
         onChange={handleChange}
-        placeholder="Observations for this item..."
+        placeholder={t("notes.observationsPlaceholder")}
         rows={3}
         className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm
                    focus:outline-none focus:ring-2 focus:ring-brand-500 resize-y"

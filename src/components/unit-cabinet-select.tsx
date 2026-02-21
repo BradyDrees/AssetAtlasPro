@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { updateUnitField } from "@/app/actions/units";
 import { CABINET_OPTIONS } from "@/lib/unit-constants";
 
@@ -23,6 +24,7 @@ export function UnitCabinetSelect({
   label,
   initialValue,
 }: UnitCabinetSelectProps) {
+  const t = useTranslations();
   const [selected, setSelected] = useState<string | null>(initialValue);
   const [saving, setSaving] = useState(false);
 
@@ -50,9 +52,9 @@ export function UnitCabinetSelect({
     <div>
       <label className="block text-sm font-medium text-content-secondary mb-2">
         {label}
-        {selectedInfo && (
+        {selectedInfo && selected && (
           <span className="ml-2 text-xs font-normal text-content-muted">
-            {selectedInfo.label}
+            {t(`unit.cabinetOptions.${selected}`)}
           </span>
         )}
       </label>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { getPageSnapshot } from "@/lib/offline/page-snapshot";
 import { useOffline } from "@/components/offline-provider";
@@ -41,6 +42,7 @@ export function InspectionSectionOffline({
   sectionId,
   onRetry,
 }: InspectionSectionOfflineProps) {
+  const t = useTranslations();
   const { localRevision } = useOffline();
   const [snapshot, setSnapshot] = useState<SectionSnapshotData | null>(null);
   const [snapshotAt, setSnapshotAt] = useState<number>(0);
@@ -68,7 +70,7 @@ export function InspectionSectionOffline({
       <div className="flex items-center justify-center py-16">
         <div className="text-center">
           <div className="animate-spin w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full mx-auto mb-3" />
-          <p className="text-sm text-content-quaternary">Loading offline data...</p>
+          <p className="text-sm text-content-quaternary">{t("offline.loadingOfflineData")}</p>
         </div>
       </div>
     );
@@ -80,23 +82,23 @@ export function InspectionSectionOffline({
         <svg className="w-12 h-12 text-content-muted mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 5.636a9 9 0 010 12.728M5.636 18.364a9 9 0 010-12.728m12.728 0L5.636 18.364" />
         </svg>
-        <h2 className="text-lg font-semibold text-content-primary mb-2">No offline data available</h2>
+        <h2 className="text-lg font-semibold text-content-primary mb-2">{t("offline.noDataTitle")}</h2>
         <p className="text-sm text-content-quaternary mb-4">
-          This page hasn&apos;t been cached for offline use yet. Visit it while online to cache the data.
+          {t("offline.noDataDescription")}
         </p>
         <div className="flex gap-3 justify-center">
           <Link
             href="/inspections"
             className="px-4 py-2 bg-surface-secondary text-content-primary text-sm rounded-md border border-edge-secondary hover:bg-surface-tertiary transition-colors"
           >
-            Back to Inspections
+            {t("offline.backToInspections")}
           </Link>
           {onRetry && (
             <button
               onClick={onRetry}
               className="px-4 py-2 bg-brand-600 text-white text-sm rounded-md hover:bg-brand-700 transition-colors"
             >
-              Retry
+              {t("offline.retry")}
             </button>
           )}
         </div>
@@ -118,7 +120,7 @@ export function InspectionSectionOffline({
         checklist_item_id: lf.checklistItemId ?? null,
         unit_id: lf.unitId ?? null,
         created_by: lf.createdBy,
-        title: lf.checklistItemId ? "Offline finding" : "Custom finding",
+        title: lf.checklistItemId ? t("offline.offlineFinding") : t("offline.customFinding"),
         location: "",
         priority: (lf.priority as InspectionFinding["priority"]) ?? null,
         exposure_bucket: null,
@@ -141,11 +143,11 @@ export function InspectionSectionOffline({
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636a9 9 0 010 12.728M5.636 18.364a9 9 0 010-12.728" />
         </svg>
         <span className="text-sm text-amber-200">
-          Offline — using cached data from {cachedTime}
+          {t("offline.offlineBanner", { time: cachedTime })}
         </span>
         {onRetry && (
           <button onClick={onRetry} className="ml-auto text-xs text-amber-400 hover:text-amber-300 underline">
-            Retry
+            {t("offline.retry")}
           </button>
         )}
       </div>
@@ -153,7 +155,7 @@ export function InspectionSectionOffline({
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4">
         <Link href="/inspections" className="hover:text-brand-600 transition-colors">
-          Inspections
+          {t("nav.inspections")}
         </Link>
         <span>/</span>
         <Link href={`/inspections/${projectId}?group=${groupSlug}`} className="hover:text-brand-600 transition-colors">
@@ -174,7 +176,7 @@ export function InspectionSectionOffline({
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4" />
             </svg>
-            Project
+            {t("common.project")}
           </Link>
           <div>
             <p className="text-xs text-content-quaternary uppercase tracking-wide">
@@ -231,7 +233,7 @@ export function InspectionSectionOffline({
             href={`/inspections/${projectId}/sections/${nextSection.id}`}
             className="px-4 py-2 bg-brand-600 text-white text-sm rounded-md hover:bg-brand-700 transition-colors"
           >
-            Next: {(nextSection as any).section?.name ?? "Next Section"} →
+            {t("common.next")}: {(nextSection as any).section?.name ?? t("common.nextSection")} →
           </Link>
         </div>
       )}

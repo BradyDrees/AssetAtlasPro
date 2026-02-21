@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { ProjectStatusControls } from "@/components/project-status-controls";
 import { ExportButtons } from "@/components/export-buttons";
 import type { ProjectStatus } from "@/lib/types";
@@ -13,18 +15,13 @@ const statusStyles: Record<string, string> = {
   COMPLETE: "bg-green-100 text-green-700",
 };
 
-const statusLabels: Record<string, string> = {
-  DRAFT: "Draft",
-  IN_PROGRESS: "In Progress",
-  COMPLETE: "Complete",
-};
-
 export default async function ReviewPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id: projectId } = await params;
+  const t = await getTranslations("review");
   const supabase = await createClient();
 
   // Fetch project
@@ -142,7 +139,7 @@ export default async function ReviewPage({
   // Untouched sections
   sectionsUntouched.forEach((ps: any) => {
     warnings.push({
-      label: `${ps.section.name} — no activity`,
+      label: t("noActivity", { name: ps.section.name }),
       href: `/projects/${projectId}/sections/${ps.id}`,
     });
   });
@@ -150,7 +147,7 @@ export default async function ReviewPage({
   // Units missing grades
   unitsMissingGrades.forEach((u: any) => {
     warnings.push({
-      label: `B${u.building} - ${u.unit_number} — missing grades`,
+      label: t("missingGradesLabel", { building: u.building, unit: u.unit_number }),
       href: `/projects/${projectId}/sections/${u.project_section_id}/units/${u.id}`,
     });
   });
@@ -160,14 +157,16 @@ export default async function ReviewPage({
     // Avoid duplicate if already in missing grades
     if (u.unit_grade || u.tenant_grade) {
       warnings.push({
-        label: `B${u.building} - ${u.unit_number} — missing BD/BA`,
+        label: t("missingBdBaLabel", { building: u.building, unit: u.unit_number }),
         href: `/projects/${projectId}/sections/${u.project_section_id}/units/${u.id}`,
       });
     }
   });
 
+  const cookieStore = await cookies();
+  const dateLocale = cookieStore.get("locale")?.value === "es" ? "es" : "en-US";
   const formattedDate = new Date(project.updated_at).toLocaleDateString(
-    "en-US",
+    dateLocale,
     { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }
   );
 
@@ -176,7 +175,7 @@ export default async function ReviewPage({
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4 flex-wrap">
         <Link href="/dashboard" className="hover:text-brand-600 transition-colors">
-          Projects
+          {t("sections")}
         </Link>
         <span>/</span>
         <Link
@@ -186,7 +185,7 @@ export default async function ReviewPage({
           {project.name}
         </Link>
         <span>/</span>
-        <span className="text-content-primary">Review</span>
+        <span className="text-content-primary">{t("reviewTitle")}</span>
       </div>
 
       {/* Header */}
@@ -198,14 +197,14 @@ export default async function ReviewPage({
               statusStyles[project.status]
             }`}
           >
-            {statusLabels[project.status]}
+            {t(`statusLabels.${project.status}`)}
           </span>
         </div>
         <p className="text-content-tertiary">{project.property_name}</p>
         {project.address && (
           <p className="text-sm text-content-muted mt-0.5">{project.address}</p>
         )}
-        <p className="text-xs text-content-muted mt-1">Last updated: {formattedDate}</p>
+        <p className="text-xs text-content-muted mt-1">{t("lastUpdated", { date: formattedDate })}</p>
       </div>
 
       {/* Summary Metrics */}
@@ -213,21 +212,21 @@ export default async function ReviewPage({
         {/* Sections card */}
         <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <h3 className="text-xs font-semibold text-content-quaternary uppercase tracking-wide mb-2">
-            Sections
+            {t("sections")}
           </h3>
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
-              <span className="text-content-tertiary">Enabled</span>
+              <span className="text-content-tertiary">{t("enabled")}</span>
               <span className="font-medium">{enabledSections.length}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-content-tertiary">With activity</span>
+              <span className="text-content-tertiary">{t("withActivity")}</span>
               <span className="font-medium text-green-600">
                 {sectionsWithActivity.length}
               </span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-content-tertiary">Untouched</span>
+              <span className="text-content-tertiary">{t("untouched")}</span>
               <span
                 className={`font-medium ${
                   sectionsUntouched.length > 0 ? "text-orange-600" : "text-green-600"
@@ -242,19 +241,19 @@ export default async function ReviewPage({
         {/* Units card */}
         <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <h3 className="text-xs font-semibold text-content-quaternary uppercase tracking-wide mb-2">
-            Units
+            {t("units")}
           </h3>
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
-              <span className="text-content-tertiary">Total</span>
+              <span className="text-content-tertiary">{t("total")}</span>
               <span className="font-medium">{allUnits.length}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-content-tertiary">With photos</span>
+              <span className="text-content-tertiary">{t("withPhotos")}</span>
               <span className="font-medium">{unitsWithPhotos.length}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-content-tertiary">Missing grades</span>
+              <span className="text-content-tertiary">{t("missingGrades")}</span>
               <span
                 className={`font-medium ${
                   unitsMissingGrades.length > 0 ? "text-orange-600" : "text-green-600"
@@ -264,7 +263,7 @@ export default async function ReviewPage({
               </span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-content-tertiary">Missing BD/BA</span>
+              <span className="text-content-tertiary">{t("missingBdBa")}</span>
               <span
                 className={`font-medium ${
                   unitsMissingBdBa.length > 0 ? "text-orange-600" : "text-green-600"
@@ -279,24 +278,24 @@ export default async function ReviewPage({
         {/* Captures card */}
         <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <h3 className="text-xs font-semibold text-content-quaternary uppercase tracking-wide mb-2">
-            Captures
+            {t("captures")}
           </h3>
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
-              <span className="text-content-tertiary">Total</span>
+              <span className="text-content-tertiary">{t("total")}</span>
               <span className="font-medium">{allCaptures.length}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-content-tertiary">Unit photos</span>
+              <span className="text-content-tertiary">{t("unitPhotos")}</span>
               <span className="font-medium">{unitLevelCaptures.length}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-content-tertiary">Item photos</span>
+              <span className="text-content-tertiary">{t("itemPhotos")}</span>
               <span className="font-medium">{itemLevelCaptures.length}</span>
             </div>
             {sectionLevelCaptures.length > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-content-tertiary">Section-level</span>
+                <span className="text-content-tertiary">{t("sectionLevel")}</span>
                 <span className="font-medium">{sectionLevelCaptures.length}</span>
               </div>
             )}
@@ -308,7 +307,7 @@ export default async function ReviewPage({
       {warnings.length > 0 && (
         <div className="mb-6">
           <h2 className="text-sm font-semibold text-content-quaternary uppercase tracking-wide mb-3">
-            Needs Attention ({warnings.length})
+            {t("needsAttention", { count: warnings.length })}
           </h2>
           <div className="bg-surface-primary rounded-lg border border-edge-primary divide-y divide-edge-tertiary">
             {/* Jump to first missing item */}
@@ -317,7 +316,7 @@ export default async function ReviewPage({
               className="block px-4 py-3 bg-orange-50 hover:bg-orange-100 transition-colors rounded-t-lg"
             >
               <span className="text-sm font-semibold text-orange-700">
-                Jump to first missing item &rarr;
+                {t("jumpToFirst")} &rarr;
               </span>
             </Link>
             {warnings.map((w, i) => (
@@ -339,7 +338,7 @@ export default async function ReviewPage({
       {warnings.length === 0 && enabledSections.length > 0 && (
         <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
           <p className="text-sm text-green-700 font-medium">
-            All sections have activity and all units have grades. This inspection looks complete!
+            {t("allComplete")}
           </p>
         </div>
       )}
@@ -360,7 +359,7 @@ export default async function ReviewPage({
           href={`/projects/${projectId}`}
           className="px-5 py-2.5 text-sm text-content-tertiary hover:text-content-primary transition-colors"
         >
-          Back to Project
+          {t("backToProject")}
         </Link>
       </div>
     </div>

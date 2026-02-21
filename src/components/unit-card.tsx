@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { deleteUnit } from "@/app/actions/units";
 import { TENANT_GRADES, UNIT_GRADES } from "@/lib/unit-constants";
@@ -23,13 +24,14 @@ export function UnitCard({
   onDeleteStart,
   onDeleteEnd,
 }: UnitCardProps) {
+  const t = useTranslations();
   const [deleting, setDeleting] = useState(false);
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (isListBusy) return; // another delete is in-flight
-    if (!confirm(`Delete B${unit.building} - ${unit.unit_number}? All photos will be removed.`)) return;
+    if (!confirm(t("unit.deleteConfirm", { building: unit.building, unitNumber: unit.unit_number }))) return;
 
     setDeleting(true);
     onDeleteStart?.();
@@ -86,7 +88,7 @@ export function UnitCard({
             )}
             {unit.has_mold && (
               <span className="text-xs px-1.5 py-0.5 rounded font-medium bg-red-100 text-red-700">
-                Mold
+                {t("unit.mold")}
               </span>
             )}
           </div>
@@ -94,7 +96,7 @@ export function UnitCard({
           {/* Photo count */}
           {captureCount > 0 && (
             <span className="text-xs text-content-muted">
-              {captureCount} photo{captureCount !== 1 ? "s" : ""}
+              {t("dashboard.photoCount", { count: captureCount })}
             </span>
           )}
         </div>
@@ -104,7 +106,7 @@ export function UnitCard({
           onClick={handleDelete}
           disabled={deleting || isListBusy}
           className="text-content-muted hover:text-red-500 transition-colors p-1 flex-shrink-0 disabled:opacity-30"
-          aria-label="Delete unit"
+          aria-label={t("unit.deleteUnit")}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

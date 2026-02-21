@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { updateUnitStatus } from "@/app/actions/unit-turns";
 import { UNIT_STATUS_LABELS } from "@/lib/unit-turn-constants";
 
@@ -13,6 +14,7 @@ interface UnitStatusBarProps {
 }
 
 export function UnitStatusBar({ unitId, batchId, currentStatus }: UnitStatusBarProps) {
+  const t = useTranslations();
   const [status, setStatus] = useState(currentStatus);
   const [saving, setSaving] = useState(false);
 
@@ -26,8 +28,8 @@ export function UnitStatusBar({ unitId, batchId, currentStatus }: UnitStatusBarP
   return (
     <div className="bg-surface-primary rounded-lg border border-edge-primary p-3">
       <div className="flex items-center justify-between">
-        <label className="text-xs font-medium text-content-quaternary">Unit Status</label>
-        {saving && <span className="text-xs text-content-muted">Saving...</span>}
+        <label className="text-xs font-medium text-content-quaternary">{t("unitTurn.unitStatusLabel")}</label>
+        {saving && <span className="text-xs text-content-muted">{t("common.saving")}</span>}
       </div>
       <div className="flex gap-2 mt-2">
         {STATUS_OPTIONS.map((opt) => {
@@ -42,7 +44,7 @@ export function UnitStatusBar({ unitId, batchId, currentStatus }: UnitStatusBarP
                   : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
               }`}
             >
-              {info.label}
+              {t(`unitTurn.unitStatus.${opt}`)}
             </button>
           );
         })}

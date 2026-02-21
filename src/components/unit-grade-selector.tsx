@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { updateUnitField } from "@/app/actions/units";
 import { TENANT_GRADES, UNIT_GRADES, ITEM_GRADES } from "@/lib/unit-constants";
 
@@ -36,6 +37,7 @@ export function UnitGradeSelector({
   label,
   initialValue,
 }: UnitGradeSelectorProps) {
+  const t = useTranslations();
   const [selected, setSelected] = useState<string | null>(initialValue);
   const [saving, setSaving] = useState(false);
 
@@ -66,12 +68,10 @@ export function UnitGradeSelector({
     <div>
       <label className="block text-sm font-medium text-content-secondary mb-2">
         {label}
-        {selectedInfo && (
+        {selectedInfo && selected && (
           <span className="ml-2 text-xs font-normal text-content-muted">
-            {selectedInfo.label}
-            {"desc" in selectedInfo && selectedInfo.desc
-              ? ` — ${selectedInfo.desc}`
-              : ""}
+            {type === "tenant" ? t(`unit.tenantGrades.${selected}.label`) : type === "unit" ? t(`unit.unitGrades.${selected}.label`) : t(`unit.itemGrades.${selected}`)}
+            {type === "unit" && selected ? ` — ${t(`unit.unitGrades.${selected}.desc`)}` : ""}
           </span>
         )}
       </label>
@@ -90,7 +90,7 @@ export function UnitGradeSelector({
                     ? config.color
                     : "bg-surface-tertiary text-content-muted hover:bg-gray-200"
                 }`}
-              aria-label={`Grade ${grade}`}
+              aria-label={t("unit.gradeLabel", { grade })}
             >
               {grade}
             </button>

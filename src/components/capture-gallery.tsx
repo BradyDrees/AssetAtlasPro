@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { CaptureCard } from "@/components/capture-card";
 import type { DDCapture } from "@/lib/types";
 
@@ -8,17 +9,18 @@ interface CaptureGalleryProps {
   storageBaseUrl: string;
 }
 
-export function CaptureGallery({
+export async function CaptureGallery({
   captures,
   projectId,
   projectSectionId,
   storageBaseUrl,
 }: CaptureGalleryProps) {
+  const t = await getTranslations();
   if (captures.length === 0) {
     return (
       <div className="bg-surface-primary rounded-lg border border-edge-primary p-6 md:p-8 text-center">
         <p className="text-content-quaternary text-sm">
-          No captures yet. Tap the camera button to start.
+          {t("captures.noPhotos")}
         </p>
       </div>
     );

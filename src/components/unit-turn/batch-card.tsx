@@ -1,6 +1,8 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { useAppLocale } from "@/components/locale-provider";
 import { BATCH_STATUS_LABELS } from "@/lib/unit-turn-constants";
 import type { UnitTurnBatch } from "@/lib/unit-turn-types";
 
@@ -10,10 +12,12 @@ interface BatchCardProps {
 }
 
 export function BatchCard({ batch, unitCount }: BatchCardProps) {
+  const t = useTranslations();
+  const { locale } = useAppLocale();
   const statusInfo = BATCH_STATUS_LABELS[batch.status] ?? BATCH_STATUS_LABELS.OPEN;
 
   const monthLabel = batch.month
-    ? new Date(batch.month + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    ? new Date(batch.month + "T00:00:00").toLocaleDateString(locale === "es" ? "es" : "en-US", { month: "long", day: "numeric", year: "numeric" })
     : null;
 
   return (
@@ -28,7 +32,7 @@ export function BatchCard({ batch, unitCount }: BatchCardProps) {
               {batch.name}
             </h3>
             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusInfo.color}`}>
-              {statusInfo.label}
+              {t(`unitTurn.batchStatus.${batch.status}`)}
             </span>
           </div>
           <div className="flex items-center gap-3 mt-1">
@@ -36,7 +40,7 @@ export function BatchCard({ batch, unitCount }: BatchCardProps) {
               <span className="text-sm text-content-quaternary">{monthLabel}</span>
             )}
             <span className="text-sm text-content-muted">
-              {unitCount} unit{unitCount !== 1 ? "s" : ""}
+              {unitCount} {t("pdf.tableHeaders.unit")}
             </span>
           </div>
         </div>

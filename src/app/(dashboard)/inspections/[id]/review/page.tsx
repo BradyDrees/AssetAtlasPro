@@ -5,6 +5,7 @@ import { InspectionReviewContent } from "@/components/inspection-review-content"
 import { InspectionExportButtons } from "@/components/inspection-export-buttons";
 import { INSPECTION_GROUP_ORDER } from "@/lib/inspection-sections";
 import { INSPECTION_TYPE_LABELS } from "@/lib/inspection-constants";
+import { getTranslations } from "next-intl/server";
 import type {
   InspectionProjectSectionWithDetails,
   InspectionFinding,
@@ -20,18 +21,13 @@ const statusStyles: Record<string, string> = {
   COMPLETE: "bg-brand-100 text-brand-800",
 };
 
-const statusLabels: Record<string, string> = {
-  DRAFT: "Draft",
-  IN_PROGRESS: "In Progress",
-  COMPLETE: "Complete",
-};
-
 export default async function InspectionReviewPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const t = await getTranslations();
   const supabase = await createClient();
 
   // Fire all queries in parallel for speed
@@ -147,7 +143,7 @@ export default async function InspectionReviewPage({
             href="/inspections"
             className="hover:text-white transition-colors"
           >
-            Inspections
+            {t("nav.inspections")}
           </Link>
           <span className="text-charcoal-600">/</span>
           <Link
@@ -157,14 +153,14 @@ export default async function InspectionReviewPage({
             {project.name}
           </Link>
           <span className="text-charcoal-600">/</span>
-          <span className="text-white font-medium">Review</span>
+          <span className="text-white font-medium">{t("review.reviewTitle")}</span>
         </div>
 
         <div className="flex items-center gap-3">
           <Link
             href={`/inspections/${id}`}
             className="p-1.5 text-charcoal-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-            title="Back to inspection"
+            title={t("dashboard.backToInspection")}
           >
             <svg
               className="w-5 h-5"
@@ -182,17 +178,17 @@ export default async function InspectionReviewPage({
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-white">
-              Review &amp; Export
+              {t("dashboard.reviewAndExport")}
             </h1>
             <div className="flex items-center gap-2 mt-0.5">
               <span className="text-brand-200">
                 {project.name} — {project.property_name}
               </span>
               <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-white/20 text-white">
-                {statusLabels[project.status]}
+                {t(`review.statusLabels.${project.status}`)}
               </span>
               <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gold-500/30 text-gold-200">
-                {INSPECTION_TYPE_LABELS[project.inspection_type]}
+                {t(`inspection.inspectionTypes.${project.inspection_type === "bank_ready" ? "bankReady" : "internal"}`)}
               </span>
             </div>
           </div>

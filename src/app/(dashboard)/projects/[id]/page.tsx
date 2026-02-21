@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { SectionGroup } from "@/components/section-group";
@@ -15,12 +16,6 @@ const statusStyles: Record<string, string> = {
   COMPLETE: "bg-green-100 text-green-700",
 };
 
-const statusLabels: Record<string, string> = {
-  DRAFT: "Draft",
-  IN_PROGRESS: "In Progress",
-  COMPLETE: "Complete",
-};
-
 export default async function ProjectDetailPage({
   params,
   searchParams,
@@ -31,6 +26,7 @@ export default async function ProjectDetailPage({
   const { id } = await params;
   const { group: scrollToGroup } = await searchParams;
   const supabase = await createClient();
+  const t = await getTranslations();
 
   // Fetch project
   const { data: project } = await supabase
@@ -121,7 +117,7 @@ export default async function ProjectDetailPage({
           href="/dashboard"
           className="hover:text-brand-600 transition-colors"
         >
-          Due Diligence
+          {t("nav.dueDiligence")}
         </Link>
         <span>/</span>
         <span className="text-content-primary">{project.name}</span>
@@ -137,7 +133,7 @@ export default async function ProjectDetailPage({
                 statusStyles[project.status]
               }`}
             >
-              {statusLabels[project.status]}
+              {t(`review.statusLabels.${project.status}`)}
             </span>
           </div>
           <ProjectHeaderMenu project={project} />
@@ -150,7 +146,7 @@ export default async function ProjectDetailPage({
           href={`/projects/${id}/review`}
           className="inline-block mt-3 px-5 py-2.5 border-2 border-brand-600 text-brand-600 text-sm font-semibold rounded-lg hover:bg-brand-600 hover:text-white transition-colors"
         >
-          Review &amp; Export
+          {t("dashboard.reviewAndExport")}
         </Link>
       </div>
 
@@ -159,7 +155,7 @@ export default async function ProjectDetailPage({
 
       {/* Section groups */}
       <h2 className="text-sm font-semibold text-content-quaternary uppercase tracking-wide mb-3">
-        Inspection Sections
+        {t("dashboard.inspectionSections")}
       </h2>
       <div className="space-y-4">
         {grouped.map((group) => (

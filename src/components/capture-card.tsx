@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { updateCaptureCaption, deleteCapture } from "@/app/actions/captures";
 import type { DDCapture } from "@/lib/types";
 
@@ -17,6 +18,7 @@ export function CaptureCard({
   projectSectionId,
   mediaUrl,
 }: CaptureCardProps) {
+  const t = useTranslations();
   const [caption, setCaption] = useState(capture.caption);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -41,7 +43,7 @@ export function CaptureCard({
   };
 
   const handleDelete = async () => {
-    if (!confirm("Delete this capture?")) return;
+    if (!confirm(t("captures.deleteConfirm"))) return;
     setDeleting(true);
     try {
       await deleteCapture(
@@ -67,7 +69,7 @@ export function CaptureCard({
         {capture.file_type === "image" && (
           <img
             src={mediaUrl}
-            alt={caption || "Photo capture"}
+            alt={caption || t("captures.photoCapture")}
             className="w-full h-full object-cover"
             loading="lazy"
           />
@@ -84,7 +86,7 @@ export function CaptureCard({
           <div className="w-full h-full flex flex-col items-center justify-center text-content-muted">
             <span className="text-4xl mb-2">{"\u{1F4C4}"}</span>
             <span className="text-xs text-center px-2 truncate max-w-full">
-              PDF Document
+              {t("common.pdfDocument")}
             </span>
           </div>
         )}
@@ -96,7 +98,7 @@ export function CaptureCard({
           className="absolute top-2 right-2 w-7 h-7 bg-black/50 text-white
                      rounded-full flex items-center justify-center text-xs
                      hover:bg-red-600 transition-colors"
-          aria-label="Delete capture"
+          aria-label={t("captures.deletePhoto")}
         >
           ✕
         </button>
@@ -110,7 +112,7 @@ export function CaptureCard({
               type="text"
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
-              placeholder="Add caption..."
+              placeholder={t("captures.addCaption")}
               className="flex-1 text-xs px-2 py-1 border border-edge-secondary rounded
                          focus:outline-none focus:ring-1 focus:ring-brand-500"
               autoFocus
@@ -128,7 +130,7 @@ export function CaptureCard({
               className="text-xs px-2 py-1 bg-brand-600 text-white rounded
                          hover:bg-brand-700 disabled:opacity-50"
             >
-              {saving ? "..." : "Save"}
+              {saving ? "..." : t("common.save")}
             </button>
           </div>
         ) : (
@@ -137,7 +139,7 @@ export function CaptureCard({
             className="w-full text-left text-xs text-content-quaternary hover:text-content-secondary
                        transition-colors py-1 truncate"
           >
-            {caption || "Tap to add caption..."}
+            {caption || t("captures.tapToAddCaption")}
           </button>
         )}
         <p className="text-[10px] text-content-muted mt-1">

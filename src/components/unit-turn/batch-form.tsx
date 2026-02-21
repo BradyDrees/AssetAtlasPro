@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { createBatch } from "@/app/actions/unit-turns";
 
@@ -9,6 +10,7 @@ interface BatchFormProps {
 }
 
 export function BatchForm({ onClose }: BatchFormProps) {
+  const t = useTranslations();
   const router = useRouter();
   const [name, setName] = useState("");
   const [month, setMonth] = useState("");
@@ -41,13 +43,13 @@ export function BatchForm({ onClose }: BatchFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-content-secondary mb-1">
-          Batch Name <span className="text-red-500">*</span>
+          {t("forms.batchName")} <span className="text-red-500">{t("forms.required")}</span>
         </label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. Veridian Apartments"
+          placeholder={t("forms.placeholders.batchName")}
           className="w-full px-3 py-2 border border-edge-secondary rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
           autoFocus
           required
@@ -56,7 +58,7 @@ export function BatchForm({ onClose }: BatchFormProps) {
 
       <div>
         <label className="block text-sm font-medium text-content-secondary mb-1">
-          Date <span className="text-content-muted">(optional)</span>
+          {t("forms.date")} <span className="text-content-muted">{t("forms.dateOptional")}</span>
         </label>
         <input
           type="date"
@@ -76,14 +78,14 @@ export function BatchForm({ onClose }: BatchFormProps) {
           onClick={onClose}
           className="px-4 py-2 text-sm text-content-tertiary hover:text-content-primary"
         >
-          Cancel
+          {t("common.cancel")}
         </button>
         <button
           type="submit"
           disabled={!name.trim() || loading}
           className="px-4 py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 disabled:opacity-50 transition-colors"
         >
-          {loading ? "Creating..." : "Create Batch"}
+          {loading ? t("forms.creating") : t("forms.createBatch")}
         </button>
       </div>
     </form>

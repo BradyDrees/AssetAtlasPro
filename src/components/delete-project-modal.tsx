@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { deleteDDProject } from "@/app/actions/projects";
 import { Modal } from "@/components/modal";
@@ -16,6 +17,7 @@ export function DeleteProjectModal({
   projectCode,
   onClose,
 }: DeleteProjectModalProps) {
+  const t = useTranslations();
   const router = useRouter();
   const [confirmation, setConfirmation] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,24 +36,24 @@ export function DeleteProjectModal({
       router.push("/dashboard");
     } catch (err) {
       console.error("Failed to delete project:", err);
-      setError("Failed to delete project. Please try again.");
+      setError(t("modals.deleteProject.failed"));
       setLoading(false);
     }
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="Delete Project">
+    <Modal isOpen={true} onClose={onClose} title={t("modals.deleteProject.title")}>
       <div className="space-y-4">
         <div className="bg-red-50 border border-red-200 rounded-lg p-3">
           <p className="text-sm text-red-700 font-medium">
-            This will permanently delete all sections, units, captures, and photos.
+            {t("modals.deleteProject.body")}
           </p>
-          <p className="text-xs text-red-500 mt-1">This cannot be undone.</p>
+          <p className="text-xs text-red-500 mt-1">{t("modals.deleteProject.cannotUndo")}</p>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-content-secondary mb-1">
-            Type <span className="font-bold">{projectCode}</span> to confirm
+            {t("modals.deleteProject.typeToConfirm", { code: projectCode })}
           </label>
           <input
             type="text"
@@ -72,7 +74,7 @@ export function DeleteProjectModal({
             onClick={onClose}
             className="px-4 py-2 text-sm text-content-tertiary hover:text-content-primary"
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             onClick={handleDelete}
@@ -80,7 +82,7 @@ export function DeleteProjectModal({
             className="px-4 py-2 bg-red-600 text-white text-sm rounded-md
                        hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Deleting..." : "Delete Project"}
+            {loading ? t("modals.deleteProject.deleting") : t("modals.deleteProject.deleteButton")}
           </button>
         </div>
       </div>

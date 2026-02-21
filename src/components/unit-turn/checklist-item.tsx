@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import {
   updateUnitItemStatus,
   updateUnitItemNA,
@@ -55,6 +56,7 @@ export function ChecklistItem({
   supabaseUrl,
   currentUserId,
 }: ChecklistItemProps) {
+  const t = useTranslations();
   const router = useFieldRouter();
   const { isFieldMode, refreshPending } = useOffline();
   const [status, setStatus] = useState(item.status);
@@ -228,7 +230,7 @@ export function ChecklistItem({
       {/* Item Name */}
       <div className="mb-2">
         <span className="text-sm text-content-primary">
-          {toTitleCase(item.template_item?.name ?? "Unknown Item")}
+          {toTitleCase(item.template_item?.name ?? t("unitTurn.unknownItem"))}
         </span>
       </div>
 
@@ -250,7 +252,7 @@ export function ChecklistItem({
                           : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                       }`}
                     >
-                      {info.label}
+                      {t(`unitTurn.paintScope.${scope === "touch_up" ? "touchUp" : "fullPaint"}`)}
                     </button>
                   );
                 })
@@ -258,7 +260,7 @@ export function ChecklistItem({
                   if (isCleaning && st !== "good") return null;
                   const info = ITEM_STATUS_LABELS[st];
                   const isActive = status === st;
-                  const label = isCleaning && st === "good" ? "Done" : info.label;
+                  const label = isCleaning && st === "good" ? t("unitTurn.done") : t(`unitTurn.itemStatus.${st}`);
                   return (
                     <button
                       key={st}
@@ -288,7 +290,7 @@ export function ChecklistItem({
       </div>
 
       {/* Saving indicator */}
-      {saving && <span className="text-xs text-content-muted">Saving...</span>}
+      {saving && <span className="text-xs text-content-muted">{t("common.saving")}</span>}
 
       {/* Notes + Photos — always available (not required) */}
       {!isNA && (
@@ -297,7 +299,7 @@ export function ChecklistItem({
           {itemNotes.map((note) => (
             <div key={note.id} className="bg-surface-secondary rounded-lg p-2.5 text-sm">
               <div className="flex items-start justify-between gap-2">
-                <p className="text-content-secondary flex-1">{note.text || <span className="text-content-muted italic">Photo only</span>}</p>
+                <p className="text-content-secondary flex-1">{note.text || <span className="text-content-muted italic">{t("unitTurn.photoOnly")}</span>}</p>
                 <button
                   onClick={() => handleDeleteNote(note.id)}
                   className="w-8 h-8 flex items-center justify-center text-sm text-red-400 hover:text-red-600 hover:bg-red-50 rounded-full flex-shrink-0"
@@ -348,7 +350,7 @@ export function ChecklistItem({
                     e.target.value = "";
                   }}
                 />
-                + Photo/Video
+                {t("unitTurn.addPhotoVideo")}
               </label>
             </div>
           ))}
@@ -361,7 +363,7 @@ export function ChecklistItem({
                 onClick={() => setShowAddNote(true)}
                 className="text-xs text-brand-600 hover:text-brand-700"
               >
-                + Add Note
+                {t("unitTurn.addNote")}
               </button>
             ) : (
               <div className="flex gap-2 flex-1">
@@ -369,7 +371,7 @@ export function ChecklistItem({
                   type="text"
                   value={noteText}
                   onChange={(e) => setNoteText(e.target.value)}
-                  placeholder="Note..."
+                  placeholder={t("unitTurn.notePlaceholder")}
                   className="flex-1 px-2 py-1 text-xs border border-edge-secondary rounded focus:outline-none focus:ring-1 focus:ring-brand-500"
                   autoFocus
                   onKeyDown={(e) => {
@@ -382,7 +384,7 @@ export function ChecklistItem({
                   disabled={!noteText.trim() || addingNote}
                   className="px-3 py-2 text-xs bg-brand-600 text-white rounded hover:bg-brand-700 disabled:opacity-50"
                 >
-                  {addingNote ? "..." : "Add"}
+                  {addingNote ? "..." : t("common.add")}
                 </button>
                 <button
                   onClick={() => { setShowAddNote(false); setNoteText(""); }}
@@ -408,7 +410,7 @@ export function ChecklistItem({
                     e.target.value = "";
                   }}
                 />
-                {uploadingDirect ? "Uploading..." : "📷 Photo/Video"}
+                {uploadingDirect ? t("unitTurn.uploading") : t("unitTurn.takePhotoVideo")}
               </label>
             )}
           </div>

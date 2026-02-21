@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface ExportButtonsProps {
   projectId: string;
@@ -9,45 +10,18 @@ interface ExportButtonsProps {
 
 type ExportFormat = "full" | "summary" | "photos" | "zip" | "excel";
 
-const EXPORT_OPTIONS: {
-  format: ExportFormat;
-  label: string;
-  description: string;
-  icon: string;
-}[] = [
-  {
-    format: "full",
-    label: "Full Report",
-    description: "Complete report with tables & photos",
-    icon: "\u{1F4C4}",
-  },
-  {
-    format: "summary",
-    label: "Summary Only",
-    description: "Metrics & unit matrix, no photos",
-    icon: "\u{1F4CA}",
-  },
-  {
-    format: "photos",
-    label: "Photo Book",
-    description: "All photos organized by section",
-    icon: "\u{1F4F7}",
-  },
-  {
-    format: "zip",
-    label: "Download Photos",
-    description: "ZIP archive with renamed files",
-    icon: "\u{1F4E6}",
-  },
-  {
-    format: "excel",
-    label: "Excel Spreadsheet",
-    description: "Unit grading + section items (.xlsx)",
-    icon: "\u{1F4CA}",
-  },
-];
+const EXPORT_FORMAT_ICONS: Record<ExportFormat, string> = {
+  full: "\u{1F4C4}",
+  summary: "\u{1F4CA}",
+  photos: "\u{1F4F7}",
+  zip: "\u{1F4E6}",
+  excel: "\u{1F4CA}",
+};
+
+const EXPORT_FORMATS: ExportFormat[] = ["full", "summary", "photos", "zip", "excel"];
 
 export function ExportButtons({ projectId, projectCode }: ExportButtonsProps) {
+  const t = useTranslations();
   const [activeFormat, setActiveFormat] = useState<ExportFormat | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -105,8 +79,8 @@ export function ExportButtons({ projectId, projectCode }: ExportButtonsProps) {
       console.error("Export error:", err);
       const msg =
         err.name === "AbortError"
-          ? "Export timed out. Try Summary or Excel for large projects."
-          : err.message ?? "Export failed. Try again.";
+          ? t("export.timedOut")
+          : err.message ?? t("export.failed");
       setError(msg);
       setTimeout(() => setError(null), 8000);
     } finally {
@@ -117,33 +91,33 @@ export function ExportButtons({ projectId, projectCode }: ExportButtonsProps) {
   return (
     <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
       <h2 className="text-sm font-semibold text-content-quaternary uppercase tracking-wide mb-3">
-        Export
+        {t("export.title")}
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        {EXPORT_OPTIONS.map((opt) => (
+        {EXPORT_FORMATS.map((format) => (
           <button
-            key={opt.format}
-            onClick={() => handleExport(opt.format)}
+            key={format}
+            onClick={() => handleExport(format)}
             disabled={activeFormat !== null}
             className={`flex items-center gap-3 px-3 py-3 rounded-lg border text-left transition-colors ${
-              activeFormat === opt.format
+              activeFormat === format
                 ? "border-brand-300 bg-brand-50"
                 : "border-edge-primary hover:bg-surface-secondary"
             } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             <span className="text-xl flex-shrink-0">
-              {activeFormat === opt.format ? (
+              {activeFormat === format ? (
                 <span className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-brand-600" />
               ) : (
-                opt.icon
+                EXPORT_FORMAT_ICONS[format]
               )}
             </span>
             <div>
               <span className="text-sm font-medium text-content-primary block">
-                {opt.label}
+                {t(`export.formats.${format}.label`)}
               </span>
-              <span className="text-xs text-content-quaternary">{opt.description}</span>
+              <span className="text-xs text-content-quaternary">{t(`export.formats.${format}.description`)}</span>
             </div>
           </button>
         ))}

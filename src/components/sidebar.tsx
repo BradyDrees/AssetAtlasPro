@@ -3,44 +3,41 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { signOut } from "@/app/actions/auth";
 import { useTheme } from "@/components/theme-provider";
+import { useAppLocale } from "@/components/locale-provider";
 import { useOffline } from "@/components/offline-provider";
 import type { User } from "@supabase/supabase-js";
 
-const navItems = [
-  {
-    href: "/dashboard",
-    label: "Home",
-    icon: "",
-    matchPaths: ["/dashboard"],
-  },
-  {
-    href: "/projects",
-    label: "Due Diligence",
-    icon: "",
-    matchPaths: ["/projects"],
-  },
-  {
-    href: "/inspections",
-    label: "Inspections",
-    icon: "",
-    matchPaths: ["/inspections"],
-  },
-  {
-    href: "/unit-turns",
-    label: "Unit Turns",
-    icon: "",
-    matchPaths: ["/unit-turns"],
-  },
-];
+function SombreroIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      {/* Brim */}
+      <ellipse cx="12" cy="17" rx="10" ry="3" />
+      {/* Crown */}
+      <path d="M7 17c0-3 1.5-7 5-7s5 4 5 7" />
+      {/* Top */}
+      <path d="M9.5 12c0-1.5 1-3 2.5-3s2.5 1.5 2.5 3" />
+    </svg>
+  );
+}
 
 export function Sidebar({ user }: { user: User }) {
   const pathname = usePathname();
+  const t = useTranslations();
   const { theme, toggleTheme } = useTheme();
+  const { locale, toggleLocale } = useAppLocale();
   const { isFieldMode, isOnline, pendingCount, isSyncing, stuckCount, toggleFieldMode, startSync, resetStuck } = useOffline();
   const [isOpen, setIsOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+
+  const navItems = [
+    { href: "/dashboard", label: t("nav.home"), icon: "", matchPaths: ["/dashboard"] },
+    { href: "/projects", label: t("nav.dueDiligence"), icon: "", matchPaths: ["/projects"] },
+    { href: "/inspections", label: t("nav.inspections"), icon: "", matchPaths: ["/inspections"] },
+    { href: "/unit-turns", label: t("nav.unitTurns"), icon: "", matchPaths: ["/unit-turns"] },
+  ];
 
   // Close mobile drawer on navigation
   useEffect(() => {
@@ -63,7 +60,7 @@ export function Sidebar({ user }: { user: User }) {
         onClick={() => setIsOpen(true)}
         className="md:hidden fixed left-3 z-50 p-2 bg-surface-primary rounded-lg border border-edge-primary shadow-sm"
         style={{ top: "calc(env(safe-area-inset-top, 0px) + 12px)" }}
-        aria-label="Open menu"
+        aria-label={t("sidebar.openMenu")}
       >
         <svg className="w-5 h-5 text-content-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -91,7 +88,7 @@ export function Sidebar({ user }: { user: User }) {
             <Link href="/dashboard" className="flex-shrink-0">
               <div>
                 <h1 className="text-xl font-bold text-white leading-tight">Asset <span className="text-brand-500">Atlas</span> Pro</h1>
-                <p className="text-sm text-gold-400">See Risk. Plan Capital.</p>
+                <p className="text-sm text-gold-400">{t("sidebar.tagline")}</p>
               </div>
             </Link>
           )}
@@ -100,7 +97,7 @@ export function Sidebar({ user }: { user: User }) {
           <button
             onClick={() => setCollapsed(!collapsed)}
             className="hidden md:flex p-1.5 text-charcoal-400 hover:text-white hover:bg-charcoal-700 rounded transition-colors"
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={collapsed ? t("sidebar.expandSidebar") : t("sidebar.collapseSidebar")}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {collapsed ? (
@@ -115,7 +112,7 @@ export function Sidebar({ user }: { user: User }) {
           <button
             onClick={() => setIsOpen(false)}
             className="md:hidden p-1.5 text-charcoal-400 hover:text-white"
-            aria-label="Close menu"
+            aria-label={t("sidebar.closeMenu")}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -148,7 +145,7 @@ export function Sidebar({ user }: { user: User }) {
           })}
         </nav>
 
-        {/* Field Mode + Theme toggle + User info + sign out */}
+        {/* Field Mode + Language + Theme toggle + User info + sign out */}
         <div className="p-4 border-t border-edge-primary bg-surface-secondary/50">
           {/* Field Mode toggle */}
           {!collapsed ? (
@@ -164,7 +161,7 @@ export function Sidebar({ user }: { user: User }) {
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
                 </svg>
-                {isFieldMode ? "Go Online" : "Field Mode"}
+                {isFieldMode ? t("sidebar.goOnline") : t("sidebar.fieldMode")}
               </span>
               <span className="flex items-center gap-1.5">
                 {pendingCount > 0 && (
@@ -173,7 +170,7 @@ export function Sidebar({ user }: { user: User }) {
                   </span>
                 )}
                 {!isOnline && (
-                  <span className="w-2 h-2 rounded-full bg-red-500" title="Offline" />
+                  <span className="w-2 h-2 rounded-full bg-red-500" title={t("sidebar.offline")} />
                 )}
               </span>
             </button>
@@ -181,7 +178,7 @@ export function Sidebar({ user }: { user: User }) {
             <button
               onClick={toggleFieldMode}
               className={`w-full text-center py-1.5 text-base mb-2 relative ${isFieldMode ? "text-gold-400" : ""}`}
-              title={isFieldMode ? "Go Online" : "Field Mode"}
+              title={isFieldMode ? t("sidebar.goOnline") : t("sidebar.fieldMode")}
             >
               <svg className="w-4 h-4 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
@@ -203,12 +200,12 @@ export function Sidebar({ user }: { user: User }) {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
-              Sync Now
+              {t("sidebar.syncNow")}
             </button>
           )}
 
           {isSyncing && !collapsed && (
-            <p className="text-xs text-brand-400 mb-2 px-1">Syncing...</p>
+            <p className="text-xs text-brand-400 mb-2 px-1">{t("sidebar.syncing")}</p>
           )}
 
           {/* Retry stuck items — shows when items have failed max retries */}
@@ -220,7 +217,26 @@ export function Sidebar({ user }: { user: User }) {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              Retry Failed ({stuckCount})
+              {t("sidebar.retryFailed", { count: stuckCount })}
+            </button>
+          )}
+
+          {/* Language toggle — sombrero icon */}
+          {!collapsed ? (
+            <button
+              onClick={toggleLocale}
+              className="flex items-center justify-between w-full px-1 py-1.5 text-sm text-content-tertiary hover:text-content-primary rounded transition-colors mb-2"
+            >
+              <span>{locale === "en" ? t("sidebar.switchToSpanish") : t("sidebar.switchToEnglish")}</span>
+              <SombreroIcon className="w-5 h-5" />
+            </button>
+          ) : (
+            <button
+              onClick={toggleLocale}
+              className="w-full text-center py-1.5 mb-2 text-content-tertiary hover:text-content-primary"
+              title={locale === "en" ? t("sidebar.switchToSpanish") : t("sidebar.switchToEnglish")}
+            >
+              <SombreroIcon className="w-5 h-5 mx-auto" />
             </button>
           )}
 
@@ -230,14 +246,14 @@ export function Sidebar({ user }: { user: User }) {
               onClick={toggleTheme}
               className="flex items-center justify-between w-full px-1 py-1.5 text-sm text-content-tertiary hover:text-content-primary rounded transition-colors mb-2"
             >
-              <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+              <span>{theme === "dark" ? t("sidebar.lightMode") : t("sidebar.darkMode")}</span>
               <span className="text-base">{theme === "dark" ? "\u2600\uFE0F" : "\uD83C\uDF19"}</span>
             </button>
           ) : (
             <button
               onClick={toggleTheme}
               className="w-full text-center py-1.5 text-base mb-2"
-              title={theme === "dark" ? "Switch to Light" : "Switch to Dark"}
+              title={theme === "dark" ? t("sidebar.switchToLight") : t("sidebar.switchToDark")}
             >
               {theme === "dark" ? "\u2600\uFE0F" : "\uD83C\uDF19"}
             </button>
@@ -252,12 +268,12 @@ export function Sidebar({ user }: { user: User }) {
               className={`text-sm text-red-500 hover:text-red-700 font-medium transition-colors ${
                 collapsed ? "w-full text-center" : "w-full text-left"
               }`}
-              title={collapsed ? "Sign Out" : undefined}
+              title={collapsed ? t("sidebar.signOut") : undefined}
             >
               {collapsed ? (
                 <span className="text-xs">Out</span>
               ) : (
-                "Sign Out"
+                t("sidebar.signOut")
               )}
             </button>
           </form>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import {
   bulkCreateInspectionUnits,
@@ -64,6 +65,7 @@ export function BulkUnitUpload({
   projectSectionId,
   onClose,
 }: BulkUnitUploadProps) {
+  const t = useTranslations();
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
   const [rows, setRows] = useState<ParsedRow[]>([]);
@@ -166,7 +168,7 @@ export function BulkUnitUpload({
 
         const ws = wb.worksheets[0];
         if (!ws || ws.rowCount < 2) {
-          setParseError("Spreadsheet is empty or has no data rows.");
+          setParseError(t("bulkUpload.emptySpreadsheet"));
           return;
         }
 
@@ -266,13 +268,13 @@ export function BulkUnitUpload({
     <div className="bg-surface-primary rounded-lg border border-edge-primary p-4 mb-4">
       <div className="flex items-center justify-between mb-3">
         <h4 className="text-sm font-semibold text-content-secondary">
-          Import Units from Spreadsheet
+          {t("bulkUpload.title")}
         </h4>
         <button
           onClick={onClose}
           className="text-sm text-content-muted hover:text-content-secondary"
         >
-          Cancel
+          {t("common.cancel")}
         </button>
       </div>
 
@@ -297,10 +299,10 @@ export function BulkUnitUpload({
               />
             </svg>
             <p className="text-sm text-content-secondary font-medium">
-              Drop a file or click to browse
+              {t("bulkUpload.dropOrBrowse")}
             </p>
             <p className="text-xs text-content-muted mt-1">
-              .xlsx, .xls, or .csv
+              {t("bulkUpload.fileTypes")}
             </p>
           </div>
           <input
@@ -316,19 +318,10 @@ export function BulkUnitUpload({
           />
           <div className="mt-3 p-3 bg-surface-secondary rounded-lg">
             <p className="text-xs font-medium text-content-tertiary mb-1">
-              Expected columns:
+              {t("bulkUpload.expectedColumns")}
             </p>
             <p className="text-xs text-content-muted">
-              <span className="font-medium text-content-secondary">Unit</span>{" "}
-              (required),{" "}
-              <span className="font-medium text-content-secondary">Building</span>{" "}
-              (optional, defaults to &quot;A&quot;),{" "}
-              <span className="font-medium text-content-secondary">Days Vacant</span>{" "}
-              (optional),{" "}
-              <span className="font-medium text-content-secondary">Rent Ready</span>{" "}
-              (Yes/No, optional),{" "}
-              <span className="font-medium text-content-secondary">Description</span>{" "}
-              (optional)
+              {t("bulkUpload.columnsDescription")}
             </p>
           </div>
           {parseError && (
@@ -350,11 +343,11 @@ export function BulkUnitUpload({
             <table className="w-full text-xs">
               <thead>
                 <tr className="bg-surface-tertiary text-content-tertiary text-left sticky top-0">
-                  <th className="px-3 py-2 font-medium">Building</th>
-                  <th className="px-3 py-2 font-medium">Unit</th>
-                  <th className="px-3 py-2 font-medium">Days Vacant</th>
-                  <th className="px-3 py-2 font-medium">Rent Ready</th>
-                  <th className="px-3 py-2 font-medium">Description</th>
+                  <th className="px-3 py-2 font-medium">{t("bulkUpload.columns.building")}</th>
+                  <th className="px-3 py-2 font-medium">{t("bulkUpload.columns.unit")}</th>
+                  <th className="px-3 py-2 font-medium">{t("bulkUpload.columns.daysVacant")}</th>
+                  <th className="px-3 py-2 font-medium">{t("bulkUpload.columns.rentReady")}</th>
+                  <th className="px-3 py-2 font-medium">{t("bulkUpload.columns.description")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -374,9 +367,9 @@ export function BulkUnitUpload({
                     </td>
                     <td className="px-3 py-1.5">
                       {row.rent_ready === true ? (
-                        <span className="text-green-600">Yes</span>
+                        <span className="text-green-600">{t("common.yes")}</span>
                       ) : row.rent_ready === false ? (
-                        <span className="text-red-600">No</span>
+                        <span className="text-red-600">{t("common.no")}</span>
                       ) : (
                         <span className="text-content-muted">—</span>
                       )}
@@ -397,7 +390,7 @@ export function BulkUnitUpload({
               }}
               className="px-3 py-1.5 text-sm text-content-tertiary hover:text-content-primary"
             >
-              Back
+              {t("common.back")}
             </button>
             <button
               onClick={handleImport}
@@ -405,8 +398,8 @@ export function BulkUnitUpload({
               className="px-4 py-1.5 bg-brand-600 text-white text-sm rounded-md hover:bg-brand-700 disabled:opacity-50 font-medium"
             >
               {importing
-                ? "Importing..."
-                : `Import ${rows.length} Unit${rows.length !== 1 ? "s" : ""}`}
+                ? t("bulkUpload.importing")
+                : t("bulkUpload.importUnits", { count: rows.length })}
             </button>
           </div>
         </div>
@@ -417,13 +410,13 @@ export function BulkUnitUpload({
         <div className="space-y-3">
           <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
             <p className="text-sm font-medium text-green-700">
-              Import complete: {result.created} created
-              {result.skipped > 0 && `, ${result.skipped} skipped (duplicates)`}
+              {t("bulkUpload.importComplete", { created: result.created })}
+              {result.skipped > 0 && `, ${t("bulkUpload.skippedDuplicates", { count: result.skipped })}`}
             </p>
           </div>
           {result.errors.length > 0 && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-xs font-medium text-red-700 mb-1">Errors:</p>
+              <p className="text-xs font-medium text-red-700 mb-1">{t("bulkUpload.errors")}</p>
               {result.errors.map((err, i) => (
                 <p key={i} className="text-xs text-red-600">
                   {err}
@@ -436,7 +429,7 @@ export function BulkUnitUpload({
               onClick={onClose}
               className="px-3 py-1.5 text-sm bg-brand-600 text-white rounded-md hover:bg-brand-700"
             >
-              Done
+              {t("common.done")}
             </button>
           </div>
         </div>

@@ -12,6 +12,7 @@ import { CaptureButton } from "@/components/capture-button";
 import { CaptureGallery } from "@/components/capture-gallery";
 import { NextUnitButton } from "@/components/next-unit-button";
 import { NextSectionButton } from "@/components/next-section-button";
+import { getTranslations } from "next-intl/server";
 import type { DDCapture } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -22,6 +23,7 @@ export default async function UnitDetailPage({
   params: Promise<{ id: string; sectionId: string; unitId: string }>;
 }) {
   const { id: projectId, sectionId: projectSectionId, unitId } = await params;
+  const t = await getTranslations();
   const supabase = await createClient();
 
   // Fetch project
@@ -87,7 +89,7 @@ export default async function UnitDetailPage({
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4 flex-wrap">
         <Link href="/dashboard" className="hover:text-brand-600 transition-colors">
-          Projects
+          {t("dashboard.projects")}
         </Link>
         <span>/</span>
         <Link href={`/projects/${projectId}?group=${groupSlug}`} className="hover:text-brand-600 transition-colors">
@@ -112,10 +114,10 @@ export default async function UnitDetailPage({
           href={`/projects/${projectId}/sections/${projectSectionId}`}
           className="inline-flex items-center gap-1.5 text-sm text-brand-600 font-medium mb-2 hover:text-brand-800 transition-colors"
         >
-          <span>&larr;</span> Back to {projectSection.section.name}
+          <span>&larr;</span> {t("dashboard.backTo", { name: projectSection.section.name })}
         </Link>
         <h1 className="text-2xl font-bold text-content-primary">
-          Building {unit.building} / Unit {unit.unit_number}
+          {t("dashboard.buildingUnit", { building: unit.building, unit: unit.unit_number })}
         </h1>
         <p className="text-sm text-content-muted mt-0.5">
           {projectSection.section.name}
@@ -152,7 +154,7 @@ export default async function UnitDetailPage({
             projectSectionId={projectSectionId}
             type="tenant"
             field="tenant_grade"
-            label="Tenant Grade"
+            label={t("dashboard.tenantGrade")}
             initialValue={unit.tenant_grade}
           />
         </div>
@@ -165,7 +167,7 @@ export default async function UnitDetailPage({
             projectSectionId={projectSectionId}
             type="unit"
             field="unit_grade"
-            label="Unit Grade"
+            label={t("dashboard.unitGrade")}
             initialValue={unit.unit_grade}
           />
         </div>
@@ -177,7 +179,7 @@ export default async function UnitDetailPage({
             projectId={projectId}
             projectSectionId={projectSectionId}
             field="cabinets"
-            label="Cabinets"
+            label={t("pdf.tableHeaders.cabinets")}
             initialValue={unit.cabinets}
           />
         </div>
@@ -189,7 +191,7 @@ export default async function UnitDetailPage({
             projectId={projectId}
             projectSectionId={projectSectionId}
             field="countertop"
-            label="Countertop"
+            label={t("pdf.tableHeaders.counter")}
             initialValue={unit.countertop}
           />
         </div>
@@ -201,7 +203,7 @@ export default async function UnitDetailPage({
             projectId={projectId}
             projectSectionId={projectSectionId}
             field="flooring"
-            label="Flooring"
+            label={t("pdf.tableHeaders.floor")}
             initialValue={unit.flooring}
           />
         </div>
@@ -213,7 +215,7 @@ export default async function UnitDetailPage({
             projectId={projectId}
             projectSectionId={projectSectionId}
             field="has_mold"
-            label="Mold"
+            label={t("pdf.tableHeaders.mold")}
             initialValue={unit.has_mold}
           />
         </div>
@@ -225,7 +227,7 @@ export default async function UnitDetailPage({
             projectId={projectId}
             projectSectionId={projectSectionId}
             field="has_wd_connect"
-            label="Washer/Dryer Connection"
+            label={t("dashboard.wdConnection")}
             initialValue={unit.has_wd_connect}
             yesIsGood={true}
           />
@@ -243,7 +245,7 @@ export default async function UnitDetailPage({
 
         {/* Photos & Media */}
         <h2 className="text-sm font-semibold text-content-quaternary uppercase tracking-wide mb-3 pt-2">
-          Photos & Media
+          {t("dashboard.photosAndMedia")}
         </h2>
         <CaptureGallery
           captures={(captures as DDCapture[]) ?? []}

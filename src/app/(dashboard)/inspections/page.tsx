@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getTranslations } from "next-intl/server";
 import { InspectionProjectCard } from "@/components/inspection-project-card";
 import { CreateInspectionButton } from "@/components/create-inspection-button";
 
@@ -6,6 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function InspectionsPage() {
   const supabase = await createClient();
+  const t = await getTranslations();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -45,9 +47,9 @@ export default async function InspectionsPage() {
       <div className="flex items-center justify-between mb-6 bg-[radial-gradient(ellipse_at_top_left,_var(--brand-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--brand-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl">
         <div>
           <h1 className="text-2xl font-bold text-white">
-            Property Inspections
+            {t("dashboard.propertyInspections")}
           </h1>
-          <p className="text-gold-300 text-sm mt-0.5">PCA Inspection Projects</p>
+          <p className="text-gold-300 text-sm mt-0.5">{t("dashboard.pcaProjects")}</p>
         </div>
         <CreateInspectionButton />
       </div>
@@ -58,7 +60,7 @@ export default async function InspectionsPage() {
           {ownedProjects && ownedProjects.length > 0 && (
             <div>
               <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">
-                My Inspections
+                {t("dashboard.myInspections")}
               </h2>
               <div className="space-y-3">
                 {ownedProjects.map((project) => (
@@ -72,7 +74,7 @@ export default async function InspectionsPage() {
           {sharedProjects && sharedProjects.length > 0 && (
             <div>
               <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">
-                Shared with Me
+                {t("dashboard.sharedWithMe")}
               </h2>
               <div className="space-y-3">
                 {sharedProjects.map((project) => (
@@ -94,10 +96,10 @@ export default async function InspectionsPage() {
             </svg>
           </div>
           <h3 className="text-lg font-semibold text-content-primary mb-2">
-            No inspections yet
+            {t("dashboard.noInspections")}
           </h3>
           <p className="text-content-quaternary mb-6">
-            Create your first inspection project to start a property walkthrough.
+            {t("dashboard.createFirstInspection")}
           </p>
           <CreateInspectionButton />
         </div>

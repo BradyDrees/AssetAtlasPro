@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { createDDProject, updateDDProject } from "@/app/actions/projects";
 import type { DDProject } from "@/lib/types";
@@ -18,6 +19,7 @@ export function DDProjectForm({ project, onClose }: DDProjectFormProps) {
   const [address, setAddress] = useState(project?.address ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations();
   const router = useRouter();
 
   const isEditing = !!project;
@@ -45,7 +47,7 @@ export function DDProjectForm({ project, onClose }: DDProjectFormProps) {
         router.push(`/projects/${projectId}`);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : t("common.somethingWentWrong"));
     } finally {
       setLoading(false);
     }
@@ -63,7 +65,7 @@ export function DDProjectForm({ project, onClose }: DDProjectFormProps) {
           htmlFor="name"
           className="block text-sm font-medium text-content-secondary mb-1"
         >
-          Project Code
+          {t("forms.projectCode")}
         </label>
         <input
           id="name"
@@ -71,11 +73,11 @@ export function DDProjectForm({ project, onClose }: DDProjectFormProps) {
           value={name}
           onChange={(e) => setName(e.target.value.toUpperCase())}
           required
-          placeholder="VERIDIAN"
+          placeholder={t("forms.placeholders.projectCode")}
           className="w-full px-3 py-2 border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 uppercase"
         />
         <p className="text-xs text-content-quaternary mt-1">
-          Short identifier used in exports
+          {t("forms.projectCodeHint")}
         </p>
       </div>
       <div>
@@ -83,7 +85,7 @@ export function DDProjectForm({ project, onClose }: DDProjectFormProps) {
           htmlFor="propertyName"
           className="block text-sm font-medium text-content-secondary mb-1"
         >
-          Property Name
+          {t("forms.propertyName")}
         </label>
         <input
           id="propertyName"
@@ -91,7 +93,7 @@ export function DDProjectForm({ project, onClose }: DDProjectFormProps) {
           value={propertyName}
           onChange={(e) => setPropertyName(e.target.value)}
           required
-          placeholder="Veridian Residences"
+          placeholder={t("forms.placeholders.propertyName")}
           className="w-full px-3 py-2 border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>
@@ -100,14 +102,14 @@ export function DDProjectForm({ project, onClose }: DDProjectFormProps) {
           htmlFor="address"
           className="block text-sm font-medium text-content-secondary mb-1"
         >
-          Address
+          {t("forms.address")}
         </label>
         <input
           id="address"
           type="text"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-          placeholder="123 Main St, Denver CO 80202"
+          placeholder={t("forms.placeholders.address")}
           className="w-full px-3 py-2 border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>
@@ -117,7 +119,7 @@ export function DDProjectForm({ project, onClose }: DDProjectFormProps) {
           onClick={onClose}
           className="px-4 py-2 text-sm text-content-tertiary hover:text-content-primary transition-colors"
         >
-          Cancel
+          {t("common.cancel")}
         </button>
         <button
           type="submit"
@@ -126,11 +128,11 @@ export function DDProjectForm({ project, onClose }: DDProjectFormProps) {
         >
           {loading
             ? isEditing
-              ? "Saving..."
-              : "Creating..."
+              ? t("forms.savingChanges")
+              : t("forms.creating")
             : isEditing
-            ? "Save Changes"
-            : "Create Due Diligence"}
+            ? t("forms.saveChanges")
+            : t("forms.createDueDiligence")}
         </button>
       </div>
     </form>

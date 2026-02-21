@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { updateProjectStatus } from "@/app/actions/projects";
 import { Modal } from "@/components/modal";
@@ -21,6 +22,7 @@ export function CompleteProjectModal({
   warnings,
   onClose,
 }: CompleteProjectModalProps) {
+  const t = useTranslations();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -37,12 +39,12 @@ export function CompleteProjectModal({
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="Mark Project Complete">
+    <Modal isOpen={true} onClose={onClose} title={t("modals.completeProject.title")}>
       <div className="space-y-4">
         {warnings.length > 0 ? (
           <>
             <p className="text-sm text-content-tertiary">
-              The following items may need attention before completing:
+              {t("modals.completeProject.warningIntro")}
             </p>
             <div className="max-h-48 overflow-y-auto space-y-1">
               {warnings.map((w, i) => (
@@ -56,12 +58,12 @@ export function CompleteProjectModal({
               ))}
             </div>
             <p className="text-xs text-content-muted">
-              You can still complete the project and address these later.
+              {t("modals.completeProject.canStillComplete")}
             </p>
           </>
         ) : (
           <p className="text-sm text-green-600 bg-green-50 px-3 py-2 rounded">
-            All sections have activity and all units have grades. This inspection looks complete!
+            {t("modals.completeProject.allComplete")}
           </p>
         )}
 
@@ -71,7 +73,7 @@ export function CompleteProjectModal({
             onClick={onClose}
             className="px-4 py-2 text-sm text-content-tertiary hover:text-content-primary"
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             onClick={handleComplete}
@@ -80,10 +82,10 @@ export function CompleteProjectModal({
                        hover:bg-brand-700 disabled:opacity-50"
           >
             {loading
-              ? "Completing..."
+              ? t("modals.completeProject.completing")
               : warnings.length > 0
-              ? "Complete Anyway"
-              : "Complete Project"}
+              ? t("modals.completeProject.completeAnyway")
+              : t("modals.completeProject.completeButton")}
           </button>
         </div>
       </div>

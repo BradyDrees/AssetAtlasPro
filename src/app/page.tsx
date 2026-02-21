@@ -2,6 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages, getTranslations } from "next-intl/server";
 import { FeatureCards } from "@/components/feature-cards";
 
 export default async function LandingPage() {
@@ -14,6 +17,11 @@ export default async function LandingPage() {
   if (user) {
     redirect("/dashboard");
   }
+
+  const t = await getTranslations();
+  const cookieStore = await cookies();
+  const locale = cookieStore.get("locale")?.value === "es" ? "es" : "en";
+  const messages = await getMessages();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-charcoal-950 via-charcoal-900 to-brand-950 relative">
@@ -46,13 +54,13 @@ export default async function LandingPage() {
             href="/login"
             className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors"
           >
-            Sign In
+            {t("auth.signIn")}
           </Link>
           <Link
             href="/signup"
             className="px-5 py-2.5 text-sm font-semibold bg-brand-600 hover:bg-brand-500 text-white rounded-lg transition-colors shadow-lg shadow-brand-900/40"
           >
-            Get Started
+            {t("auth.getStarted")}
           </Link>
         </div>
       </header>
@@ -74,19 +82,18 @@ export default async function LandingPage() {
 
           <div className="inline-flex items-center gap-2 mb-6">
             <span className="w-2.5 h-2.5 bg-gold-400 rounded-full animate-pulse" />
-            <span className="text-sm font-medium text-gold-300">Built for the field</span>
+            <span className="text-sm font-medium text-gold-300">{t("landing.builtForTheField")}</span>
           </div>
 
           <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight tracking-tight">
-            Property Inspections,{" "}
+            {t("landing.heroTitle")}{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-300">
-              Simplified
+              {t("landing.heroTitleAccent")}
             </span>
           </h2>
 
           <p className="mt-6 text-lg md:text-xl text-charcoal-300 max-w-2xl mx-auto leading-relaxed">
-            Due Diligence, Property Inspections, and Unit Turns &mdash; All in One
-            Mobile-First Platform Designed for Multifamily Real Estate Professionals.
+            {t("landing.heroSubtitle")}
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -94,13 +101,13 @@ export default async function LandingPage() {
               href="/signup"
               className="w-full sm:w-auto px-8 py-3.5 text-base font-semibold bg-brand-600 hover:bg-brand-500 text-white rounded-xl transition-colors shadow-xl shadow-brand-900/50"
             >
-              Start Free
+              {t("auth.startFree")}
             </Link>
             <Link
               href="/login"
               className="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-white border border-white/15 hover:border-white/30 hover:bg-white/5 rounded-xl transition-colors"
             >
-              Sign In
+              {t("auth.signIn")}
             </Link>
           </div>
         </div>
@@ -108,7 +115,9 @@ export default async function LandingPage() {
 
       {/* Feature cards */}
       <section className="relative z-10 px-6 md:px-12 pb-24 max-w-5xl mx-auto">
-        <FeatureCards />
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <FeatureCards />
+        </NextIntlClientProvider>
       </section>
 
       {/* Bottom CTA */}
@@ -116,16 +125,16 @@ export default async function LandingPage() {
         <div className="max-w-2xl mx-auto text-center">
           <div className="bg-gradient-to-r from-brand-900/50 to-brand-800/50 border border-brand-700/30 rounded-2xl p-8 md:p-12 backdrop-blur-sm">
             <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
-              Ready to streamline your inspections?
+              {t("landing.readyToStreamline")}
             </h3>
             <p className="text-charcoal-300 mb-8">
-              Get started in under a minute. No credit card required.
+              {t("landing.getStartedInUnderAMinute")}
             </p>
             <Link
               href="/signup"
               className="inline-block px-8 py-3.5 text-base font-semibold bg-gold-500 hover:bg-gold-400 text-charcoal-950 rounded-xl transition-colors shadow-lg"
             >
-              Create Your Account
+              {t("landing.createYourAccount")}
             </Link>
           </div>
         </div>

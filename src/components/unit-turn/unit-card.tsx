@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { UNIT_STATUS_LABELS } from "@/lib/unit-turn-constants";
 
 interface UnitCardProps {
@@ -16,6 +17,7 @@ interface UnitCardProps {
 }
 
 export function UnitCard({ unit, batchId, totalItems, assessedItems }: UnitCardProps) {
+  const t = useTranslations();
   const statusInfo = UNIT_STATUS_LABELS[unit.status] ?? UNIT_STATUS_LABELS.NOT_STARTED;
   const pct = totalItems > 0 ? Math.round((assessedItems / totalItems) * 100) : 0;
 
@@ -30,9 +32,9 @@ export function UnitCard({ unit, batchId, totalItems, assessedItems }: UnitCardP
             <span className="text-xs font-medium text-content-quaternary bg-surface-tertiary px-2 py-0.5 rounded">
               {unit.property}
             </span>
-            <h3 className="text-sm font-semibold text-content-primary">Unit {unit.unit_label}</h3>
+            <h3 className="text-sm font-semibold text-content-primary">{t("pdf.tableHeaders.unit")} {unit.unit_label}</h3>
             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusInfo.color}`}>
-              {statusInfo.label}
+              {t(`unitTurn.unitStatus.${unit.status}`)}
             </span>
           </div>
           <div className="mt-2">

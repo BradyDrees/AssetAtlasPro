@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import {
   updateInspectionUnitField,
   deleteInspectionUnit,
@@ -58,6 +59,7 @@ export function InspectionUnitDetail({
   supabaseUrl = "",
 }: InspectionUnitDetailProps) {
   const router = useFieldRouter();
+  const t = useTranslations();
   const { isFieldMode, refreshPending, bumpRevision } = useOffline();
   const { captures: localCaptures, urlMap: localUrlMap } = useLocalUnitCaptures(unit.id);
   const [saving, setSaving] = useState(false);
@@ -168,7 +170,7 @@ export function InspectionUnitDetail({
   };
 
   const handleDeleteUnit = async () => {
-    if (!confirm("Delete this unit and all its photos?")) return;
+    if (!confirm(t("unit.deleteUnitConfirm"))) return;
     setDeleting(true);
     try {
       if (isFieldMode) {
@@ -272,19 +274,19 @@ export function InspectionUnitDetail({
   return (
     <div className="space-y-6">
       {saving && (
-        <div className="text-xs text-content-muted text-right">Saving...</div>
+        <div className="text-xs text-content-muted text-right">{t("common.saving")}</div>
       )}
 
       {/* Occupancy & Walk Status */}
       <div className="bg-surface-primary rounded-lg border border-edge-primary p-4 space-y-4">
         <h3 className="text-sm font-semibold text-content-secondary">
-          Occupancy & Walk Status
+          {t("unit.occupancyWalkStatus")}
         </h3>
 
         {/* Occupancy Status */}
         <div>
           <label className="block text-xs font-medium text-content-tertiary mb-1.5">
-            Occupancy Status
+            {t("unit.occupancyStatusLabel")}
           </label>
           <div className="flex flex-wrap gap-1.5">
             {OCCUPANCY_OPTIONS.filter((opt) =>
@@ -304,7 +306,7 @@ export function InspectionUnitDetail({
                       : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                   }`}
                 >
-                  {info.label}
+                  {t(`inspection.occupancyStatus.${opt}`)}
                 </button>
               );
             })}
@@ -315,8 +317,8 @@ export function InspectionUnitDetail({
         {(occupancyStatus === "VACANT" || occupancyStatus === "DOWN") && (
           <div>
             <label className="block text-xs font-medium text-content-tertiary mb-1.5">
-              Days Vacant
-            </label>
+                          {t("unit.daysVacant")}
+          </label>
             <input
               type="number"
               value={daysVacant ?? ""}
@@ -339,8 +341,8 @@ export function InspectionUnitDetail({
         {(occupancyStatus === "VACANT" || occupancyStatus === "DOWN") && (
           <div>
             <label className="block text-xs font-medium text-content-tertiary mb-1.5">
-              Rent Ready
-            </label>
+                          {t("unit.rentReady")}
+          </label>
             <div className="flex gap-2">
               {(["Yes", "No"] as const).map((val) => {
                 const boolVal = val === "Yes";
@@ -394,7 +396,7 @@ export function InspectionUnitDetail({
                         : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
                     }`}
                   >
-                    {val}
+                    {val === "Yes" ? t("common.yes") : t("common.no")}
                   </button>
                 );
               })}
@@ -410,7 +412,7 @@ export function InspectionUnitDetail({
           {/* Notes */}
           <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
             <label className="block text-sm font-medium text-content-secondary mb-1">
-              Unit Notes
+              {t("unit.unitNotes")}
             </label>
             <textarea
               value={notes}
@@ -421,7 +423,7 @@ export function InspectionUnitDetail({
                 }
               }}
               rows={3}
-              placeholder="Notes about this unit..."
+              placeholder={t("notes.unitObservationsPlaceholder")}
               className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
             />
           </div>
@@ -429,10 +431,10 @@ export function InspectionUnitDetail({
           {/* Photos */}
           <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
             <label className="block text-sm font-medium text-content-secondary mb-2">
-              Photos ({captures.length + localCaptures.length})
+              {t("unit.photosCount", { count: captures.length + localCaptures.length })}
               {localCaptures.length > 0 && (
                 <span className="ml-1.5 text-xs text-amber-600 font-normal">
-                  ({localCaptures.length} pending sync)
+                  {t("unit.pendingSyncCount", { count: localCaptures.length })}
                 </span>
               )}
             </label>
@@ -445,7 +447,7 @@ export function InspectionUnitDetail({
                     <div key={capture.id} className="relative group">
                       <img
                         src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/dd-captures/${capture.image_path}`}
-                        alt={capture.caption || "Unit photo"}
+                        alt={capture.caption || t("unit.unitPhoto")}
                         className="w-full h-28 object-cover rounded-md"
                       />
                       <button
@@ -466,12 +468,12 @@ export function InspectionUnitDetail({
                         {url && (
                           <img
                             src={url}
-                            alt="Pending photo"
+                            alt={t("unit.pendingPhoto")}
                             className="w-full h-28 object-cover rounded-md border-2 border-dashed border-amber-400 opacity-80"
                           />
                         )}
                         <span className="absolute bottom-1 left-1 text-[10px] bg-amber-500 text-white px-1 py-0.5 rounded font-medium">
-                          Pending
+                          {t("inspection.pending")}
                         </span>
                       </div>
                     );
@@ -492,11 +494,11 @@ export function InspectionUnitDetail({
                   className="hidden"
                   disabled={uploading}
                 />
-                {uploading ? "Uploading..." : "+ Add Photo"}
+                {uploading ? t("inspection.uploading") : t("inspection.addPhoto")}
               </label>
               {savedToast && (
                 <span className="text-xs text-brand-600 font-medium animate-pulse">
-                  Saved offline
+                  {t("inspection.savedOffline")}
                 </span>
               )}
             </div>
@@ -509,7 +511,7 @@ export function InspectionUnitDetail({
         <>
           {provisioning ? (
             <div className="bg-surface-primary rounded-lg border border-edge-primary p-6 text-center">
-              <p className="text-sm text-content-muted">Setting up checklist...</p>
+              <p className="text-sm text-content-muted">{t("unit.settingUpChecklist")}</p>
             </div>
           ) : turnCategoryData.length > 0 ? (
             <div className="space-y-5">
@@ -531,7 +533,7 @@ export function InspectionUnitDetail({
               {/* Paint section */}
               {turnCategoryData.filter((cd) => cd.category.category_type === "paint").length > 0 && (
                 <div>
-                  <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">Paint</h2>
+                  <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">{t("unitTurn.categories.paint")}</h2>
                   <div className="space-y-5">
                     {turnCategoryData
                       .filter((cd) => cd.category.category_type === "paint")
@@ -555,17 +557,17 @@ export function InspectionUnitDetail({
               <svg className="w-8 h-8 text-amber-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
-              <p className="text-sm text-amber-700 font-medium">Checklist queued for sync</p>
+              <p className="text-sm text-amber-700 font-medium">{t("unit.checklistQueuedForSync")}</p>
               <p className="text-xs text-content-muted mt-1">
-                Connect to the internet to load checklist items.
+                {t("unit.connectToInternet")}
               </p>
             </div>
           ) : (
             <div className="bg-surface-primary rounded-lg border border-edge-primary p-6 text-center">
               {provisionError ? (
-                <p className="text-sm text-red-500">Error: {provisionError}</p>
+                <p className="text-sm text-red-500">{t("common.error")}: {provisionError}</p>
               ) : (
-                <p className="text-sm text-content-muted">Setting up checklist...</p>
+                <p className="text-sm text-content-muted">{t("unit.settingUpChecklist")}</p>
               )}
             </div>
           )}
@@ -586,7 +588,7 @@ export function InspectionUnitDetail({
           disabled={deleting}
           className="text-sm text-red-500 hover:text-red-700 transition-colors disabled:opacity-50"
         >
-          {deleting ? "Deleting..." : "Delete Unit"}
+          {deleting ? t("inspection.deleting") : t("unit.deleteUnit")}
         </button>
       </div>
     </div>
@@ -604,6 +606,7 @@ function AddUnitInline({
   currentUserId?: string;
 }) {
   const router = useFieldRouter();
+  const t = useTranslations();
   const { isFieldMode, refreshPending } = useOffline();
   const [open, setOpen] = useState(false);
   const [building, setBuilding] = useState("");
@@ -643,7 +646,7 @@ function AddUnitInline({
         );
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create unit");
+      setError(err instanceof Error ? err.message : t("forms.validation.failedToCreate"));
       setLoading(false);
     }
   };
@@ -654,7 +657,7 @@ function AddUnitInline({
         onClick={() => setOpen(true)}
         className="w-full py-3 bg-surface-primary border-2 border-dashed border-brand-300 text-brand-600 text-sm font-medium rounded-lg hover:bg-brand-50 hover:border-brand-400 transition-colors"
       >
-        + Add Unit
+        {t("unit.addUnit")}
       </button>
     );
   }
@@ -665,12 +668,12 @@ function AddUnitInline({
       className="bg-surface-primary rounded-lg border border-brand-200 p-4"
     >
       <h3 className="text-sm font-semibold text-content-secondary mb-3">
-        Add Unit
+        {t("forms.addUnit")}
       </h3>
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1">
           <label className="block text-xs font-medium text-content-quaternary mb-1">
-            Building
+                        {t("forms.building")}
           </label>
           <input
             type="text"
@@ -683,7 +686,7 @@ function AddUnitInline({
         </div>
         <div className="flex-1">
           <label className="block text-xs font-medium text-content-quaternary mb-1">
-            Unit #
+                        {t("forms.unitNumber")}
           </label>
           <input
             type="text"
@@ -712,14 +715,14 @@ function AddUnitInline({
           }}
           className="px-3 py-1.5 text-sm text-content-quaternary hover:text-content-secondary"
         >
-          Cancel
+          {t("common.cancel")}
         </button>
         <button
           type="submit"
           disabled={!building.trim() || !unitNumber.trim() || loading}
           className="px-4 py-1.5 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 disabled:opacity-50 transition-colors"
         >
-          {loading ? "Creating..." : "Create & Open"}
+          {loading ? t("forms.creating") : t("forms.createAndOpen")}
         </button>
       </div>
     </form>

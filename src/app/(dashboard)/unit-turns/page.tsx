@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getTranslations } from "next-intl/server";
 import { CreateBatchButton } from "@/components/unit-turn/create-batch-button";
 import { BatchCard } from "@/components/unit-turn/batch-card";
 
@@ -6,6 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function UnitTurnsPage() {
   const supabase = await createClient();
+  const t = await getTranslations();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -43,8 +45,8 @@ export default async function UnitTurnsPage() {
       {/* Page header */}
       <div className="flex items-center justify-between mb-6 bg-[radial-gradient(ellipse_at_top_left,_var(--brand-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--brand-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl">
         <div>
-          <h1 className="text-2xl font-bold text-white">Unit Turns</h1>
-          <p className="text-gold-300 text-sm mt-0.5">Turn Batch Management</p>
+          <h1 className="text-2xl font-bold text-white">{t("nav.unitTurns")}</h1>
+          <p className="text-gold-300 text-sm mt-0.5">{t("dashboard.turnBatchManagement")}</p>
         </div>
         <CreateBatchButton />
       </div>
@@ -55,7 +57,7 @@ export default async function UnitTurnsPage() {
           {openBatches.length > 0 && (
             <div>
               <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">
-                Open Batches
+                {t("dashboard.openBatches")}
               </h2>
               <div className="space-y-3">
                 {openBatches.map((batch: any) => (
@@ -73,7 +75,7 @@ export default async function UnitTurnsPage() {
           {closedBatches.length > 0 && (
             <div>
               <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">
-                Closed Batches
+                {t("dashboard.closedBatches")}
               </h2>
               <div className="space-y-3">
                 {closedBatches.map((batch: any) => (
@@ -95,10 +97,10 @@ export default async function UnitTurnsPage() {
             </svg>
           </div>
           <h3 className="text-lg font-semibold text-content-primary mb-2">
-            No turn batches yet
+            {t("dashboard.noTurnBatches")}
           </h3>
           <p className="text-content-quaternary mb-6">
-            Create your first turn batch to start tracking unit turns.
+            {t("dashboard.createFirstBatch")}
           </p>
           <CreateBatchButton />
         </div>

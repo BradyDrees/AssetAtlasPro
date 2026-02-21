@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { updateUnitField } from "@/app/actions/units";
 
 interface UnitNotesProps {
@@ -16,6 +17,7 @@ export function UnitNotes({
   projectSectionId,
   initialNotes,
 }: UnitNotesProps) {
+  const t = useTranslations();
   const [notes, setNotes] = useState(initialNotes);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -55,20 +57,20 @@ export function UnitNotes({
   return (
     <div>
       <label className="block text-sm font-medium text-content-secondary mb-2">
-        Notes
+        {t("notes.notes")}
         {saving && (
           <span className="ml-2 text-xs font-normal text-content-muted">
-            Saving...
+            {t("notes.saving")}
           </span>
         )}
         {saved && !saving && (
-          <span className="ml-2 text-xs font-normal text-green-500">Saved</span>
+          <span className="ml-2 text-xs font-normal text-green-500">{t("notes.saved")}</span>
         )}
       </label>
       <textarea
         value={notes}
         onChange={handleChange}
-        placeholder="Unit observations, issues, etc..."
+        placeholder={t("notes.unitObservationsPlaceholder")}
         rows={3}
         className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm
                    focus:outline-none focus:ring-2 focus:ring-brand-500 resize-y"

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { updateInspectionProjectStatus } from "@/app/actions/inspections";
 import {
@@ -19,6 +20,16 @@ import type {
   RiskFlag,
   ProjectStatus,
 } from "@/lib/inspection-types";
+
+const riskFlagKey = (flag: string) => {
+  const map: Record<string, string> = {
+    life_safety: "lifeSafety",
+    water_intrusion: "waterIntrusion",
+    electrical_hazard: "electricalHazard",
+    structural: "structural",
+  };
+  return map[flag] ?? flag;
+};
 
 interface InspectionReviewContentProps {
   project: InspectionProject;
@@ -50,6 +61,7 @@ export function InspectionReviewContent({
   allCaptures,
   metrics,
 }: InspectionReviewContentProps) {
+  const t = useTranslations();
   const router = useRouter();
   const [status, setStatus] = useState(project.status);
   const [updatingStatus, setUpdatingStatus] = useState(false);
@@ -75,14 +87,14 @@ export function InspectionReviewContent({
   };
 
   const fmtCurrency = (val: number) =>
-    "$" + val.toLocaleString("en-US");
+    "$" + val.toLocaleString();
 
   return (
     <div className="space-y-6">
       {/* Status Control */}
       <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
         <h3 className="text-sm font-semibold text-content-secondary mb-2">
-          Project Status
+          {t("inspection.projectStatus")}
         </h3>
         <div className="flex gap-2">
           {(["DRAFT", "IN_PROGRESS", "COMPLETE"] as const).map((s) => (
@@ -100,7 +112,7 @@ export function InspectionReviewContent({
                   : "bg-surface-primary text-content-tertiary border-edge-secondary hover:bg-surface-secondary"
               } disabled:opacity-50`}
             >
-              {s === "IN_PROGRESS" ? "In Progress" : s === "COMPLETE" ? "Complete" : "Draft"}
+              {s === "IN_PROGRESS" ? t("common.inProgress") : s === "COMPLETE" ? t("common.complete") : t("common.draft")}
             </button>
           ))}
         </div>
@@ -109,21 +121,21 @@ export function InspectionReviewContent({
       {/* Summary Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <MetricCard
-          label="Total Findings"
+          label={t("review.totalFindings")}
           value={metrics.totalFindings.toString()}
         />
         <MetricCard
-          label="Immediate (P1)"
+          label={t("review.immediateP1")}
           value={metrics.immediateFindings.toString()}
           color="text-red-700"
         />
         <MetricCard
-          label="Urgent (P2)"
+          label={t("review.urgentP2")}
           value={metrics.urgentFindings.toString()}
           color="text-orange-700"
         />
         <MetricCard
-          label="Short-term (P3)"
+          label={t("review.shortTermP3")}
           value={metrics.shortTermFindings.toString()}
           color="text-yellow-700"
         />
@@ -132,23 +144,23 @@ export function InspectionReviewContent({
       {/* Exposure Summary */}
       <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
         <h3 className="text-sm font-semibold text-content-secondary mb-3">
-          Repair Exposure Summary
+          {t("review.repairExposureSummary")}
         </h3>
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <p className="text-xs text-content-quaternary">Immediate Repairs</p>
+            <p className="text-xs text-content-quaternary">{t("review.immediateRepairs")}</p>
             <p className="text-lg font-bold text-red-700">
               {fmtCurrency(metrics.immediateExposure)}
             </p>
           </div>
           <div>
-            <p className="text-xs text-content-quaternary">Short-Term (0–6 months)</p>
+            <p className="text-xs text-content-quaternary">{t("review.shortTermMonths")}</p>
             <p className="text-lg font-bold text-orange-700">
               {fmtCurrency(metrics.shortTermExposure)}
             </p>
           </div>
           <div>
-            <p className="text-xs text-content-quaternary">Total Identified</p>
+            <p className="text-xs text-content-quaternary">{t("review.totalIdentified")}</p>
             <p className="text-lg font-bold text-content-primary">
               {fmtCurrency(metrics.totalExposure)}
             </p>
@@ -160,7 +172,7 @@ export function InspectionReviewContent({
       {Object.keys(metrics.riskFlagCounts).length > 0 && (
         <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
           <h3 className="text-sm font-semibold text-content-secondary mb-3">
-            Risk Flags
+            {t("review.riskFlags")}
           </h3>
           <div className="space-y-2">
             {Object.entries(metrics.riskFlagCounts).map(([flag, count]) => {
@@ -191,7 +203,7 @@ export function InspectionReviewContent({
                     >
                       ▶
                     </span>
-                    {info?.label ?? flag}: {count}
+                    {t(`inspection.riskFlags.${riskFlagKey(flag)}`)}: {count}
                   </button>
                   {isExpanded && flagFindings.length > 0 && (
                     <div className="mt-2 ml-2 space-y-1.5 border-l-2 border-edge-primary pl-3">
@@ -215,11 +227,11 @@ export function InspectionReviewContent({
                               </span>
                             ) : (
                               <span className="text-xs px-1.5 py-0.5 rounded-full font-medium bg-surface-tertiary text-content-quaternary">
-                                Good
+                                {t("inspection.good.label")}
                               </span>
                             )}
                             <span className="text-content-primary font-medium">
-                              {f.title || "Untitled"}
+                              {f.title || t("common.untitled")}
                             </span>
                             {f.location && (
                               <span className="text-xs text-content-muted">
@@ -246,7 +258,7 @@ export function InspectionReviewContent({
       {/* Activity by Section — expandable */}
       <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
         <h3 className="text-sm font-semibold text-content-secondary mb-3">
-          Activity by Section
+          {t("inspection.activityBySection")}
         </h3>
         {groupedSections.map((group) => (
           <div key={group.group_name} className="mb-4 last:mb-0">
@@ -301,12 +313,12 @@ export function InspectionReviewContent({
                         </span>
                         {section.is_na && (
                           <span className="text-xs bg-surface-tertiary text-content-muted px-1.5 py-0.5 rounded-full">
-                            N/A
+                            {t("common.na")}
                           </span>
                         )}
-                        {conditionLabel && (
+                        {section.condition_rating && (
                           <span className="text-xs bg-brand-100 text-brand-700 px-1.5 py-0.5 rounded-full">
-                            {conditionLabel}
+                            {t(`inspection.condition.${section.condition_rating}`)}
                           </span>
                         )}
                         {rulBucket && (
@@ -324,16 +336,16 @@ export function InspectionReviewContent({
                       <div className="flex items-center gap-3 text-xs">
                         {sectionUnits.length > 0 && (
                           <span className="text-green-600">
-                            {sectionUnits.length} units
+                            {sectionUnits.length} {sectionUnits.length === 1 ? t("pdf.tableHeaders.unit") : t("pdf.tableHeaders.unit") + "s"}
                           </span>
                         )}
                         {sectionFindings.length > 0 && (
                           <span className="text-orange-600">
-                            {sectionFindings.length} findings
+                            {sectionFindings.length} {sectionFindings.length === 1 ? t("pdf.tableHeaders.finding") : t("pdf.tableHeaders.findings")}
                           </span>
                         )}
                         <span className="text-brand-600">
-                          {sectionCaptures.length} photos
+                          {sectionCaptures.length} {t("pdf.tableHeaders.photos").toLowerCase()}
                         </span>
                       </div>
                     </button>
@@ -357,11 +369,11 @@ export function InspectionReviewContent({
                                 </span>
                               ) : (
                                 <span className="text-xs px-1.5 py-0.5 rounded-full font-medium bg-surface-tertiary text-content-quaternary">
-                                  Good
+                                  {t("inspection.good.label")}
                                 </span>
                               )}
                               <span className="text-content-primary">
-                                {f.title || "Untitled"}
+                                {f.title || t("common.untitled")}
                               </span>
                               {f.location && (
                                 <span className="text-xs text-content-muted">
@@ -379,7 +391,7 @@ export function InspectionReviewContent({
                         {sectionUnits.length > 0 && (
                           <div className="pt-1">
                             <span className="text-xs font-medium text-content-quaternary">
-                              Units:
+                              {t("inspection.sectionGroups.units")}:
                             </span>
                             <div className="flex flex-wrap gap-1 mt-1">
                               {sectionUnits.slice(0, 20).map((u) => (
@@ -392,7 +404,7 @@ export function InspectionReviewContent({
                               ))}
                               {sectionUnits.length > 20 && (
                                 <span className="text-xs text-content-muted">
-                                  +{sectionUnits.length - 20} more
+                                  {t("common.more", { count: sectionUnits.length - 20 })}
                                 </span>
                               )}
                             </div>
@@ -412,28 +424,28 @@ export function InspectionReviewContent({
       {isBankReady && (
         <div className="bg-amber-50 rounded-lg border border-amber-200 p-4">
           <h3 className="text-sm font-semibold text-amber-800 mb-2">
-            Bank-Ready Validation
+            {t("review.bankReadyValidation")}
           </h3>
           <BankReadyCheck
-            label="All findings have priority assigned"
+            label={t("review.allFindingsHavePriority")}
             ok={findings.every((f) => f.priority !== null)}
           />
           <BankReadyCheck
-            label="Priority 1-3 findings have exposure"
+            label={t("review.p1to3HaveExposure")}
             ok={findings
               .filter((f) => f.priority && f.priority <= 3)
               .every((f) => f.exposure_bucket !== null)}
           />
           <BankReadyCheck
-            label="All sections have condition rating"
+            label={t("review.allSectionsHaveCondition")}
             ok={metrics.sectionsWithoutRating === 0}
           />
           <BankReadyCheck
-            label="All sections have RUL"
+            label={t("review.allSectionsHaveRul")}
             ok={metrics.sectionsWithoutRul === 0}
           />
           <BankReadyCheck
-            label="Priority 1-2 findings have photos"
+            label={t("review.p1to2HavePhotos")}
             ok={findings
               .filter((f) => f.priority && f.priority <= 2)
               .every((f) =>
@@ -447,8 +459,8 @@ export function InspectionReviewContent({
       <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
         <div className="flex items-center justify-between">
           <div className="text-sm text-content-tertiary">
-            {metrics.totalUnits} units &bull; {metrics.totalFindings} findings
-            &bull; {metrics.totalCaptures} captures
+            {metrics.totalUnits} {t("inspection.sectionGroups.units").toLowerCase()} &bull; {metrics.totalFindings} {t("pdf.tableHeaders.findings").toLowerCase()}
+            &bull; {metrics.totalCaptures} {t("pdf.tableHeaders.photos").toLowerCase()}
           </div>
         </div>
       </div>
@@ -456,11 +468,7 @@ export function InspectionReviewContent({
       {/* Disclaimer */}
       {isBankReady && (
         <div className="text-xs text-content-muted italic leading-relaxed">
-          Repair Exposure Estimate — Visual Assessment Only. This report
-          provides preliminary cost estimates based on visual observations
-          during a limited property inspection. Actual repair costs may vary
-          significantly. This is not a substitute for a full Property
-          Condition Assessment (PCA) per ASTM E2018.
+          {t("pdf.disclaimer")}
         </div>
       )}
     </div>

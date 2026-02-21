@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { createInspectionFinding } from "@/app/actions/inspection-findings";
 import { toggleInspectionSectionNA } from "@/app/actions/inspections";
 import { useFieldRouter } from "@/lib/offline/use-field-router";
@@ -124,6 +125,7 @@ export function InspectionGroupChecklist({
   role = "owner",
   currentUserId,
 }: InspectionGroupChecklistProps) {
+  const t = useTranslations();
   const router = useFieldRouter();
   const { isFieldMode, refreshPending, bumpRevision } = useOffline();
 
@@ -476,7 +478,7 @@ export function InspectionGroupChecklist({
                   <span
                     className={`text-xs px-2.5 py-0.5 rounded-full font-semibold border ${healthColor}`}
                   >
-                    {isNa ? "N/A" : `${health.score.toFixed(1)} — ${health.label}`}
+                    {isNa ? t("common.na") : `${health.score.toFixed(1)} — ${t(`inspection.condition.${Math.max(1, Math.min(5, Math.round(health.score)))}`)}`}
                   </span>
                 )}
                 {/* N/A toggle */}
@@ -572,7 +574,7 @@ export function InspectionGroupChecklist({
                         <div className="flex items-center gap-2 flex-shrink-0">
                           {isCreating ? (
                             <span className="text-xs text-content-muted">
-                              Creating...
+                              {t("common.loading")}
                             </span>
                           ) : hasFindings ? (
                             <>
@@ -585,17 +587,17 @@ export function InspectionGroupChecklist({
                                 <span
                                   className={`text-xs px-2 py-0.5 rounded-full font-medium ${priorityInfo.bgColor}`}
                                 >
-                                  {priorityInfo.label}
+                                  {t(`inspection.priorityLabels.${worstPriority}.label`)}
                                 </span>
                               ) : inspectionType === "bank_ready" ? (
                                 <span
                                   className={`text-xs px-2 py-0.5 rounded-full font-medium ${GOOD_LABEL.bgColor}`}
                                 >
-                                  Good
+                                  {t("inspection.good.label")}
                                 </span>
                               ) : (
                                 <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-yellow-100 text-yellow-700">
-                                  Unrated
+                                  {t("inspection.unrated")}
                                 </span>
                               )}
                               {allItemCaptures.length > 0 && (
@@ -613,7 +615,7 @@ export function InspectionGroupChecklist({
                             </>
                           ) : (
                             <span className="text-xs text-gold-600 font-medium">
-                              Tap to inspect
+                              {t("inspection.tapToInspect")}
                             </span>
                           )}
                         </div>
@@ -688,24 +690,24 @@ export function InspectionGroupChecklist({
                           <span className="text-sm text-content-primary text-left italic">
                             {finding.title}
                           </span>
-                          <span className="text-xs text-gold-600">Custom</span>
+                          <span className="text-xs text-gold-600">{t("inspection.customFinding")}</span>
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
                           {priorityInfo ? (
                             <span
                               className={`text-xs px-2 py-0.5 rounded-full font-medium ${priorityInfo.bgColor}`}
                             >
-                              {priorityInfo.label}
+                              {t(`inspection.priorityLabels.${currentPriority}.label`)}
                             </span>
                           ) : inspectionType === "bank_ready" ? (
                             <span
                               className={`text-xs px-2 py-0.5 rounded-full font-medium ${GOOD_LABEL.bgColor}`}
                             >
-                              Good
+                              {t("inspection.good.label")}
                             </span>
                           ) : (
                             <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-yellow-100 text-yellow-700">
-                              Unrated
+                              {t("inspection.unrated")}
                             </span>
                           )}
                           <span
@@ -759,7 +761,7 @@ export function InspectionGroupChecklist({
                             return next;
                           })
                         }
-                        placeholder="Custom finding title..."
+                        placeholder={t("checklist.customFindingPlaceholder")}
                         className="flex-1 px-3 py-1.5 text-sm border border-edge-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                         autoFocus
                         onKeyDown={(e) => {
@@ -791,7 +793,7 @@ export function InspectionGroupChecklist({
                         }
                         className="px-3 py-1.5 text-sm bg-brand-600 text-white rounded-lg hover:bg-brand-700 disabled:opacity-50 font-medium"
                       >
-                        {addingCustom.has(projectSection.id) ? "..." : "Add"}
+                        {addingCustom.has(projectSection.id) ? "..." : t("common.add")}
                       </button>
                       <button
                         onClick={() => {
@@ -808,7 +810,7 @@ export function InspectionGroupChecklist({
                         }}
                         className="px-2 py-1.5 text-sm text-content-quaternary hover:text-content-secondary"
                       >
-                        Cancel
+                        {t("common.cancel")}
                       </button>
                     </div>
                   ) : (
@@ -820,7 +822,7 @@ export function InspectionGroupChecklist({
                       }
                       className="text-sm text-brand-600 hover:text-brand-800 font-medium transition-colors"
                     >
-                      + Add Custom Finding
+                      {t("checklist.addCustomFinding")}
                     </button>
                   )}
                 </div>
@@ -850,6 +852,7 @@ function HealthReport({
   sections: SubsectionHealth[];
   overallScore: number;
 }) {
+  const t = useTranslations();
   if (sections.length === 0) return null;
 
   const overallRounded = Math.max(1, Math.min(5, Math.round(overallScore)));
@@ -876,7 +879,7 @@ function HealthReport({
       <div className="flex items-center gap-2 mb-5">
         <div className="w-1.5 h-5 bg-gold-500 rounded-full" />
         <h3 className="text-sm font-bold text-gold-400 uppercase tracking-wider">
-          System Health Report
+          {t("inspection.systemHealthReport")}
         </h3>
       </div>
 
@@ -890,7 +893,7 @@ function HealthReport({
               <>
                 <div className="flex-1 h-2.5 bg-charcoal-700 rounded-full overflow-hidden" />
                 <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold min-w-[100px] text-center bg-charcoal-600 text-charcoal-300">
-                  N/A
+                  {t("common.na")}
                 </span>
               </>
             ) : (
@@ -908,7 +911,7 @@ function HealthReport({
                     section.score
                   )}`}
                 >
-                  {section.score.toFixed(1)} — {section.label}
+                  {section.score.toFixed(1)} — {t(`inspection.condition.${Math.max(1, Math.min(5, Math.round(section.score)))}`)}
                 </span>
               </>
             )}
@@ -920,14 +923,14 @@ function HealthReport({
       <div className="mt-5 pt-4 border-t border-charcoal-700">
         <div className="flex items-center justify-between">
           <span className="text-sm font-bold text-gold-300 uppercase tracking-wide">
-            Overall Score
+            {t("inspection.overallScore")}
           </span>
           <span
             className={`text-sm px-4 py-1.5 rounded-full font-bold shadow-sm ${getBadgeColor(
               overallScore
             )}`}
           >
-            {overallScore.toFixed(1)} — {overallLabel}
+            {overallScore.toFixed(1)} — {t(`inspection.condition.${Math.max(1, Math.min(5, Math.round(overallScore)))}`)}
           </span>
         </div>
       </div>

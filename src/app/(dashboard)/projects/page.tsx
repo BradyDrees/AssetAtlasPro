@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getTranslations } from "next-intl/server";
 import { DDProjectCard } from "@/components/dd-project-card";
 import { CreateDDProjectButton } from "@/components/create-dd-project-button";
 
@@ -6,6 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function ProjectsPage() {
   const supabase = await createClient();
+  const t = await getTranslations();
 
   const { data: projects } = await supabase
     .from("dd_projects")
@@ -18,9 +20,9 @@ export default async function ProjectsPage() {
       <div className="flex items-center justify-between mb-6 bg-[radial-gradient(ellipse_at_top_left,_var(--brand-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--brand-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl">
         <div>
           <h1 className="text-2xl font-bold text-white">
-            Due Diligence
+            {t("nav.dueDiligence")}
           </h1>
-          <p className="text-gold-300 text-sm mt-0.5 capitalize">Manage Your Due Diligence Projects</p>
+          <p className="text-gold-300 text-sm mt-0.5 capitalize">{t("dashboard.manageDDProjects")}</p>
         </div>
         <CreateDDProjectButton />
       </div>
@@ -39,10 +41,10 @@ export default async function ProjectsPage() {
             </svg>
           </div>
           <h3 className="text-lg font-semibold text-content-primary mb-2">
-            No due diligence projects yet
+            {t("dashboard.noDDProjects")}
           </h3>
           <p className="text-content-quaternary mb-6">
-            Create your first due diligence project to get started.
+            {t("dashboard.createFirstDD")}
           </p>
           <CreateDDProjectButton />
         </div>

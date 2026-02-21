@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/components/modal";
 import {
@@ -23,6 +24,7 @@ export function ShareInspectionModal({
   isOpen,
   onClose,
 }: ShareInspectionModalProps) {
+  const t = useTranslations();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -53,14 +55,14 @@ export function ShareInspectionModal({
 
     try {
       await shareInspection(projectId, email);
-      setSuccess(`Shared with ${email.trim()}`);
+      setSuccess(t("modals.share.sharedWith", { email: email.trim() }));
       setEmail("");
       // Refresh shares list
       const updated = await getProjectShares(projectId);
       setShares(updated);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to share");
+      setError(err instanceof Error ? err.message : t("modals.share.failedToShare"));
     } finally {
       setSharing(false);
     }
@@ -74,19 +76,19 @@ export function ShareInspectionModal({
       setShares((prev) => prev.filter((s) => s.id !== shareId));
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to remove");
+      setError(err instanceof Error ? err.message : t("modals.share.failedToRemove"));
     } finally {
       setRemovingId(null);
     }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`Share ${projectCode}`}>
+    <Modal isOpen={isOpen} onClose={onClose} title={t("modals.share.title", { code: projectCode })}>
       {/* Email input form */}
       <form onSubmit={handleShare} className="space-y-3">
         <div>
           <label className="block text-sm font-medium text-content-secondary mb-1">
-            Invite by email
+            {t("modals.share.inviteByEmail")}
           </label>
           <div className="flex gap-2">
             <input
@@ -97,7 +99,7 @@ export function ShareInspectionModal({
                 setError(null);
                 setSuccess(null);
               }}
-              placeholder="colleague@company.com"
+              placeholder={t("modals.share.emailPlaceholder")}
               className="flex-1 px-3 py-2 border border-edge-secondary rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
               disabled={sharing}
             />
@@ -106,7 +108,7 @@ export function ShareInspectionModal({
               disabled={sharing || !email.trim()}
               className="px-4 py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 disabled:opacity-50 transition-colors"
             >
-              {sharing ? "Sharing..." : "Share"}
+              {sharing ? t("modals.share.sharing") : t("modals.share.shareButton")}
             </button>
           </div>
         </div>
@@ -126,14 +128,14 @@ export function ShareInspectionModal({
       {/* Current collaborators */}
       <div className="mt-5">
         <h3 className="text-sm font-semibold text-content-secondary mb-2">
-          Collaborators
+          {t("modals.share.collaborators")}
         </h3>
 
         {loadingShares ? (
-          <p className="text-sm text-content-muted">Loading...</p>
+          <p className="text-sm text-content-muted">{t("modals.share.loadingCollaborators")}</p>
         ) : shares.length === 0 ? (
           <p className="text-sm text-content-muted">
-            No collaborators yet. Share this inspection to let others contribute.
+            {t("modals.share.noCollaborators")}
           </p>
         ) : (
           <div className="space-y-2">
@@ -154,14 +156,14 @@ export function ShareInspectionModal({
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0 ml-2">
                   <span className="text-xs text-content-muted font-medium">
-                    Collaborator
+                    {t("modals.share.collaboratorRole")}
                   </span>
                   <button
                     onClick={() => handleRemove(share.id)}
                     disabled={removingId === share.id}
                     className="text-xs text-red-500 hover:text-red-700 font-medium transition-colors disabled:opacity-50"
                   >
-                    {removingId === share.id ? "..." : "Remove"}
+                    {removingId === share.id ? t("modals.share.removing") : t("modals.share.removeButton")}
                   </button>
                 </div>
               </div>
@@ -172,8 +174,7 @@ export function ShareInspectionModal({
 
       {/* Info note */}
       <p className="mt-4 text-xs text-content-muted">
-        Collaborators can add findings and photos but cannot delete other
-        people&apos;s inputs or change project settings.
+        {t("modals.share.permissionsNote")}
       </p>
     </Modal>
   );

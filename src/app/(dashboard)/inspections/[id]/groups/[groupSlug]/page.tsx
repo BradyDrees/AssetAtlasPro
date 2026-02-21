@@ -8,6 +8,7 @@ import {
   INSPECTION_GROUP_ORDER,
 } from "@/lib/inspection-sections";
 import { INSPECTION_TYPE_LABELS } from "@/lib/inspection-constants";
+import { getTranslations } from "next-intl/server";
 import type {
   InspectionProjectSectionWithDetails,
   InspectionChecklistItem,
@@ -23,6 +24,7 @@ export default async function InspectionGroupPage({
   params: Promise<{ id: string; groupSlug: string }>;
 }) {
   const { id: projectId, groupSlug } = await params;
+  const t = await getTranslations();
 
   // Resolve slug → group name
   const groupName = INSPECTION_SLUG_TO_GROUP[groupSlug];
@@ -129,7 +131,7 @@ export default async function InspectionGroupPage({
           href="/inspections"
           className="hover:text-brand-600 transition-colors"
         >
-          Inspections
+          {t("nav.inspections")}
         </Link>
         <span>/</span>
         <Link
@@ -148,7 +150,7 @@ export default async function InspectionGroupPage({
           <Link
             href={`/inspections/${projectId}?group=${groupSlug}`}
             className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors"
-            title="Back to project"
+            title={t("dashboard.backToProject")}
           >
             <svg
               className="w-4 h-4"
@@ -163,19 +165,17 @@ export default async function InspectionGroupPage({
                 d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"
               />
             </svg>
-            Project
+            {t("common.project")}
           </Link>
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-bold text-content-primary">{groupName}</h1>
               <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gold-100 text-gold-800">
-                {INSPECTION_TYPE_LABELS[project.inspection_type]}
+                {t(`inspection.inspectionTypes.${project.inspection_type === "bank_ready" ? "bankReady" : "internal"}`)}
               </span>
             </div>
             <p className="text-sm text-content-quaternary mt-0.5">
-              {groupSections.length} sub-section
-              {groupSections.length !== 1 ? "s" : ""} &middot; Tap items to
-              inspect
+              {t("dashboard.subSections", { count: groupSections.length })} · {t("inspection.tapToInspect")}
             </p>
           </div>
         </div>
@@ -195,7 +195,7 @@ export default async function InspectionGroupPage({
             href={`/inspections/${projectId}/groups/${nextGroupSlug}`}
             className="px-4 py-2 bg-brand-600 text-white text-sm rounded-md hover:bg-brand-700 transition-colors"
           >
-            Next: {nextGroupName} →
+            {t("dashboard.nextLabel", { name: nextGroupName })}
           </Link>
         </div>
       )}

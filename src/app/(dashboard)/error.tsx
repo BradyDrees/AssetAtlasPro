@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 export default function Error({
   error,
   reset,
@@ -7,6 +9,7 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations();
   return (
     <div className="flex flex-col items-center justify-center h-64 text-center">
       <div className="w-14 h-14 bg-red-100 rounded-2xl mb-4 flex items-center justify-center">
@@ -15,14 +18,14 @@ export default function Error({
         </svg>
       </div>
       <h2 className="text-xl font-bold text-content-primary mb-1">
-        Something went wrong
+        {t("common.somethingWentWrong")}
       </h2>
       <p className="text-content-quaternary mb-5 text-sm">{error.message}</p>
       <button
         onClick={reset}
         className="px-5 py-2.5 bg-gradient-to-r from-brand-600 to-brand-700 text-white rounded-lg hover:from-brand-700 hover:to-brand-800 transition-all font-medium shadow-md shadow-brand-500/20"
       >
-        Try again
+        {t("common.retry")}
       </button>
     </div>
   );

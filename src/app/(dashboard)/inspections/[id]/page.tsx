@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { InspectionHeaderMenu } from "@/components/inspection-header-menu";
@@ -23,12 +24,6 @@ const statusStyles: Record<string, string> = {
   COMPLETE: "bg-green-100 text-green-700",
 };
 
-const statusLabels: Record<string, string> = {
-  DRAFT: "Draft",
-  IN_PROGRESS: "In Progress",
-  COMPLETE: "Complete",
-};
-
 export default async function InspectionDetailPage({
   params,
   searchParams,
@@ -39,6 +34,7 @@ export default async function InspectionDetailPage({
   const { id } = await params;
   const { group: scrollToGroup } = await searchParams;
   const supabase = await createClient();
+  const t = await getTranslations();
 
   // Phase 1: Fetch user, project, and sections in parallel
   const [
@@ -161,7 +157,7 @@ export default async function InspectionDetailPage({
             href="/inspections"
             className="hover:text-white transition-colors"
           >
-            Inspections
+            {t("nav.inspections")}
           </Link>
           <span className="text-brand-500">/</span>
           <span className="text-white font-medium">{project.name}</span>
@@ -172,7 +168,7 @@ export default async function InspectionDetailPage({
             <Link
               href="/inspections"
               className="p-1.5 text-charcoal-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-              title="Back to all inspections"
+              title={t("dashboard.backToInspections")}
             >
               <svg
                 className="w-5 h-5"
@@ -196,10 +192,10 @@ export default async function InspectionDetailPage({
                 <span
                   className={`text-xs px-2 py-0.5 rounded-full font-medium bg-white/20 text-white`}
                 >
-                  {statusLabels[project.status]}
+                  {t(`review.statusLabels.${project.status}`)}
                 </span>
                 <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gold-500/30 text-gold-200">
-                  {INSPECTION_TYPE_LABELS[project.inspection_type]}
+                  {t(`inspection.inspectionTypes.${project.inspection_type === "bank_ready" ? "bankReady" : "internal"}`)}
                 </span>
               </div>
               <p className="text-brand-200 mt-1">{project.property_name}</p>
@@ -213,7 +209,7 @@ export default async function InspectionDetailPage({
               href={`/inspections/${id}/review`}
               className="px-4 py-2 bg-white/20 backdrop-blur-sm text-white text-sm font-medium rounded-lg hover:bg-white/30 border border-white/30 transition-all"
             >
-              Review &amp; Export
+              {t("dashboard.reviewAndExport")}
             </Link>
             <InspectionHeaderMenu project={project} role={role} />
           </div>

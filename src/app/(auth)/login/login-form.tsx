@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useTranslations } from "next-intl";
 
 const REMEMBER_KEY = "asset-atlas-remember-me";
 
@@ -14,6 +15,7 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+  const t = useTranslations();
 
   // Restore "remember me" preference + saved email on mount
   useEffect(() => {
@@ -72,7 +74,7 @@ export function LoginForm() {
           htmlFor="email"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
-          Email
+          {t("auth.email")}
         </label>
         <input
           id="email"
@@ -88,7 +90,7 @@ export function LoginForm() {
           htmlFor="password"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
-          Password
+          {t("auth.password")}
         </label>
         <input
           id="password"
@@ -119,7 +121,7 @@ export function LoginForm() {
           onClick={() => setRememberMe((prev) => !prev)}
           className="text-sm text-gray-600 cursor-pointer select-none"
         >
-          Keep me logged in
+          {t("auth.keepLoggedIn")}
         </label>
       </div>
       <button
@@ -127,7 +129,7 @@ export function LoginForm() {
         disabled={loading}
         className="w-full py-2.5 px-4 bg-gradient-to-r from-brand-600 to-brand-700 text-white rounded-lg hover:from-brand-700 hover:to-brand-800 disabled:opacity-50 transition-all font-medium shadow-md shadow-brand-500/20"
       >
-        {loading ? "Signing in..." : "Sign In"}
+        {loading ? t("auth.signingIn") : t("auth.signIn")}
       </button>
     </form>
   );

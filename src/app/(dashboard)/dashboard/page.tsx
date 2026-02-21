@@ -1,11 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
+  const t = await getTranslations();
 
   // Fetch counts for each module
   const [ddResult, inspResult, utResult] = await Promise.all([
@@ -24,11 +26,11 @@ export default async function DashboardPage() {
 
   const modules = [
     {
-      title: "Due Diligence",
-      description: "Full-property acquisition inspections",
+      title: t("nav.dueDiligence"),
+      description: t("dashboard.ddDescription"),
       href: "/projects",
       count: ddCount,
-      countLabel: "Projects",
+      countLabel: t("dashboard.projects"),
       gradient: "from-charcoal-900 to-brand-800",
       iconColor: "text-brand-400",
       icon: (
@@ -41,11 +43,11 @@ export default async function DashboardPage() {
       ),
     },
     {
-      title: "Inspections",
-      description: "Property quality and condition tracking",
+      title: t("nav.inspections"),
+      description: t("dashboard.inspDescription"),
       href: "/inspections",
       count: inspCount,
-      countLabel: "Projects",
+      countLabel: t("dashboard.projects"),
       gradient: "from-brand-900 to-brand-700",
       iconColor: "text-gold-400",
       icon: (
@@ -58,11 +60,11 @@ export default async function DashboardPage() {
       ),
     },
     {
-      title: "Unit Turns",
-      description: "Make-ready workflows and turn packages",
+      title: t("nav.unitTurns"),
+      description: t("dashboard.utDescription"),
       href: "/unit-turns",
       count: utCount,
-      countLabel: "Batches",
+      countLabel: t("dashboard.batches"),
       gradient: "from-brand-800 to-charcoal-900",
       iconColor: "text-brand-300",
       icon: (
@@ -88,7 +90,7 @@ export default async function DashboardPage() {
           className="h-36 md:h-48 w-auto logo-fade -my-6"
         />
         <p className="text-charcoal-300 text-sm mt-2 text-center">
-          Select a module to get started.
+          {t("dashboard.selectModule")}
         </p>
       </div>
 
@@ -137,7 +139,7 @@ export default async function DashboardPage() {
             {/* Card footer */}
             <div className="px-5 py-3 border-t border-edge-tertiary bg-surface-secondary/50">
               <span className="text-sm font-medium text-brand-600 group-hover:text-brand-500 transition-colors inline-flex items-center gap-1">
-                Open {m.title}{" "}
+                {t("dashboard.openModule", { title: m.title })}{" "}
                 <span aria-hidden="true" className="group-hover:translate-x-0.5 transition-transform">&rarr;</span>
               </span>
             </div>

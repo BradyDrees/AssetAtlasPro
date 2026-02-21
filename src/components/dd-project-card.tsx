@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { useAppLocale } from "@/components/locale-provider";
 import type { DDProject } from "@/lib/types";
 
 interface DDProjectCardProps {
@@ -19,15 +21,11 @@ const borderColors = {
   COMPLETE: "border-l-brand-600",
 };
 
-const statusLabels = {
-  DRAFT: "Draft",
-  IN_PROGRESS: "In Progress",
-  COMPLETE: "Complete",
-};
-
 export function DDProjectCard({ project }: DDProjectCardProps) {
+  const t = useTranslations();
+  const { locale } = useAppLocale();
   const formattedDate = new Date(project.updated_at).toLocaleDateString(
-    "en-US",
+    locale === "es" ? "es" : "en-US",
     { month: "short", day: "numeric", year: "numeric" }
   );
 
@@ -43,7 +41,7 @@ export function DDProjectCard({ project }: DDProjectCardProps) {
             <span
               className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusStyles[project.status]}`}
             >
-              {statusLabels[project.status]}
+              {t(`review.statusLabels.${project.status}`)}
             </span>
           </div>
           <p className="text-sm text-content-tertiary mt-0.5">

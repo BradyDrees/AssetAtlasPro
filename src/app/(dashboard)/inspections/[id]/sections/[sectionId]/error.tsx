@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import { useOffline } from "@/components/offline-provider";
 import { InspectionSectionOffline } from "@/components/inspection-section-offline";
@@ -18,6 +19,7 @@ export default function SectionError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations();
   const { isFieldMode } = useOffline();
   const pathname = usePathname();
 
@@ -57,16 +59,16 @@ export default function SectionError({
         />
       </svg>
       <h2 className="text-lg font-semibold text-content-primary mb-2">
-        Something went wrong
+        {t("common.somethingWentWrong")}
       </h2>
       <p className="text-sm text-content-quaternary mb-4">
-        {error?.message || "An unexpected error occurred while loading this page."}
+        {error?.message || t("dashboard.unexpectedError")}
       </p>
       <button
         onClick={reset}
         className="px-4 py-2 bg-brand-600 text-white text-sm rounded-md hover:bg-brand-700 transition-colors"
       >
-        Try Again
+        {t("common.retry")}
       </button>
     </div>
   );

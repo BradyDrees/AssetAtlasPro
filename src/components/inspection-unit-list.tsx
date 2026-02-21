@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import {
   createInspectionUnit,
@@ -40,6 +41,7 @@ export function InspectionUnitList({
   currentUserId,
 }: InspectionUnitListProps) {
   const router = useFieldRouter();
+  const t = useTranslations();
   const { isFieldMode, refreshPending } = useOffline();
   const localUnits = useLocalUnits(projectSectionId);
   const [showAdd, setShowAdd] = useState(false);
@@ -140,20 +142,20 @@ export function InspectionUnitList({
     <div>
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-semibold text-content-secondary uppercase tracking-wide">
-          Units ({mergedUnits.length})
+          {t("unit.unitsCount", { count: mergedUnits.length })}
         </h3>
         <div className="flex gap-2">
           <button
             onClick={() => { setShowBulk(true); setShowAdd(false); }}
             className="px-3 py-1.5 text-sm font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-md transition-colors border border-brand-200"
           >
-            Import
+            {t("bulkUpload.importButton")}
           </button>
           <button
             onClick={() => { setShowAdd(true); setShowBulk(false); }}
             className="px-3 py-1.5 bg-brand-600 text-white text-sm rounded-md hover:bg-brand-700 transition-colors"
           >
-            + Add Unit
+            {t("forms.addUnit")}
           </button>
         </div>
       </div>
@@ -173,7 +175,7 @@ export function InspectionUnitList({
           <div className="flex gap-3">
             <div className="flex-1">
               <label className="block text-xs font-medium text-content-tertiary mb-1">
-                Building
+                              {t("forms.building")}
               </label>
               <input
                 type="text"
@@ -186,7 +188,7 @@ export function InspectionUnitList({
             </div>
             <div className="flex-1">
               <label className="block text-xs font-medium text-content-tertiary mb-1">
-                Unit Number
+                              {t("forms.unitNumber")}
               </label>
               <input
                 type="text"
@@ -214,14 +216,14 @@ export function InspectionUnitList({
               }}
               className="px-3 py-1.5 text-sm text-content-tertiary hover:text-content-primary"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               onClick={handleAddUnit}
               disabled={!building.trim() || !unitNumber.trim() || adding}
               className="px-3 py-1.5 bg-brand-600 text-white text-sm rounded-md hover:bg-brand-700 disabled:opacity-50"
             >
-              {adding ? "Adding..." : "Add Unit"}
+              {adding ? t("unit.adding") : t("forms.addUnit")}
             </button>
           </div>
         </div>
@@ -265,7 +267,7 @@ export function InspectionUnitList({
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                         </svg>
-                        Pending sync
+                        {t("unit.pendingSync")}
                       </span>
                     )}
                     {/* Occupancy status badge */}
@@ -275,7 +277,7 @@ export function InspectionUnitList({
                           OCCUPANCY_STATUS_LABELS[unit.occupancy_status]?.color ?? "bg-surface-tertiary text-content-tertiary"
                         }`}
                       >
-                        {OCCUPANCY_STATUS_LABELS[unit.occupancy_status]?.label ?? unit.occupancy_status}
+                        {t(`inspection.occupancyStatus.${unit.occupancy_status}`)}
                       </span>
                     )}
                     {/* Walk status badge (show for vacant/down units) */}
@@ -286,29 +288,29 @@ export function InspectionUnitList({
                             WALK_STATUS_LABELS[unit.walk_status]?.color ?? "bg-surface-tertiary text-content-tertiary"
                           }`}
                         >
-                          {WALK_STATUS_LABELS[unit.walk_status]?.label ?? unit.walk_status}
+                          {t(`inspection.walkStatus.${unit.walk_status}`)}
                         </span>
                       )}
                     {conditionInfo && (
                       <span
                         className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${conditionInfo.color}`}
                       >
-                        {conditionInfo.label}
+                        {t(`inspection.overallCondition.${unit.overall_condition}`)}
                       </span>
                     )}
                     {unit.has_leak_evidence && (
                       <span className="text-xs bg-brand-100 text-brand-700 px-1.5 py-0.5 rounded-full font-medium">
-                        Leak
-                      </span>
+                      {t("unit.leak")}
+                    </span>
                     )}
                     {unit.has_mold_indicators && (
                       <span className="text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full font-medium">
-                        Mold
-                      </span>
+                      {t("unit.mold")}
+                    </span>
                     )}
                     {photoCount > 0 && (
                       <span className="text-xs bg-brand-100 text-brand-700 px-1.5 py-0.5 rounded-full font-medium">
-                        {photoCount} photo{photoCount !== 1 ? "s" : ""}
+                        {t("common.photos", { count: photoCount })}
                       </span>
                     )}
                   </div>
@@ -334,7 +336,7 @@ export function InspectionUnitList({
         </div>
       ) : (
         <div className="bg-surface-secondary rounded-lg border border-edge-primary p-6 text-center text-sm text-content-quaternary">
-          No units added yet. Click &quot;+ Add Unit&quot; to start.
+          {t("unit.noUnitsYet")}
         </div>
       )}
     </div>

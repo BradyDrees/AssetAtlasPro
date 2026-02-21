@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { useAppLocale } from "@/components/locale-provider";
 import type { InspectionProject } from "@/lib/inspection-types";
-import { INSPECTION_TYPE_LABELS } from "@/lib/inspection-constants";
 
 interface InspectionProjectCardProps {
   project: InspectionProject;
@@ -21,15 +22,13 @@ const borderColors = {
   COMPLETE: "border-l-brand-600",
 };
 
-const statusLabels = {
-  DRAFT: "Draft",
-  IN_PROGRESS: "In Progress",
-  COMPLETE: "Complete",
-};
 
 export function InspectionProjectCard({ project, isShared }: InspectionProjectCardProps) {
+  const t = useTranslations();
+  const { locale } = useAppLocale();
+
   const formattedDate = new Date(project.updated_at).toLocaleDateString(
-    "en-US",
+    locale === "es" ? "es" : "en-US",
     { month: "short", day: "numeric", year: "numeric" }
   );
 
@@ -45,14 +44,14 @@ export function InspectionProjectCard({ project, isShared }: InspectionProjectCa
             <span
               className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusStyles[project.status]}`}
             >
-              {statusLabels[project.status]}
+              {t(`review.statusLabels.${project.status}`)}
             </span>
             <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gold-100 text-gold-800">
-              {INSPECTION_TYPE_LABELS[project.inspection_type]}
+              {t(`inspection.inspectionTypes.${project.inspection_type === "bank_ready" ? "bankReady" : "internal"}`)}
             </span>
             {isShared && (
               <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-blue-100 text-blue-700">
-                Shared
+                {t("inspection.shared")}
               </span>
             )}
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { uploadCapture } from "@/app/actions/captures";
 
 interface CaptureButtonProps {
@@ -18,6 +19,7 @@ export function CaptureButton({
   unitId,
   sectionItemId,
 }: CaptureButtonProps) {
+  const t = useTranslations();
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -44,7 +46,7 @@ export function CaptureButton({
     } catch (err) {
       console.error("Upload failed:", err);
       const msg =
-        err instanceof Error ? err.message : "Upload failed. Try again.";
+        err instanceof Error ? err.message : t("captures.uploadFailed");
       setError(msg);
       // Auto-dismiss after 4s
       setTimeout(() => setError(null), 4000);
@@ -78,7 +80,7 @@ export function CaptureButton({
                    rounded-full shadow-lg hover:bg-brand-700 active:bg-brand-800
                    disabled:opacity-50 flex items-center justify-center
                    transition-colors text-2xl"
-        aria-label={uploading ? "Uploading..." : "Capture photo or video"}
+        aria-label={uploading ? t("captures.uploading") : t("captures.capturePhoto")}
       >
         {uploading ? (
           <span className="animate-spin rounded-full h-6 w-6 border-b-2 border-white" />

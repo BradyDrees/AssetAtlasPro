@@ -1,0 +1,830 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "error": "Error",
+    "back": "Back",
+    "done": "Done",
+    "add": "Add",
+    "remove": "Remove",
+    "retry": "Retry",
+    "yes": "Yes",
+    "no": "No",
+    "na": "N/A",
+    "close": "Close",
+    "confirm": "Confirm",
+    "search": "Search",
+    "create": "Create",
+    "edit": "Edit",
+    "untitled": "Untitled",
+    "more": "+{count} more",
+    "units": "{count} unit | {count} units",
+    "findings": "{count} finding | {count} findings",
+    "photos": "{count} photo | {count} photos",
+    "captures": "{count} captures",
+    "status": "Status",
+    "project": "Project",
+    "somethingWentWrong": "Something went wrong",
+    "draft": "Draft",
+    "inProgress": "In Progress",
+    "complete": "Complete",
+    "generated": "Generated",
+    "showLess": "Show less",
+    "learnMore": "Learn more",
+    "pdfDocument": "PDF Document",
+    "imageUnavailable": "Image unavailable",
+    "photoOnly": "Photo only",
+    "unknownItem": "Unknown Item",
+    "next": "Next",
+    "nextSection": "Next Section"
+  },
+  "nav": {
+    "home": "Home",
+    "dueDiligence": "Due Diligence",
+    "inspections": "Inspections",
+    "unitTurns": "Unit Turns"
+  },
+  "sidebar": {
+    "fieldMode": "Field Mode",
+    "goOnline": "Go Online",
+    "syncNow": "Sync Now",
+    "syncing": "Syncing...",
+    "retryFailed": "Retry Failed ({count})",
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode",
+    "switchToLight": "Switch to Light",
+    "switchToDark": "Switch to Dark",
+    "signOut": "Sign Out",
+    "out": "Out",
+    "offline": "Offline",
+    "switchToSpanish": "Espanol",
+    "switchToEnglish": "English",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "assetAtlasPro": "Asset Atlas Pro",
+    "tagline": "See Risk. Plan Capital."
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "signUp": "Create Account",
+    "creatingAccount": "Creating account...",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full Name",
+    "keepLoggedIn": "Keep me logged in",
+    "mustBe6Chars": "Must be at least 6 characters",
+    "accountCreated": "Account created!",
+    "checkEmail": "Check your email for a confirmation link, then sign in.",
+    "goToSignIn": "Go to Sign In",
+    "getStarted": "Get Started",
+    "startFree": "Start Free",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "signUpLink": "Sign up",
+    "signInLink": "Sign in"
+  },
+  "landing": {
+    "builtForTheField": "Built for the field",
+    "heroTitle": "Property Inspections,",
+    "heroTitleAccent": "Simplified",
+    "heroSubtitle": "Due Diligence, Property Inspections, and Unit Turns — All in One Mobile-First Platform Designed for Multifamily Real Estate Professionals.",
+    "readyToStreamline": "Ready to streamline your inspections?",
+    "getStartedInUnderAMinute": "Get started in under a minute. No credit card required.",
+    "createYourAccount": "Create Your Account",
+    "features": {
+      "dueDiligence": {
+        "title": "Due Diligence",
+        "summary": "Full-property acquisition inspections with photos and documentation.",
+        "detail": "Walk every building from roof to foundation. Photograph site conditions, document mechanical systems, exterior, common areas, amenities, and unit interiors — all organized into structured section groups. Export a complete acquisition-ready report with photos when you're done."
+      },
+      "inspections": {
+        "title": "Inspections",
+        "summary": "Ensure your asset is maintained to the highest standard.",
+        "detail": "Inspect every unit across bedrooms, bathrooms, kitchens, flooring, appliances, cabinets, and countertops. Flag items for attention, track conditions, and attach photos with notes — giving your team a clear picture of property quality and what each unit needs."
+      },
+      "unitTurns": {
+        "title": "Unit Turns",
+        "summary": "Make-ready checklists with exportable turn packages.",
+        "detail": "Manage make-ready workflows unit by unit. Run through room-by-room checklists, scope paint and flooring, assess appliance condition, and capture before/after photos. Export completed turn packages as PDF or Excel so maintenance crews, vendors, and ownership all stay on the same page."
+      }
+    }
+  },
+  "inspection": {
+    "priority": "Priority",
+    "good": {
+      "label": "Good",
+      "timeline": "No issue found"
+    },
+    "goodNoIssue": "Good / No Issue",
+    "unrated": "Unrated",
+    "exposure": {
+      "500": "$500",
+      "1000": "$1,000",
+      "2000": "$2,000",
+      "3000": "$3,000",
+      "custom": "Custom",
+      "enterAmount": "Enter amount"
+    },
+    "exposureEstimate": "Exposure Estimate",
+    "riskFlags": {
+      "label": "Risk Flags",
+      "selectAllThatApply": "(select all that apply)",
+      "lifeSafety": "Life Safety",
+      "waterIntrusion": "Water Intrusion",
+      "electricalHazard": "Electrical Hazard",
+      "structural": "Structural"
+    },
+    "condition": {
+      "1": "Poor",
+      "2": "Fair",
+      "3": "Average",
+      "4": "Good",
+      "5": "Excellent"
+    },
+    "conditionRating": "Condition Rating",
+    "remainingUsefulLife": "Remaining Useful Life",
+    "rul": {
+      "1_3_months": "1-3 months",
+      "3_6_months": "3-6 months",
+      "6_12_months": "6-12 months",
+      "1_3_years": "1-3 years",
+      "3_5_years": "3-5 years"
+    },
+    "unitGrades": {
+      "A": "Excellent",
+      "B": "Good",
+      "C": "Average",
+      "D": "Below Average",
+      "E": "Poor",
+      "F": "Replace / Critical"
+    },
+    "overallCondition": {
+      "1": "Critical",
+      "2": "Below Average",
+      "3": "Average",
+      "4": "Good",
+      "5": "Excellent"
+    },
+    "yesNo": {
+      "yes": "Yes",
+      "no": "No"
+    },
+    "inspectionTypes": {
+      "internal": "Internal",
+      "bankReady": "Customer (PCA Lite)"
+    },
+    "archetypes": {
+      "garden": {
+        "label": "Garden-Style",
+        "unitLabel": "Units"
+      },
+      "interior": {
+        "label": "Interior Corridor",
+        "unitLabel": "Units"
+      },
+      "sfr": {
+        "label": "Single-Family Rental",
+        "unitLabel": "Homes"
+      }
+    },
+    "occupancyStatus": {
+      "VACANT": "Vacant",
+      "OCCUPIED": "Occupied",
+      "MODEL": "Model",
+      "DOWN": "Down",
+      "UNKNOWN": "Unknown"
+    },
+    "walkStatus": {
+      "NOT_STARTED": "Not Started",
+      "IN_PROGRESS": "In Progress",
+      "COMPLETE": "Complete",
+      "NO_ACCESS": "No Access"
+    },
+    "turnStage": {
+      "MAKE_READY": "Make Ready",
+      "RENOVATION": "Renovation",
+      "READY": "Ready",
+      "HOLD": "Hold"
+    },
+    "bdBaOptions": [
+      "0/1",
+      "1/1",
+      "1/1.5",
+      "2/1",
+      "2/1.5",
+      "2/2",
+      "2/2.5",
+      "3/1",
+      "3/1.5",
+      "3/2",
+      "3/2.5",
+      "3/3"
+    ],
+    "applianceOptions": {
+      "black": "Black",
+      "white": "White",
+      "stainlessSteel": "Stainless Steel"
+    },
+    "sectionGroups": {
+      "siteExterior": "Site & Exterior",
+      "structure": "Structure",
+      "lifeSafety": "Life Safety",
+      "mep": "Mechanical / Electrical / Plumbing",
+      "commonAreas": "Common Areas",
+      "units": "Units"
+    },
+    "ddGroups": {
+      "siteExterior": "Site & Exterior",
+      "mechanical": "Mechanical & Infrastructure",
+      "commonAreas": "Common Areas",
+      "amenities": "Amenities",
+      "units": "Units"
+    },
+    "bankReadyMode": {
+      "description": "Bank-Ready mode requires priority, exposure, RUL, and condition ratings on all sections and findings.",
+      "sfrNote": "SFR mode labels unit sections as \"Homes\" instead of \"Units\"."
+    },
+    "projectStatus": "Project Status",
+    "findingTitle": "Untitled Finding",
+    "location": "Location",
+    "locationPlaceholder": "e.g. South of Building 24, Kitchen, North parking lot...",
+    "findingNotesPlaceholder": "Describe the finding...",
+    "savedOffline": "Saved offline",
+    "pending": "Pending",
+    "pendingPhoto": "Pending photo",
+    "findingPhoto": "Finding photo",
+    "addPhoto": "+ Add Photo",
+    "uploading": "Uploading...",
+    "addFinding": "+ Add Finding",
+    "deleteFinding": "Delete Finding",
+    "deleting": "Deleting...",
+    "deleteConfirm": "Delete this finding and all its photos?",
+    "activityBySection": "Activity by Section",
+    "newInspection": "+ New Inspection",
+    "newInspectionTitle": "New Inspection",
+    "shared": "Shared",
+    "tapToInspect": "Tap to inspect",
+    "customFinding": "Custom",
+    "systemHealthReport": "System Health Report",
+    "overallScore": "Overall Score",
+    "priorityLabels": {
+      "1": { "label": "Immediate", "timeline": "Fix now — safety/code" },
+      "2": { "label": "Urgent", "timeline": "0–3 months" },
+      "3": { "label": "Short-term", "timeline": "3–6 months" },
+      "4": { "label": "Planned", "timeline": "6–12 months" },
+      "5": { "label": "Monitor", "timeline": "12+ months" }
+    }
+  },
+  "unit": {
+    "tenantGrades": {
+      "A": {
+        "label": "Looks like Model"
+      },
+      "B": {
+        "label": "Easy Renewal"
+      },
+      "C": {
+        "label": "Renew but questionable"
+      },
+      "D": {
+        "label": "Non-renew but livable"
+      },
+      "E": {
+        "label": "Needs serious correction"
+      },
+      "F": {
+        "label": "Emergency Removal"
+      }
+    },
+    "unitGrades": {
+      "A": {
+        "label": "$750 or less",
+        "desc": "Only small items"
+      },
+      "B": {
+        "label": "$1,500 or less",
+        "desc": "Paint + small items"
+      },
+      "C": {
+        "label": "$3,000 or less",
+        "desc": "Appliance + paint + small things"
+      },
+      "D": {
+        "label": "$5,500 or less",
+        "desc": "Cabinets, appliance + paint + small things"
+      },
+      "E": {
+        "label": "$7,500 or less",
+        "desc": "Flooring, appliance, paint, small things"
+      },
+      "F": {
+        "label": "$7,500+",
+        "desc": "Full renovation required"
+      },
+      "NK": {
+        "label": "No Key",
+        "desc": "Could not access unit"
+      }
+    },
+    "itemGrades": {
+      "A": "Excellent",
+      "B": "Good",
+      "C": "Average",
+      "D": "Below Average",
+      "E": "Poor",
+      "F": "Replace"
+    },
+    "cabinetOptions": {
+      "Keep": "Keep as-is",
+      "Refurbish": "Needs refurbishing",
+      "Replace": "Full replacement"
+    },
+    "yesNo": {
+      "yes": "Yes",
+      "no": "No"
+    },
+    "appliances": {
+      "black": "Black",
+      "white": "White",
+      "stainlessSteel": "Stainless Steel"
+    },
+    "mold": "Mold",
+    "deleteConfirm": "Delete B{building} - {unitNumber}? All photos will be removed.",
+    "deleteUnit": "Delete unit",
+    "gradeLabel": "Grade {grade}",
+    "unitsCount": "Units ({count})",
+    "adding": "Adding...",
+    "pendingSync": "Pending sync",
+    "leak": "Leak",
+    "noUnitsYet": "No units added yet. Click '+ Add Unit' to start.",
+    "occupancyWalkStatus": "Occupancy & Walk Status",
+    "occupancyStatusLabel": "Occupancy Status",
+    "daysVacant": "Days Vacant",
+    "daysVacantPlaceholder": "e.g. 30",
+    "rentReady": "Rent Ready",
+    "unitNotes": "Unit Notes",
+    "unitNotesPlaceholder": "Notes about this unit...",
+    "photosCount": "Photos ({count})",
+    "pendingSyncCount": "{count} pending sync",
+    "unitPhoto": "Unit photo",
+    "pendingPhoto": "Pending photo",
+    "deleteUnitConfirm": "Delete this unit and all its photos?",
+    "settingUpChecklist": "Setting up checklist...",
+    "checklistQueuedForSync": "Checklist queued for sync",
+    "connectToInternet": "Connect to the internet to load checklist items.",
+    "addUnit": "Add Unit",
+    "paint": "Paint"
+  },
+  "unitTurn": {
+    "batchStatus": {
+      "OPEN": "Open",
+      "CLOSED": "Closed"
+    },
+    "unitStatus": {
+      "NOT_STARTED": "Not Started",
+      "IN_PROGRESS": "In Progress",
+      "COMPLETE": "Complete"
+    },
+    "unitStatusLabel": "Unit Status",
+    "itemStatus": {
+      "good": "Good",
+      "repair": "Repair",
+      "replace": "Replace"
+    },
+    "paintScope": {
+      "touchUp": "Touch Up",
+      "fullPaint": "Full Paint"
+    },
+    "cleaningStatus": {
+      "good": "Done"
+    },
+    "categoryNote": "Category note",
+    "addCategoryNote": "+ Category Note",
+    "categoryNotePlaceholder": "Category-level note...",
+    "addNote": "+ Add Note",
+    "notePlaceholder": "Note...",
+    "photoVideo": "Photo/Video",
+    "addPhotoVideo": "+ Photo/Video",
+    "done": "Done",
+    "unknownItem": "Unknown Item",
+    "photoOnly": "Photo only",
+    "uploading": "Uploading...",
+    "takePhotoVideo": "Photo/Video",
+    "categories": {
+      "kitchen": "Kitchen",
+      "bathroom": "Bathroom",
+      "electricalFixtures": "Electrical & Fixtures",
+      "doorsHardwareWindows": "Doors, Hardware & Windows",
+      "flooringFinish": "Flooring & Finish",
+      "mechanicalSafety": "Mechanical & Safety",
+      "laundry": "Laundry",
+      "paint": "Paint",
+      "cleaning": "Cleaning"
+    }
+  },
+  "export": {
+    "title": "Export",
+    "formats": {
+      "full": {
+        "label": "Full Report",
+        "description": "Complete report with tables & photos"
+      },
+      "summary": {
+        "label": "Summary Only",
+        "description": "Metrics & unit matrix, no photos"
+      },
+      "photos": {
+        "label": "Photo Book",
+        "description": "All photos organized by section"
+      },
+      "zip": {
+        "label": "Download Photos",
+        "description": "ZIP archive with renamed files"
+      },
+      "excel": {
+        "label": "Excel Spreadsheet",
+        "description": "Unit grading + section items (.xlsx)"
+      }
+    },
+    "fullReport": {
+      "label": "Full Report",
+      "description": "Complete report with tables & photos",
+      "inspectionDescription": "Complete report with findings, photos & metrics"
+    },
+    "summary": {
+      "label": "Summary Only",
+      "description": "Metrics & unit matrix, no photos",
+      "inspectionDescription": "Findings matrix & unit grades, no photos"
+    },
+    "photoBook": {
+      "label": "Photo Book",
+      "description": "All photos organized by section"
+    },
+    "downloadPhotos": {
+      "label": "Download Photos",
+      "description": "ZIP archive with renamed files",
+      "inspectionDescription": "ZIP archive with organized folders"
+    },
+    "excel": {
+      "label": "Excel Spreadsheet",
+      "description": "Unit grading + section items (.xlsx)",
+      "inspectionDescription": "Findings, unit grading & sections (.xlsx)"
+    },
+    "unitReport": {
+      "label": "Unit Report",
+      "description": "Printable checklist with photos"
+    },
+    "unitPhotos": {
+      "label": "Unit Photos",
+      "description": "ZIP archive with labeled photos"
+    },
+    "batchExcel": {
+      "label": "Excel Spreadsheet",
+      "description": "All units with item details (.xlsx)"
+    },
+    "allPhotos": {
+      "label": "All Photos",
+      "description": "ZIP archive for entire batch"
+    },
+    "exportTimedOut": "Export timed out. Try again with fewer photos.",
+    "timedOut": "Export timed out. Try Summary or Excel for large projects.",
+    "failed": "Export failed. Try again.",
+    "timeoutError": "Export timed out. Try Summary or Excel for large projects.",
+    "exportFailed": "Export failed. Try again.",
+    "exportFailedWithStatus": "Export failed ({status})"
+  },
+  "modals": {
+    "deleteProject": {
+      "title": "Delete Project",
+      "body": "This will permanently delete all sections, units, captures, and photos.",
+      "cannotUndo": "This cannot be undone.",
+      "typeToConfirm": "Type {code} to confirm",
+      "deleting": "Deleting...",
+      "deleteButton": "Delete Project",
+      "failed": "Failed to delete project. Please try again."
+    },
+    "deleteInspection": {
+      "title": "Delete Inspection",
+      "body": "This will permanently delete all sections, findings, units, captures, and photos.",
+      "cannotUndo": "This cannot be undone.",
+      "typeToConfirm": "Type {code} to confirm",
+      "deleting": "Deleting...",
+      "deleteButton": "Delete Inspection",
+      "failed": "Failed to delete inspection. Please try again."
+    },
+    "completeProject": {
+      "title": "Mark Project Complete",
+      "warningIntro": "The following items may need attention before completing:",
+      "completeAnyway": "Complete Anyway",
+      "completing": "Completing...",
+      "canStillComplete": "You can still complete the project and address these later.",
+      "allComplete": "All sections have activity and all units have grades. This inspection looks complete!",
+      "completeButton": "Complete Project"
+    },
+    "share": {
+      "title": "Share {code}",
+      "inviteByEmail": "Invite by email",
+      "emailPlaceholder": "colleague@company.com",
+      "sharing": "Sharing...",
+      "shareButton": "Share",
+      "sharedWith": "Shared with {email}",
+      "failedToShare": "Failed to share",
+      "collaborators": "Collaborators",
+      "loadingCollaborators": "Loading...",
+      "noCollaborators": "No collaborators yet. Share this inspection to let others contribute.",
+      "collaboratorRole": "Collaborator",
+      "removing": "...",
+      "removeButton": "Remove",
+      "failedToRemove": "Failed to remove",
+      "permissionsNote": "Collaborators can add findings and photos but cannot delete other people's inputs or change project settings."
+    }
+  },
+  "forms": {
+    "projectCode": "Project Code",
+    "projectCodeHint": "Short identifier used in exports",
+    "propertyName": "Property Name",
+    "address": "Address",
+    "inspectionType": "Inspection Type",
+    "assetType": "Asset Type",
+    "building": "Building",
+    "unitNumber": "Unit Number",
+    "placeholders": {
+      "projectCode": "VERIDIAN",
+      "propertyName": "Veridian Residences",
+      "address": "123 Main St, Denver CO 80202",
+      "building": "e.g. 1, A, Building 1",
+      "unitNumber": "e.g. 101, 201A",
+      "batchName": "e.g. Veridian Apartments"
+    },
+    "validation": {
+      "bothRequired": "Both fields are required",
+      "duplicateUnit": "This building + unit number already exists in this section",
+      "failedToCreate": "Failed to create unit"
+    },
+    "createAndOpen": "Create & Open",
+    "creating": "Creating...",
+    "addUnit": "Add Unit",
+    "savingChanges": "Saving...",
+    "saveChanges": "Save Changes",
+    "createInspection": "Create Inspection",
+    "createDueDiligence": "Create Due Diligence",
+    "batchName": "Batch Name",
+    "date": "Date",
+    "dateOptional": "(optional)",
+    "createBatch": "Create Batch",
+    "required": "*"
+  },
+  "pdf": {
+    "summary": "Summary",
+    "needsAttention": "Needs Attention ({count})",
+    "allFindings": "All Findings ({count})",
+    "unitGrading": "Unit Grading ({count} units)",
+    "sectionOverview": "Section Overview",
+    "findingPrioritySummary": "Finding Priority Summary",
+    "repairExposureSummary": "Repair Exposure Summary",
+    "riskFlags": "Risk Flags",
+    "immediateRepairs": "Immediate Repairs (P1)",
+    "shortTerm": "Short-Term 0–6 months (P1–P3)",
+    "totalIdentified": "Total Identified",
+    "total": "TOTAL",
+    "reportTruncated": "Report Truncated",
+    "reportTruncatedBody": "This report contains {total} photos but only {max} were embedded.",
+    "usePhotoBook": "Use Photo Book or ZIP export for the full photo set.",
+    "tableHeaders": {
+      "bldg": "Bldg",
+      "unit": "Unit",
+      "bdBa": "BD/BA",
+      "tenant": "Tenant",
+      "unitGrade": "Unit Gr.",
+      "cabinets": "Cabinets",
+      "counter": "Counter",
+      "floor": "Floor",
+      "mold": "Mold",
+      "wd": "W/D",
+      "occupancy": "Occupancy",
+      "condition": "Condition",
+      "housekeep": "Housekeep",
+      "floors": "Floors",
+      "counters": "Counters",
+      "bath": "Bath",
+      "leak": "Leak",
+      "section": "Section",
+      "checklistItem": "Checklist Item",
+      "finding": "Finding",
+      "priority": "Priority",
+      "exposure": "Exposure",
+      "riskFlags": "Risk Flags",
+      "items": "Items",
+      "avgCondition": "Avg. Condition",
+      "group": "Group",
+      "rul": "RUL",
+      "findings": "Findings",
+      "photos": "Photos",
+      "notes": "Notes",
+      "timeline": "Timeline",
+      "count": "Count"
+    },
+    "conditionLabel": "Condition: {rating}/5 — {label}",
+    "notesLabel": "Notes: {text}",
+    "checklist": "Checklist: {name}",
+    "priorityLabel": "Priority: P{level} — {label} ({timeline})",
+    "priorityGood": "Priority: Good / No Issue",
+    "exposureLabel": "Exposure: {amount}",
+    "riskFlagsLabel": "Risk Flags: {flags}",
+    "sections": "Sections: {enabled} enabled, {withActivity} with activity, {untouched} untouched",
+    "unitsLine": "Units: {total} total, {withPhotos} with photos, {missingGrades} missing grades",
+    "capturesLine": "Captures: {total} total ({unit} unit, {item} item, {section} section-level)",
+    "disclaimer": "Repair Exposure Estimate — Visual Assessment Only. This report provides preliminary cost estimates based on visual observations during a limited property inspection. Actual repair costs may vary significantly. This is not a substitute for a full Property Condition Assessment (PCA) per ASTM E2018."
+  },
+  "captures": {
+    "capturePhoto": "Capture photo or video",
+    "uploading": "Uploading...",
+    "uploadFailed": "Upload failed. Try again.",
+    "deletePhoto": "Delete capture",
+    "deleteConfirm": "Delete this capture?",
+    "deleting": "Deleting...",
+    "noPhotos": "No captures yet. Tap the camera button to start.",
+    "addCaption": "Add caption...",
+    "tapToAddCaption": "Tap to add caption...",
+    "photoCapture": "Photo capture"
+  },
+  "notes": {
+    "notes": "Notes",
+    "sectionNotes": "Section Notes",
+    "observationsPlaceholder": "Observations for this item...",
+    "sectionObservationsPlaceholder": "General observations for this section...",
+    "unitObservationsPlaceholder": "Unit observations, issues, etc...",
+    "generalSectionNotes": "General notes about this section...",
+    "saving": "Saving...",
+    "saved": "Saved"
+  },
+  "offline": {
+    "loadingOfflineData": "Loading offline data...",
+    "noDataTitle": "No offline data available",
+    "noDataDescription": "This page hasn't been cached for offline use yet. Visit it while online to cache the data.",
+    "noUnitDataDescription": "This unit page hasn't been cached for offline use yet. Visit it while online to cache the data.",
+    "noOfflineData": "No offline data available",
+    "noOfflineDataDesc": "This page hasn't been cached for offline use yet. Visit it while online to cache the data.",
+    "noOfflineUnitData": "This unit page hasn't been cached for offline use yet. Visit it while online to cache the data.",
+    "offlineBanner": "Offline — using cached data from {time}",
+    "offlineCachedData": "Offline — using cached data from {time}",
+    "backToInspections": "Back to Inspections",
+    "backToSection": "Back to Section",
+    "retry": "Retry",
+    "offlineFinding": "Offline finding",
+    "customFinding": "Custom finding",
+    "nextSection": "Next Section"
+  },
+  "review": {
+    "totalFindings": "Total Findings",
+    "immediateP1": "Immediate (P1)",
+    "urgentP2": "Urgent (P2)",
+    "shortTermP3": "Short-term (P3)",
+    "repairExposureSummary": "Repair Exposure Summary",
+    "immediateRepairs": "Immediate Repairs",
+    "shortTermMonths": "Short-Term (0–6 months)",
+    "totalIdentified": "Total Identified",
+    "riskFlags": "Risk Flags",
+    "sections": "Sections",
+    "units": "Units",
+    "captures": "Captures",
+    "enabled": "Enabled",
+    "withActivity": "With activity",
+    "untouched": "Untouched",
+    "total": "Total",
+    "withPhotos": "With photos",
+    "missingGrades": "Missing grades",
+    "missingBdBa": "Missing BD/BA",
+    "unitPhotos": "Unit photos",
+    "itemPhotos": "Item photos",
+    "sectionLevel": "Section-level",
+    "needsAttention": "Needs Attention ({count})",
+    "jumpToFirst": "Jump to first missing item",
+    "noActivity": "{name} — no activity",
+    "missingGradesLabel": "B{building} - {unit} — missing grades",
+    "missingBdBaLabel": "B{building} - {unit} — missing BD/BA",
+    "allComplete": "All sections have activity and all units have grades. This inspection looks complete!",
+    "lastUpdated": "Last updated: {date}",
+    "reviewTitle": "Review",
+    "backToProject": "Back to Project",
+    "statusLabels": {
+      "DRAFT": "Draft",
+      "IN_PROGRESS": "In Progress",
+      "COMPLETE": "Complete"
+    },
+    "bankReadyValidation": "Bank-Ready Validation",
+    "allFindingsHavePriority": "All findings have priority assigned",
+    "p1to3HaveExposure": "Priority 1-3 findings have exposure",
+    "allSectionsHaveCondition": "All sections have condition rating",
+    "allSectionsHaveRul": "All sections have RUL",
+    "p1to2HavePhotos": "Priority 1-2 findings have photos"
+  },
+  "bulkUpload": {
+    "title": "Import Units from Spreadsheet",
+    "dropOrBrowse": "Drop a file or click to browse",
+    "fileTypes": ".xlsx, .xls, or .csv",
+    "acceptedFormats": ".xlsx, .xls, or .csv",
+    "expectedColumns": "Expected columns:",
+    "columnsDescription": "Unit (required), Building (optional, defaults to \"A\"), Days Vacant (optional), Rent Ready (Yes/No, optional), Description (optional)",
+    "unitRequired": "Unit",
+    "required": "(required)",
+    "buildingOptional": "Building",
+    "buildingDefault": "(optional, defaults to \"A\")",
+    "daysVacant": "Days Vacant",
+    "optional": "(optional)",
+    "rentReady": "Rent Ready",
+    "rentReadyFormat": "(Yes/No, optional)",
+    "description": "Description",
+    "unitsFound": "{fileName} — {count} unit(s) found",
+    "importing": "Importing...",
+    "importUnits": "Import {count} Unit(s)",
+    "importComplete": "Import complete: {created} created",
+    "skippedDuplicates": "{count} skipped (duplicates)",
+    "errors": "Errors:",
+    "importFailed": "Import failed",
+    "emptySpreadsheet": "Spreadsheet is empty or has no data rows.",
+    "failedToParse": "Failed to parse file",
+    "noUnitColumn": "Could not find a \"Unit\" column. Found headers: [{headers}]. Expected one of: Unit, Unit #, Unit No, Apt, Apartment, Suite, Space, Number",
+    "columns": {
+      "building": "Building",
+      "unit": "Unit",
+      "daysVacant": "Days Vacant",
+      "rentReady": "Rent Ready",
+      "description": "Description"
+    },
+    "columnHeaders": {
+      "building": "Building",
+      "unit": "Unit",
+      "daysVacant": "Days Vacant",
+      "rentReady": "Rent Ready",
+      "description": "Description"
+    },
+    "importButton": "Import"
+  },
+  "findings": {
+    "noFindingsYet": "No findings yet. Use the checklist above to add findings.",
+    "findingsCount": "Findings ({count})"
+  },
+  "checklist": {
+    "checklistItems": "Checklist Items",
+    "customFindingPlaceholder": "Custom finding title...",
+    "addCustomFinding": "+ Add Custom Finding",
+    "finding": "Finding",
+    "addFinding": "+ Finding"
+  },
+  "dashboard": {
+    "selectModule": "Select a module to get started.",
+    "openModule": "Open {title}",
+    "ddDescription": "Full-property acquisition inspections",
+    "inspDescription": "Property quality and condition tracking",
+    "utDescription": "Make-ready workflows and turn packages",
+    "projects": "Projects",
+    "batches": "Batches",
+    "manageDDProjects": "Manage Your Due Diligence Projects",
+    "noDDProjects": "No due diligence projects yet",
+    "createFirstDD": "Create your first due diligence project to get started.",
+    "propertyInspections": "Property Inspections",
+    "pcaProjects": "PCA Inspection Projects",
+    "myInspections": "My Inspections",
+    "sharedWithMe": "Shared with Me",
+    "noInspections": "No inspections yet",
+    "createFirstInspection": "Create your first inspection project to start a property walkthrough.",
+    "turnBatchManagement": "Turn Batch Management",
+    "openBatches": "Open Batches",
+    "closedBatches": "Closed Batches",
+    "noTurnBatches": "No turn batches yet",
+    "createFirstBatch": "Create your first turn batch to start tracking unit turns.",
+    "reviewAndExport": "Review & Export",
+    "inspectionSections": "Inspection Sections",
+    "backToInspections": "Back to all inspections",
+    "backToInspection": "Back to inspection",
+    "backToProject": "Back to project",
+    "backToBatch": "Back to batch",
+    "backTo": "← Back to {name}",
+    "batch": "Batch",
+    "nextLabel": "Next: {name} →",
+    "subSections": "{count, plural, one {# sub-section} other {# sub-sections}}",
+    "unitCount": "{count, plural, one {# unit} other {# units}}",
+    "noUnitsYet": "No units yet. Add your first unit above.",
+    "itemsAssessed": "Items Assessed",
+    "buildingUnit": "Building {building} / Unit {unit}",
+    "tenantGrade": "Tenant Grade",
+    "unitGrade": "Unit Grade",
+    "wdConnection": "Washer/Dryer Connection",
+    "photosAndMedia": "Photos & Media",
+    "pageNotFound": "Page not found",
+    "goToDashboard": "Go to Dashboard",
+    "unexpectedError": "An unexpected error occurred while loading this page.",
+    "unexpectedUnitError": "An unexpected error occurred while loading this unit.",
+    "photoCount": "{count, plural, one {# photo} other {# photos}}",
+    "photo": "photo",
+    "photos": "photos"
+  }
+}

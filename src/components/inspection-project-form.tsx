@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import {
   createInspectionProject,
@@ -38,6 +39,7 @@ export function InspectionProjectForm({
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations();
   const router = useRouter();
 
   const isEditing = !!project;
@@ -74,7 +76,7 @@ export function InspectionProjectForm({
         router.push(`/inspections/${result.id}`);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : t("common.somethingWentWrong"));
     } finally {
       setLoading(false);
     }
@@ -91,7 +93,7 @@ export function InspectionProjectForm({
       {/* Inspection Type Toggle */}
       <div>
         <label className="block text-sm font-medium text-content-secondary mb-2">
-          Inspection Type
+          {t("forms.inspectionType")}
         </label>
         <div className="flex gap-2">
           {(Object.entries(INSPECTION_TYPE_LABELS) as [InspectionType, string][]).map(
@@ -113,8 +115,7 @@ export function InspectionProjectForm({
         </div>
         {inspectionType === "bank_ready" && (
           <p className="text-xs text-amber-600 mt-1">
-            Bank-Ready mode requires priority, exposure, RUL, and condition
-            ratings on all sections and findings.
+            {t("inspection.bankReadyMode.description")}
           </p>
         )}
       </div>
@@ -122,7 +123,7 @@ export function InspectionProjectForm({
       {/* Asset Archetype Toggle */}
       <div>
         <label className="block text-sm font-medium text-content-secondary mb-2">
-          Asset Type
+          {t("forms.assetType")}
         </label>
         <div className="flex gap-2">
           {(Object.entries(ASSET_ARCHETYPE_LABELS) as [AssetArchetype, { label: string; unitLabel: string }][]).map(
@@ -137,15 +138,14 @@ export function InspectionProjectForm({
                     : "bg-surface-primary text-content-secondary border-edge-secondary hover:bg-surface-secondary"
                 }`}
               >
-                {info.label}
+                {t(`inspection.archetypes.${value}.label`)}
               </button>
             )
           )}
         </div>
         {assetArchetype === "sfr" && (
           <p className="text-xs text-brand-600 mt-1">
-            SFR mode labels unit sections as &quot;Homes&quot; instead of
-            &quot;Units&quot;.
+            {t("inspection.bankReadyMode.sfrNote")}
           </p>
         )}
       </div>
@@ -155,7 +155,7 @@ export function InspectionProjectForm({
           htmlFor="name"
           className="block text-sm font-medium text-content-secondary mb-1"
         >
-          Project Code
+          {t("forms.projectCode")}
         </label>
         <input
           id="name"
@@ -163,11 +163,11 @@ export function InspectionProjectForm({
           value={name}
           onChange={(e) => setName(e.target.value.toUpperCase())}
           required
-          placeholder="VERIDIAN"
+          placeholder={t("forms.placeholders.projectCode")}
           className="w-full px-3 py-2 border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 uppercase"
         />
         <p className="text-xs text-content-quaternary mt-1">
-          Short identifier used in exports
+          {t("forms.projectCodeHint")}
         </p>
       </div>
 
@@ -176,7 +176,7 @@ export function InspectionProjectForm({
           htmlFor="propertyName"
           className="block text-sm font-medium text-content-secondary mb-1"
         >
-          Property Name
+          {t("forms.propertyName")}
         </label>
         <input
           id="propertyName"
@@ -184,7 +184,7 @@ export function InspectionProjectForm({
           value={propertyName}
           onChange={(e) => setPropertyName(e.target.value)}
           required
-          placeholder="Veridian Residences"
+          placeholder={t("forms.placeholders.propertyName")}
           className="w-full px-3 py-2 border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>
@@ -194,14 +194,14 @@ export function InspectionProjectForm({
           htmlFor="address"
           className="block text-sm font-medium text-content-secondary mb-1"
         >
-          Address
+          {t("forms.address")}
         </label>
         <input
           id="address"
           type="text"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-          placeholder="123 Main St, Denver CO 80202"
+          placeholder={t("forms.placeholders.address")}
           className="w-full px-3 py-2 border border-edge-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>
@@ -212,7 +212,7 @@ export function InspectionProjectForm({
           onClick={onClose}
           className="px-4 py-2 text-sm text-content-tertiary hover:text-content-primary transition-colors"
         >
-          Cancel
+          {t("common.cancel")}
         </button>
         <button
           type="submit"
@@ -221,11 +221,11 @@ export function InspectionProjectForm({
         >
           {loading
             ? isEditing
-              ? "Saving..."
-              : "Creating..."
+              ? t("forms.savingChanges")
+              : t("forms.creating")
             : isEditing
-            ? "Save Changes"
-            : "Create Inspection"}
+            ? t("forms.saveChanges")
+            : t("forms.createInspection")}
         </button>
       </div>
     </form>

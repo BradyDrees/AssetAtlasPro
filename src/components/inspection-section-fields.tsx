@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import {
   updateInspectionSectionRating,
   updateInspectionSectionRul,
@@ -28,6 +29,7 @@ export function InspectionSectionFields({
   projectId,
   inspectionType,
 }: InspectionSectionFieldsProps) {
+  const t = useTranslations();
   const [rating, setRating] = useState<number | null>(
     projectSection.condition_rating
   );
@@ -94,7 +96,7 @@ export function InspectionSectionFields({
       {/* Condition Rating */}
       <div>
         <label className="block text-sm font-medium text-content-secondary mb-2">
-          Condition Rating
+          {t("inspection.conditionRating")}
           {isBankReady && (
             <span className="text-red-500 ml-1">*</span>
           )}
@@ -111,7 +113,7 @@ export function InspectionSectionFields({
                   : "bg-surface-primary text-content-secondary border-edge-secondary hover:bg-surface-secondary"
               } disabled:opacity-50`}
             >
-              {val} - {INSPECTION_CONDITION_LABELS[val]}
+              {val} - {t(`inspection.condition.${val}`)}
             </button>
           ))}
         </div>
@@ -120,7 +122,7 @@ export function InspectionSectionFields({
       {/* Remaining Useful Life (RUL) */}
       <div>
         <label className="block text-sm font-medium text-content-secondary mb-2">
-          Remaining Useful Life
+          {t("inspection.remainingUsefulLife")}
           {isBankReady && (
             <span className="text-red-500 ml-1">*</span>
           )}
@@ -147,9 +149,9 @@ export function InspectionSectionFields({
       {/* Notes */}
       <div>
         <label className="block text-sm font-medium text-content-secondary mb-1">
-          Section Notes
+          {t("notes.sectionNotes")}
           {savingNotes && (
-            <span className="text-xs text-content-muted ml-2">Saving...</span>
+            <span className="text-xs text-content-muted ml-2">{t("notes.saving")}</span>
           )}
         </label>
         <textarea
@@ -157,7 +159,7 @@ export function InspectionSectionFields({
           onChange={(e) => setNotes(e.target.value)}
           onBlur={handleNotesBlur}
           rows={3}
-          placeholder="General notes about this section..."
+          placeholder={t("notes.generalSectionNotes")}
           className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>

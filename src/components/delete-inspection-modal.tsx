@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { deleteInspectionProject } from "@/app/actions/inspections";
 import { Modal } from "@/components/modal";
@@ -16,6 +17,7 @@ export function DeleteInspectionModal({
   projectCode,
   onClose,
 }: DeleteInspectionModalProps) {
+  const t = useTranslations();
   const router = useRouter();
   const [confirmation, setConfirmation] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,25 +36,24 @@ export function DeleteInspectionModal({
       router.push("/inspections");
     } catch (err) {
       console.error("Failed to delete inspection:", err);
-      setError("Failed to delete inspection. Please try again.");
+      setError(t("modals.deleteInspection.failed"));
       setLoading(false);
     }
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="Delete Inspection">
+    <Modal isOpen={true} onClose={onClose} title={t("modals.deleteInspection.title")}>
       <div className="space-y-4">
         <div className="bg-red-50 border border-red-200 rounded-lg p-3">
           <p className="text-sm text-red-700 font-medium">
-            This will permanently delete all sections, findings, units,
-            captures, and photos.
+            {t("modals.deleteInspection.body")}
           </p>
-          <p className="text-xs text-red-500 mt-1">This cannot be undone.</p>
+          <p className="text-xs text-red-500 mt-1">{t("modals.deleteInspection.cannotUndo")}</p>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-content-secondary mb-1">
-            Type <span className="font-bold">{projectCode}</span> to confirm
+            {t("modals.deleteInspection.typeToConfirm", { code: projectCode })}
           </label>
           <input
             type="text"
@@ -73,7 +74,7 @@ export function DeleteInspectionModal({
             onClick={onClose}
             className="px-4 py-2 text-sm text-content-tertiary hover:text-content-primary"
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             onClick={handleDelete}
@@ -81,7 +82,7 @@ export function DeleteInspectionModal({
             className="px-4 py-2 bg-red-600 text-white text-sm rounded-md
                        hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Deleting..." : "Delete Inspection"}
+            {loading ? t("modals.deleteInspection.deleting") : t("modals.deleteInspection.deleteButton")}
           </button>
         </div>
       </div>

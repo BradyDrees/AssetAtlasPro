@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { ChecklistItem } from "./checklist-item";
 import { createNote } from "@/app/actions/unit-turns";
 import { useFieldRouter } from "@/lib/offline/use-field-router";
@@ -9,6 +10,21 @@ import { createNoteOffline } from "@/lib/offline/actions";
 import { CATEGORY_COLORS, DEFAULT_CATEGORY_COLOR } from "@/lib/unit-turn-constants";
 import type { UnitTurnCategoryData } from "@/lib/unit-turn-types";
 import { toTitleCase } from "@/lib/utils";
+
+const categoryKey = (slug: string) => {
+  const map: Record<string, string> = {
+    "kitchen": "kitchen",
+    "bathroom": "bathroom",
+    "electrical-fixtures": "electricalFixtures",
+    "doors-hardware-windows": "doorsHardwareWindows",
+    "flooring-finish": "flooringFinish",
+    "mechanical-safety": "mechanicalSafety",
+    "laundry": "laundry",
+    "paint": "paint",
+    "cleaning": "cleaning",
+  };
+  return map[slug] ?? slug;
+};
 
 interface CategorySectionProps {
   data: UnitTurnCategoryData;
@@ -19,6 +35,7 @@ interface CategorySectionProps {
 }
 
 export function CategorySection({ data, batchId, unitId, supabaseUrl, currentUserId }: CategorySectionProps) {
+  const t = useTranslations();
   const router = useFieldRouter();
   const { isFieldMode, refreshPending } = useOffline();
   const [collapsed, setCollapsed] = useState(false);
@@ -69,7 +86,7 @@ export function CategorySection({ data, batchId, unitId, supabaseUrl, currentUse
       >
         <div className="flex items-center gap-2">
           <span className={`text-xs transition-transform ${collapsed ? "" : "rotate-90"}`}>▶</span>
-          <h3 className="text-sm font-bold tracking-wide">{toTitleCase(category.name)}</h3>
+          <h3 className="text-sm font-bold tracking-wide">{t(`unitTurn.categories.${categoryKey(category.slug)}`)}</h3>
         </div>
         <span className="text-xs text-white/70">
           {assessed}/{total}
@@ -100,7 +117,7 @@ export function CategorySection({ data, batchId, unitId, supabaseUrl, currentUse
                 {categoryNotes.map((note) => (
                   <div key={note.id} className="bg-amber-50 rounded-lg p-2.5 text-sm">
                     <p className="text-content-secondary">{note.text}</p>
-                    <span className="text-xs text-content-muted mt-1 block">Category note</span>
+                    <span className="text-xs text-content-muted mt-1 block">{t("unitTurn.categoryNote")}</span>
                   </div>
                 ))}
               </div>
@@ -111,7 +128,7 @@ export function CategorySection({ data, batchId, unitId, supabaseUrl, currentUse
                 onClick={() => setShowCatNote(true)}
                 className="text-xs text-brand-600 hover:text-brand-700"
               >
-                + Category Note
+                {t("unitTurn.addCategoryNote")}
               </button>
             ) : (
               <div className="flex gap-2">
@@ -119,7 +136,7 @@ export function CategorySection({ data, batchId, unitId, supabaseUrl, currentUse
                   type="text"
                   value={catNoteText}
                   onChange={(e) => setCatNoteText(e.target.value)}
-                  placeholder="Category-level note..."
+                  placeholder={t("unitTurn.categoryNotePlaceholder")}
                   className="flex-1 px-2 py-1 text-xs border border-edge-secondary rounded focus:outline-none focus:ring-1 focus:ring-brand-500"
                   autoFocus
                   onKeyDown={(e) => {
@@ -132,7 +149,7 @@ export function CategorySection({ data, batchId, unitId, supabaseUrl, currentUse
                   disabled={!catNoteText.trim() || addingCatNote}
                   className="px-3 py-2 text-xs bg-brand-600 text-white rounded hover:bg-brand-700 disabled:opacity-50"
                 >
-                  {addingCatNote ? "..." : "Add"}
+                  {addingCatNote ? "..." : t("common.add")}
                 </button>
                 <button
                   onClick={() => { setShowCatNote(false); setCatNoteText(""); }}

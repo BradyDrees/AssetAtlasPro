@@ -6,6 +6,7 @@ import { InspectionChecklistPanel } from "@/components/inspection-checklist-pane
 import { InspectionFindingsList } from "@/components/inspection-findings-list";
 import { InspectionUnitList } from "@/components/inspection-unit-list";
 import { SnapshotSync } from "@/components/snapshot-sync";
+import { getTranslations } from "next-intl/server";
 import { INSPECTION_GROUP_SLUGS } from "@/lib/inspection-sections";
 import type {
   InspectionProjectSectionWithDetails,
@@ -23,6 +24,7 @@ export default async function InspectionSectionPage({
   params: Promise<{ id: string; sectionId: string }>;
 }) {
   const { id: projectId, sectionId: projectSectionId } = await params;
+  const t = await getTranslations();
   const supabase = await createClient();
 
   // Fetch user + project in parallel
@@ -135,7 +137,7 @@ export default async function InspectionSectionPage({
           href="/inspections"
           className="hover:text-brand-600 transition-colors"
         >
-          Inspections
+          {t("nav.inspections")}
         </Link>
         <span>/</span>
         <Link
@@ -154,7 +156,7 @@ export default async function InspectionSectionPage({
           <Link
             href={`/inspections/${projectId}?group=${groupSlug}`}
             className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors"
-            title="Back to project"
+            title={t("dashboard.backToProject")}
           >
             <svg
               className="w-4 h-4"
@@ -169,7 +171,7 @@ export default async function InspectionSectionPage({
                 d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"
               />
             </svg>
-            Project
+            {t("common.project")}
           </Link>
           <div>
             <p className="text-xs text-content-quaternary uppercase tracking-wide">
@@ -232,7 +234,7 @@ export default async function InspectionSectionPage({
             href={`/inspections/${projectId}/sections/${nextSection.id}`}
             className="px-4 py-2 bg-brand-600 text-white text-sm rounded-md hover:bg-brand-700 transition-colors"
           >
-            Next: {(nextSection as any).section.name} →
+            {t("dashboard.nextLabel", { name: (nextSection as any).section.name })}
           </Link>
         </div>
       )}

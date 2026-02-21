@@ -4,6 +4,7 @@
  */
 
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { fetchInspectionData } from "@/lib/pdf/fetch-inspection-data";
 import { generateInspectionFullReport } from "@/lib/pdf/generate-inspection-full-report";
 import { generateInspectionSummary } from "@/lib/pdf/generate-inspection-summary";
@@ -25,6 +26,13 @@ export async function GET(
     const { projectId } = await params;
     const { searchParams } = new URL(req.url);
     const format = searchParams.get("format") ?? "";
+
+    // Locale: ?locale param takes priority over cookie
+    const cookieStore = await cookies();
+    const locale =
+      searchParams.get("locale") ||
+      cookieStore.get("locale")?.value ||
+      "en";
 
     if (!VALID_FORMATS.has(format)) {
       return NextResponse.json(

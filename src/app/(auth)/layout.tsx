@@ -1,10 +1,16 @@
 import Image from "next/image";
+import { cookies } from "next/headers";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const locale = cookieStore.get("locale")?.value === "es" ? "es" : "en";
+  const messages = await getMessages();
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-charcoal-950 via-charcoal-900 to-brand-950 relative overflow-hidden">
       {/* Decorative background shapes */}
@@ -27,7 +33,9 @@ export default function AuthLayout({
 
         {/* Card */}
         <div className="p-8 bg-white rounded-2xl shadow-2xl shadow-charcoal-950/40 border border-white/20">
-          {children}
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            {children}
+          </NextIntlClientProvider>
         </div>
       </div>
     </div>

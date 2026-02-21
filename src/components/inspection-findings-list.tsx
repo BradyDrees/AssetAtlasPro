@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { FindingCard } from "@/components/inspection-finding-card";
 import type {
   InspectionFinding,
@@ -24,10 +25,12 @@ export function InspectionFindingsList({
   sectionSlug,
   inspectionType,
 }: InspectionFindingsListProps) {
+  const t = useTranslations();
+
   if (findings.length === 0) {
     return (
       <div className="bg-surface-secondary rounded-lg border border-edge-primary p-6 text-center text-sm text-content-quaternary">
-        No findings yet. Use the checklist above to add findings.
+        {t("findings.noFindingsYet")}
       </div>
     );
   }
@@ -35,7 +38,7 @@ export function InspectionFindingsList({
   return (
     <div className="space-y-4">
       <h3 className="text-sm font-semibold text-content-secondary uppercase tracking-wide">
-        Findings ({findings.length})
+        {t("findings.findingsCount", { count: findings.length })}
       </h3>
       {findings.map((finding) => (
         <FindingCard

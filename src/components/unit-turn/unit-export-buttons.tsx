@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { useAppLocale } from "@/components/locale-provider";
 
 interface UnitExportButtonsProps {
   batchId: string;
@@ -16,22 +18,22 @@ type ExportFormat = "pdf" | "excel" | "zip";
 
 interface ExportOption {
   format: ExportFormat;
-  label: string;
-  description: string;
+  labelKey: string;
+  descKey: string;
   icon: string;
 }
 
 const UNIT_OPTIONS: ExportOption[] = [
   {
     format: "pdf",
-    label: "Unit Report",
-    description: "Printable checklist with photos",
+    labelKey: "export.unitReport.label",
+    descKey: "export.unitReport.description",
     icon: "\u{1F4C4}",
   },
   {
     format: "zip",
-    label: "Unit Photos",
-    description: "ZIP archive with labeled photos",
+    labelKey: "export.unitPhotos.label",
+    descKey: "export.unitPhotos.description",
     icon: "\u{1F4E6}",
   },
 ];
@@ -39,14 +41,14 @@ const UNIT_OPTIONS: ExportOption[] = [
 const BATCH_OPTIONS: ExportOption[] = [
   {
     format: "excel",
-    label: "Excel Spreadsheet",
-    description: "All units with item details (.xlsx)",
+    labelKey: "export.batchExcel.label",
+    descKey: "export.batchExcel.description",
     icon: "\u{1F4CA}",
   },
   {
     format: "zip",
-    label: "All Photos",
-    description: "ZIP archive for entire batch",
+    labelKey: "export.allPhotos.label",
+    descKey: "export.allPhotos.description",
     icon: "\u{1F4E6}",
   },
 ];
@@ -59,6 +61,8 @@ export function UnitExportButtons({
   unitLabel,
   batchLevel = false,
 }: UnitExportButtonsProps) {
+  const t = useTranslations();
+  const { locale } = useAppLocale();
   const [activeFormat, setActiveFormat] = useState<ExportFormat | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -72,7 +76,7 @@ export function UnitExportButtons({
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 180_000);
 
-      let url = `/api/unit-turn-export/${batchId}?format=${format}`;
+      let url = `/api/unit-turn-export/${batchId}?format=${format}&locale=${locale}`;
       if (unitId && format !== "excel") {
         url += `&unitId=${unitId}`;
       }
@@ -86,7 +90,7 @@ export function UnitExportButtons({
 
       if (!res.ok) {
         const body = await res.json().catch(() => null);
-        throw new Error(body?.error ?? `Export failed (${res.status})`);
+        throw new Error(body?.error ?? t("export.exportFailedWithStatus", { status: res.status }));
       }
 
       const blob = await res.blob();
@@ -120,8 +124,8 @@ export function UnitExportButtons({
       console.error("Export error:", err);
       const msg =
         err.name === "AbortError"
-          ? "Export timed out. Try again with fewer photos."
-          : err.message ?? "Export failed. Try again.";
+          ? t("export.exportTimedOut")
+          : err.message ?? t("export.exportFailed");
       setError(msg);
       setTimeout(() => setError(null), 8000);
     } finally {
@@ -132,13 +136,13 @@ export function UnitExportButtons({
   return (
     <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
       <h2 className="text-sm font-semibold text-content-quaternary uppercase tracking-wide mb-3">
-        Export
+        {t("export.title")}
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {options.map((opt) => (
           <button
-            key={opt.format + (opt.label === "All Photos" ? "-batch" : "")}
+            key={opt.format + opt.labelKey}
             onClick={() => handleExport(opt.format)}
             disabled={activeFormat !== null}
             className={`flex items-center gap-3 px-3 py-3 rounded-lg border text-left transition-colors ${
@@ -156,9 +160,9 @@ export function UnitExportButtons({
             </span>
             <div>
               <span className="text-sm font-medium text-content-primary block">
-                {opt.label}
+                {t(opt.labelKey)}
               </span>
-              <span className="text-xs text-content-quaternary">{opt.description}</span>
+              <span className="text-xs text-content-quaternary">{t(opt.descKey)}</span>
             </div>
           </button>
         ))}

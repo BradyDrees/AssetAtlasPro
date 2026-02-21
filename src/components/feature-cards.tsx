@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
-const features = [
+const featureKeys = ["dueDiligence", "inspections", "unitTurns"] as const;
+
+const featureStyles = [
   {
-    title: "Due Diligence",
-    summary: "Full-property acquisition inspections with photos and documentation.",
-    detail:
-      "Walk every building from roof to foundation. Photograph site conditions, document mechanical systems, exterior, common areas, amenities, and unit interiors \u2014 all organized into structured section groups. Export a complete acquisition-ready report with photos when you\u2019re done.",
     iconBg: "bg-brand-600/20",
     iconColor: "text-brand-400",
     accentColor: "text-brand-400",
@@ -22,10 +21,6 @@ const features = [
     ),
   },
   {
-    title: "Inspections",
-    summary: "Ensure your asset is maintained to the highest standard.",
-    detail:
-      "Inspect every unit across bedrooms, bathrooms, kitchens, flooring, appliances, cabinets, and countertops. Flag items for attention, track conditions, and attach photos with notes \u2014 giving your team a clear picture of property quality and what each unit needs.",
     iconBg: "bg-gold-500/20",
     iconColor: "text-gold-400",
     accentColor: "text-gold-400",
@@ -40,10 +35,6 @@ const features = [
     ),
   },
   {
-    title: "Unit Turns",
-    summary: "Make-ready checklists with exportable turn packages.",
-    detail:
-      "Manage make-ready workflows unit by unit. Run through room-by-room checklists, scope paint and flooring, assess appliance condition, and capture before/after photos. Export completed turn packages as PDF or Excel so maintenance crews, vendors, and ownership all stay on the same page.",
     iconBg: "bg-brand-400/20",
     iconColor: "text-brand-300",
     accentColor: "text-brand-300",
@@ -61,14 +52,16 @@ const features = [
 
 export function FeatureCards() {
   const [expanded, setExpanded] = useState<number | null>(null);
+  const t = useTranslations();
 
   return (
     <div className="grid md:grid-cols-3 gap-6">
-      {features.map((f, i) => {
+      {featureKeys.map((key, i) => {
         const isOpen = expanded === i;
+        const f = featureStyles[i];
         return (
           <button
-            key={f.title}
+            key={key}
             type="button"
             onClick={() => setExpanded(isOpen ? null : i)}
             className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/8 hover:border-white/20 transition-all cursor-pointer text-left"
@@ -80,11 +73,11 @@ export function FeatureCards() {
             </div>
 
             <h3 className="text-lg font-semibold text-white mb-2 transition-colors">
-              {f.title}
+              {t(`landing.features.${key}.title`)}
             </h3>
 
             <p className="text-sm text-charcoal-300 leading-relaxed">
-              {f.summary}
+              {t(`landing.features.${key}.summary`)}
             </p>
 
             {/* Expandable detail */}
@@ -95,13 +88,13 @@ export function FeatureCards() {
             >
               <div className="overflow-hidden">
                 <p className="text-sm text-charcoal-200 leading-relaxed border-t border-white/10 pt-4">
-                  {f.detail}
+                  {t(`landing.features.${key}.detail`)}
                 </p>
               </div>
             </div>
 
             <span className={`inline-flex items-center gap-1 mt-4 text-xs font-medium ${f.accentColor} transition-colors`}>
-              {isOpen ? "Show less" : "Learn more"}{" "}
+              {isOpen ? t("common.showLess") : t("common.learnMore")}{" "}
               <span
                 aria-hidden="true"
                 className={`inline-block transition-transform duration-200 ${isOpen ? "rotate-90" : ""}`}

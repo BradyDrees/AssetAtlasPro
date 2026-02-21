@@ -7,6 +7,7 @@ import { NextTurnUnitButton } from "@/components/unit-turn/next-turn-unit-button
 import { QuickNav } from "@/components/unit-turn/quick-nav";
 import { AddUnitInline } from "@/components/unit-turn/add-unit-inline";
 import { UnitExportButtons } from "@/components/unit-turn/unit-export-buttons";
+import { getTranslations } from "next-intl/server";
 import type { UnitTurnCategoryData, UnitTurnUnitItemWithTemplate, UnitTurnNoteWithPhotos } from "@/lib/unit-turn-types";
 
 export const dynamic = "force-dynamic";
@@ -17,6 +18,7 @@ export default async function UnitTurnDetailPage({
   params: Promise<{ batchId: string; unitId: string }>;
 }) {
   const { batchId, unitId } = await params;
+  const t = await getTranslations();
   const supabase = await createClient();
 
   // Fetch user, batch, unit, categories, items, and notes in parallel
@@ -96,14 +98,14 @@ export default async function UnitTurnDetailPage({
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-brand-300 mb-3">
           <Link href="/unit-turns" className="hover:text-white transition-colors">
-            Unit Turns
+            {t("nav.unitTurns")}
           </Link>
           <span className="text-brand-500">/</span>
           <Link href={`/unit-turns/${batchId}`} className="hover:text-white transition-colors">
             {batch.name}
           </Link>
           <span className="text-brand-500">/</span>
-          <span className="text-white font-medium">Unit {unit.unit_label}</span>
+          <span className="text-white font-medium">{t("pdf.tableHeaders.unit")} {unit.unit_label}</span>
         </div>
 
         <div className="flex items-center justify-between">
@@ -111,22 +113,22 @@ export default async function UnitTurnDetailPage({
             <Link
               href={`/unit-turns/${batchId}`}
               className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gold-300 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
-              title="Back to batch"
+              title={t("dashboard.backToBatch")}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
               </svg>
-              Batch
+              {t("dashboard.batch")}
             </Link>
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-medium text-brand-300 bg-white/10 px-2 py-0.5 rounded">
                   {unit.property}
                 </span>
-                <h1 className="text-2xl font-bold text-white">Unit {unit.unit_label}</h1>
+                <h1 className="text-2xl font-bold text-white">{t("pdf.tableHeaders.unit")} {unit.unit_label}</h1>
               </div>
               <p className="text-sm text-brand-300/70 mt-0.5">
-                {assessedItems}/{totalItems} Items Assessed ({totalItems > 0 ? Math.round((assessedItems / totalItems) * 100) : 0}%)
+                {assessedItems}/{totalItems} {t("dashboard.itemsAssessed")} ({totalItems > 0 ? Math.round((assessedItems / totalItems) * 100) : 0}%)
               </p>
             </div>
           </div>
@@ -159,7 +161,7 @@ export default async function UnitTurnDetailPage({
       {/* Paint Section */}
       {paintCategories.length > 0 && (
         <div className="mt-8">
-          <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">Paint</h2>
+          <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">{t("unit.paint")}</h2>
           <div className="space-y-5">
             {paintCategories.map((cd) => (
               <div key={cd.category.id} id={`cat-${cd.category.slug}`}>
@@ -178,7 +180,7 @@ export default async function UnitTurnDetailPage({
       {/* Cleaning Section */}
       {cleaningCategories.length > 0 && (
         <div className="mt-8">
-          <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">Cleaning</h2>
+          <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">{t("unitTurn.categories.cleaning")}</h2>
           <div className="space-y-5">
             {cleaningCategories.map((cd) => (
               <div key={cd.category.id} id={`cat-${cd.category.slug}`}>

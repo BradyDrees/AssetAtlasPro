@@ -43,6 +43,9 @@ export async function updateBatch(
 
   try {
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { error: "Not authenticated" };
+
     const { error } = await supabase
       .from("unit_turn_batches")
       .update({ [field]: value })
@@ -60,6 +63,9 @@ export async function updateBatch(
 export async function deleteBatch(batchId: string): Promise<{ error?: string }> {
   try {
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { error: "Not authenticated" };
+
     const { error } = await supabase
       .from("unit_turn_batches")
       .delete()

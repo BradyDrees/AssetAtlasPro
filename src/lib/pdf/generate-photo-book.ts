@@ -62,7 +62,6 @@ export async function generatePhotoBook(
           const captures = data.capturesByUnit[unit.id] ?? [];
           for (const cap of captures) {
             const b64 = await fetchAndResizeImage(
-              data.supabase,
               cap.image_path
             );
             const gradeStr = unit.unit_grade
@@ -81,7 +80,6 @@ export async function generatePhotoBook(
           const captures = data.capturesByItem[item.id] ?? [];
           for (const cap of captures) {
             const b64 = await fetchAndResizeImage(
-              data.supabase,
               cap.image_path
             );
             const ratingStr = item.condition_rating
@@ -98,7 +96,7 @@ export async function generatePhotoBook(
       // Section-level captures
       const sectionCaptures = data.capturesBySection[ps.id] ?? [];
       for (const cap of sectionCaptures) {
-        const b64 = await fetchAndResizeImage(data.supabase, cap.image_path);
+        const b64 = await fetchAndResizeImage(cap.image_path);
         allPhotos.push({
           base64: b64,
           caption: `${section.name}${cap.caption ? " — " + cap.caption : ""}`,

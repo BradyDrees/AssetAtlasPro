@@ -14,6 +14,7 @@ import { generateUnitTurnExcel } from "@/lib/pdf/generate-unit-turn-excel";
 import { generateUnitTurnPhotoZip } from "@/lib/pdf/generate-unit-turn-photo-zip";
 
 export const runtime = "nodejs";
+export const maxDuration = 300; // 5 minutes for large exports
 
 const VALID_FORMATS = new Set(["pdf", "excel", "zip"]);
 

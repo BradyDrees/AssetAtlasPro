@@ -58,6 +58,10 @@ export async function updateUnitField(
   }
 
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
 
   const { error } = await supabase
     .from("dd_units")
@@ -80,6 +84,10 @@ export async function deleteUnit(
   projectSectionId: string
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
 
   // First, delete storage files for all captures belonging to this unit
   const { data: captures } = await supabase

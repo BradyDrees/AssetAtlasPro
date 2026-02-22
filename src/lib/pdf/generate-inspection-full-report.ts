@@ -108,7 +108,6 @@ export async function generateInspectionFullReport(
               break;
             }
             const b64 = await fetchAndResizeImage(
-              data.supabase,
               cap.image_path
             );
             const pLabel = finding.priority
@@ -153,7 +152,6 @@ export async function generateInspectionFullReport(
                 break;
               }
               const b64 = await fetchAndResizeImage(
-                data.supabase,
                 cap.image_path
               );
               photos.push({
@@ -182,7 +180,6 @@ export async function generateInspectionFullReport(
             break;
           }
           const b64 = await fetchAndResizeImage(
-            data.supabase,
             cap.image_path
           );
           photos.push({

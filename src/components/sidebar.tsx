@@ -262,7 +262,12 @@ export function Sidebar({ user }: { user: User }) {
           {!collapsed && (
             <p className="text-sm text-content-tertiary truncate mb-2">{user.email}</p>
           )}
-          <form action={signOut}>
+          <form action={signOut} onSubmit={() => {
+            // Clear service worker cache to prevent cross-user data leakage
+            if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
+              navigator.serviceWorker.controller.postMessage({ type: "CLEAR_AUTH_CACHE" });
+            }
+          }}>
             <button
               type="submit"
               className={`text-sm text-red-500 hover:text-red-700 font-medium transition-colors ${

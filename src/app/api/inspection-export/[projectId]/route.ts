@@ -13,6 +13,7 @@ import { generateInspectionPhotoZip } from "@/lib/pdf/generate-inspection-photo-
 import { generateInspectionExcel } from "@/lib/pdf/generate-inspection-excel";
 
 export const runtime = "nodejs";
+export const maxDuration = 300; // 5 minutes for large exports
 
 const VALID_FORMATS = new Set(["full", "summary", "photos", "zip", "excel"]);
 

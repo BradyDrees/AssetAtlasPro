@@ -5,7 +5,6 @@
  */
 
 import { createClient } from "@/lib/supabase/server";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import type {
   UnitTurnBatch,
   UnitTurnBatchUnit,
@@ -19,7 +18,6 @@ import type {
 
 export interface UnitTurnExportData {
   batch: UnitTurnBatch;
-  supabase: SupabaseClient;
   units: UnitTurnBatchUnit[];
   categories: UnitTurnCategory[];
   // Per-unit lookups
@@ -147,7 +145,6 @@ export async function fetchUnitTurnData(
 
   return {
     batch: batch as UnitTurnBatch,
-    supabase,
     units,
     categories,
     itemsByUnit,

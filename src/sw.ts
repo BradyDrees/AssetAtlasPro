@@ -57,4 +57,13 @@ const serwist = new Serwist({
   runtimeCaching: [...supabaseCache, ...defaultCache],
 });
 
+// Clear PostgREST cache on sign-out to prevent cross-user data leakage
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "CLEAR_AUTH_CACHE") {
+    caches.delete("supabase-postgrest").then(() => {
+      console.log("[SW] Cleared PostgREST cache on auth change");
+    });
+  }
+});
+
 serwist.addEventListeners();

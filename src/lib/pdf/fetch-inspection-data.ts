@@ -5,7 +5,6 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { INSPECTION_GROUP_ORDER } from "@/lib/inspection-sections";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import type {
   InspectionProject,
   InspectionProjectSectionWithDetails,
@@ -42,7 +41,6 @@ export interface InspectionExportMetrics {
 
 export interface InspectionExportData {
   project: InspectionProject;
-  supabase: SupabaseClient;
   sectionsByGroup: {
     groupName: string;
     sections: InspectionProjectSectionWithDetails[];
@@ -335,7 +333,6 @@ export async function fetchInspectionData(
 
   return {
     project: project as InspectionProject,
-    supabase,
     sectionsByGroup,
     enabledSections: allSections,
     findings,

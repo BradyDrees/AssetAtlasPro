@@ -110,7 +110,7 @@ export async function generateInspectionPhotoZip(
 
   // Download with bounded concurrency
   const downloadAndAdd = async (entry: ZipEntry) => {
-    const buf = await downloadImageBuffer(data.supabase, entry.imagePath);
+    const buf = await downloadImageBuffer(entry.imagePath);
     if (buf) {
       zip.file(`${entry.folder}/${entry.filename}`, buf);
     }

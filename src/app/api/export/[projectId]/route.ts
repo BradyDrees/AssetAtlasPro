@@ -13,6 +13,7 @@ import { generatePhotoZip } from "@/lib/pdf/generate-photo-zip";
 import { generateExcel } from "@/lib/pdf/generate-csv";
 
 export const runtime = "nodejs";
+export const maxDuration = 300; // 5 minutes for large exports
 
 const VALID_FORMATS = new Set(["full", "summary", "photos", "zip", "excel"]);
 

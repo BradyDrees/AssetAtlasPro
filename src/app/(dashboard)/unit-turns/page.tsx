@@ -3,8 +3,6 @@ import { getTranslations } from "next-intl/server";
 import { CreateBatchButton } from "@/components/unit-turn/create-batch-button";
 import { BatchCard } from "@/components/unit-turn/batch-card";
 
-export const dynamic = "force-dynamic";
-
 export default async function UnitTurnsPage() {
   const supabase = await createClient();
   const t = await getTranslations();

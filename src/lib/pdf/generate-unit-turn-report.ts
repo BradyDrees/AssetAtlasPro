@@ -297,7 +297,7 @@ export async function generateUnitTurnReport(
           ? `${toTitleCase(cat.name)} — ${toTitleCase(matchItem.template_item?.name ?? "")}`
           : toTitleCase(cat.name);
 
-        const base64 = await fetchAndResizeImage(data.supabase, photo.image_path);
+        const base64 = await fetchAndResizeImage(photo.image_path);
         if (base64) {
           catPhotos.push({ base64, caption });
         }

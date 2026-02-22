@@ -6,7 +6,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { GROUP_ORDER } from "@/lib/dd-sections";
 import { CONDITION_LABELS } from "@/lib/types";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import type {
   DDProject,
   DDUnit,
@@ -34,7 +33,6 @@ export interface ExportMetrics {
 
 export interface ProjectExportData {
   project: DDProject;
-  supabase: SupabaseClient;
   sectionsByGroup: {
     groupName: string;
     sections: DDProjectSectionWithDetails[];
@@ -269,7 +267,6 @@ export async function fetchProjectData(
 
   return {
     project: project as DDProject,
-    supabase,
     sectionsByGroup,
     units: allUnits,
     sectionItems: allItems,

@@ -82,7 +82,6 @@ export async function generateFullReport(
                 break;
               }
               const b64 = await fetchAndResizeImage(
-                data.supabase,
                 cap.image_path
               );
               const gradeStr = unit.unit_grade
@@ -114,7 +113,6 @@ export async function generateFullReport(
               break;
             }
             const b64 = await fetchAndResizeImage(
-              data.supabase,
               cap.image_path
             );
             photos.push({
@@ -142,7 +140,6 @@ export async function generateFullReport(
                 break;
               }
               const b64 = await fetchAndResizeImage(
-                data.supabase,
                 cap.image_path
               );
               const ratingStr = item.condition_rating
@@ -167,7 +164,6 @@ export async function generateFullReport(
               break;
             }
             const b64 = await fetchAndResizeImage(
-              data.supabase,
               cap.image_path
             );
             photos.push({

@@ -152,6 +152,7 @@ export async function bulkCreateInspectionUnits(
   let created = 0;
   let skipped = 0;
   const errors: string[] = [];
+  const validRows: Record<string, any>[] = [];
 
   for (const row of rows) {
     const bldg = (row.building ?? "").toString().trim();
@@ -187,15 +188,20 @@ export async function bulkCreateInspectionUnits(
       insertData.description = row.description.trim();
     }
 
+    validRows.push(insertData);
+    existingSet.add(key);
+  }
+
+  // Batch insert all valid rows at once (instead of N sequential queries)
+  if (validRows.length > 0) {
     const { error } = await supabase
       .from("inspection_units")
-      .insert(insertData);
+      .insert(validRows);
 
     if (error) {
-      errors.push(`${bldg} ${unit}: ${error.message}`);
+      errors.push(`Batch insert failed: ${error.message}`);
     } else {
-      created++;
-      existingSet.add(key);
+      created = validRows.length;
     }
   }
 
@@ -213,6 +219,10 @@ export async function deleteInspectionUnit(
   projectSectionId: string
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
 
   // First, delete storage files for all captures belonging to this unit
   const { data: captures } = await supabase

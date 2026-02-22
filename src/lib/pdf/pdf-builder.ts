@@ -7,7 +7,8 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import sharp from "sharp";
-import type { SupabaseClient } from "@supabase/supabase-js";
+// Storage base URL for direct public access (no Supabase client needed)
+const STORAGE_BASE_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/dd-captures`;
 import type { DDProject, DDUnit, DDSectionItem, DDCapture } from "@/lib/types";
 import { CONDITION_LABELS } from "@/lib/types";
 import {
@@ -100,11 +101,11 @@ export function ensureSpace(
 const UNSUPPORTED_EXTS = new Set(["heic", "heif"]);
 
 /**
- * Downloads an image from Supabase Storage.
+ * Downloads an image from Supabase Storage via direct public URL.
+ * No Supabase client needed — uses the public storage endpoint.
  * Returns the raw buffer or null on failure.
  */
 export async function downloadImageBuffer(
-  supabase: SupabaseClient,
   imagePath: string
 ): Promise<Buffer | null> {
   try {
@@ -114,16 +115,15 @@ export async function downloadImageBuffer(
       return null;
     }
 
-    const { data, error } = await supabase.storage
-      .from("dd-captures")
-      .download(imagePath);
+    const url = `${STORAGE_BASE_URL}/${imagePath}`;
+    const res = await fetch(url);
 
-    if (error || !data) {
-      console.warn("Image download failed:", imagePath, error?.message);
+    if (!res.ok) {
+      console.warn("Image download failed:", imagePath, res.status);
       return null;
     }
 
-    const ab = await data.arrayBuffer();
+    const ab = await res.arrayBuffer();
     return Buffer.from(ab);
   } catch (err) {
     console.warn("Image download error:", imagePath, err);
@@ -154,10 +154,9 @@ export async function resizeImageForPdf(buf: Buffer): Promise<string> {
  * Returns base64 data URL or empty string.
  */
 export async function fetchAndResizeImage(
-  supabase: SupabaseClient,
   imagePath: string
 ): Promise<string> {
-  const buf = await downloadImageBuffer(supabase, imagePath);
+  const buf = await downloadImageBuffer(imagePath);
   if (!buf) return "";
   return resizeImageForPdf(buf);
 }

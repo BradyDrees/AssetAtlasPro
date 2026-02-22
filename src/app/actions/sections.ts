@@ -9,6 +9,10 @@ export async function toggleProjectSection(
   enabled: boolean
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
 
   const { error } = await supabase
     .from("dd_project_sections")

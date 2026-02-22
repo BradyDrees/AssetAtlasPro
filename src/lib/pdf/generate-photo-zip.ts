@@ -5,7 +5,6 @@
  */
 
 import JSZip from "jszip";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ProjectExportData } from "./fetch-project-data";
 import { downloadImageBuffer } from "./pdf-builder";
 
@@ -112,7 +111,7 @@ export async function generatePhotoZip(
 
   // Download with bounded concurrency
   const downloadAndAdd = async (entry: ZipEntry) => {
-    const buf = await downloadImageBuffer(data.supabase, entry.imagePath);
+    const buf = await downloadImageBuffer(entry.imagePath);
     if (buf) {
       zip.file(`${entry.folder}/${entry.filename}`, buf);
     }

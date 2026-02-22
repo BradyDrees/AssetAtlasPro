@@ -59,6 +59,10 @@ export async function updateSectionItemField(
   }
 
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
 
   const { error } = await supabase
     .from("dd_section_items")
@@ -82,6 +86,10 @@ export async function deleteSectionItem(
   projectSectionId: string
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
 
   // First, delete storage files for all captures belonging to this item
   const { data: captures } = await supabase

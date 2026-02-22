@@ -62,7 +62,6 @@ export async function generateInspectionPhotoBook(
         const caps = data.capturesByFinding[f.id] ?? [];
         for (const cap of caps) {
           const b64 = await fetchAndResizeImage(
-            data.supabase,
             cap.image_path
           );
           const pLabel = f.priority ? `P${f.priority}` : "Good";
@@ -80,7 +79,6 @@ export async function generateInspectionPhotoBook(
           const caps = data.capturesByUnit[unit.id] ?? [];
           for (const cap of caps) {
             const b64 = await fetchAndResizeImage(
-              data.supabase,
               cap.image_path
             );
             allPhotos.push({
@@ -94,7 +92,7 @@ export async function generateInspectionPhotoBook(
       // Section-level captures
       const sectionCaptures = data.capturesBySection[ps.id] ?? [];
       for (const cap of sectionCaptures) {
-        const b64 = await fetchAndResizeImage(data.supabase, cap.image_path);
+        const b64 = await fetchAndResizeImage(cap.image_path);
         allPhotos.push({
           base64: b64,
           caption: `${section.name}${cap.caption ? " — " + cap.caption : ""}`,

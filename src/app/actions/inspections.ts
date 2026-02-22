@@ -107,6 +107,20 @@ export async function updateInspectionProjectStatus(
   status: ProjectStatus
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  // Verify ownership
+  const { data: project } = await supabase
+    .from("inspection_projects")
+    .select("owner_id")
+    .eq("id", id)
+    .single();
+  if (!project || project.owner_id !== user.id) {
+    throw new Error("Only the project owner can change status");
+  }
 
   const { error } = await supabase
     .from("inspection_projects")
@@ -182,6 +196,10 @@ export async function toggleInspectionSection(
   enabled: boolean
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
 
   const { error } = await supabase
     .from("inspection_project_sections")
@@ -203,6 +221,10 @@ export async function updateInspectionSectionRating(
   conditionRating: number | null
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
 
   const { error } = await supabase
     .from("inspection_project_sections")
@@ -223,6 +245,10 @@ export async function updateInspectionSectionRul(
   rulBucket: string | null
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
 
   const { error } = await supabase
     .from("inspection_project_sections")
@@ -243,6 +269,10 @@ export async function toggleInspectionSectionNA(
   isNa: boolean
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
 
   const { error } = await supabase
     .from("inspection_project_sections")
@@ -261,6 +291,10 @@ export async function updateInspectionSectionNotes(
   notes: string
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
 
   const { error } = await supabase
     .from("inspection_project_sections")

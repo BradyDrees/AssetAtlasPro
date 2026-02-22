@@ -131,6 +131,11 @@
         "title": "Unit Turns",
         "summary": "Make-ready checklists with exportable turn packages.",
         "detail": "Manage make-ready workflows unit by unit. Run through room-by-room checklists, scope paint and flooring, assess appliance condition, and capture before/after photos. Export completed turn packages as PDF or Excel so maintenance crews, vendors, and ownership all stay on the same page."
+      },
+      "dealAnalysis": {
+        "title": "Deal Analysis",
+        "summary": "Financial underwriting and deal modeling tools.",
+        "detail": "Model acquisition deals with a full financial calculator. Input deal pricing, financing terms, and unit mix data. Run pro forma projections, analyze returns and exit scenarios, score deals against investment criteria, and evaluate flip opportunities — all from your phone or desktop."
       }
     }
   },
@@ -264,6 +269,29 @@
       "commonAreas": "Common Areas",
       "amenities": "Amenities",
       "units": "Units"
+    },
+    "ddSections": {
+      "roof": "Roof",
+      "building_exterior": "Building Exterior",
+      "parking__drives": "Parking & Drives",
+      "landscaping": "Landscaping",
+      "signage": "Signage",
+      "fencing__gates": "Fencing & Gates",
+      "hvac": "HVAC",
+      "plumbing": "Plumbing",
+      "electrical": "Electrical",
+      "fire__life_safety": "Fire & Life Safety",
+      "elevators": "Elevators",
+      "lobby__hallways": "Lobby & Hallways",
+      "leasing_office": "Leasing Office",
+      "laundry_facilities": "Laundry Facilities",
+      "storage_areas": "Storage Areas",
+      "stairwells": "Stairwells",
+      "pool__spa": "Pool & Spa",
+      "fitness_center": "Fitness Center",
+      "clubhouse": "Clubhouse",
+      "playground": "Playground",
+      "unit_interiors": "Unit Interiors"
     },
     "inspSections": {
       "site_drainage_grading": "Site Drainage & Grading",
@@ -423,7 +451,7 @@
     "connectToInternet": "Connect to the internet to load checklist items.",
     "addUnit": "Add Unit",
     "paint": "Paint",
-    "bdBa": "BD / BA",
+    "bdBa": "BD/BA",
     "selectBdBa": "Select BD/BA...",
     "appliances": "Appliances",
     "grading": "Grading",
@@ -478,6 +506,8 @@
       "paint": "Paint",
       "cleaning": "Cleaning"
     },
+    "newBatch": "+ New Batch",
+    "newBatchTitle": "New Turn Batch",
     "previousUnit": "Previous Unit",
     "nextUnit": "Next Unit",
     "batch": "Batch",

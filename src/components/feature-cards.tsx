@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
-const featureKeys = ["dueDiligence", "inspections", "unitTurns"] as const;
+const featureKeys = ["dueDiligence", "inspections", "unitTurns", "dealAnalysis"] as const;
 
 const featureStyles = [
   {
@@ -48,6 +48,20 @@ const featureStyles = [
       />
     ),
   },
+  {
+    iconBg: "bg-gold-500/20",
+    iconColor: "text-gold-300",
+    accentColor: "text-gold-400",
+    accentHover: "group-hover:text-gold-300",
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+        d="M3 3v18h18M7 16l4-4 4 4 5-6"
+      />
+    ),
+  },
 ];
 
 export function FeatureCards() {
@@ -55,7 +69,7 @@ export function FeatureCards() {
   const t = useTranslations();
 
   return (
-    <div className="grid md:grid-cols-3 gap-6">
+    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
       {featureKeys.map((key, i) => {
         const isOpen = expanded === i;
         const f = featureStyles[i];

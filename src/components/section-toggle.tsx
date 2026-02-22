@@ -63,7 +63,7 @@ export function SectionToggle({
         <span
           className={`text-sm ${enabled ? "text-content-primary" : "text-content-muted"}`}
         >
-          {tInsp.has(`inspSections.${nameToKey(projectSection.section.name)}`) ? tInsp(`inspSections.${nameToKey(projectSection.section.name)}`) : projectSection.section.name}
+          {tInsp.has(`ddSections.${nameToKey(projectSection.section.name)}`) ? tInsp(`ddSections.${nameToKey(projectSection.section.name)}`) : tInsp.has(`inspSections.${nameToKey(projectSection.section.name)}`) ? tInsp(`inspSections.${nameToKey(projectSection.section.name)}`) : projectSection.section.name}
         </span>
         {isUnitMode && (
           <span className="text-xs text-brand-600 font-medium">{t("grading")}</span>

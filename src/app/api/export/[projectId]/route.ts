@@ -95,11 +95,6 @@ export async function GET(
         return NextResponse.json({ error: "Invalid format" }, { status: 400 });
     }
 
-    const elapsed = Date.now() - startTime;
-    console.log(
-      `Export ${format} generated in ${elapsed}ms for ${data.captures.length} image captures (${data.allCaptures.length} total captures)`
-    );
-
     // Convert to Uint8Array for NextResponse compatibility
     const body = new Uint8Array(
       fileBuffer instanceof Buffer ? fileBuffer.buffer.slice(fileBuffer.byteOffset, fileBuffer.byteOffset + fileBuffer.byteLength) : fileBuffer

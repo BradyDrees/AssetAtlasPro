@@ -144,7 +144,7 @@ export default async function DashboardPage() {
 
             {/* Card body */}
             <div className="px-5 py-4">
-              <p className="text-sm text-content-quaternary mb-3">{m.description}</p>
+              <p className="text-sm text-content-quaternary mb-3 line-clamp-2">{m.description}</p>
               <div className="flex items-center justify-between">
                 <span className="text-2xl font-bold text-content-primary">
                   {m.count}

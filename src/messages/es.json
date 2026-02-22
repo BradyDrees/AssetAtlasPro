@@ -131,6 +131,11 @@
         "title": "Rotacion de Unidades",
         "summary": "Listas de verificacion de preparacion con paquetes de rotacion exportables.",
         "detail": "Administra los flujos de trabajo de preparacion unidad por unidad. Realiza listas de verificacion cuarto por cuarto, evalua pintura y pisos, revisa el estado de los electrodomesticos y captura fotos de antes y despues. Exporta paquetes de rotacion completados como PDF o Excel para que equipos de mantenimiento, proveedores y propietarios esten en la misma pagina."
+      },
+      "dealAnalysis": {
+        "title": "Analisis de Negocio",
+        "summary": "Herramientas de suscripcion financiera y modelado de negocios.",
+        "detail": "Modele negocios de adquisicion con una calculadora financiera completa. Ingrese precios del negocio, terminos de financiamiento y datos de mezcla de unidades. Ejecute proyecciones pro forma, analice retornos y escenarios de salida, califique negocios contra criterios de inversion y evalue oportunidades de flip — todo desde su telefono o escritorio."
       }
     }
   },
@@ -264,6 +269,29 @@
       "commonAreas": "Areas Comunes",
       "amenities": "Amenidades",
       "units": "Unidades"
+    },
+    "ddSections": {
+      "roof": "Techo",
+      "building_exterior": "Exterior del Edificio",
+      "parking__drives": "Estacionamiento y Accesos",
+      "landscaping": "Jardineria",
+      "signage": "Senalizacion",
+      "fencing__gates": "Cercas y Portones",
+      "hvac": "Climatizacion",
+      "plumbing": "Plomeria",
+      "electrical": "Electrico",
+      "fire__life_safety": "Seguridad contra Incendios",
+      "elevators": "Elevadores",
+      "lobby__hallways": "Vestibulo y Pasillos",
+      "leasing_office": "Oficina de Arrendamiento",
+      "laundry_facilities": "Instalaciones de Lavanderia",
+      "storage_areas": "Areas de Almacenamiento",
+      "stairwells": "Escaleras",
+      "pool__spa": "Piscina y Spa",
+      "fitness_center": "Gimnasio",
+      "clubhouse": "Salon Social",
+      "playground": "Area de Juegos",
+      "unit_interiors": "Interiores de Unidades"
     },
     "inspSections": {
       "site_drainage_grading": "Drenaje y Nivelacion del Sitio",
@@ -423,7 +451,7 @@
     "connectToInternet": "Conéctese a internet para cargar los elementos de la lista.",
     "addUnit": "Agregar Unidad",
     "paint": "Pintura",
-    "bdBa": "Rec / Ban",
+    "bdBa": "Rec/Ban",
     "selectBdBa": "Seleccionar Rec/Ban...",
     "appliances": "Electrodomésticos",
     "grading": "Calificación",
@@ -478,6 +506,8 @@
       "paint": "Pintura",
       "cleaning": "Limpieza"
     },
+    "newBatch": "+ Nuevo Lote",
+    "newBatchTitle": "Nuevo Lote de Rotacion",
     "previousUnit": "Unidad Anterior",
     "nextUnit": "Siguiente Unidad",
     "batch": "Lote",

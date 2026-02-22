@@ -32,19 +32,19 @@ export function DealSection({ title, color = "brand", children }: DealSectionPro
   return (
     <div className="mb-4">
       <div
-        className={`px-4 py-2.5 border-l-3 rounded-r-md mb-1 ${
+        className={`px-3 sm:px-4 py-2 sm:py-2.5 border-l-3 rounded-r-md mb-1 ${
           colorMap[color] ?? colorMap.brand
         }`}
       >
         <h3
-          className={`text-[11px] font-bold uppercase tracking-widest ${
+          className={`text-[10px] sm:text-[11px] font-bold uppercase tracking-widest truncate ${
             textColorMap[color] ?? textColorMap.brand
           }`}
         >
           {title}
         </h3>
       </div>
-      <div className="px-4">{children}</div>
+      <div className="px-3 sm:px-4">{children}</div>
     </div>
   );
 }

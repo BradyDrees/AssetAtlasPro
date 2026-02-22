@@ -75,7 +75,7 @@ export function TabIncomeExpenses({ d, calc, set }: Props) {
       {/* NOI Summary */}
       <div className="mt-4 bg-surface-primary rounded-lg border border-edge-primary overflow-hidden">
         <DealSection title={t("sections.noiSummary")} color="brand">
-          <div className="grid grid-cols-3 gap-0">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-0">
             <DealCalcField label={t("fields.egi")} value={calc.egi} />
             <DealCalcField label={t("fields.totalExpReserves")} value={calc.totalExp + calc.reserves} />
             <DealCalcField label={t("fields.noi")} value={calc.noi} bold highlight />

@@ -48,7 +48,7 @@ export function TabReturnsExit({ d, calc }: Props) {
         {/* Refi Scenario */}
         <div className="md:col-span-2 bg-surface-primary rounded-lg border border-edge-primary overflow-hidden">
           <DealSection title={t("sections.refiScenario", { year: d.refiYear })} color="purple">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-0">
               <DealCalcField label={t("fields.refiYearNOI", { year: d.refiYear })} value={calc.refiYearNOI} />
               <DealCalcField label={t("fields.appraisedValue")} value={calc.refiAppraisedVal} />
               <DealCalcField label={t("fields.newLoan", { ltv: fmt(d.refiLTV, "pct") })} value={calc.refiLoanAmt} />

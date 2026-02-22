@@ -27,14 +27,14 @@ function RehabTable({
 }) {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-xs">
+      <table className="w-full text-[11px] sm:text-xs">
         <thead>
           <tr className="border-b border-edge-secondary">
-            <th className="text-left py-2 px-2 text-content-muted font-medium">{t("rehabHeaders.item")}</th>
-            <th className="text-right py-2 px-2 text-content-muted font-medium">{t("rehabHeaders.budget")}</th>
-            <th className="text-right py-2 px-2 text-content-muted font-medium">{t("rehabHeaders.unitCost")}</th>
-            <th className="text-right py-2 px-2 text-content-muted font-medium">{t("rehabHeaders.qty")}</th>
-            <th className="text-right py-2 px-2 text-content-muted font-medium">{t("rehabHeaders.total")}</th>
+            <th className="text-left py-2 px-1 sm:px-2 text-content-muted font-medium">{t("rehabHeaders.item")}</th>
+            <th className="text-right py-2 px-1 sm:px-2 text-content-muted font-medium">{t("rehabHeaders.budget")}</th>
+            <th className="text-right py-2 px-1 sm:px-2 text-content-muted font-medium">{t("rehabHeaders.unitCost")}</th>
+            <th className="text-right py-2 px-1 sm:px-2 text-content-muted font-medium">{t("rehabHeaders.qty")}</th>
+            <th className="text-right py-2 px-1 sm:px-2 text-content-muted font-medium">{t("rehabHeaders.total")}</th>
           </tr>
         </thead>
         <tbody>
@@ -42,35 +42,35 @@ function RehabTable({
             const total = item.budget || item.unitCost * item.qty;
             return (
               <tr key={i} className="border-b border-edge-tertiary">
-                <td className="py-1 px-1">
+                <td className="py-1 px-0.5 sm:px-1">
                   <input
-                    className="w-full px-2 py-1 text-xs bg-surface-secondary border border-edge-secondary rounded text-content-primary"
+                    className="w-full px-1.5 sm:px-2 py-1 text-xs bg-surface-secondary border border-edge-secondary rounded text-content-primary"
                     value={item.name}
                     onChange={(e) => onUpdate(i, "name", e.target.value)}
                   />
                 </td>
-                <td className="py-1 px-1">
+                <td className="py-1 px-0.5 sm:px-1">
                   <input
-                    className="w-24 px-2 py-1 text-xs text-right bg-surface-secondary border border-edge-secondary rounded font-mono text-content-primary"
+                    className="w-18 sm:w-24 px-1.5 sm:px-2 py-1 text-xs text-right bg-surface-secondary border border-edge-secondary rounded font-mono text-content-primary"
                     value={item.budget || ""}
                     onChange={(e) => onUpdate(i, "budget", parseFloat(e.target.value) || 0)}
                   />
                 </td>
-                <td className="py-1 px-1">
+                <td className="py-1 px-0.5 sm:px-1">
                   <input
-                    className="w-20 px-2 py-1 text-xs text-right bg-surface-secondary border border-edge-secondary rounded font-mono text-content-primary"
+                    className="w-16 sm:w-20 px-1.5 sm:px-2 py-1 text-xs text-right bg-surface-secondary border border-edge-secondary rounded font-mono text-content-primary"
                     value={item.unitCost || ""}
                     onChange={(e) => onUpdate(i, "unitCost", parseFloat(e.target.value) || 0)}
                   />
                 </td>
-                <td className="py-1 px-1">
+                <td className="py-1 px-0.5 sm:px-1">
                   <input
-                    className="w-14 px-2 py-1 text-xs text-right bg-surface-secondary border border-edge-secondary rounded font-mono text-content-primary"
+                    className="w-12 sm:w-14 px-1.5 sm:px-2 py-1 text-xs text-right bg-surface-secondary border border-edge-secondary rounded font-mono text-content-primary"
                     value={item.qty || ""}
                     onChange={(e) => onUpdate(i, "qty", parseInt(e.target.value) || 0)}
                   />
                 </td>
-                <td className="text-right px-2 font-mono text-content-secondary font-semibold">
+                <td className="text-right px-1 sm:px-2 font-mono text-content-secondary font-semibold whitespace-nowrap">
                   {fmt(total)}
                 </td>
               </tr>

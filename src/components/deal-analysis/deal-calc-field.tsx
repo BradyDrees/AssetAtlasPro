@@ -21,20 +21,20 @@ export function DealCalcField({
 }: DealCalcFieldProps) {
   return (
     <div
-      className={`flex items-center py-1.5 border-b border-edge-tertiary gap-2 ${
+      className={`flex items-center py-1.5 border-b border-edge-tertiary gap-1.5 sm:gap-2 ${
         highlight ? "bg-brand-500/5" : ""
       }`}
-      style={{ marginLeft: indent * 20 }}
+      style={{ marginLeft: indent * 16 }}
     >
       <label
-        className={`flex-1 text-xs leading-tight ${
+        className={`flex-1 text-[11px] sm:text-xs leading-tight min-w-0 ${
           bold ? "text-content-primary font-semibold" : "text-content-tertiary"
         }`}
       >
         {label}
       </label>
       <span
-        className={`w-36 md:w-40 text-right text-xs font-mono px-2.5 py-1.5 ${
+        className={`w-28 sm:w-36 md:w-40 shrink-0 text-right text-[11px] sm:text-xs font-mono px-2 sm:px-2.5 py-1.5 ${
           highlight
             ? "text-brand-400 font-semibold"
             : bold

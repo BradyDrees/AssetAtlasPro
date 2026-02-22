@@ -36,13 +36,13 @@ export function DealInputField({
 
   return (
     <div
-      className="flex items-center py-1.5 border-b border-edge-tertiary gap-2"
-      style={{ marginLeft: indent * 20 }}
+      className="flex items-center py-1.5 border-b border-edge-tertiary gap-1.5 sm:gap-2"
+      style={{ marginLeft: indent * 16 }}
     >
-      <label className="flex-1 text-xs text-content-tertiary leading-tight">
+      <label className="flex-1 text-[11px] sm:text-xs text-content-tertiary leading-tight min-w-0">
         {label}
       </label>
-      <div className="relative w-36 md:w-40">
+      <div className="relative w-28 sm:w-36 md:w-40 shrink-0">
         <input
           disabled={disabled}
           className={`w-full px-2.5 py-1.5 text-xs font-mono text-right rounded border transition-all bg-surface-secondary text-content-primary ${

@@ -33,11 +33,11 @@ export function TabScorecard({ d, calc, set }: Props) {
       {/* Financial Scorecard */}
       <div className="bg-surface-primary rounded-lg border border-edge-primary overflow-hidden mb-4">
         <DealSection title={t("sections.financialChecks")} color="green">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 py-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 py-2">
             {calc.fullChecks.map((c) => (
               <div
                 key={c.key}
-                className="flex items-center justify-between px-3 py-2.5 rounded-lg border"
+                className="flex items-center justify-between px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg border"
                 style={{
                   background: c.pass ? "rgba(34,197,94,0.05)" : "rgba(239,68,68,0.05)",
                   borderColor: c.pass ? "rgba(34,197,94,0.2)" : "rgba(239,68,68,0.2)",
@@ -84,13 +84,13 @@ export function TabScorecard({ d, calc, set }: Props) {
       <div className="bg-surface-primary rounded-lg border border-edge-primary overflow-hidden">
         <DealSection title={t("sections.ddChecklist")} color="gold">
           <div className="overflow-x-auto">
-            <table className="w-full text-xs">
+            <table className="w-full text-[11px] sm:text-xs">
               <thead>
                 <tr className="border-b border-edge-secondary">
-                  <th className="text-left py-2 px-2 text-content-muted font-medium">{t("checklistHeaders.item")}</th>
-                  <th className="text-left py-2 px-2 text-content-muted font-medium w-28">{t("checklistHeaders.status")}</th>
-                  <th className="text-left py-2 px-2 text-content-muted font-medium w-28">{t("checklistHeaders.date")}</th>
-                  <th className="text-left py-2 px-2 text-content-muted font-medium">{t("checklistHeaders.notes")}</th>
+                  <th className="text-left py-2 px-1 sm:px-2 text-content-muted font-medium">{t("checklistHeaders.item")}</th>
+                  <th className="text-left py-2 px-1 sm:px-2 text-content-muted font-medium w-24 sm:w-28">{t("checklistHeaders.status")}</th>
+                  <th className="text-left py-2 px-1 sm:px-2 text-content-muted font-medium w-24 sm:w-28">{t("checklistHeaders.date")}</th>
+                  <th className="text-left py-2 px-1 sm:px-2 text-content-muted font-medium">{t("checklistHeaders.notes")}</th>
                 </tr>
               </thead>
               <tbody>

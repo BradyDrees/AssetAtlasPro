@@ -29,7 +29,7 @@ export function DealAnalysisListClient({ deals }: DealAnalysisListClientProps) {
       {/* Create modal */}
       {showCreate && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-          <div className="bg-surface-primary rounded-xl border border-edge-primary shadow-xl max-w-md w-full p-6">
+          <div className="bg-surface-primary rounded-xl border border-edge-primary shadow-xl max-w-md w-full p-4 sm:p-6">
             <h2 className="text-lg font-semibold text-content-primary mb-4">
               {t("dealAnalysis.newDealTitle")}
             </h2>

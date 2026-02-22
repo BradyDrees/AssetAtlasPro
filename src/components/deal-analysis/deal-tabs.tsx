@@ -117,9 +117,9 @@ export function DealTabs({ deal }: DealTabsProps) {
     <div>
       {/* Header */}
       <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-        <div>
-          <h1 className="text-xl font-bold text-content-primary">{deal.name}</h1>
-          <p className="text-sm text-content-tertiary">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-lg sm:text-xl font-bold text-content-primary truncate">{deal.name}</h1>
+          <p className="text-xs sm:text-sm text-content-tertiary truncate">
             {deal.property_name}
             {deal.address ? ` — ${deal.address}` : ""}
           </p>
@@ -138,12 +138,12 @@ export function DealTabs({ deal }: DealTabsProps) {
       </div>
 
       {/* Tab bar — horizontal scroll on mobile */}
-      <div className="flex gap-1 overflow-x-auto pb-2 mb-4 border-b border-edge-primary -mx-4 px-4 md:mx-0 md:px-0">
+      <div className="flex gap-0.5 sm:gap-1 overflow-x-auto pb-2 mb-4 border-b border-edge-primary -mx-4 px-4 md:mx-0 md:px-0 scrollbar-thin">
         {tabs.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-t-lg whitespace-nowrap transition-all ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 text-[11px] sm:text-xs font-medium rounded-t-lg whitespace-nowrap transition-all ${
               tab === t.id
                 ? "bg-brand-500/10 text-brand-400 border-b-2 border-brand-500"
                 : "text-content-tertiary hover:text-content-primary hover:bg-surface-secondary"
@@ -156,7 +156,7 @@ export function DealTabs({ deal }: DealTabsProps) {
       </div>
 
       {/* Mini scorecard strip */}
-      <div className="flex items-center gap-3 mb-4 px-3 py-2 bg-surface-secondary rounded-lg border border-edge-primary overflow-x-auto">
+      <div className="flex items-center gap-2 sm:gap-3 mb-4 px-2 sm:px-3 py-1.5 sm:py-2 bg-surface-secondary rounded-lg border border-edge-primary overflow-x-auto">
         <span className="text-xs text-content-muted uppercase tracking-wider font-medium shrink-0">
           {t("quickScore")}
         </span>
@@ -200,11 +200,11 @@ export function DealTabs({ deal }: DealTabsProps) {
       {/* Delete confirmation modal */}
       {showDelete && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-          <div className="bg-surface-primary rounded-xl border border-edge-primary shadow-xl max-w-sm w-full p-6">
-            <h2 className="text-lg font-semibold text-content-primary mb-2">
+          <div className="bg-surface-primary rounded-xl border border-edge-primary shadow-xl max-w-sm w-full p-4 sm:p-6">
+            <h2 className="text-base sm:text-lg font-semibold text-content-primary mb-2">
               {t("deleteDeal")}
             </h2>
-            <p className="text-sm text-content-tertiary mb-4">
+            <p className="text-xs sm:text-sm text-content-tertiary mb-3 sm:mb-4">
               {t("deleteConfirm")}
             </p>
             <input
@@ -212,22 +212,22 @@ export function DealTabs({ deal }: DealTabsProps) {
               value={deleteConfirm}
               onChange={(e) => setDeleteConfirm(e.target.value.toUpperCase())}
               placeholder={deal.name}
-              className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm mb-4 bg-surface-primary text-content-primary"
+              className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm mb-3 sm:mb-4 bg-surface-primary text-content-primary"
             />
-            <div className="flex gap-3 justify-end">
+            <div className="flex gap-2 sm:gap-3 justify-end">
               <button
                 onClick={() => {
                   setShowDelete(false);
                   setDeleteConfirm("");
                 }}
-                className="px-4 py-2 text-sm text-content-tertiary"
+                className="px-3 sm:px-4 py-2 text-sm text-content-tertiary"
               >
                 {tCommon("cancel")}
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleteConfirm !== deal.name || deleting}
-                className="px-4 py-2 bg-red-600 text-white text-sm rounded-md disabled:opacity-50"
+                className="px-3 sm:px-4 py-2 bg-red-600 text-white text-sm rounded-md disabled:opacity-50"
               >
                 {deleting ? t("deleting") : tCommon("delete")}
               </button>

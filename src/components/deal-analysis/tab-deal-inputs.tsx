@@ -93,7 +93,7 @@ export function TabDealInputs({ d, calc, set }: Props) {
       {/* Total Capital Summary */}
       <div className="mt-4 bg-surface-primary rounded-lg border border-edge-primary overflow-hidden">
         <DealSection title={t("sections.totalCapital")} color="red">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-0">
             <DealCalcField label={t("fields.downPayment")} value={calc.downPmt} highlight />
             <DealCalcField label={t("fields.closingCosts")} value={calc.totalClosing} />
             <DealInputField label={t("fields.rehabBudget")} value={d.rehabBudget} onChange={(v) => set("rehabBudget", v as number)} />

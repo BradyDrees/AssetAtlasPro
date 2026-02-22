@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { UnitCard } from "@/components/unit-card";
 import { AddUnitForm } from "@/components/add-unit-form";
@@ -35,6 +36,8 @@ export function UnitListPage({
 
   const handleDeleteStart = useCallback(() => setIsDeleting(true), []);
   const handleDeleteEnd = useCallback(() => setIsDeleting(false), []);
+  const t = useTranslations("common");
+  const td = useTranslations("dashboard");
 
   // Remember last building for quick unit add
   const lastBuilding =
@@ -61,7 +64,7 @@ export function UnitListPage({
           href="/dashboard"
           className="hover:text-brand-600 transition-colors"
         >
-          Projects
+          {td("projects")}
         </Link>
         <span>/</span>
         <Link
@@ -80,11 +83,11 @@ export function UnitListPage({
           href={`/projects/${projectId}${groupSlug ? `?group=${groupSlug}` : ""}`}
           className="inline-flex items-center gap-1.5 text-sm text-brand-600 font-medium mb-2 hover:text-brand-800 transition-colors"
         >
-          <span>&larr;</span> Back to {projectName}
+          <span>&larr;</span> {t("backTo", { name: projectName })}
         </Link>
         <h1 className="text-2xl font-bold text-content-primary">{sectionName}</h1>
         <p className="text-sm text-content-muted mt-0.5">
-          {units.length} unit{units.length !== 1 ? "s" : ""} inspected
+          {t("unitsInspected", { count: units.length })}
         </p>
       </div>
 
@@ -92,7 +95,7 @@ export function UnitListPage({
       {sortedUnits.length === 0 ? (
         <div className="bg-surface-primary rounded-lg border border-edge-primary p-8 text-center">
           <p className="text-content-quaternary text-sm">
-            No units inspected yet. Tap the + button to add your first unit.
+            {t("noUnitsInspectedYet")}
           </p>
         </div>
       ) : (
@@ -117,7 +120,7 @@ export function UnitListPage({
         className="fixed bottom-6 right-6 z-40 w-16 h-16 bg-brand-600 text-white
                    rounded-full shadow-lg hover:bg-brand-700 active:bg-brand-800
                    flex items-center justify-center transition-colors text-3xl font-light"
-        aria-label="Add unit"
+        aria-label={t("addUnit")}
       >
         +
       </button>

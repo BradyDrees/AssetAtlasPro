@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { updateProjectStatus } from "@/app/actions/projects";
 import { CompleteProjectModal } from "@/components/complete-project-modal";
 import type { ProjectStatus } from "@/lib/types";
@@ -23,6 +24,7 @@ export function ProjectStatusControls({
 }: ProjectStatusControlsProps) {
   const [loading, setLoading] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
+  const t = useTranslations("dashboard");
 
   const handleStatusChange = async (newStatus: ProjectStatus) => {
     setLoading(true);
@@ -43,7 +45,7 @@ export function ProjectStatusControls({
         className="px-5 py-2.5 bg-green-600 text-white text-sm font-semibold rounded-lg
                    hover:bg-green-700 disabled:opacity-50 transition-colors"
       >
-        {loading ? "Starting..." : "Start Inspection"}
+        {loading ? t("starting") : t("startInspection")}
       </button>
     );
   }
@@ -57,7 +59,7 @@ export function ProjectStatusControls({
           className="px-5 py-2.5 bg-brand-600 text-white text-sm font-semibold rounded-lg
                      hover:bg-brand-700 disabled:opacity-50 transition-colors"
         >
-          Mark Complete
+          {t("markComplete")}
         </button>
         {showCompleteModal && (
           <CompleteProjectModal
@@ -78,7 +80,7 @@ export function ProjectStatusControls({
       className="px-5 py-2.5 bg-gray-200 text-content-secondary text-sm font-semibold rounded-lg
                  hover:bg-gray-300 disabled:opacity-50 transition-colors"
     >
-      {loading ? "Reopening..." : "Reopen Project"}
+      {loading ? t("reopening") : t("reopenProject")}
     </button>
   );
 }

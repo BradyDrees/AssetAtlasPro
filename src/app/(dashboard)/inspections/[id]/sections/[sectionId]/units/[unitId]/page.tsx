@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { InspectionUnitDetail } from "@/components/inspection-unit-detail";
 import { SnapshotSync } from "@/components/snapshot-sync";
@@ -68,6 +69,9 @@ export default async function InspectionUnitPage({
   ]);
 
   if (!project || !projectSection || !unit) notFound();
+  const t = await getTranslations("dashboard");
+  const tn = await getTranslations("nav");
+  const tc = await getTranslations("common");
 
   const ps = projectSection as InspectionProjectSectionWithDetails;
   const groupSlug = INSPECTION_GROUP_SLUGS[ps.section.group_name] ?? "";
@@ -149,7 +153,7 @@ export default async function InspectionUnitPage({
           href="/inspections"
           className="hover:text-brand-600 transition-colors"
         >
-          Inspections
+          {tn("inspections")}
         </Link>
         <span>/</span>
         <Link
@@ -177,7 +181,7 @@ export default async function InspectionUnitPage({
         <Link
           href={`/inspections/${projectId}?group=${groupSlug}`}
           className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors"
-          title="Back to project"
+          title={t("backToProject")}
         >
           <svg
             className="w-4 h-4"
@@ -192,7 +196,7 @@ export default async function InspectionUnitPage({
               d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"
             />
           </svg>
-          Project
+          {tc("project")}
         </Link>
         <h1 className="text-2xl font-bold text-content-primary">
           {(unit as InspectionUnit).building} -{" "}

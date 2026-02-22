@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { DD_GROUP_SLUGS } from "@/lib/dd-sections";
 import { ItemRating } from "@/components/item-rating";
@@ -55,6 +56,8 @@ export default async function ItemDetailPage({
     .single();
 
   if (!item) notFound();
+  const t = await getTranslations("dashboard");
+  const tc = await getTranslations("common");
 
   // Fetch captures for this item
   const { data: captures } = await supabase
@@ -91,7 +94,7 @@ export default async function ItemDetailPage({
           href="/dashboard"
           className="hover:text-brand-600 transition-colors"
         >
-          Projects
+          {t("projects")}
         </Link>
         <span>/</span>
         <Link
@@ -117,7 +120,7 @@ export default async function ItemDetailPage({
           href={`/projects/${projectId}/sections/${projectSectionId}`}
           className="inline-flex items-center gap-1.5 text-sm text-brand-600 font-medium mb-2 hover:text-brand-800 transition-colors"
         >
-          <span>&larr;</span> Back to {projectSection.section.name}
+          <span>&larr;</span> {tc("backTo", { name: projectSection.section.name })}
         </Link>
         <h1 className="text-2xl font-bold text-content-primary">{item.name}</h1>
         <p className="text-sm text-content-muted mt-0.5">
@@ -149,7 +152,7 @@ export default async function ItemDetailPage({
 
         {/* Photos & Media */}
         <h2 className="text-sm font-semibold text-content-quaternary uppercase tracking-wide mb-3 pt-2">
-          Photos & Media
+          {tc("photosAndMedia")}
         </h2>
         <CaptureGallery
           captures={(captures as DDCapture[]) ?? []}

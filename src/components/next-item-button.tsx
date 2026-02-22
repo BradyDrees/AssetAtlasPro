@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { AddSectionItemForm } from "@/components/add-section-item-form";
 
 interface NextItemButtonProps {
@@ -13,6 +14,7 @@ export function NextItemButton({
   projectSectionId,
 }: NextItemButtonProps) {
   const [showForm, setShowForm] = useState(false);
+  const t = useTranslations("common");
 
   return (
     <>
@@ -22,9 +24,9 @@ export function NextItemButton({
                    rounded-full shadow-lg hover:bg-green-700 active:bg-green-800
                    flex items-center justify-center gap-2
                    transition-colors text-sm font-semibold"
-        aria-label="Add next item"
+        aria-label={t("addNextItem")}
       >
-        + Next Item
+        {t("nextItem")}
       </button>
 
       {showForm && (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { deleteSectionItem } from "@/app/actions/section-items";
 import { CONDITION_LABELS, type ConditionRating } from "@/lib/types";
@@ -34,12 +35,14 @@ export function SectionItemCard({
   onDeleteEnd,
 }: SectionItemCardProps) {
   const [deleting, setDeleting] = useState(false);
+  const t = useTranslations("common");
+  const td = useTranslations("dashboard");
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (isListBusy) return; // another delete is in-flight
-    if (!confirm(`Delete "${item.name}"? All photos will be removed.`))
+    if (!confirm(t("deleteItemConfirm", { name: item.name })))
       return;
 
     setDeleting(true);
@@ -86,7 +89,7 @@ export function SectionItemCard({
           {/* Photo count */}
           {captureCount > 0 && (
             <span className="text-xs text-content-muted">
-              {captureCount} photo{captureCount !== 1 ? "s" : ""}
+              {td("photoCount", { count: captureCount })}
             </span>
           )}
         </div>
@@ -96,7 +99,7 @@ export function SectionItemCard({
           onClick={handleDelete}
           disabled={deleting || isListBusy}
           className="text-content-muted hover:text-red-500 transition-colors p-1 flex-shrink-0 disabled:opacity-30"
-          aria-label="Delete item"
+          aria-label={t("deleteItem")}
         >
           <svg
             className="w-4 h-4"

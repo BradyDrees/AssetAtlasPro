@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/modal";
 import { InspectionProjectForm } from "@/components/inspection-project-form";
 import { DeleteInspectionModal } from "@/components/delete-inspection-modal";
@@ -23,6 +24,7 @@ export function InspectionHeaderMenu({
   const menuRef = useRef<HTMLDivElement>(null);
 
   const isOwner = role === "owner";
+  const t = useTranslations("dashboard");
 
   // Close menu on click outside
   useEffect(() => {
@@ -40,7 +42,7 @@ export function InspectionHeaderMenu({
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="p-2 text-content-muted hover:text-content-tertiary hover:bg-surface-tertiary rounded-lg transition-colors"
-        aria-label="Inspection menu"
+        aria-label={t("inspectionMenu")}
       >
         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
           <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
@@ -57,7 +59,7 @@ export function InspectionHeaderMenu({
               }}
               className="w-full text-left px-4 py-2 text-sm text-content-secondary hover:bg-surface-secondary transition-colors"
             >
-              Share Inspection
+              {t("shareInspection")}
             </button>
           )}
           {isOwner && (
@@ -68,7 +70,7 @@ export function InspectionHeaderMenu({
               }}
               className="w-full text-left px-4 py-2 text-sm text-content-secondary hover:bg-surface-secondary transition-colors"
             >
-              Edit Inspection
+              {t("editInspection")}
             </button>
           )}
           <a
@@ -76,7 +78,7 @@ export function InspectionHeaderMenu({
             onClick={() => setIsOpen(false)}
             className="block px-4 py-2 text-sm text-content-secondary hover:bg-surface-secondary transition-colors"
           >
-            Review &amp; Export
+            {t("reviewAndExportMenu")}
           </a>
           {isOwner && (
             <>
@@ -88,7 +90,7 @@ export function InspectionHeaderMenu({
                 }}
                 className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
               >
-                Delete Inspection
+                {t("deleteInspection")}
               </button>
             </>
           )}
@@ -110,7 +112,7 @@ export function InspectionHeaderMenu({
         <Modal
           isOpen={true}
           onClose={() => setShowEdit(false)}
-          title="Edit Inspection"
+          title={t("editInspection")}
         >
           <InspectionProjectForm
             project={project}

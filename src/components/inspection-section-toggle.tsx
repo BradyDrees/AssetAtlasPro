@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { toggleInspectionSection } from "@/app/actions/inspections";
 import type { InspectionProjectSectionWithDetails } from "@/lib/inspection-types";
@@ -33,6 +34,7 @@ export function InspectionSectionToggle({
 
   const isUnitMode = projectSection.section.is_unit_mode;
   const isBusy = loading || isGroupBusy;
+  const t = useTranslations("inspectionUI");
 
   const handleToggle = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -70,7 +72,7 @@ export function InspectionSectionToggle({
           {projectSection.display_name_override ?? projectSection.section.name}
         </span>
         {isUnitMode && (
-          <span className="text-xs text-brand-600 font-medium">Unit Mode</span>
+          <span className="text-xs text-brand-600 font-medium">{t("unitMode")}</span>
         )}
         {/* Condition rating badge */}
         {enabled && conditionLabel && (
@@ -85,19 +87,19 @@ export function InspectionSectionToggle({
               RUL_COLORS[rulBucket as keyof typeof RUL_COLORS] ?? "bg-surface-tertiary text-content-tertiary"
             }`}
           >
-            RUL: {rulBucket}
+            {t("rulLabel", { bucket: rulBucket })}
           </span>
         )}
         {/* Unit count for unit-mode sections */}
         {enabled && isUnitMode && unitCount > 0 && (
           <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-medium">
-            {unitCount} unit{unitCount !== 1 ? "s" : ""}
+            {t("unitCount", { count: unitCount })}
           </span>
         )}
         {/* Finding count for non-unit sections */}
         {enabled && !isUnitMode && findingCount > 0 && (
           <span className="text-xs bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full font-medium">
-            {findingCount} finding{findingCount !== 1 ? "s" : ""}
+            {t("findingCount", { count: findingCount })}
           </span>
         )}
         {/* Capture count */}

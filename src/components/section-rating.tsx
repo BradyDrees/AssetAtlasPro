@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { updateSectionRating } from "@/app/actions/captures";
 import { CONDITION_LABELS, type ConditionRating } from "@/lib/types";
 
@@ -17,6 +18,7 @@ export function SectionRating({
 }: SectionRatingProps) {
   const [rating, setRating] = useState<number | null>(initialRating);
   const [saving, setSaving] = useState(false);
+  const t = useTranslations("common");
 
   const handleRate = async (value: ConditionRating) => {
     const newValue = value === rating ? null : value; // tap again to clear
@@ -45,7 +47,7 @@ export function SectionRating({
   return (
     <div>
       <label className="block text-sm font-medium text-content-secondary mb-2">
-        Condition Rating
+        {t("conditionRating")}
         {rating && (
           <span className="ml-2 text-xs font-normal text-content-muted">
             {CONDITION_LABELS[rating as ConditionRating]}
@@ -64,7 +66,7 @@ export function SectionRating({
                   ? ratingColors[value]
                   : "bg-surface-tertiary text-content-muted hover:bg-gray-200"
               }`}
-            aria-label={`Rate ${value} - ${CONDITION_LABELS[value]}`}
+            aria-label={t("rate", { value, label: CONDITION_LABELS[value] })}
           >
             {value}
           </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { SectionItemCard } from "@/components/section-item-card";
 import { AddSectionItemForm } from "@/components/add-section-item-form";
@@ -35,6 +36,8 @@ export function SectionItemListPage({
 
   const handleDeleteStart = useCallback(() => setIsDeleting(true), []);
   const handleDeleteEnd = useCallback(() => setIsDeleting(false), []);
+  const t = useTranslations("common");
+  const td = useTranslations("dashboard");
 
   // Sort by sort_order then name
   const sortedItems = [...items].sort((a, b) => {
@@ -50,7 +53,7 @@ export function SectionItemListPage({
           href="/dashboard"
           className="hover:text-brand-600 transition-colors"
         >
-          Projects
+          {td("projects")}
         </Link>
         <span>/</span>
         <Link
@@ -69,11 +72,11 @@ export function SectionItemListPage({
           href={`/projects/${projectId}${groupSlug ? `?group=${groupSlug}` : ""}`}
           className="inline-flex items-center gap-1.5 text-sm text-brand-600 font-medium mb-2 hover:text-brand-800 transition-colors"
         >
-          <span>&larr;</span> Back to {projectName}
+          <span>&larr;</span> {t("backTo", { name: projectName })}
         </Link>
         <h1 className="text-2xl font-bold text-content-primary">{sectionName}</h1>
         <p className="text-sm text-content-muted mt-0.5">
-          {items.length} item{items.length !== 1 ? "s" : ""} inspected
+          {t("inspectedItems", { count: items.length })}
         </p>
       </div>
 
@@ -81,7 +84,7 @@ export function SectionItemListPage({
       {sortedItems.length === 0 ? (
         <div className="bg-surface-primary rounded-lg border border-edge-primary p-8 text-center">
           <p className="text-content-quaternary text-sm">
-            No items yet. Tap the + button to add your first item.
+            {t("noItemsYet")}
           </p>
         </div>
       ) : (
@@ -107,7 +110,7 @@ export function SectionItemListPage({
         className="fixed bottom-6 right-6 z-40 w-16 h-16 bg-brand-600 text-white
                    rounded-full shadow-lg hover:bg-brand-700 active:bg-brand-800
                    flex items-center justify-center transition-colors text-3xl font-light"
-        aria-label="Add item"
+        aria-label={t("addItem")}
       >
         +
       </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { AddUnitForm } from "@/components/add-unit-form";
 
 interface NextUnitButtonProps {
@@ -15,6 +16,7 @@ export function NextUnitButton({
   currentBuilding,
 }: NextUnitButtonProps) {
   const [showForm, setShowForm] = useState(false);
+  const t = useTranslations("common");
 
   return (
     <>
@@ -24,9 +26,9 @@ export function NextUnitButton({
                    rounded-full shadow-lg hover:bg-green-700 active:bg-green-800
                    flex items-center justify-center gap-2
                    transition-colors text-sm font-semibold"
-        aria-label="Add next unit"
+        aria-label={t("addNextUnit")}
       >
-        + Next Unit
+        {t("nextUnitButton")}
       </button>
 
       {showForm && (

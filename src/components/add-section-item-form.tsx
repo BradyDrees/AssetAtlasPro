@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { createSectionItem } from "@/app/actions/section-items";
 import { Modal } from "@/components/modal";
 
@@ -20,11 +21,13 @@ export function AddSectionItemForm({
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const t = useTranslations("dashboard");
+  const tc = useTranslations("common");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      setError("Name is required");
+      setError(t("nameRequired"));
       return;
     }
 
@@ -44,9 +47,9 @@ export function AddSectionItemForm({
       );
     } catch (err: unknown) {
       const message =
-        err instanceof Error ? err.message : "Failed to create item";
+        err instanceof Error ? err.message : t("failedToCreateItem");
       if (message.includes("duplicate") || message.includes("uq_section_item_name")) {
-        setError("An item with this name already exists in this section");
+        setError(t("itemDuplicate"));
       } else {
         setError(message);
       }
@@ -55,17 +58,17 @@ export function AddSectionItemForm({
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="Add Item">
+    <Modal isOpen={true} onClose={onClose} title={t("addItemTitle")}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-content-secondary mb-1">
-            Item Name
+            {t("itemName")}
           </label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Building A Roof, North Parking Lot"
+            placeholder={t("itemNamePlaceholder")}
             className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm
                        focus:outline-none focus:ring-2 focus:ring-brand-500"
             autoFocus
@@ -80,7 +83,7 @@ export function AddSectionItemForm({
             onClick={onClose}
             className="px-4 py-2 text-sm text-content-tertiary hover:text-content-primary"
           >
-            Cancel
+            {tc("cancel")}
           </button>
           <button
             type="submit"
@@ -88,7 +91,7 @@ export function AddSectionItemForm({
             className="px-4 py-2 bg-brand-600 text-white text-sm rounded-md
                        hover:bg-brand-700 disabled:opacity-50"
           >
-            {loading ? "Creating..." : "Create & Open"}
+            {loading ? tc("saving") : tc("create")}
           </button>
         </div>
       </form>

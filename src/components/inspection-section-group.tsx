@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { InspectionSectionToggle } from "@/components/inspection-section-toggle";
 import type { InspectionProjectSectionWithDetails } from "@/lib/inspection-types";
@@ -26,6 +27,7 @@ export function InspectionSectionGroup({
 }: InspectionSectionGroupProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isToggling, setIsToggling] = useState(false);
+  const t = useTranslations("inspectionUI");
 
   const handleToggleStart = useCallback(() => setIsToggling(true), []);
   const handleToggleEnd = useCallback(() => setIsToggling(false), []);
@@ -73,17 +75,17 @@ export function InspectionSectionGroup({
           <div className="flex items-center gap-2 ml-2">
             {totalUnits > 0 && (
               <span className="text-xs text-green-600 font-medium">
-                {totalUnits} unit{totalUnits !== 1 ? "s" : ""}
+                {t("unitCount", { count: totalUnits })}
               </span>
             )}
             {totalFindings > 0 && (
               <span className="text-xs text-orange-600 font-medium">
-                {totalFindings} finding{totalFindings !== 1 ? "s" : ""}
+                {t("findingCount", { count: totalFindings })}
               </span>
             )}
             {totalCaptures > 0 && (
               <span className="text-xs text-brand-600 font-medium">
-                {totalCaptures} photo{totalCaptures !== 1 ? "s" : ""}
+                {t("photoCount", { count: totalCaptures })}
               </span>
             )}
             <span className="text-xs text-content-muted">
@@ -99,7 +101,7 @@ export function InspectionSectionGroup({
             onClick={(e) => e.stopPropagation()}
             className="ml-3 px-3 py-1.5 text-xs font-medium bg-brand-600 text-white rounded-md hover:bg-brand-700 transition-colors flex-shrink-0"
           >
-            Inspect →
+            {t("inspect")}
           </Link>
         )}
       </div>

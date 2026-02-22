@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface NextSectionButtonProps {
   projectId: string;
@@ -14,6 +15,7 @@ export function NextSectionButton({
   nextSectionName,
 }: NextSectionButtonProps) {
   const router = useRouter();
+  const t = useTranslations("common");
 
   return (
     <button
@@ -24,7 +26,7 @@ export function NextSectionButton({
                  rounded-full shadow-lg hover:bg-green-700 active:bg-green-800
                  flex items-center justify-center gap-2
                  transition-colors text-sm font-semibold max-w-[200px] truncate"
-      aria-label={`Go to next section: ${nextSectionName}`}
+      aria-label={t("goToNextSection", { name: nextSectionName })}
     >
       {nextSectionName} &rarr;
     </button>

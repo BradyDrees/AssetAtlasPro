@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { SectionToggle } from "@/components/section-toggle";
 import type { DDProjectSectionWithDetails } from "@/lib/types";
 
@@ -23,6 +24,7 @@ export function SectionGroup({
   unitCounts = {},
   itemCounts = {},
 }: SectionGroupProps) {
+  const t = useTranslations("unit");
   const [isExpanded, setIsExpanded] = useState(true);
   const [isToggling, setIsToggling] = useState(false);
 
@@ -65,21 +67,21 @@ export function SectionGroup({
         <div className="flex items-center gap-3">
           {totalUnits > 0 && (
             <span className="text-xs text-green-600 font-medium">
-              {totalUnits} unit{totalUnits !== 1 ? "s" : ""}
+              {t("unitCount", { count: totalUnits })}
             </span>
           )}
           {totalItems > 0 && (
             <span className="text-xs text-gold-700 font-medium">
-              {totalItems} item{totalItems !== 1 ? "s" : ""}
+              {t("itemCount", { count: totalItems })}
             </span>
           )}
           {totalCaptures > 0 && (
             <span className="text-xs text-brand-600 font-medium">
-              {totalCaptures} capture{totalCaptures !== 1 ? "s" : ""}
+              {t("captureCount", { count: totalCaptures })}
             </span>
           )}
           <span className="text-xs text-content-muted">
-            {enabledCount}/{sections.length} enabled
+            {enabledCount}/{sections.length} {t("enabled")}
           </span>
         </div>
       </button>

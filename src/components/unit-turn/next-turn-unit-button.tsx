@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 
 interface NextTurnUnitButtonProps {
@@ -11,6 +12,7 @@ interface NextTurnUnitButtonProps {
 
 export function NextTurnUnitButton({ batchId, currentUnitId }: NextTurnUnitButtonProps) {
   const router = useRouter();
+  const t = useTranslations("unitTurn");
   const [prevId, setPrevId] = useState<string | null>(null);
   const [nextId, setNextId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -94,7 +96,7 @@ export function NextTurnUnitButton({ batchId, currentUnitId }: NextTurnUnitButto
     <div>
       {missedCount > 0 && (
         <div className="mb-3 px-4 py-2.5 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 font-medium text-center">
-          {missedCount} item{missedCount !== 1 ? "s" : ""} still need{missedCount === 1 ? "s" : ""} a selection — highlighted in red above
+          {t("missedItems", { count: missedCount })}
         </div>
       )}
       <div className="flex gap-3">
@@ -106,7 +108,7 @@ export function NextTurnUnitButton({ batchId, currentUnitId }: NextTurnUnitButto
               : "bg-charcoal-600 text-white hover:bg-charcoal-500"
           }`}
         >
-          {prevId ? "← Previous Unit" : "← Batch"}
+          {prevId ? `← ${t("previousUnit")}` : `← ${t("batch")}`}
         </button>
         <button
           onClick={handleNext}
@@ -116,7 +118,7 @@ export function NextTurnUnitButton({ batchId, currentUnitId }: NextTurnUnitButto
               : "bg-brand-600 text-white hover:bg-brand-700"
           }`}
         >
-          {nextId ? "Next Unit →" : "Batch →"}
+          {nextId ? `${t("nextUnit")} →` : `${t("batch")} →`}
         </button>
       </div>
     </div>

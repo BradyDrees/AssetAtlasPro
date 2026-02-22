@@ -28,6 +28,17 @@ import {
   PAINT_SCOPE_OPTIONS,
   PAINT_SCOPE_LABELS,
 } from "@/lib/unit-turn-constants";
+
+/** Convert a DB template item name to a translation key slug */
+function nameToKey(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[()&/,]/g, "")
+    .replace(/['']/g, "")
+    .replace(/\s+/g, "_")
+    .replace(/_+/g, "_")
+    .replace(/^_|_$/g, "");
+}
 import type {
   UnitTurnUnitItemWithTemplate,
   UnitTurnNoteWithPhotos,
@@ -230,7 +241,11 @@ export function ChecklistItem({
       {/* Item Name */}
       <div className="mb-2">
         <span className="text-sm text-content-primary">
-          {toTitleCase(item.template_item?.name ?? t("unitTurn.unknownItem"))}
+          {item.template_item?.name
+            ? t.has(`unitTurn.checklist.${nameToKey(item.template_item.name)}`)
+              ? t(`unitTurn.checklist.${nameToKey(item.template_item.name)}`)
+              : toTitleCase(item.template_item.name)
+            : t("unitTurn.unknownItem")}
         </span>
       </div>
 

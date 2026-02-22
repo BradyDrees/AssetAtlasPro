@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { updateUnitField } from "@/app/actions/units";
 import { APPLIANCE_OPTIONS } from "@/lib/unit-constants";
 
@@ -17,6 +18,8 @@ export function UnitAppliancesSelect({
   projectSectionId,
   initialValue,
 }: UnitAppliancesSelectProps) {
+  const t = useTranslations("unit");
+  const tc = useTranslations("common");
   const [selected, setSelected] = useState<string[]>(initialValue);
   const [saving, setSaving] = useState(false);
 
@@ -48,14 +51,19 @@ export function UnitAppliancesSelect({
   return (
     <div>
       <label className="block text-sm font-medium text-content-secondary mb-2">
-        Appliances
+        {t("appliances")}
         {saving && (
-          <span className="ml-2 text-xs font-normal text-content-muted">Saving...</span>
+          <span className="ml-2 text-xs font-normal text-content-muted">{tc("saving")}</span>
         )}
       </label>
       <div className="flex flex-wrap gap-2">
         {APPLIANCE_OPTIONS.map((option) => {
           const isSelected = selected.includes(option);
+          const labelMap: Record<string, string> = {
+            "Black": "black",
+            "White": "white",
+            "Stainless Steel": "stainlessSteel",
+          };
           return (
             <button
               key={option}
@@ -68,7 +76,7 @@ export function UnitAppliancesSelect({
                     : "bg-surface-primary text-content-tertiary border-edge-secondary hover:border-brand-400"
                 }`}
             >
-              {option}
+              {t(`appliances.${labelMap[option] ?? option}`)}
             </button>
           );
         })}

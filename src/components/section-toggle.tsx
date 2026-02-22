@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { toggleProjectSection } from "@/app/actions/sections";
 import type { DDProjectSectionWithDetails } from "@/lib/types";
 
@@ -26,6 +27,7 @@ export function SectionToggle({
   onToggleStart,
   onToggleEnd,
 }: SectionToggleProps) {
+  const t = useTranslations("unit");
   const [enabled, setEnabled] = useState(projectSection.enabled);
   const [loading, setLoading] = useState(false);
 
@@ -62,18 +64,18 @@ export function SectionToggle({
           {projectSection.section.name}
         </span>
         {isUnitMode && (
-          <span className="text-xs text-brand-600 font-medium">Grading</span>
+          <span className="text-xs text-brand-600 font-medium">{t("grading")}</span>
         )}
         {/* Show unit count for unit-mode sections */}
         {enabled && isUnitMode && unitCount > 0 && (
           <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-medium">
-            {unitCount} unit{unitCount !== 1 ? "s" : ""}
+            {t("unitCount", { count: unitCount })}
           </span>
         )}
         {/* Show item count for non-unit-mode sections */}
         {enabled && !isUnitMode && itemCount > 0 && (
           <span className="text-xs bg-gold-100 text-gold-800 px-1.5 py-0.5 rounded-full font-medium">
-            {itemCount} item{itemCount !== 1 ? "s" : ""}
+            {t("itemCount", { count: itemCount })}
           </span>
         )}
         {/* Show capture count — only for unit-mode sections (non-unit uses itemCount instead) */}

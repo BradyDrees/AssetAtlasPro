@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { updateUnitField } from "@/app/actions/units";
 
 interface UnitToggleFieldProps {
@@ -23,6 +24,7 @@ export function UnitToggleField({
   initialValue,
   yesIsGood = false,
 }: UnitToggleFieldProps) {
+  const t = useTranslations("common");
   const [value, setValue] = useState<boolean>(initialValue);
   const [saving, setSaving] = useState(false);
 
@@ -61,7 +63,7 @@ export function UnitToggleField({
                 : "bg-surface-tertiary text-content-muted hover:bg-gray-200"
             }`}
         >
-          Yes
+          {t("yes")}
         </button>
         <button
           onClick={() => handleSelect(false)}
@@ -73,7 +75,7 @@ export function UnitToggleField({
                 : "bg-surface-tertiary text-content-muted hover:bg-gray-200"
             }`}
         >
-          No
+          {t("no")}
         </button>
       </div>
     </div>

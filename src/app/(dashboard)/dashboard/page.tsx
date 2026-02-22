@@ -8,7 +8,7 @@ export default async function DashboardPage() {
   const t = await getTranslations();
 
   // Fetch counts for each module
-  const [ddResult, inspResult, utResult] = await Promise.all([
+  const [ddResult, inspResult, utResult, daResult] = await Promise.all([
     supabase.from("dd_projects").select("id", { count: "exact", head: true }),
     supabase
       .from("inspection_projects")
@@ -16,11 +16,15 @@ export default async function DashboardPage() {
     supabase
       .from("unit_turn_batches")
       .select("id", { count: "exact", head: true }),
+    supabase
+      .from("deal_analyses")
+      .select("id", { count: "exact", head: true }),
   ]);
 
   const ddCount = ddResult.count ?? 0;
   const inspCount = inspResult.count ?? 0;
   const utCount = utResult.count ?? 0;
+  const daCount = daResult.count ?? 0;
 
   const modules = [
     {
@@ -74,6 +78,23 @@ export default async function DashboardPage() {
         />
       ),
     },
+    {
+      title: t("nav.dealAnalysis"),
+      description: t("dashboard.daDescription"),
+      href: "/deal-analysis",
+      count: daCount,
+      countLabel: t("dealAnalysis.deals"),
+      gradient: "from-charcoal-900 to-gold-900",
+      iconColor: "text-gold-400",
+      icon: (
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M3 3v18h18M7 16l4-4 4 4 5-6"
+        />
+      ),
+    },
   ];
 
   return (
@@ -93,7 +114,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Module cards */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {modules.map((m) => (
           <Link
             key={m.title}

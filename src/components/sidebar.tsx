@@ -37,6 +37,7 @@ export function Sidebar({ user }: { user: User }) {
     { href: "/projects", label: t("nav.dueDiligence"), icon: "", matchPaths: ["/projects"] },
     { href: "/inspections", label: t("nav.inspections"), icon: "", matchPaths: ["/inspections"] },
     { href: "/unit-turns", label: t("nav.unitTurns"), icon: "", matchPaths: ["/unit-turns"] },
+    { href: "/deal-analysis", label: t("nav.dealAnalysis"), icon: "", matchPaths: ["/deal-analysis"] },
   ];
 
   // Close mobile drawer on navigation

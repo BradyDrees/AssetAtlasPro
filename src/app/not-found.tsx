@@ -1,10 +1,8 @@
-"use client";
-
-import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
-export default function NotFound() {
-  const t = useTranslations();
+export default async function NotFound() {
+  const t = await getTranslations();
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-brand-950 to-brand-900">
       <h1 className="text-8xl font-black text-brand-400/30 mb-2">404</h1>

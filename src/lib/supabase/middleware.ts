@@ -32,7 +32,32 @@ export async function updateSession(request: NextRequest) {
   // Refresh the auth token — wrapped in try/catch so offline
   // navigation still works with the cached session cookie.
   try {
-    await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    // Set role cookie from profile (UX redirect hint only — NOT a security boundary)
+    if (user) {
+      try {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("active_role")
+          .eq("id", user.id)
+          .single();
+
+        if (profile?.active_role) {
+          supabaseResponse.cookies.set("active_role", profile.active_role, {
+            path: "/",
+            maxAge: 31536000, // 1 year
+            sameSite: "lax",
+            httpOnly: false, // Readable by client for UX routing
+          });
+        }
+      } catch {
+        // Profile query failed (table might not have active_role column yet)
+        // Silently continue — role cookie stays at whatever it was
+      }
+    }
   } catch {
     // Supabase unreachable (offline or network error).
     // Allow the request to proceed with whatever session cookie exists.

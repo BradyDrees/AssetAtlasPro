@@ -1,0 +1,18 @@
+{
+  "home": "Home",
+  "jobs": "Jobs",
+  "schedule": "Schedule",
+  "estimates": "Estimates",
+  "invoices": "Invoices",
+  "clients": "Clients",
+  "profile": "Profile",
+  "credentials": "Credentials",
+  "team": "Team",
+  "pricebook": "Pricebook",
+  "fieldMode": "Field Mode",
+  "switchToPm": "Switch to PM",
+  "switchToVendor": "Switch to Vendor",
+  "signOut": "Sign Out",
+  "vendorPortal": "Vendor Portal",
+  "notifications": "Notifications"
+}

@@ -1,0 +1,41 @@
+{
+  "welcome": "Welcome back, {name}",
+  "welcomeDefault": "Welcome to Your Vendor Dashboard",
+  "setupPrompt": "Complete your profile to get started",
+  "stats": {
+    "activeJobs": "Active Jobs",
+    "pendingEstimates": "Pending Estimates",
+    "unpaidInvoices": "Unpaid Invoices",
+    "monthlyRevenue": "Monthly Revenue",
+    "completedThisMonth": "Completed This Month",
+    "avgResponseTime": "Avg Response Time",
+    "hours": "hrs"
+  },
+  "sections": {
+    "incomingWork": "Incoming Work Orders",
+    "todaysSchedule": "Today's Schedule",
+    "pendingEstimates": "Pending Estimates",
+    "recentActivity": "Recent Activity",
+    "pmClients": "PM Clients"
+  },
+  "empty": {
+    "noIncoming": "No incoming work orders",
+    "noSchedule": "Nothing scheduled for today",
+    "noEstimates": "No pending estimates",
+    "noActivity": "No recent activity",
+    "noClients": "No PM clients yet"
+  },
+  "actions": {
+    "viewAll": "View All",
+    "viewJob": "View Job",
+    "createEstimate": "Create Estimate",
+    "connectWithPm": "Connect with a PM"
+  },
+  "quickSetup": {
+    "title": "Quick Setup",
+    "completeProfile": "Complete your business profile",
+    "addCredentials": "Upload insurance & credentials",
+    "connectPm": "Connect with a property manager",
+    "completed": "Completed"
+  }
+}

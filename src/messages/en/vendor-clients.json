@@ -1,0 +1,16 @@
+{
+  "title": "PM Clients",
+  "noClients": "No PM clients yet",
+  "addClient": "Connect with PM",
+  "totalJobs": "Total Jobs",
+  "activeJobs": "Active Jobs",
+  "totalRevenue": "Total Revenue",
+  "paymentTerms": "Payment Terms",
+  "since": "Connected Since",
+  "detail": {
+    "overview": "Overview",
+    "jobHistory": "Job History",
+    "financials": "Financials",
+    "notes": "Notes"
+  }
+}

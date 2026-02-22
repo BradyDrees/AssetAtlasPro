@@ -1,0 +1,33 @@
+{
+  "title": "Perfil Empresarial",
+  "editProfile": "Editar Perfil",
+  "saveChanges": "Guardar Cambios",
+  "companyInfo": "Información de la Empresa",
+  "contactInfo": "Información de Contacto",
+  "serviceArea": "Área de Servicio",
+  "tradesOffered": "Oficios Ofrecidos",
+  "comingSoon": "Edición de perfil próximamente",
+  "credentials": {
+    "title": "Credenciales y Seguros",
+    "upload": "Subir Credencial",
+    "type": "Tipo",
+    "name": "Nombre del Documento",
+    "number": "Número de Documento",
+    "issued": "Fecha de Emisión",
+    "expires": "Fecha de Vencimiento",
+    "status": "Estado",
+    "active": "Activo",
+    "expiringSoon": "Por Vencer",
+    "expired": "Vencido",
+    "noCredentials": "Sin credenciales subidas aún",
+    "types": {
+      "insurance_gl": "Seguro de Responsabilidad General",
+      "insurance_wc": "Compensación de Trabajadores",
+      "license": "Licencia Comercial",
+      "w9": "Formulario W-9",
+      "certification": "Certificación",
+      "bond": "Fianza",
+      "other": "Otro"
+    }
+  }
+}

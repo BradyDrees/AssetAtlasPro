@@ -1,0 +1,41 @@
+{
+  "welcome": "Bienvenido de nuevo, {name}",
+  "welcomeDefault": "Bienvenido a tu Panel de Proveedor",
+  "setupPrompt": "Completa tu perfil para comenzar",
+  "stats": {
+    "activeJobs": "Trabajos Activos",
+    "pendingEstimates": "Presupuestos Pendientes",
+    "unpaidInvoices": "Facturas Pendientes",
+    "monthlyRevenue": "Ingresos Mensuales",
+    "completedThisMonth": "Completados Este Mes",
+    "avgResponseTime": "Tiempo de Respuesta Prom.",
+    "hours": "hrs"
+  },
+  "sections": {
+    "incomingWork": "Órdenes de Trabajo Entrantes",
+    "todaysSchedule": "Horario de Hoy",
+    "pendingEstimates": "Presupuestos Pendientes",
+    "recentActivity": "Actividad Reciente",
+    "pmClients": "Clientes PM"
+  },
+  "empty": {
+    "noIncoming": "Sin órdenes de trabajo entrantes",
+    "noSchedule": "Nada programado para hoy",
+    "noEstimates": "Sin presupuestos pendientes",
+    "noActivity": "Sin actividad reciente",
+    "noClients": "Sin clientes PM aún"
+  },
+  "actions": {
+    "viewAll": "Ver Todo",
+    "viewJob": "Ver Trabajo",
+    "createEstimate": "Crear Presupuesto",
+    "connectWithPm": "Conectar con un PM"
+  },
+  "quickSetup": {
+    "title": "Configuración Rápida",
+    "completeProfile": "Completa tu perfil empresarial",
+    "addCredentials": "Sube seguros y credenciales",
+    "connectPm": "Conecta con un administrador de propiedades",
+    "completed": "Completado"
+  }
+}

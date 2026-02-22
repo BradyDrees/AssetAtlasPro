@@ -104,7 +104,7 @@ async function recoverSoftDeletedUnits(): Promise<void> {
  * Dispatch a single queue item to the appropriate server action.
  */
 async function syncItem(item: SyncQueueItem): Promise<void> {
-  const handlers: Record<QueueAction, (p: Record<string, unknown>) => Promise<void>> = {
+  const handlers: Partial<Record<QueueAction, (p: Record<string, unknown>) => Promise<void>>> = {
     FINDING_CREATE: syncFindingCreate,
     FINDING_UPDATE: syncFindingUpdate,
     FINDING_DELETE: syncFindingDelete,
@@ -126,7 +126,13 @@ async function syncItem(item: SyncQueueItem): Promise<void> {
   };
 
   const handler = handlers[item.action];
-  if (!handler) throw new Error(`Unknown action: ${item.action}`);
+  if (!handler) {
+    // Correction 6: Gracefully ignore unknown action types — log warning + mark processed
+    // This prevents infinite retry when new action types exist in the queue but the
+    // sync handler hasn't been deployed yet (e.g., vendor actions on an older client).
+    console.warn(`[sync-manager] Unknown action type "${item.action}" — skipping`);
+    return;
+  }
 
   await handler(item.payload);
 }

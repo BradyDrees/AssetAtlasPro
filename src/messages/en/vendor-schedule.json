@@ -1,0 +1,9 @@
+{
+  "title": "Schedule",
+  "dayView": "Day",
+  "weekView": "Week",
+  "today": "Today",
+  "noJobs": "No jobs scheduled",
+  "allDay": "All Day",
+  "jobAt": "Job at {property}"
+}

@@ -1,0 +1,80 @@
+{
+  "title": "Trabajos",
+  "incoming": "Entrantes",
+  "active": "Activos",
+  "completed": "Completados",
+  "all": "Todos los Trabajos",
+  "noJobs": "Sin trabajos aún",
+  "noIncoming": "Sin órdenes de trabajo entrantes",
+  "filters": {
+    "all": "Todos",
+    "byStatus": "Por Estado",
+    "byPriority": "Por Prioridad",
+    "byTrade": "Por Oficio",
+    "byClient": "Por Cliente",
+    "search": "Buscar trabajos..."
+  },
+  "status": {
+    "assigned": "Asignado",
+    "accepted": "Aceptado",
+    "scheduled": "Programado",
+    "en_route": "En Camino",
+    "on_site": "En Sitio",
+    "in_progress": "En Progreso",
+    "completed": "Completado",
+    "invoiced": "Facturado",
+    "paid": "Pagado",
+    "declined": "Rechazado",
+    "on_hold": "En Espera"
+  },
+  "priority": {
+    "normal": "Normal",
+    "urgent": "Urgente",
+    "emergency": "Emergencia"
+  },
+  "actions": {
+    "accept": "Aceptar",
+    "decline": "Rechazar",
+    "schedule": "Programar",
+    "startRoute": "Iniciar Ruta",
+    "arrived": "Llegué",
+    "startWork": "Iniciar Trabajo",
+    "complete": "Completar",
+    "putOnHold": "Poner en Espera",
+    "resume": "Reanudar"
+  },
+  "detail": {
+    "property": "Propiedad",
+    "unit": "Unidad",
+    "tenant": "Inquilino",
+    "description": "Descripción",
+    "pmNotes": "Notas del PM",
+    "accessNotes": "Notas de Acceso",
+    "budget": "Presupuesto",
+    "trade": "Oficio",
+    "scheduled": "Programado",
+    "materials": "Materiales",
+    "timeLog": "Registro de Tiempo",
+    "photos": "Fotos",
+    "completionNotes": "Notas de Completado",
+    "declineReason": "Razón de Rechazo"
+  },
+  "materials": {
+    "title": "Materiales",
+    "add": "Agregar Material",
+    "description": "Descripción",
+    "quantity": "Cant.",
+    "unitCost": "Costo Unitario",
+    "total": "Total",
+    "noMaterials": "Sin materiales registrados"
+  },
+  "time": {
+    "title": "Registro de Tiempo",
+    "clockIn": "Entrada",
+    "clockOut": "Salida",
+    "duration": "Duración",
+    "hourlyRate": "Tarifa por Hora",
+    "noEntries": "Sin registros de tiempo",
+    "minutes": "min"
+  }
+}

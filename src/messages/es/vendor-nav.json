@@ -1,0 +1,18 @@
+{
+  "home": "Inicio",
+  "jobs": "Trabajos",
+  "schedule": "Horario",
+  "estimates": "Presupuestos",
+  "invoices": "Facturas",
+  "clients": "Clientes",
+  "profile": "Perfil",
+  "credentials": "Credenciales",
+  "team": "Equipo",
+  "pricebook": "Lista de Precios",
+  "fieldMode": "Modo de Campo",
+  "switchToPm": "Cambiar a PM",
+  "switchToVendor": "Cambiar a Proveedor",
+  "signOut": "Cerrar Sesión",
+  "vendorPortal": "Portal de Proveedores",
+  "notifications": "Notificaciones"
+}

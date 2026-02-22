@@ -1,0 +1,33 @@
+{
+  "title": "Business Profile",
+  "editProfile": "Edit Profile",
+  "saveChanges": "Save Changes",
+  "companyInfo": "Company Information",
+  "contactInfo": "Contact Information",
+  "serviceArea": "Service Area",
+  "tradesOffered": "Trades Offered",
+  "comingSoon": "Profile editing coming soon",
+  "credentials": {
+    "title": "Credentials & Insurance",
+    "upload": "Upload Credential",
+    "type": "Type",
+    "name": "Document Name",
+    "number": "Document Number",
+    "issued": "Issued Date",
+    "expires": "Expiration Date",
+    "status": "Status",
+    "active": "Active",
+    "expiringSoon": "Expiring Soon",
+    "expired": "Expired",
+    "noCredentials": "No credentials uploaded yet",
+    "types": {
+      "insurance_gl": "General Liability Insurance",
+      "insurance_wc": "Workers' Compensation",
+      "license": "Business License",
+      "w9": "W-9 Form",
+      "certification": "Certification",
+      "bond": "Surety Bond",
+      "other": "Other"
+    }
+  }
+}

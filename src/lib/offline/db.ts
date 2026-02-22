@@ -24,7 +24,14 @@ export type QueueAction =
   | "PAINT_SCOPE"
   | "UNIT_CREATE"
   | "UNIT_DELETE"
-  | "PROVISION_TURN_CHECKLIST";
+  | "PROVISION_TURN_CHECKLIST"
+  // Vendor work order actions (Phase 2)
+  | "VENDOR_WO_STATUS_UPDATE"
+  | "VENDOR_WO_MATERIAL_ADD"
+  | "VENDOR_WO_MATERIAL_DELETE"
+  | "VENDOR_WO_TIME_CLOCK_IN"
+  | "VENDOR_WO_TIME_CLOCK_OUT"
+  | "VENDOR_WO_PHOTO_UPLOAD";
 
 export interface SyncQueueItem {
   id: string;
@@ -131,6 +138,110 @@ export interface PageSnapshot {
 }
 
 // ============================================
+// Vendor Offline Types (Phase 2+)
+// ============================================
+
+export interface LocalVendorWorkOrder {
+  localId: string;
+  serverId?: string;
+  vendorOrgId: string;
+  status: string;
+  scheduledDate?: string;
+  pmUserId: string;
+  data: Record<string, unknown>;
+  syncStatus: SyncStatus;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface LocalVendorWoMaterial {
+  localId: string;
+  serverId?: string;
+  workOrderId: string;
+  description: string;
+  quantity: number;
+  unitCost: number;
+  total: number;
+  syncStatus: SyncStatus;
+  createdAt: number;
+}
+
+export interface LocalVendorWoTimeEntry {
+  localId: string;
+  serverId?: string;
+  workOrderId: string;
+  clockIn: number;
+  clockOut?: number;
+  durationMinutes?: number;
+  syncStatus: SyncStatus;
+  createdAt: number;
+}
+
+export interface LocalVendorPhoto {
+  localId: string;
+  serverId?: string;
+  workOrderId?: string;
+  estimateId?: string;
+  blob: Blob;
+  mime: string;
+  caption?: string;
+  photoType: "before" | "after" | "docs";
+  syncStatus: SyncStatus;
+  createdAt: number;
+}
+
+export interface LocalVendorEstimate {
+  localId: string;
+  serverId?: string;
+  vendorOrgId: string;
+  status: string;
+  pmUserId?: string;
+  data: Record<string, unknown>;
+  syncStatus: SyncStatus;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface LocalVendorEstimateSection {
+  localId: string;
+  serverId?: string;
+  estimateId: string;
+  data: Record<string, unknown>;
+  syncStatus: SyncStatus;
+  createdAt: number;
+}
+
+export interface LocalVendorEstimateItem {
+  localId: string;
+  serverId?: string;
+  sectionId: string;
+  data: Record<string, unknown>;
+  syncStatus: SyncStatus;
+  createdAt: number;
+}
+
+export interface LocalVendorInvoice {
+  localId: string;
+  serverId?: string;
+  vendorOrgId: string;
+  status: string;
+  pmUserId?: string;
+  data: Record<string, unknown>;
+  syncStatus: SyncStatus;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface LocalVendorInvoiceItem {
+  localId: string;
+  serverId?: string;
+  invoiceId: string;
+  data: Record<string, unknown>;
+  syncStatus: SyncStatus;
+  createdAt: number;
+}
+
+// ============================================
 // Database
 // ============================================
 
@@ -142,6 +253,16 @@ export class OfflineDB extends Dexie {
   localNotePhotos!: Table<LocalNotePhoto, string>;
   localUnits!: Table<LocalUnit, string>;
   pageSnapshots!: Table<PageSnapshot, string>;
+  // Vendor tables (v4)
+  vendorWorkOrders!: Table<LocalVendorWorkOrder, string>;
+  vendorWoMaterials!: Table<LocalVendorWoMaterial, string>;
+  vendorWoTimeEntries!: Table<LocalVendorWoTimeEntry, string>;
+  vendorPhotos!: Table<LocalVendorPhoto, string>;
+  vendorEstimates!: Table<LocalVendorEstimate, string>;
+  vendorEstimateSections!: Table<LocalVendorEstimateSection, string>;
+  vendorEstimateItems!: Table<LocalVendorEstimateItem, string>;
+  vendorInvoices!: Table<LocalVendorInvoice, string>;
+  vendorInvoiceItems!: Table<LocalVendorInvoiceItem, string>;
 
   constructor() {
     super("asset-atlas-offline");
@@ -182,6 +303,32 @@ export class OfflineDB extends Dexie {
       localUnits:
         "&localId, projectId, projectSectionId, syncStatus, building, unitNumber",
       pageSnapshots: "&pageId, pageType, snapshotAt",
+    });
+
+    // Version 4: Add ALL vendor tables at once (Correction 6 — single version bump)
+    this.version(4).stores({
+      syncQueue: "&id, status, createdAt",
+      localFindings:
+        "&localId, projectId, projectSectionId, syncStatus",
+      localCaptures:
+        "&localId, projectId, findingLocalId, syncStatus",
+      localNotes: "&localId, batchId, unitId, syncStatus",
+      localNotePhotos: "&localId, noteLocalId, syncStatus",
+      localUnits:
+        "&localId, projectId, projectSectionId, syncStatus, building, unitNumber",
+      pageSnapshots: "&pageId, pageType, snapshotAt",
+      // Vendor tables
+      vendorWorkOrders: "&localId, vendorOrgId, status, scheduledDate, pmUserId, syncStatus",
+      vendorWoMaterials: "&localId, workOrderId, syncStatus",
+      vendorWoTimeEntries: "&localId, workOrderId, syncStatus",
+      vendorPhotos: "&localId, workOrderId, estimateId, syncStatus",
+      vendorEstimates: "&localId, vendorOrgId, status, pmUserId, syncStatus",
+      vendorEstimateSections: "&localId, estimateId, syncStatus",
+      vendorEstimateItems: "&localId, sectionId, syncStatus",
+      vendorInvoices: "&localId, vendorOrgId, status, pmUserId, syncStatus",
+      vendorInvoiceItems: "&localId, invoiceId, syncStatus",
+    }).upgrade(() => {
+      console.log("Dexie v4: vendor tables added");
     });
   }
 }

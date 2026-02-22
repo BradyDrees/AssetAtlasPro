@@ -1,0 +1,14 @@
+{
+  "title": "Invoices",
+  "new": "New Invoice",
+  "pipeline": "Pipeline",
+  "noInvoices": "No invoices yet",
+  "status": {
+    "draft": "Draft",
+    "submitted": "Submitted",
+    "pm_approved": "PM Approved",
+    "processing": "Processing",
+    "paid": "Paid",
+    "disputed": "Disputed"
+  }
+}

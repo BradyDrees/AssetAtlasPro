@@ -9,23 +9,84 @@ import { useTheme } from "@/components/theme-provider";
 import { useAppLocale } from "@/components/locale-provider";
 import { useOffline } from "@/components/offline-provider";
 import type { User } from "@supabase/supabase-js";
+import { NotificationBell } from "./notification-bell";
 
 function SombreroIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-      {/* Brim */}
       <ellipse cx="12" cy="17" rx="10" ry="3" />
-      {/* Crown */}
       <path d="M7 17c0-3 1.5-7 5-7s5 4 5 7" />
-      {/* Top */}
       <path d="M9.5 12c0-1.5 1-3 2.5-3s2.5 1.5 2.5 3" />
     </svg>
   );
 }
 
-export function Sidebar({ user }: { user: User }) {
+// SVG icons for vendor nav items
+function HomeIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+    </svg>
+  );
+}
+
+function BriefcaseIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0" />
+    </svg>
+  );
+}
+
+function CalendarIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+    </svg>
+  );
+}
+
+function CalculatorIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z" />
+    </svg>
+  );
+}
+
+function ReceiptIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+    </svg>
+  );
+}
+
+function UsersIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+    </svg>
+  );
+}
+
+function UserCircleIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  );
+}
+
+interface VendorSidebarProps {
+  user: User;
+  hasPmRole?: boolean;
+}
+
+export function VendorSidebar({ user, hasPmRole = false }: VendorSidebarProps) {
   const pathname = usePathname();
   const t = useTranslations();
+  const vt = useTranslations("vendor.nav");
   const { theme, toggleTheme } = useTheme();
   const { locale, toggleLocale } = useAppLocale();
   const { isFieldMode, isOnline, pendingCount, isSyncing, stuckCount, toggleFieldMode, startSync, resetStuck } = useOffline();
@@ -33,11 +94,13 @@ export function Sidebar({ user }: { user: User }) {
   const [collapsed, setCollapsed] = useState(false);
 
   const navItems = [
-    { href: "/dashboard", label: t("nav.home"), icon: "", matchPaths: ["/dashboard"] },
-    { href: "/projects", label: t("nav.dueDiligence"), icon: "", matchPaths: ["/projects"] },
-    { href: "/inspections", label: t("nav.inspections"), icon: "", matchPaths: ["/inspections"] },
-    { href: "/unit-turns", label: t("nav.unitTurns"), icon: "", matchPaths: ["/unit-turns"] },
-    { href: "/deal-analysis", label: t("nav.dealAnalysis"), icon: "", matchPaths: ["/deal-analysis"] },
+    { href: "/vendor", label: vt("home"), icon: <HomeIcon />, matchExact: true },
+    { href: "/vendor/jobs", label: vt("jobs"), icon: <BriefcaseIcon />, matchExact: false },
+    { href: "/vendor/schedule", label: vt("schedule"), icon: <CalendarIcon />, matchExact: false },
+    { href: "/vendor/estimates", label: vt("estimates"), icon: <CalculatorIcon />, matchExact: false },
+    { href: "/vendor/invoices", label: vt("invoices"), icon: <ReceiptIcon />, matchExact: false },
+    { href: "/vendor/clients", label: vt("clients"), icon: <UsersIcon />, matchExact: false },
+    { href: "/vendor/profile", label: vt("profile"), icon: <UserCircleIcon />, matchExact: false },
   ];
 
   // Close mobile drawer on navigation
@@ -56,7 +119,7 @@ export function Sidebar({ user }: { user: User }) {
 
   return (
     <>
-      {/* Mobile hamburger button — visible only on small screens */}
+      {/* Mobile hamburger button */}
       <button
         onClick={() => setIsOpen(true)}
         className="md:hidden fixed left-3 z-50 p-2 bg-surface-primary rounded-lg border border-edge-primary shadow-sm"
@@ -80,24 +143,26 @@ export function Sidebar({ user }: { user: User }) {
       <aside
         className={`bg-surface-primary border-r border-edge-primary flex flex-col flex-shrink-0 transition-all duration-200 fixed inset-y-0 left-0 z-50 ${isOpen ? "translate-x-0" : "-translate-x-full"} w-64 md:relative md:translate-x-0 ${collapsed ? "md:w-16" : "md:w-64"}`}
       >
-        {/* Header — charcoal + forest green */}
+        {/* Header */}
         <div
           className="p-4 flex items-center justify-between bg-[radial-gradient(ellipse_at_top_left,_var(--brand-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--brand-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900"
           style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 16px)" }}
         >
           {!collapsed && (
-            <Link href="/dashboard" className="flex-shrink-0">
+            <Link href="/vendor" className="flex-shrink-0">
               <div>
                 <h1 className="text-xl font-bold text-white leading-tight">Asset <span className="text-brand-500">Atlas</span> Pro</h1>
-                <p className="text-sm text-gold-400">{t("sidebar.tagline")}</p>
+                <p className="text-sm text-gold-400">{vt("vendorPortal")}</p>
               </div>
             </Link>
           )}
 
-          {/* Desktop collapse toggle */}
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="hidden md:flex p-1.5 text-charcoal-400 hover:text-white hover:bg-charcoal-700 rounded transition-colors"
+          {/* Notification bell + Desktop collapse toggle */}
+          <div className="flex items-center gap-1">
+            {!collapsed && <NotificationBell />}
+            <button
+              onClick={() => setCollapsed(!collapsed)}
+              className="hidden md:flex p-1.5 text-charcoal-400 hover:text-white hover:bg-charcoal-700 rounded transition-colors"
             aria-label={collapsed ? t("sidebar.expandSidebar") : t("sidebar.collapseSidebar")}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,6 +173,7 @@ export function Sidebar({ user }: { user: User }) {
               )}
             </svg>
           </button>
+          </div>
 
           {/* Mobile close button */}
           <button
@@ -124,9 +190,9 @@ export function Sidebar({ user }: { user: User }) {
         {/* Navigation */}
         <nav className="flex-1 p-3 space-y-1">
           {navItems.map((item) => {
-            const isActive = item.matchPaths.some(
-              (p) => pathname === p || pathname.startsWith(p + "/")
-            );
+            const isActive = item.matchExact
+              ? pathname === item.href
+              : pathname === item.href || pathname.startsWith(item.href + "/");
 
             return (
               <Link
@@ -139,14 +205,14 @@ export function Sidebar({ user }: { user: User }) {
                 } ${collapsed ? "md:justify-center md:px-0" : ""}`}
                 title={collapsed ? item.label : undefined}
               >
-                {item.icon && <span className="text-base">{item.icon}</span>}
+                {item.icon}
                 {!collapsed && <span>{item.label}</span>}
               </Link>
             );
           })}
         </nav>
 
-        {/* Field Mode + Language + Theme toggle + User info + sign out */}
+        {/* Bottom section */}
         <div className="p-4 border-t border-edge-primary bg-surface-secondary/50">
           {/* Field Mode toggle */}
           {!collapsed ? (
@@ -192,7 +258,7 @@ export function Sidebar({ user }: { user: User }) {
             </button>
           )}
 
-          {/* Sync button — shows when there are pending items and we're online */}
+          {/* Sync button */}
           {pendingCount > 0 && isOnline && !isFieldMode && !isSyncing && !collapsed && (
             <button
               onClick={() => startSync()}
@@ -209,7 +275,6 @@ export function Sidebar({ user }: { user: User }) {
             <p className="text-xs text-brand-400 mb-2 px-1">{t("sidebar.syncing")}</p>
           )}
 
-          {/* Retry stuck items — shows when items have failed max retries */}
           {stuckCount > 0 && isOnline && !isSyncing && !collapsed && (
             <button
               onClick={() => resetStuck()}
@@ -222,7 +287,23 @@ export function Sidebar({ user }: { user: User }) {
             </button>
           )}
 
-          {/* Language toggle — sombrero icon */}
+          {/* Role switcher — only if user also has PM role */}
+          {hasPmRole && !collapsed && (
+            <Link
+              href="/dashboard"
+              onClick={() => {
+                document.cookie = "active_role=pm; path=/; max-age=31536000; samesite=lax";
+              }}
+              className="flex items-center gap-2 w-full px-1 py-1.5 text-sm text-content-tertiary hover:text-content-primary rounded transition-colors mb-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+              </svg>
+              {vt("switchToPm")}
+            </Link>
+          )}
+
+          {/* Language toggle */}
           {!collapsed ? (
             <button
               onClick={toggleLocale}
@@ -260,40 +341,10 @@ export function Sidebar({ user }: { user: User }) {
             </button>
           )}
 
-          {/* Vendor Mode link */}
-          {!collapsed ? (
-            <Link
-              href="/vendor/onboarding"
-              onClick={() => {
-                document.cookie = "active_role=vendor; path=/; max-age=31536000; samesite=lax";
-              }}
-              className="flex items-center justify-between w-full px-1 py-1.5 text-sm text-content-tertiary hover:text-content-primary rounded transition-colors mb-2"
-            >
-              <span>{t("sidebar.vendorMode")}</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0" />
-              </svg>
-            </Link>
-          ) : (
-            <Link
-              href="/vendor/onboarding"
-              onClick={() => {
-                document.cookie = "active_role=vendor; path=/; max-age=31536000; samesite=lax";
-              }}
-              className="w-full text-center py-1.5 mb-2 text-content-tertiary hover:text-content-primary block"
-              title={t("sidebar.vendorMode")}
-            >
-              <svg className="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0" />
-              </svg>
-            </Link>
-          )}
-
           {!collapsed && (
             <p className="text-sm text-content-tertiary truncate mb-2">{user.email}</p>
           )}
           <form action={signOut} onSubmit={() => {
-            // Clear service worker cache to prevent cross-user data leakage
             if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
               navigator.serviceWorker.controller.postMessage({ type: "CLEAR_AUTH_CACHE" });
             }
@@ -303,12 +354,12 @@ export function Sidebar({ user }: { user: User }) {
               className={`text-sm text-red-500 hover:text-red-700 font-medium transition-colors ${
                 collapsed ? "w-full text-center" : "w-full text-left"
               }`}
-              title={collapsed ? t("sidebar.signOut") : undefined}
+              title={collapsed ? vt("signOut") : undefined}
             >
               {collapsed ? (
                 <span className="text-xs">Out</span>
               ) : (
-                t("sidebar.signOut")
+                vt("signOut")
               )}
             </button>
           </form>

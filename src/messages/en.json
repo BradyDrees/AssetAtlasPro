@@ -76,6 +76,7 @@
     "darkMode": "Dark Mode",
     "switchToLight": "Switch to Light",
     "switchToDark": "Switch to Dark",
+    "vendorMode": "Vendor Mode",
     "signOut": "Sign Out",
     "out": "Out",
     "offline": "Offline",

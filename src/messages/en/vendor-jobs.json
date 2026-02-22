@@ -1,0 +1,80 @@
+{
+  "title": "Jobs",
+  "incoming": "Incoming",
+  "active": "Active",
+  "completed": "Completed",
+  "all": "All Jobs",
+  "noJobs": "No jobs yet",
+  "noIncoming": "No incoming work orders",
+  "filters": {
+    "all": "All",
+    "byStatus": "By Status",
+    "byPriority": "By Priority",
+    "byTrade": "By Trade",
+    "byClient": "By Client",
+    "search": "Search jobs..."
+  },
+  "status": {
+    "assigned": "Assigned",
+    "accepted": "Accepted",
+    "scheduled": "Scheduled",
+    "en_route": "En Route",
+    "on_site": "On Site",
+    "in_progress": "In Progress",
+    "completed": "Completed",
+    "invoiced": "Invoiced",
+    "paid": "Paid",
+    "declined": "Declined",
+    "on_hold": "On Hold"
+  },
+  "priority": {
+    "normal": "Normal",
+    "urgent": "Urgent",
+    "emergency": "Emergency"
+  },
+  "actions": {
+    "accept": "Accept",
+    "decline": "Decline",
+    "schedule": "Schedule",
+    "startRoute": "Start Route",
+    "arrived": "Arrived",
+    "startWork": "Start Work",
+    "complete": "Complete",
+    "putOnHold": "Put On Hold",
+    "resume": "Resume"
+  },
+  "detail": {
+    "property": "Property",
+    "unit": "Unit",
+    "tenant": "Tenant",
+    "description": "Description",
+    "pmNotes": "PM Notes",
+    "accessNotes": "Access Notes",
+    "budget": "Budget",
+    "trade": "Trade",
+    "scheduled": "Scheduled",
+    "materials": "Materials",
+    "timeLog": "Time Log",
+    "photos": "Photos",
+    "completionNotes": "Completion Notes",
+    "declineReason": "Decline Reason"
+  },
+  "materials": {
+    "title": "Materials",
+    "add": "Add Material",
+    "description": "Description",
+    "quantity": "Qty",
+    "unitCost": "Unit Cost",
+    "total": "Total",
+    "noMaterials": "No materials logged"
+  },
+  "time": {
+    "title": "Time Log",
+    "clockIn": "Clock In",
+    "clockOut": "Clock Out",
+    "duration": "Duration",
+    "hourlyRate": "Hourly Rate",
+    "noEntries": "No time entries",
+    "minutes": "min"
+  }
+}

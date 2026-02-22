@@ -1,0 +1,14 @@
+{
+  "title": "Facturas",
+  "new": "Nueva Factura",
+  "pipeline": "Pipeline",
+  "noInvoices": "Sin facturas aún",
+  "status": {
+    "draft": "Borrador",
+    "submitted": "Enviada",
+    "pm_approved": "Aprobada por PM",
+    "processing": "Procesando",
+    "paid": "Pagada",
+    "disputed": "Disputada"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "title": "Horario",
+  "dayView": "Día",
+  "weekView": "Semana",
+  "today": "Hoy",
+  "noJobs": "Sin trabajos programados",
+  "allDay": "Todo el Día",
+  "jobAt": "Trabajo en {property}"
+}

@@ -57,7 +57,29 @@ export function LoginForm() {
         localStorage.removeItem(REMEMBER_KEY);
       }
 
-      router.push("/dashboard");
+      // Fetch active_role from profile to route correctly
+      // If the user's active_role is "vendor", go to /vendor; otherwise /dashboard
+      try {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("active_role")
+          .single();
+
+        const activeRole = profile?.active_role;
+
+        if (activeRole === "vendor") {
+          // Set cookie for middleware routing (UX hint)
+          document.cookie = `active_role=vendor; path=/; max-age=31536000; samesite=lax`;
+          router.push("/vendor");
+        } else {
+          document.cookie = `active_role=${activeRole || "pm"}; path=/; max-age=31536000; samesite=lax`;
+          router.push("/dashboard");
+        }
+      } catch {
+        // Fallback: if profile query fails, go to dashboard
+        router.push("/dashboard");
+      }
+
       router.refresh();
     }
   };

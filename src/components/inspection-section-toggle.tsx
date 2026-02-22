@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { toggleInspectionSection } from "@/app/actions/inspections";
+import { nameToKey } from "@/lib/translate-sections";
 import type { InspectionProjectSectionWithDetails } from "@/lib/inspection-types";
 import { INSPECTION_CONDITION_LABELS } from "@/lib/inspection-constants";
 import { RUL_COLORS } from "@/lib/inspection-constants";
@@ -35,6 +36,7 @@ export function InspectionSectionToggle({
   const isUnitMode = projectSection.section.is_unit_mode;
   const isBusy = loading || isGroupBusy;
   const t = useTranslations("inspectionUI");
+  const tInsp = useTranslations("inspection");
 
   const handleToggle = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -69,7 +71,7 @@ export function InspectionSectionToggle({
         <span
           className={`text-sm ${enabled ? "text-content-primary" : "text-content-muted"}`}
         >
-          {projectSection.display_name_override ?? projectSection.section.name}
+          {projectSection.display_name_override ?? (tInsp.has(`inspSections.${nameToKey(projectSection.section.name)}`) ? tInsp(`inspSections.${nameToKey(projectSection.section.name)}`) : projectSection.section.name)}
         </span>
         {isUnitMode && (
           <span className="text-xs text-brand-600 font-medium">{t("unitMode")}</span>

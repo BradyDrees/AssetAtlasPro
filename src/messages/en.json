@@ -264,6 +264,30 @@
       "amenities": "Amenities",
       "units": "Units"
     },
+    "inspSections": {
+      "site_drainage_grading": "Site Drainage & Grading",
+      "paving_flatwork": "Paving & Flatwork",
+      "exterior_lighting": "Exterior Lighting",
+      "landscaping_site_features": "Landscaping & Site Features",
+      "foundation": "Foundation",
+      "structural_framing_visual": "Structural Framing (Visual)",
+      "roof": "Roof",
+      "exterior_walls_facade": "Exterior Walls / Facade",
+      "windows_doors": "Windows & Doors",
+      "fire_alarm_system": "Fire Alarm System",
+      "sprinkler_fire_suppression": "Sprinkler / Fire Suppression",
+      "emergency_lighting_exit_signs": "Emergency Lighting & Exit Signs",
+      "egress_paths": "Egress Paths",
+      "electrical_service_panels": "Electrical Service & Panels",
+      "unit_electrical_sampling": "Unit Electrical (Sampling)",
+      "plumbing_supply_drain": "Plumbing Supply & Drain",
+      "water_heaters": "Water Heaters",
+      "hvac_systems": "HVAC Systems",
+      "corridors_interior_finishes": "Corridors & Interior Finishes",
+      "amenities": "Amenities",
+      "laundry": "Laundry",
+      "unit_inspections": "Unit Inspections"
+    },
     "bankReadyMode": {
       "description": "Bank-Ready mode requires priority, exposure, RUL, and condition ratings on all sections and findings.",
       "sfrNote": "SFR mode labels unit sections as \"Homes\" instead of \"Units\"."

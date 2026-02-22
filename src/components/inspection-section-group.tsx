@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { InspectionSectionToggle } from "@/components/inspection-section-toggle";
+import { INSPECTION_GROUP_KEYS } from "@/lib/translate-sections";
 import type { InspectionProjectSectionWithDetails } from "@/lib/inspection-types";
 
 interface InspectionSectionGroupProps {
@@ -28,6 +29,7 @@ export function InspectionSectionGroup({
   const [isExpanded, setIsExpanded] = useState(true);
   const [isToggling, setIsToggling] = useState(false);
   const t = useTranslations("inspectionUI");
+  const tInsp = useTranslations("inspection");
 
   const handleToggleStart = useCallback(() => setIsToggling(true), []);
   const handleToggleEnd = useCallback(() => setIsToggling(false), []);
@@ -71,7 +73,7 @@ export function InspectionSectionGroup({
           >
             ▶
           </span>
-          <h3 className="font-semibold text-content-primary text-sm">{groupName}</h3>
+          <h3 className="font-semibold text-content-primary text-sm">{INSPECTION_GROUP_KEYS[groupName] ? tInsp(`sectionGroups.${INSPECTION_GROUP_KEYS[groupName]}`) : groupName}</h3>
           <div className="flex items-center gap-2 ml-2">
             {totalUnits > 0 && (
               <span className="text-xs text-green-600 font-medium">

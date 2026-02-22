@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { SectionToggle } from "@/components/section-toggle";
+import { DD_GROUP_KEYS } from "@/lib/translate-sections";
 import type { DDProjectSectionWithDetails } from "@/lib/types";
 
 interface SectionGroupProps {
@@ -25,6 +26,7 @@ export function SectionGroup({
   itemCounts = {},
 }: SectionGroupProps) {
   const t = useTranslations("unit");
+  const tInsp = useTranslations("inspection");
   const [isExpanded, setIsExpanded] = useState(true);
   const [isToggling, setIsToggling] = useState(false);
 
@@ -62,7 +64,7 @@ export function SectionGroup({
           >
             ▶
           </span>
-          <h3 className="font-semibold text-content-primary text-sm">{groupName}</h3>
+          <h3 className="font-semibold text-content-primary text-sm">{DD_GROUP_KEYS[groupName] ? tInsp(`ddGroups.${DD_GROUP_KEYS[groupName]}`) : groupName}</h3>
         </div>
         <div className="flex items-center gap-3">
           {totalUnits > 0 && (

@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { InspectionGroupChecklist } from "@/components/inspection-group-checklist";
+import { INSPECTION_GROUP_KEYS, nameToKey } from "@/lib/translate-sections";
 import type {
   InspectionProjectSectionWithDetails,
   InspectionChecklistItem,
@@ -130,6 +132,7 @@ export function InspectionProjectTabs({
   currentUserId,
   scrollToGroup,
 }: InspectionProjectTabsProps & { scrollToGroup?: string }) {
+  const tInsp = useTranslations("inspection");
   // Track which groups are collapsed (all expanded by default)
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
 
@@ -183,7 +186,7 @@ export function InspectionProjectTabs({
                 }}
                 className={`flex-shrink-0 px-3 py-1.5 text-xs font-semibold border rounded-full transition-all ${colors.pill} ${colors.pillHover}`}
               >
-                {group.groupName}
+                {INSPECTION_GROUP_KEYS[group.groupName] ? tInsp(`sectionGroups.${INSPECTION_GROUP_KEYS[group.groupName]}`) : group.groupName}
                 {group.findingCount > 0 && (
                   <span className="ml-1.5 text-orange-600 font-bold">
                     {group.findingCount}
@@ -219,7 +222,7 @@ export function InspectionProjectTabs({
                 >
                   ▶
                 </span>
-                <h2 className="text-sm font-bold tracking-wide">{group.groupName}</h2>
+                <h2 className="text-sm font-bold tracking-wide">{INSPECTION_GROUP_KEYS[group.groupName] ? tInsp(`sectionGroups.${INSPECTION_GROUP_KEYS[group.groupName]}`) : group.groupName}</h2>
                 <span className={`text-xs ${colors.accent}`}>
                   {group.sectionCount} section{group.sectionCount !== 1 ? "s" : ""}
                 </span>
@@ -262,7 +265,7 @@ export function InspectionProjectTabs({
                           <div>
                             <h3 className="text-sm font-semibold text-content-primary">
                               {s.projectSection.display_name_override ??
-                                s.projectSection.section.name}
+                                (tInsp.has(`inspSections.${nameToKey(s.projectSection.section.name)}`) ? tInsp(`inspSections.${nameToKey(s.projectSection.section.name)}`) : s.projectSection.section.name)}
                             </h3>
                             <p className="text-xs text-content-quaternary mt-0.5">
                               Unit-based inspection — tap to manage units

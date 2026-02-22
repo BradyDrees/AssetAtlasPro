@@ -5,6 +5,7 @@ import Link from "next/link";
 import { InspectionUnitDetail } from "@/components/inspection-unit-detail";
 import { SnapshotSync } from "@/components/snapshot-sync";
 import { INSPECTION_GROUP_SLUGS } from "@/lib/inspection-sections";
+import { nameToKey } from "@/lib/translate-sections";
 import type {
   InspectionUnit,
   InspectionCapture,
@@ -167,7 +168,7 @@ export default async function InspectionUnitPage({
           href={`/inspections/${projectId}/sections/${projectSectionId}`}
           className="hover:text-brand-600 transition-colors"
         >
-          {ps.section.name}
+          {t.has(`inspection.inspSections.${nameToKey(ps.section.name)}`) ? t(`inspection.inspSections.${nameToKey(ps.section.name)}`) : ps.section.name}
         </Link>
         <span>/</span>
         <span className="text-content-primary">

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { getPageSnapshot } from "@/lib/offline/page-snapshot";
+import { nameToKey } from "@/lib/translate-sections";
 import { InspectionUnitDetail } from "@/components/inspection-unit-detail";
 import type {
   InspectionProject,
@@ -129,7 +130,7 @@ export function InspectionUnitOffline({
         </Link>
         <span>/</span>
         <Link href={`/inspections/${projectId}/sections/${sectionId}`} className="hover:text-brand-600 transition-colors">
-          {ps.section.name}
+          {t.has(`inspection.inspSections.${nameToKey(ps.section.name)}`) ? t(`inspection.inspSections.${nameToKey(ps.section.name)}`) : ps.section.name}
         </Link>
         <span>/</span>
         <span className="text-content-primary">

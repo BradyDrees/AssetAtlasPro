@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { getPageSnapshot } from "@/lib/offline/page-snapshot";
+import { nameToKey, INSPECTION_GROUP_KEYS } from "@/lib/translate-sections";
 import { useOffline } from "@/components/offline-provider";
 import { useLocalFindings, useLocalUnits } from "@/lib/offline/use-local-data";
 import { InspectionSectionFields } from "@/components/inspection-section-fields";
@@ -162,7 +163,7 @@ export function InspectionSectionOffline({
           {project.name}
         </Link>
         <span>/</span>
-        <span className="text-content-primary">{ps.section.name}</span>
+        <span className="text-content-primary">{t.has(`inspection.inspSections.${nameToKey(ps.section.name)}`) ? t(`inspection.inspSections.${nameToKey(ps.section.name)}`) : ps.section.name}</span>
       </div>
 
       {/* Section header */}
@@ -180,10 +181,10 @@ export function InspectionSectionOffline({
           </Link>
           <div>
             <p className="text-xs text-content-quaternary uppercase tracking-wide">
-              {ps.section.group_name}
+              {INSPECTION_GROUP_KEYS[ps.section.group_name] ? t(`inspection.sectionGroups.${INSPECTION_GROUP_KEYS[ps.section.group_name]}`) : ps.section.group_name}
             </p>
             <h1 className="text-2xl font-bold text-content-primary">
-              {ps.section.name}
+              {t.has(`inspection.inspSections.${nameToKey(ps.section.name)}`) ? t(`inspection.inspSections.${nameToKey(ps.section.name)}`) : ps.section.name}
             </h1>
           </div>
         </div>

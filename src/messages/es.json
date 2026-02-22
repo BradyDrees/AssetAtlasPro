@@ -264,6 +264,30 @@
       "amenities": "Amenidades",
       "units": "Unidades"
     },
+    "inspSections": {
+      "site_drainage_grading": "Drenaje y Nivelacion del Sitio",
+      "paving_flatwork": "Pavimento y Obra Plana",
+      "exterior_lighting": "Iluminacion Exterior",
+      "landscaping_site_features": "Paisajismo y Caracteristicas del Sitio",
+      "foundation": "Cimentacion",
+      "structural_framing_visual": "Estructura Visual",
+      "roof": "Techo",
+      "exterior_walls_facade": "Paredes Exteriores / Fachada",
+      "windows_doors": "Ventanas y Puertas",
+      "fire_alarm_system": "Sistema de Alarma contra Incendios",
+      "sprinkler_fire_suppression": "Rociadores / Supresion de Incendios",
+      "emergency_lighting_exit_signs": "Iluminacion de Emergencia y Senales de Salida",
+      "egress_paths": "Rutas de Evacuacion",
+      "electrical_service_panels": "Servicio Electrico y Paneles",
+      "unit_electrical_sampling": "Electrico de Unidad (Muestreo)",
+      "plumbing_supply_drain": "Plomeria de Suministro y Drenaje",
+      "water_heaters": "Calentadores de Agua",
+      "hvac_systems": "Sistemas de Climatizacion",
+      "corridors_interior_finishes": "Pasillos y Acabados Interiores",
+      "amenities": "Amenidades",
+      "laundry": "Lavanderia",
+      "unit_inspections": "Inspecciones de Unidades"
+    },
     "bankReadyMode": {
       "description": "El modo Listo para Banco requiere prioridad, exposicion, vida util y calificaciones de condicion en todas las secciones y hallazgos.",
       "sfrNote": "El modo Vivienda Unifamiliar etiqueta las secciones de unidades como \"Viviendas\" en lugar de \"Unidades\"."

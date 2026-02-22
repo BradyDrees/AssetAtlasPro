@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { updateInspectionProjectStatus } from "@/app/actions/inspections";
+import { nameToKey, INSPECTION_GROUP_KEYS } from "@/lib/translate-sections";
 import {
   PRIORITY_LABELS,
   RISK_FLAG_LABELS,
@@ -240,7 +241,7 @@ export function InspectionReviewContent({
                             )}
                             {sectionPs && (
                               <span className="text-xs text-content-muted">
-                                — {sectionPs.section.name}
+                                — {t.has(`inspection.inspSections.${nameToKey(sectionPs.section.name)}`) ? t(`inspection.inspSections.${nameToKey(sectionPs.section.name)}`) : sectionPs.section.name}
                               </span>
                             )}
                           </div>
@@ -263,7 +264,7 @@ export function InspectionReviewContent({
         {groupedSections.map((group) => (
           <div key={group.group_name} className="mb-4 last:mb-0">
             <h4 className="text-xs font-semibold text-content-quaternary uppercase tracking-wide mb-2">
-              {group.group_name}
+              {INSPECTION_GROUP_KEYS[group.group_name] ? t(`inspection.sectionGroups.${INSPECTION_GROUP_KEYS[group.group_name]}`) : group.group_name}
             </h4>
             <div className="space-y-1">
               {group.sections.map((section) => {
@@ -309,7 +310,7 @@ export function InspectionReviewContent({
                           </span>
                         )}
                         <span className="text-sm text-content-primary">
-                          {section.section.name}
+                          {t.has(`inspection.inspSections.${nameToKey(section.section.name)}`) ? t(`inspection.inspSections.${nameToKey(section.section.name)}`) : section.section.name}
                         </span>
                         {section.is_na && (
                           <span className="text-xs bg-surface-tertiary text-content-muted px-1.5 py-0.5 rounded-full">

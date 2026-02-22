@@ -11,6 +11,7 @@ import {
   toggleSectionNAOffline,
 } from "@/lib/offline/actions";
 import { FindingCard } from "@/components/inspection-finding-card";
+import { nameToKey } from "@/lib/translate-sections";
 import {
   PRIORITY_LABELS,
   GOOD_LABEL,
@@ -128,6 +129,13 @@ export function InspectionGroupChecklist({
   const t = useTranslations();
   const router = useFieldRouter();
   const { isFieldMode, refreshPending, bumpRevision } = useOffline();
+
+  /** Translate a DB section name with fallback to raw name */
+  const tSection = useCallback((rawName: string, override?: string | null) => {
+    if (override) return override;
+    const key = `inspection.inspSections.${nameToKey(rawName)}`;
+    return t.has(key) ? t(key) : rawName;
+  }, [t]);
 
   // Track expanded checklist items (by checklist item id)
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
@@ -364,7 +372,7 @@ export function InspectionGroupChecklist({
       const isNa = naOverrides.get(s.projectSection.id) ?? false;
       if (isNa) {
         return {
-          name: s.projectSection.display_name_override ?? s.projectSection.section.name,
+          name: tSection(s.projectSection.section.name, s.projectSection.display_name_override),
           score: -1, // sentinel for N/A
           label: "N/A",
           itemCount: s.checklistItems.length,
@@ -376,10 +384,10 @@ export function InspectionGroupChecklist({
         s.checklistItems,
         activeFindings,
         localPriorities,
-        s.projectSection.display_name_override ?? s.projectSection.section.name
+        tSection(s.projectSection.section.name, s.projectSection.display_name_override)
       );
     });
-  }, [sections, localPriorities, deletedFindings, naOverrides]);
+  }, [sections, localPriorities, deletedFindings, naOverrides, tSection]);
 
   const overallScore = useMemo(() => {
     const scoredSections = healthScores.filter((h) => h.score >= 0);
@@ -392,8 +400,7 @@ export function InspectionGroupChecklist({
     <div className="space-y-6">
       {sections.map((sectionData) => {
         const { projectSection, checklistItems, findings, captures } = sectionData;
-        const sectionName =
-          projectSection.display_name_override ?? projectSection.section.name;
+        const sectionName = tSection(projectSection.section.name, projectSection.display_name_override);
         const isCollapsed = collapsedSections.has(projectSection.id);
         const isNa = naOverrides.get(projectSection.id) ?? false;
 

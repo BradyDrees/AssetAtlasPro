@@ -8,6 +8,7 @@ import { InspectionUnitList } from "@/components/inspection-unit-list";
 import { SnapshotSync } from "@/components/snapshot-sync";
 import { getTranslations } from "next-intl/server";
 import { INSPECTION_GROUP_SLUGS } from "@/lib/inspection-sections";
+import { nameToKey, INSPECTION_GROUP_KEYS } from "@/lib/translate-sections";
 import type {
   InspectionProjectSectionWithDetails,
   InspectionChecklistItem,
@@ -147,7 +148,7 @@ export default async function InspectionSectionPage({
           {project.name}
         </Link>
         <span>/</span>
-        <span className="text-content-primary">{ps.section.name}</span>
+        <span className="text-content-primary">{t.has(`inspection.inspSections.${nameToKey(ps.section.name)}`) ? t(`inspection.inspSections.${nameToKey(ps.section.name)}`) : ps.section.name}</span>
       </div>
 
       {/* Section header */}
@@ -175,10 +176,10 @@ export default async function InspectionSectionPage({
           </Link>
           <div>
             <p className="text-xs text-content-quaternary uppercase tracking-wide">
-              {ps.section.group_name}
+              {INSPECTION_GROUP_KEYS[ps.section.group_name] ? t(`inspection.sectionGroups.${INSPECTION_GROUP_KEYS[ps.section.group_name]}`) : ps.section.group_name}
             </p>
             <h1 className="text-2xl font-bold text-content-primary">
-              {ps.section.name}
+              {t.has(`inspection.inspSections.${nameToKey(ps.section.name)}`) ? t(`inspection.inspSections.${nameToKey(ps.section.name)}`) : ps.section.name}
             </h1>
           </div>
         </div>

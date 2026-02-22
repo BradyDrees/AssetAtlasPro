@@ -9,6 +9,7 @@ import {
 } from "@/lib/inspection-sections";
 import { INSPECTION_TYPE_LABELS } from "@/lib/inspection-constants";
 import { getTranslations } from "next-intl/server";
+import { INSPECTION_GROUP_KEYS } from "@/lib/translate-sections";
 import type {
   InspectionProjectSectionWithDetails,
   InspectionChecklistItem,
@@ -141,7 +142,7 @@ export default async function InspectionGroupPage({
           {project.name}
         </Link>
         <span>/</span>
-        <span className="text-content-primary">{groupName}</span>
+        <span className="text-content-primary">{INSPECTION_GROUP_KEYS[groupName] ? t(`inspection.sectionGroups.${INSPECTION_GROUP_KEYS[groupName]}`) : groupName}</span>
       </div>
 
       {/* Group header */}
@@ -169,7 +170,7 @@ export default async function InspectionGroupPage({
           </Link>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-content-primary">{groupName}</h1>
+              <h1 className="text-2xl font-bold text-content-primary">{INSPECTION_GROUP_KEYS[groupName] ? t(`inspection.sectionGroups.${INSPECTION_GROUP_KEYS[groupName]}`) : groupName}</h1>
               <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gold-100 text-gold-800">
                 {t(`inspection.inspectionTypes.${project.inspection_type === "bank_ready" ? "bankReady" : "internal"}`)}
               </span>
@@ -195,7 +196,7 @@ export default async function InspectionGroupPage({
             href={`/inspections/${projectId}/groups/${nextGroupSlug}`}
             className="px-4 py-2 bg-brand-600 text-white text-sm rounded-md hover:bg-brand-700 transition-colors"
           >
-            {t("dashboard.nextLabel", { name: nextGroupName })}
+            {t("dashboard.nextLabel", { name: INSPECTION_GROUP_KEYS[nextGroupName] ? t(`inspection.sectionGroups.${INSPECTION_GROUP_KEYS[nextGroupName]}`) : nextGroupName })}
           </Link>
         </div>
       )}

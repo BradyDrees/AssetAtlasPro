@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { toggleProjectSection } from "@/app/actions/sections";
+import { nameToKey } from "@/lib/translate-sections";
 import type { DDProjectSectionWithDetails } from "@/lib/types";
 
 interface SectionToggleProps {
@@ -28,6 +29,7 @@ export function SectionToggle({
   onToggleEnd,
 }: SectionToggleProps) {
   const t = useTranslations("unit");
+  const tInsp = useTranslations("inspection");
   const [enabled, setEnabled] = useState(projectSection.enabled);
   const [loading, setLoading] = useState(false);
 
@@ -61,7 +63,7 @@ export function SectionToggle({
         <span
           className={`text-sm ${enabled ? "text-content-primary" : "text-content-muted"}`}
         >
-          {projectSection.section.name}
+          {tInsp.has(`inspSections.${nameToKey(projectSection.section.name)}`) ? tInsp(`inspSections.${nameToKey(projectSection.section.name)}`) : projectSection.section.name}
         </span>
         {isUnitMode && (
           <span className="text-xs text-brand-600 font-medium">{t("grading")}</span>

@@ -103,5 +103,31 @@
   "requestChangesTitle": "Request Changes",
   "changeNotesPlaceholder": "Describe what changes you'd like...",
   "sendChanges": "Send Change Request",
-  "processing": "Processing..."
+  "processing": "Processing...",
+  "exportPdf": "Export PDF",
+  "exportingPdf": "Generating PDF...",
+  "pdfError": "Failed to generate PDF",
+  "tierComparison": "Tier Comparison",
+  "tierNoSections": "No sections in this tier",
+  "tiers": {
+    "good": "Good",
+    "better": "Better",
+    "best": "Best"
+  },
+  "pricebook": {
+    "title": "Pricebook",
+    "searchPlaceholder": "Search items...",
+    "addItem": "Add Item",
+    "namePlaceholder": "Item name...",
+    "categoryPlaceholder": "Category (e.g. Plumbing)...",
+    "noItems": "No pricebook items yet",
+    "uncategorized": "Uncategorized"
+  },
+  "templates": {
+    "title": "Templates",
+    "useTemplate": "Use Template",
+    "saveAsTemplate": "Save as Template",
+    "templateName": "Template Name",
+    "noTemplates": "No templates saved yet"
+  }
 }

@@ -1,16 +1,45 @@
 {
   "title": "PM Clients",
   "noClients": "No PM clients yet",
+  "waitForInvite": "When a property manager invites you, they'll appear here",
   "addClient": "Connect with PM",
+  "unknownPm": "Unknown PM",
+  "notFound": "Client not found",
   "totalJobs": "Total Jobs",
   "activeJobs": "Active Jobs",
   "totalRevenue": "Total Revenue",
   "paymentTerms": "Payment Terms",
   "since": "Connected Since",
+  "noJobHistory": "No completed jobs yet",
+  "status": {
+    "active": "Active",
+    "pending": "Pending",
+    "suspended": "Suspended",
+    "terminated": "Terminated"
+  },
   "detail": {
     "overview": "Overview",
     "jobHistory": "Job History",
     "financials": "Financials",
     "notes": "Notes"
+  },
+  "invite": {
+    "processing": "Processing Invite",
+    "verifying": "Verifying your invite link…",
+    "accepted": "Invite Accepted!",
+    "redirecting": "Redirecting to your clients…",
+    "failed": "Invite Failed",
+    "unknownError": "An unknown error occurred",
+    "goToDashboard": "Go to Dashboard"
+  },
+  "pmVendors": {
+    "title": "Connected Vendors",
+    "inviteVendor": "Invite a Vendor",
+    "emailPlaceholder": "Vendor's business email...",
+    "invite": "Send Invite",
+    "sending": "Sending...",
+    "inviteSent": "Invite sent! Share this link with your vendor:",
+    "inviteError": "Failed to send invite",
+    "noVendors": "No connected vendors yet"
   }
 }

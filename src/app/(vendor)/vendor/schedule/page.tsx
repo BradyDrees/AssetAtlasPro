@@ -1,21 +1,32 @@
-"use client";
+import { getVendorWorkOrders } from "@/app/actions/vendor-work-orders";
+import { ScheduleView } from "@/components/vendor/schedule-view";
+import { getTranslations } from "next-intl/server";
 
-import { useTranslations } from "next-intl";
+export default async function VendorSchedulePage() {
+  const t = await getTranslations("vendor.schedule");
 
-export default function VendorSchedulePage() {
-  const t = useTranslations("vendor.schedule");
+  // Get all jobs that have a scheduled date
+  const { data: allJobs } = await getVendorWorkOrders();
+  const scheduledJobs = allJobs
+    .filter((j) => j.scheduled_date)
+    .map((j) => ({
+      id: j.id,
+      property_name: j.property_name,
+      description: j.description,
+      trade: j.trade,
+      priority: j.priority,
+      status: j.status,
+      scheduled_date: j.scheduled_date,
+      scheduled_time_start: j.scheduled_time_start,
+      scheduled_time_end: j.scheduled_time_end,
+    }));
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold text-content-primary mb-6">
+    <div className="max-w-6xl mx-auto space-y-5">
+      <h1 className="text-2xl font-bold text-content-primary">
         {t("title")}
       </h1>
-      <div className="bg-surface-primary rounded-xl border border-edge-primary p-8 text-center">
-        <svg className="w-12 h-12 text-content-quaternary mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-        </svg>
-        <p className="text-content-tertiary">{t("noJobs")}</p>
-      </div>
+      <ScheduleView jobs={scheduledJobs} />
     </div>
   );
 }

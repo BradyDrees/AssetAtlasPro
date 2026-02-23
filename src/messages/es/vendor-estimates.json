@@ -103,5 +103,31 @@
   "requestChangesTitle": "Solicitar Cambios",
   "changeNotesPlaceholder": "Describe qué cambios deseas...",
   "sendChanges": "Enviar Solicitud de Cambios",
-  "processing": "Procesando..."
+  "processing": "Procesando...",
+  "exportPdf": "Exportar PDF",
+  "exportingPdf": "Generando PDF...",
+  "pdfError": "Error al generar PDF",
+  "tierComparison": "Comparación de Niveles",
+  "tierNoSections": "Sin secciones en este nivel",
+  "tiers": {
+    "good": "Bueno",
+    "better": "Mejor",
+    "best": "Premium"
+  },
+  "pricebook": {
+    "title": "Lista de Precios",
+    "searchPlaceholder": "Buscar artículos...",
+    "addItem": "Agregar Artículo",
+    "namePlaceholder": "Nombre del artículo...",
+    "categoryPlaceholder": "Categoría (ej. Plomería)...",
+    "noItems": "Sin artículos en la lista de precios aún",
+    "uncategorized": "Sin Categoría"
+  },
+  "templates": {
+    "title": "Plantillas",
+    "useTemplate": "Usar Plantilla",
+    "saveAsTemplate": "Guardar como Plantilla",
+    "templateName": "Nombre de Plantilla",
+    "noTemplates": "Sin plantillas guardadas aún"
+  }
 }

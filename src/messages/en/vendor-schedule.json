@@ -5,5 +5,7 @@
   "today": "Today",
   "noJobs": "No jobs scheduled",
   "allDay": "All Day",
-  "jobAt": "Job at {property}"
+  "jobAt": "Job at {property}",
+  "scheduledFor": "Scheduled for {date}",
+  "timeRange": "{start} - {end}"
 }

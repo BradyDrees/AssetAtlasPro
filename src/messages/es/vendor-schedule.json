@@ -5,5 +5,7 @@
   "today": "Hoy",
   "noJobs": "Sin trabajos programados",
   "allDay": "Todo el Día",
-  "jobAt": "Trabajo en {property}"
+  "jobAt": "Trabajo en {property}",
+  "scheduledFor": "Programado para {date}",
+  "timeRange": "{start} - {end}"
 }

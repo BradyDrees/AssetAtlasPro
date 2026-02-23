@@ -1,16 +1,45 @@
 {
   "title": "Clientes PM",
   "noClients": "Sin clientes PM aún",
+  "waitForInvite": "Cuando un administrador de propiedades te invite, aparecerá aquí",
   "addClient": "Conectar con PM",
+  "unknownPm": "PM Desconocido",
+  "notFound": "Cliente no encontrado",
   "totalJobs": "Trabajos Totales",
   "activeJobs": "Trabajos Activos",
   "totalRevenue": "Ingresos Totales",
   "paymentTerms": "Términos de Pago",
   "since": "Conectado Desde",
+  "noJobHistory": "Sin trabajos completados aún",
+  "status": {
+    "active": "Activo",
+    "pending": "Pendiente",
+    "suspended": "Suspendido",
+    "terminated": "Terminado"
+  },
   "detail": {
     "overview": "Resumen",
     "jobHistory": "Historial de Trabajos",
     "financials": "Finanzas",
     "notes": "Notas"
+  },
+  "invite": {
+    "processing": "Procesando Invitación",
+    "verifying": "Verificando tu enlace de invitación…",
+    "accepted": "¡Invitación Aceptada!",
+    "redirecting": "Redirigiendo a tus clientes…",
+    "failed": "Invitación Fallida",
+    "unknownError": "Ocurrió un error desconocido",
+    "goToDashboard": "Ir al Panel"
+  },
+  "pmVendors": {
+    "title": "Vendedores Conectados",
+    "inviteVendor": "Invitar a un Vendedor",
+    "emailPlaceholder": "Correo empresarial del vendedor...",
+    "invite": "Enviar Invitación",
+    "sending": "Enviando...",
+    "inviteSent": "¡Invitación enviada! Comparte este enlace con tu vendedor:",
+    "inviteError": "Error al enviar invitación",
+    "noVendors": "Sin vendedores conectados aún"
   }
 }

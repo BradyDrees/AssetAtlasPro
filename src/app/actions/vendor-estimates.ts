@@ -482,3 +482,83 @@ export async function sendEstimateToPm(
 
   return {};
 }
+
+// ============================================
+// Pipeline & Bulk Actions (Workiz Enhancements)
+// ============================================
+
+/** Get estimate pipeline stats: count + $ per status */
+export async function getEstimatePipelineStats(): Promise<{
+  data: { status: string; count: number; total: number }[];
+  error?: string;
+}> {
+  const { vendor_org_id } = await requireVendorRole();
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("vendor_estimates")
+    .select("status, total")
+    .eq("vendor_org_id", vendor_org_id);
+
+  if (error) return { data: [], error: error.message };
+
+  const map = new Map<string, { count: number; total: number }>();
+  for (const row of data ?? []) {
+    const existing = map.get(row.status) ?? { count: 0, total: 0 };
+    existing.count += 1;
+    existing.total += Number(row.total) || 0;
+    map.set(row.status, existing);
+  }
+
+  const result = Array.from(map.entries()).map(([status, stats]) => ({
+    status,
+    ...stats,
+  }));
+
+  return { data: result };
+}
+
+/** Bulk send reminders for estimates awaiting PM review */
+export async function sendEstimateReminder(
+  estimateIds: string[]
+): Promise<{ sent: number; error?: string }> {
+  const { vendor_org_id } = await requireVendorRole();
+  const supabase = await createClient();
+
+  if (estimateIds.length === 0) return { sent: 0, error: "No estimates selected" };
+  if (estimateIds.length > 50) return { sent: 0, error: "Maximum 50 estimates at a time" };
+
+  const { data: estimates, error } = await supabase
+    .from("vendor_estimates")
+    .select("id, pm_user_id, estimate_number, status")
+    .eq("vendor_org_id", vendor_org_id)
+    .in("id", estimateIds)
+    .in("status", ["sent", "pm_reviewing", "with_owner"]);
+
+  if (error) return { sent: 0, error: error.message };
+  if (!estimates || estimates.length === 0) return { sent: 0, error: "No eligible estimates found" };
+
+  const notifications = estimates
+    .filter((e) => e.pm_user_id)
+    .map((e) => ({
+      user_id: e.pm_user_id!,
+      type: "estimate_reminder",
+      title: "Estimate reminder",
+      body: `Reminder: Estimate ${e.estimate_number || e.id} is awaiting your review`,
+      reference_type: "estimate",
+      reference_id: e.id,
+    }));
+
+  if (notifications.length > 0) {
+    await supabase.from("vendor_notifications").insert(notifications);
+  }
+
+  await logActivity({
+    entityType: "estimate",
+    entityId: estimateIds[0],
+    action: "bulk_reminder_sent",
+    metadata: { count: notifications.length, estimate_ids: estimateIds },
+  });
+
+  return { sent: notifications.length };
+}

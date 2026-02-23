@@ -533,3 +533,186 @@ export async function submitInvoice(
 
   return {};
 }
+
+// ============================================
+// Payment, Aging, Bulk Actions (Workiz Enhancements)
+// ============================================
+
+/** Record a partial or full payment on an invoice */
+export async function recordPayment(
+  invoiceId: string,
+  amount: number
+): Promise<{ error?: string }> {
+  const { vendor_org_id } = await requireVendorRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return { error: "Not authenticated" };
+  if (amount <= 0) return { error: "Payment amount must be positive" };
+
+  const { data: inv } = await supabase
+    .from("vendor_invoices")
+    .select("amount_paid, total, vendor_org_id, status")
+    .eq("id", invoiceId)
+    .single();
+
+  if (!inv) return { error: "Invoice not found" };
+  if (inv.vendor_org_id !== vendor_org_id) return { error: "Not authorized" };
+
+  const newAmountPaid = (Number(inv.amount_paid) || 0) + amount;
+
+  // Update amount_paid — DB trigger auto-computes balance_due
+  const { error } = await supabase
+    .from("vendor_invoices")
+    .update({
+      amount_paid: newAmountPaid,
+      updated_by: user.id,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", invoiceId);
+
+  if (error) return { error: error.message };
+
+  await logActivity({
+    entityType: "invoice",
+    entityId: invoiceId,
+    action: "payment_recorded",
+    metadata: { amount, new_total_paid: newAmountPaid },
+  });
+
+  return {};
+}
+
+/** Get invoice aging summary — buckets: 0-30, 31-60, 61-90, 90+ days */
+export async function getInvoiceAgingSummary(): Promise<{
+  buckets: { label: string; min_days: number; max_days: number | null; count: number; total: number }[];
+  total_outstanding: number;
+  error?: string;
+}> {
+  const { vendor_org_id } = await requireVendorRole();
+  const supabase = await createClient();
+
+  const { data: invoices, error } = await supabase
+    .from("vendor_invoices")
+    .select("id, submitted_at, due_date, total, balance_due")
+    .eq("vendor_org_id", vendor_org_id)
+    .in("status", ["submitted", "pm_approved", "processing"]);
+
+  if (error) return { buckets: [], total_outstanding: 0, error: error.message };
+
+  const now = new Date();
+  const bucketDefs = [
+    { label: "0-30 days", min_days: 0, max_days: 30 as number | null },
+    { label: "31-60 days", min_days: 31, max_days: 60 as number | null },
+    { label: "61-90 days", min_days: 61, max_days: 90 as number | null },
+    { label: "90+ days", min_days: 91, max_days: null as number | null },
+  ];
+
+  const buckets = bucketDefs.map((b) => ({ ...b, count: 0, total: 0 }));
+  let totalOutstanding = 0;
+
+  for (const inv of invoices ?? []) {
+    const refDate = inv.submitted_at ? new Date(inv.submitted_at) : now;
+    const daysOld = Math.floor((now.getTime() - refDate.getTime()) / (1000 * 60 * 60 * 24));
+    const balance = Number(inv.balance_due) || Number(inv.total) || 0;
+    totalOutstanding += balance;
+
+    for (const bucket of buckets) {
+      if (bucket.max_days === null) {
+        if (daysOld >= bucket.min_days) {
+          bucket.count++;
+          bucket.total += balance;
+        }
+      } else if (daysOld >= bucket.min_days && daysOld <= bucket.max_days) {
+        bucket.count++;
+        bucket.total += balance;
+        break;
+      }
+    }
+  }
+
+  return { buckets, total_outstanding: totalOutstanding };
+}
+
+/** Bulk invoice actions — send or remind */
+export async function bulkInvoiceAction(
+  invoiceIds: string[],
+  action: "send" | "remind"
+): Promise<{ processed: number; error?: string }> {
+  const vendorAuth = await requireVendorRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return { processed: 0, error: "Not authenticated" };
+  if (invoiceIds.length === 0) return { processed: 0, error: "No invoices selected" };
+  if (invoiceIds.length > 50) return { processed: 0, error: "Maximum 50 invoices at a time" };
+
+  const { data: invoices, error } = await supabase
+    .from("vendor_invoices")
+    .select("id, status, pm_user_id, invoice_number")
+    .eq("vendor_org_id", vendorAuth.vendor_org_id)
+    .in("id", invoiceIds);
+
+  if (error) return { processed: 0, error: error.message };
+  if (!invoices || invoices.length === 0) return { processed: 0, error: "No matching invoices found" };
+
+  let processed = 0;
+
+  if (action === "send") {
+    const drafts = invoices.filter((inv) => inv.status === "draft" && inv.pm_user_id);
+    for (const inv of drafts) {
+      await supabase
+        .from("vendor_invoices")
+        .update({
+          status: "submitted",
+          submitted_at: new Date().toISOString(),
+          updated_by: user.id,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", inv.id);
+
+      await supabase.from("vendor_notifications").insert({
+        user_id: inv.pm_user_id!,
+        type: "invoice_received",
+        title: "New invoice received",
+        body: `Invoice ${inv.invoice_number || inv.id} submitted for review`,
+        reference_type: "invoice",
+        reference_id: inv.id,
+      });
+
+      processed++;
+    }
+  } else if (action === "remind") {
+    const eligible = invoices.filter(
+      (inv) =>
+        ["submitted", "pm_approved", "processing"].includes(inv.status) &&
+        inv.pm_user_id
+    );
+    const notifications = eligible.map((inv) => ({
+      user_id: inv.pm_user_id!,
+      type: "invoice_reminder",
+      title: "Invoice payment reminder",
+      body: `Reminder: Invoice ${inv.invoice_number || inv.id} is awaiting payment`,
+      reference_type: "invoice",
+      reference_id: inv.id,
+    }));
+
+    if (notifications.length > 0) {
+      await supabase.from("vendor_notifications").insert(notifications);
+    }
+    processed = notifications.length;
+  }
+
+  await logActivity({
+    entityType: "invoice",
+    entityId: invoiceIds[0],
+    action: `bulk_${action}`,
+    metadata: { count: processed, invoice_ids: invoiceIds },
+  });
+
+  return { processed };
+}

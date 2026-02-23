@@ -38,5 +38,33 @@
     "addCredentials": "Upload insurance & credentials",
     "connectPm": "Connect with a property manager",
     "completed": "Completed"
+  },
+  "dateFilter": {
+    "today": "Today",
+    "week": "This Week",
+    "month": "This Month",
+    "quarter": "Quarter"
+  },
+  "upcomingJobs": {
+    "title": "Upcoming Jobs",
+    "viewAll": "View All",
+    "empty": "No upcoming jobs"
+  },
+  "revenue": {
+    "title": "Revenue & Balance",
+    "outstanding": "Outstanding",
+    "received": "Received",
+    "pastDue": "Past Due"
+  },
+  "expenses": {
+    "title": "Expenses",
+    "noData": "No expense data"
+  },
+  "tech": {
+    "title": "Team Scoreboard",
+    "noData": "No team data yet",
+    "name": "Name",
+    "completed": "Completed",
+    "rating": "Rating"
   }
 }

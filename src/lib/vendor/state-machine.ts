@@ -47,9 +47,15 @@ export const WO_TRANSITIONS: Record<WoStatus, TransitionRule[]> = {
   ],
   in_progress: [
     { to: ["completed"], allowedBy: ["vendor"] },
+    { to: ["done_pending_approval"], allowedBy: ["vendor"] },
     { to: ["on_hold"], allowedBy: ["vendor", "pm"] },
   ],
   completed: [
+    { to: ["invoiced"], allowedBy: ["vendor"] },
+  ],
+  done_pending_approval: [
+    { to: ["completed"], allowedBy: ["pm"] }, // PM approves completion
+    { to: ["in_progress"], allowedBy: ["pm"] }, // PM requests more work
     { to: ["invoiced"], allowedBy: ["vendor"] },
   ],
   invoiced: [

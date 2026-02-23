@@ -413,6 +413,108 @@ export async function uploadOrgLogo(
 }
 
 // ============================================
+// Org Settings (Workiz Enhancement)
+// ============================================
+
+import type { VendorOrgSettings } from "@/lib/vendor/types";
+import { DEFAULT_ORG_SETTINGS } from "@/lib/vendor/types";
+
+/** Get org settings (parsed from JSONB) */
+export async function getOrgSettings(): Promise<{
+  settings: VendorOrgSettings;
+  error?: string;
+}> {
+  const auth = await requireVendorRole();
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("vendor_organizations")
+    .select("settings")
+    .eq("id", auth.vendor_org_id)
+    .single();
+
+  if (error) return { settings: DEFAULT_ORG_SETTINGS, error: error.message };
+
+  const raw = data?.settings as Record<string, unknown> | null;
+  if (!raw) return { settings: DEFAULT_ORG_SETTINGS };
+
+  // Merge with defaults to fill missing keys
+  const merged: VendorOrgSettings = {
+    settings_version: (raw.settings_version as number) ?? DEFAULT_ORG_SETTINGS.settings_version,
+    numbering: {
+      ...DEFAULT_ORG_SETTINGS.numbering,
+      ...(raw.numbering as Record<string, unknown> ?? {}),
+    } as VendorOrgSettings["numbering"],
+    tax_rates: (raw.tax_rates as VendorOrgSettings["tax_rates"]) ?? DEFAULT_ORG_SETTINGS.tax_rates,
+    job_types: (raw.job_types as string[]) ?? DEFAULT_ORG_SETTINGS.job_types,
+    sub_statuses: (raw.sub_statuses as string[]) ?? DEFAULT_ORG_SETTINGS.sub_statuses,
+    working_hours: {
+      ...DEFAULT_ORG_SETTINGS.working_hours,
+      ...(raw.working_hours as Record<string, unknown> ?? {}),
+    } as VendorOrgSettings["working_hours"],
+    auto_show_estimate: (raw.auto_show_estimate as boolean) ?? DEFAULT_ORG_SETTINGS.auto_show_estimate,
+    custom_field_schemas: {
+      ...DEFAULT_ORG_SETTINGS.custom_field_schemas,
+      ...(raw.custom_field_schemas as Record<string, unknown> ?? {}),
+    } as VendorOrgSettings["custom_field_schemas"],
+  };
+
+  return { settings: merged };
+}
+
+/** Update org settings — ATOMIC replacement, validates full VendorOrgSettings */
+export async function updateOrgSettings(
+  settings: VendorOrgSettings
+): Promise<{ success: boolean; error?: string }> {
+  const auth = await requireVendorRole();
+
+  if (!["owner", "admin", "office_manager"].includes(auth.role)) {
+    return { success: false, error: "Only owner, admin, or office manager can update settings" };
+  }
+
+  // Validate settings
+  if (!settings.settings_version || typeof settings.settings_version !== "number") {
+    return { success: false, error: "Invalid settings_version" };
+  }
+  if (!Array.isArray(settings.job_types)) {
+    return { success: false, error: "job_types must be an array" };
+  }
+  if (!Array.isArray(settings.sub_statuses)) {
+    return { success: false, error: "sub_statuses must be an array" };
+  }
+  if (!Array.isArray(settings.tax_rates)) {
+    return { success: false, error: "tax_rates must be an array" };
+  }
+  if (!settings.numbering || !settings.numbering.estimate_prefix || !settings.numbering.invoice_prefix) {
+    return { success: false, error: "Invalid numbering config" };
+  }
+  if (!settings.working_hours || !settings.working_hours.start || !settings.working_hours.end) {
+    return { success: false, error: "Invalid working hours" };
+  }
+
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("vendor_organizations")
+    .update({
+      settings: settings as unknown as Record<string, unknown>,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", auth.vendor_org_id);
+
+  if (error) return { success: false, error: error.message };
+
+  await logActivity({
+    entityType: "vendor_org",
+    entityId: auth.vendor_org_id,
+    action: "settings_updated",
+    metadata: { settings_version: settings.settings_version },
+  });
+
+  return { success: true };
+}
+
+// ============================================
 // Credential Summary (for dashboard widget)
 // ============================================
 

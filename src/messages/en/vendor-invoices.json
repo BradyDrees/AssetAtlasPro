@@ -15,6 +15,39 @@
     "paid": "Paid",
     "disputed": "Disputed"
   },
+  "summary": {
+    "totalDue": "Total Due",
+    "pastDue": "Past Due",
+    "paidThisMonth": "Paid This Month",
+    "drafts": "Drafts"
+  },
+  "aging": {
+    "title": "Invoice Aging",
+    "totalOutstanding": "Total Outstanding"
+  },
+  "bulk": {
+    "selected": "{count} selected",
+    "clearSelection": "Clear",
+    "sendDrafts": "Send Drafts",
+    "sendReminder": "Send Reminder",
+    "invoicesSent": "{count} invoices sent",
+    "remindersSent": "{count} reminders sent"
+  },
+  "discount": {
+    "type": "Discount Type",
+    "percentage": "Percentage",
+    "flat": "Flat Amount",
+    "amount": "Discount Amount",
+    "none": "No Discount"
+  },
+  "payment": {
+    "record": "Record Payment",
+    "amount": "Payment Amount",
+    "amountPlaceholder": "0.00",
+    "confirm": "Record",
+    "recording": "Recording...",
+    "balanceDue": "Balance Due"
+  },
   "propertyName": "Property Name",
   "propertyNamePlaceholder": "e.g. Sunset Apartments",
   "unitInfo": "Unit / Area",

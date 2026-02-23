@@ -38,5 +38,33 @@
     "addCredentials": "Sube seguros y credenciales",
     "connectPm": "Conecta con un administrador de propiedades",
     "completed": "Completado"
+  },
+  "dateFilter": {
+    "today": "Hoy",
+    "week": "Esta Semana",
+    "month": "Este Mes",
+    "quarter": "Trimestre"
+  },
+  "upcomingJobs": {
+    "title": "Próximos Trabajos",
+    "viewAll": "Ver Todo",
+    "empty": "Sin trabajos próximos"
+  },
+  "revenue": {
+    "title": "Ingresos y Balance",
+    "outstanding": "Pendiente",
+    "received": "Recibido",
+    "pastDue": "Vencido"
+  },
+  "expenses": {
+    "title": "Gastos",
+    "noData": "Sin datos de gastos"
+  },
+  "tech": {
+    "title": "Tabla del Equipo",
+    "noData": "Sin datos del equipo aún",
+    "name": "Nombre",
+    "completed": "Completados",
+    "rating": "Calificación"
   }
 }

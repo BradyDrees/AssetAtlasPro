@@ -1,0 +1,53 @@
+{
+  "title": "Gastos",
+  "addExpense": "Agregar Gasto",
+  "editExpense": "Editar Gasto",
+  "noExpenses": "Sin gastos aún",
+  "backToExpenses": "Volver a Gastos",
+  "form": {
+    "category": "Categoría",
+    "description": "Descripción",
+    "descriptionPlaceholder": "¿Para qué fue este gasto?",
+    "amount": "Monto",
+    "date": "Fecha",
+    "notes": "Notas",
+    "notesPlaceholder": "Notas adicionales...",
+    "workOrder": "Vincular a Trabajo",
+    "workOrderNone": "Sin trabajo vinculado",
+    "reimbursable": "Reembolsable",
+    "receipt": "Recibo",
+    "save": "Guardar Gasto",
+    "saving": "Guardando...",
+    "cancel": "Cancelar",
+    "saved": "Gasto guardado",
+    "saveError": "Error al guardar gasto"
+  },
+  "categories": {
+    "fuel": "Combustible",
+    "tools": "Herramientas",
+    "supplies": "Suministros",
+    "materials": "Materiales",
+    "subcontractor": "Subcontratista",
+    "permits": "Permisos",
+    "insurance": "Seguros",
+    "office": "Oficina",
+    "vehicle": "Vehículo",
+    "travel": "Viajes",
+    "meals": "Comidas",
+    "other": "Otro"
+  },
+  "filters": {
+    "allCategories": "Todas las Categorías",
+    "dateFrom": "Desde",
+    "dateTo": "Hasta"
+  },
+  "summary": {
+    "title": "Resumen por Categoría",
+    "total": "Total de Gastos"
+  },
+  "delete": "Eliminar",
+  "deleting": "Eliminando...",
+  "edit": "Editar",
+  "receipt": "Recibo adjunto",
+  "reimbursable": "Reembolsable"
+}

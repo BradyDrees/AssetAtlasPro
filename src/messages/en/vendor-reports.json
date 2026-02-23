@@ -1,0 +1,68 @@
+{
+  "title": "Reports",
+  "subtitle": "Business analytics and reporting",
+  "comingSoon": "Report coming soon",
+  "dateFilter": {
+    "thisWeek": "This Week",
+    "thisMonth": "This Month",
+    "thisQuarter": "This Quarter",
+    "thisYear": "This Year",
+    "custom": "Custom",
+    "from": "From",
+    "to": "To"
+  },
+  "export": {
+    "csv": "Export CSV",
+    "exporting": "Exporting..."
+  },
+  "cards": {
+    "jobs": {
+      "title": "Jobs Report",
+      "description": "Revenue, costs, and profitability by job"
+    },
+    "sales": {
+      "title": "Sales Report",
+      "description": "Revenue over time from paid invoices"
+    },
+    "estimates": {
+      "title": "Estimates Report",
+      "description": "Pipeline volume, approval and conversion rates"
+    },
+    "invoices": {
+      "title": "Invoices Report",
+      "description": "Aging buckets and outstanding balances"
+    },
+    "timesheets": {
+      "title": "Timesheets",
+      "description": "Hours worked per employee per period"
+    },
+    "tax": {
+      "title": "Tax Report",
+      "description": "Taxable sales and tax collected"
+    }
+  },
+  "jobs": {
+    "title": "Jobs Report",
+    "backToReports": "Back to Reports"
+  },
+  "sales": {
+    "title": "Sales Report",
+    "backToReports": "Back to Reports"
+  },
+  "estimates": {
+    "title": "Estimates Report",
+    "backToReports": "Back to Reports"
+  },
+  "invoices": {
+    "title": "Invoices Report",
+    "backToReports": "Back to Reports"
+  },
+  "timesheets": {
+    "title": "Timesheets",
+    "backToReports": "Back to Reports"
+  },
+  "tax": {
+    "title": "Tax Report",
+    "backToReports": "Back to Reports"
+  }
+}

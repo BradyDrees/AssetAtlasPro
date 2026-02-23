@@ -26,6 +26,8 @@ export default getRequestConfig(async () => {
   const vendorProfile = (await import(`../messages/${locale}/vendor-profile.json`)).default;
   const vendorClients = (await import(`../messages/${locale}/vendor-clients.json`)).default;
   const vendorSchedule = (await import(`../messages/${locale}/vendor-schedule.json`)).default;
+  const vendorReports = (await import(`../messages/${locale}/vendor-reports.json`)).default;
+  const vendorExpenses = (await import(`../messages/${locale}/vendor-expenses.json`)).default;
 
   const messages = {
     ...base,
@@ -39,6 +41,8 @@ export default getRequestConfig(async () => {
       profile: vendorProfile,
       clients: vendorClients,
       schedule: vendorSchedule,
+      reports: vendorReports,
+      expenses: vendorExpenses,
     },
   };
 

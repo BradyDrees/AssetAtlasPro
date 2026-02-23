@@ -1,0 +1,68 @@
+{
+  "title": "Reportes",
+  "subtitle": "Analítica y reportes del negocio",
+  "comingSoon": "Reporte próximamente",
+  "dateFilter": {
+    "thisWeek": "Esta Semana",
+    "thisMonth": "Este Mes",
+    "thisQuarter": "Este Trimestre",
+    "thisYear": "Este Año",
+    "custom": "Personalizado",
+    "from": "Desde",
+    "to": "Hasta"
+  },
+  "export": {
+    "csv": "Exportar CSV",
+    "exporting": "Exportando..."
+  },
+  "cards": {
+    "jobs": {
+      "title": "Reporte de Trabajos",
+      "description": "Ingresos, costos y rentabilidad por trabajo"
+    },
+    "sales": {
+      "title": "Reporte de Ventas",
+      "description": "Ingresos por período de facturas pagadas"
+    },
+    "estimates": {
+      "title": "Reporte de Presupuestos",
+      "description": "Volumen, tasa de aprobación y conversión"
+    },
+    "invoices": {
+      "title": "Reporte de Facturas",
+      "description": "Antigüedad y saldos pendientes"
+    },
+    "timesheets": {
+      "title": "Horas Trabajadas",
+      "description": "Horas por empleado por período"
+    },
+    "tax": {
+      "title": "Reporte Fiscal",
+      "description": "Ventas gravables e impuestos recaudados"
+    }
+  },
+  "jobs": {
+    "title": "Reporte de Trabajos",
+    "backToReports": "Volver a Reportes"
+  },
+  "sales": {
+    "title": "Reporte de Ventas",
+    "backToReports": "Volver a Reportes"
+  },
+  "estimates": {
+    "title": "Reporte de Presupuestos",
+    "backToReports": "Volver a Reportes"
+  },
+  "invoices": {
+    "title": "Reporte de Facturas",
+    "backToReports": "Volver a Reportes"
+  },
+  "timesheets": {
+    "title": "Horas Trabajadas",
+    "backToReports": "Volver a Reportes"
+  },
+  "tax": {
+    "title": "Reporte Fiscal",
+    "backToReports": "Volver a Reportes"
+  }
+}

@@ -108,7 +108,10 @@ export type VendorEntityType =
   | "credential"
   | "relationship"
   | "vendor_org"
-  | "vendor_user";
+  | "vendor_user"
+  | "client"
+  | "expense"
+  | "skill";
 
 // ============================================
 // Work Order Types (Phase 2, defined early for state-machine)
@@ -122,6 +125,7 @@ export type WoStatus =
   | "on_site"
   | "in_progress"
   | "completed"
+  | "done_pending_approval"
   | "invoiced"
   | "paid"
   | "declined"
@@ -280,3 +284,120 @@ export interface ActiveRoleContext {
   active_role: AppRole;
   active_org_id: string | null;
 }
+
+// ============================================
+// Org Settings (Phase 5 — Workiz Enhancements)
+// ============================================
+
+/** Custom field schema definition */
+export interface CustomFieldSchema {
+  key: string;
+  label: string;
+  type: "text" | "number" | "date" | "select";
+  options?: string[];
+  required?: boolean;
+}
+
+/** Numbering config for estimates/invoices */
+export interface NumberingConfig {
+  estimate_prefix: string;
+  invoice_prefix: string;
+  next_estimate: number;
+  next_invoice: number;
+}
+
+/** Tax rate entry */
+export interface TaxRate {
+  name: string;
+  rate: number;
+  is_default?: boolean;
+}
+
+/** Working hours config */
+export interface WorkingHoursConfig {
+  start: string; // "HH:mm"
+  end: string; // "HH:mm"
+  days: number[]; // 0=Sun, 1=Mon, ..., 6=Sat
+}
+
+/** Custom field schemas keyed by entity type */
+export interface CustomFieldSchemas {
+  work_orders: CustomFieldSchema[];
+  estimates: CustomFieldSchema[];
+  invoices: CustomFieldSchema[];
+}
+
+/** Full org settings — replaced atomically, never partially mutated */
+export interface VendorOrgSettings {
+  settings_version: number;
+  numbering: NumberingConfig;
+  tax_rates: TaxRate[];
+  job_types: string[];
+  sub_statuses: string[];
+  working_hours: WorkingHoursConfig;
+  auto_show_estimate: boolean;
+  custom_field_schemas: CustomFieldSchemas;
+}
+
+/** Default org settings (matches migration default) */
+export const DEFAULT_ORG_SETTINGS: VendorOrgSettings = {
+  settings_version: 1,
+  numbering: {
+    estimate_prefix: "EST",
+    invoice_prefix: "INV",
+    next_estimate: 1,
+    next_invoice: 1,
+  },
+  tax_rates: [],
+  job_types: [
+    "service",
+    "repair",
+    "emergency",
+    "maintenance",
+    "inspection",
+    "turn",
+    "estimate_visit",
+  ],
+  sub_statuses: [
+    "pending_parts",
+    "waiting_approval",
+    "done_pending_payment",
+  ],
+  working_hours: { start: "08:00", end: "17:00", days: [1, 2, 3, 4, 5] },
+  auto_show_estimate: false,
+  custom_field_schemas: {
+    work_orders: [],
+    estimates: [],
+    invoices: [],
+  },
+};
+
+/** Skill proficiency levels */
+export type SkillProficiency = "learning" | "competent" | "expert";
+
+/** Client type for direct vendor clients */
+export type ClientType = "direct" | "homeowner" | "business" | "other";
+
+/** Document template types */
+export type DocumentTemplateType =
+  | "terms"
+  | "contract"
+  | "warranty"
+  | "scope"
+  | "cover"
+  | "other";
+
+/** Expense categories */
+export type ExpenseCategory =
+  | "fuel"
+  | "tools"
+  | "supplies"
+  | "materials"
+  | "subcontractor"
+  | "permits"
+  | "insurance"
+  | "office"
+  | "vehicle"
+  | "travel"
+  | "meals"
+  | "other";

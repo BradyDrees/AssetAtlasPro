@@ -4,14 +4,24 @@
   "active": "Activos",
   "completed": "Completados",
   "all": "Todos los Trabajos",
+  "unscheduled": "Sin Programar",
   "noJobs": "Sin trabajos aún",
   "noIncoming": "Sin órdenes de trabajo entrantes",
+  "noUnscheduled": "Sin trabajos sin programar",
+  "export": "Exportar CSV",
+  "exporting": "Exportando...",
+  "columns": "Columnas",
   "filters": {
     "all": "Todos",
     "byStatus": "Por Estado",
     "byPriority": "Por Prioridad",
     "byTrade": "Por Oficio",
     "byClient": "Por Cliente",
+    "byJobType": "Por Tipo de Trabajo",
+    "byTech": "Por Técnico",
+    "byTags": "Por Etiquetas",
+    "dateFrom": "Desde",
+    "dateTo": "Hasta",
     "search": "Buscar trabajos..."
   },
   "status": {
@@ -22,6 +32,7 @@
     "on_site": "En Sitio",
     "in_progress": "En Progreso",
     "completed": "Completado",
+    "done_pending_approval": "Hecho - Pendiente Aprobación",
     "invoiced": "Facturado",
     "paid": "Pagado",
     "declined": "Rechazado",
@@ -40,6 +51,7 @@
     "arrived": "Llegué",
     "startWork": "Iniciar Trabajo",
     "complete": "Completar",
+    "donePendingApproval": "Hecho - Pendiente Aprobación",
     "putOnHold": "Poner en Espera",
     "resume": "Reanudar"
   },
@@ -57,7 +69,29 @@
     "timeLog": "Registro de Tiempo",
     "photos": "Fotos",
     "completionNotes": "Notas de Completado",
-    "declineReason": "Razón de Rechazo"
+    "declineReason": "Razón de Rechazo",
+    "tags": "Etiquetas",
+    "jobType": "Tipo de Trabajo",
+    "subStatus": "Sub-Estado"
+  },
+  "tags": {
+    "add": "Agregar",
+    "addPlaceholder": "Agregar etiqueta...",
+    "maxReached": "Máximo de etiquetas alcanzado"
+  },
+  "jobTypes": {
+    "service": "Servicio",
+    "repair": "Reparación",
+    "emergency": "Emergencia",
+    "maintenance": "Mantenimiento",
+    "inspection": "Inspección",
+    "turn": "Cambio de Unidad",
+    "estimate_visit": "Visita de Estimación"
+  },
+  "subStatuses": {
+    "pending_parts": "Pendiente de Piezas",
+    "waiting_approval": "Esperando Aprobación",
+    "done_pending_payment": "Hecho Pendiente de Pago"
   },
   "materials": {
     "title": "Materiales",
@@ -76,5 +110,13 @@
     "hourlyRate": "Tarifa por Hora",
     "noEntries": "Sin registros de tiempo",
     "minutes": "min"
+  },
+  "reschedule": {
+    "title": "Reprogramar Trabajo",
+    "date": "Fecha",
+    "startTime": "Hora de Inicio",
+    "endTime": "Hora de Fin",
+    "confirm": "Reprogramar",
+    "endAfterStart": "La hora de fin debe ser después de la hora de inicio"
   }
 }

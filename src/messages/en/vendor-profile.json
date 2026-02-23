@@ -114,5 +114,66 @@
       "bond": "Surety Bond",
       "other": "Other"
     }
+  },
+
+  "settings": {
+    "title": "Organization Settings",
+    "numbering": "Numbering",
+    "estimatePrefix": "Estimate Prefix",
+    "invoicePrefix": "Invoice Prefix",
+    "nextEstimate": "Next Estimate #",
+    "nextInvoice": "Next Invoice #",
+    "taxRates": "Tax Rates",
+    "taxNamePlaceholder": "Tax name...",
+    "default": "Default",
+    "add": "Add",
+    "jobTypes": "Job Types",
+    "addJobTypePlaceholder": "Add job type...",
+    "subStatuses": "Sub-Statuses",
+    "addSubStatusPlaceholder": "Add sub-status...",
+    "workingHours": "Working Hours",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "workDays": "Work Days",
+    "days": {
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat"
+    },
+    "autoShowEstimate": "Auto-Show Estimate to Owner",
+    "autoShowEstimateDesc": "Automatically forward approved estimates to property owner",
+    "saving": "Saving…",
+    "save": "Save Settings",
+    "saved": "Settings saved successfully",
+    "saveError": "Failed to save settings",
+    "taxName": "Name",
+    "rate": "Rate",
+    "jobTypePlaceholder": "Add job type…",
+    "subStatusPlaceholder": "Add sub-status…"
+  },
+
+  "skills": {
+    "title": "Skills & Certifications",
+    "namePlaceholder": "Skill name...",
+    "categoryPlaceholder": "Category...",
+    "add": "Add Skill",
+    "created": "Skill created",
+    "createError": "Failed to create skill",
+    "teamSkills": "Team Skills",
+    "noSkills": "No skills assigned",
+    "selectSkill": "Select a skill...",
+    "assign": "Assign",
+    "assigned": "Skill assigned",
+    "assignError": "Failed to assign skill"
+  },
+
+  "team": {
+    "title": "Team Management",
+    "members": "Team Members",
+    "noMembers": "No team members yet"
   }
 }

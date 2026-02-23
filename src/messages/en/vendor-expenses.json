@@ -1,0 +1,53 @@
+{
+  "title": "Expenses",
+  "addExpense": "Add Expense",
+  "editExpense": "Edit Expense",
+  "noExpenses": "No expenses yet",
+  "backToExpenses": "Back to Expenses",
+  "form": {
+    "category": "Category",
+    "description": "Description",
+    "descriptionPlaceholder": "What was this expense for?",
+    "amount": "Amount",
+    "date": "Date",
+    "notes": "Notes",
+    "notesPlaceholder": "Additional notes...",
+    "workOrder": "Link to Job",
+    "workOrderNone": "No job linked",
+    "reimbursable": "Reimbursable",
+    "receipt": "Receipt",
+    "save": "Save Expense",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "saved": "Expense saved",
+    "saveError": "Failed to save expense"
+  },
+  "categories": {
+    "fuel": "Fuel",
+    "tools": "Tools",
+    "supplies": "Supplies",
+    "materials": "Materials",
+    "subcontractor": "Subcontractor",
+    "permits": "Permits",
+    "insurance": "Insurance",
+    "office": "Office",
+    "vehicle": "Vehicle",
+    "travel": "Travel",
+    "meals": "Meals",
+    "other": "Other"
+  },
+  "filters": {
+    "allCategories": "All Categories",
+    "dateFrom": "From",
+    "dateTo": "To"
+  },
+  "summary": {
+    "title": "Summary by Category",
+    "total": "Total Expenses"
+  },
+  "delete": "Delete",
+  "deleting": "Deleting...",
+  "edit": "Edit",
+  "receipt": "Receipt attached",
+  "reimbursable": "Reimbursable"
+}

@@ -2,10 +2,34 @@
   "title": "Schedule",
   "dayView": "Day",
   "weekView": "Week",
+  "monthView": "Month",
   "today": "Today",
   "noJobs": "No jobs scheduled",
   "allDay": "All Day",
   "jobAt": "Job at {property}",
   "scheduledFor": "Scheduled for {date}",
-  "timeRange": "{start} - {end}"
+  "timeRange": "{start} - {end}",
+  "colorBy": "Color By",
+  "colorByPriority": "Priority",
+  "colorByStatus": "Status",
+  "colorByTrade": "Trade",
+  "colorByJobType": "Job Type",
+  "days": {
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
+  },
+  "settings": {
+    "title": "Schedule Settings",
+    "workingHours": "Working Hours",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "workDays": "Work Days",
+    "save": "Save",
+    "saved": "Settings saved"
+  }
 }

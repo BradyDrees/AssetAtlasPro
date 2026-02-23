@@ -1,20 +1,24 @@
 import { getTranslations } from "next-intl/server";
-import { getDashboardStats, getIncomingWorkOrders, getTodaysJobs } from "@/app/actions/vendor-dashboard";
+import { getDashboardData } from "@/app/actions/vendor-dashboard";
 import { getCredentialSummary } from "@/app/actions/vendor-profile";
 import { DashboardStatsGrid } from "@/components/vendor/dashboard-stats";
 import { IncomingWorkOrders } from "@/components/vendor/incoming-work-orders";
 import { TodaysSchedule } from "@/components/vendor/todays-schedule";
+import { DashboardUpcomingJobs } from "@/components/vendor/dashboard-upcoming-jobs";
+import { DashboardRevenueBalance } from "@/components/vendor/dashboard-revenue-balance";
+import { DashboardExpensesWidget } from "@/components/vendor/dashboard-expenses-widget";
+import { DashboardTechScoreboard } from "@/components/vendor/dashboard-tech-scoreboard";
 import Link from "next/link";
 
 export default async function VendorDashboardPage() {
   const dt = await getTranslations("vendor.dashboard");
 
-  const [stats, incoming, todaysJobs, credSummary] = await Promise.all([
-    getDashboardStats(),
-    getIncomingWorkOrders(),
-    getTodaysJobs(),
+  const [dashData, credSummary] = await Promise.all([
+    getDashboardData("month"),
     getCredentialSummary(),
   ]);
+
+  const { stats, incoming, upcomingJobs, revenueBalance, expensesSummary, techScoreboard } = dashData;
 
   // Determine setup completion
   const setupItems = [
@@ -39,6 +43,13 @@ export default async function VendorDashboardPage() {
 
       {/* Stats */}
       <DashboardStatsGrid stats={stats} />
+
+      {/* Revenue Balance */}
+      <DashboardRevenueBalance
+        outstanding={revenueBalance.outstanding}
+        received={revenueBalance.received}
+        pastDue={revenueBalance.pastDue}
+      />
 
       {/* Quick Setup (show only if not all complete) */}
       {!allSetup && (
@@ -79,7 +90,13 @@ export default async function VendorDashboardPage() {
       {/* Main widgets grid */}
       <div className="grid lg:grid-cols-2 gap-6">
         <IncomingWorkOrders orders={incoming} />
-        <TodaysSchedule jobs={todaysJobs} />
+        <DashboardUpcomingJobs jobs={upcomingJobs} />
+      </div>
+
+      {/* Bottom widgets */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        <DashboardExpensesWidget data={expensesSummary} />
+        <DashboardTechScoreboard scores={techScoreboard} />
       </div>
 
       {/* Bottom section links */}

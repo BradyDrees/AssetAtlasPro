@@ -17,6 +17,26 @@
     "declined": "Declined",
     "expired": "Expired"
   },
+  "pipeline": {
+    "title": "Estimate Pipeline"
+  },
+  "bulk": {
+    "selected": "{count} selected",
+    "clearSelection": "Clear",
+    "sendReminder": "Send Reminder",
+    "sending": "Sending...",
+    "remindersSent": "{count} reminders sent"
+  },
+  "deposit": {
+    "required": "Deposit Required",
+    "amount": "Deposit Amount",
+    "amountPlaceholder": "0.00"
+  },
+  "approval": {
+    "required": "Requires Approval",
+    "approvedBy": "Approved By",
+    "approvedAt": "Approved At"
+  },
   "estimateDetails": "Estimate Details",
   "estimateTitle": "Title",
   "titlePlaceholder": "e.g. Unit 101 Renovation",
@@ -128,6 +148,27 @@
     "useTemplate": "Use Template",
     "saveAsTemplate": "Save as Template",
     "templateName": "Template Name",
-    "noTemplates": "No templates saved yet"
+    "noTemplates": "No templates saved yet",
+    "newTemplate": "New Template",
+    "editTemplate": "Edit Template",
+    "type": "Type",
+    "content": "Content",
+    "setDefault": "Set as default for this type",
+    "create": "Create",
+    "update": "Update",
+    "created": "Template created",
+    "updated": "Template updated"
+  },
+  "docTemplates": {
+    "title": "Document Templates",
+    "noTemplates": "No document templates yet",
+    "types": {
+      "terms": "Terms & Conditions",
+      "contract": "Contract",
+      "warranty": "Warranty",
+      "scope": "Scope of Work",
+      "cover": "Cover Page",
+      "other": "Other"
+    }
   }
 }

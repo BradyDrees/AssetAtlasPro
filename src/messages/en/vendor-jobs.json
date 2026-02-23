@@ -4,14 +4,24 @@
   "active": "Active",
   "completed": "Completed",
   "all": "All Jobs",
+  "unscheduled": "Unscheduled",
   "noJobs": "No jobs yet",
   "noIncoming": "No incoming work orders",
+  "noUnscheduled": "No unscheduled jobs",
+  "export": "Export CSV",
+  "exporting": "Exporting...",
+  "columns": "Columns",
   "filters": {
     "all": "All",
     "byStatus": "By Status",
     "byPriority": "By Priority",
     "byTrade": "By Trade",
     "byClient": "By Client",
+    "byJobType": "By Job Type",
+    "byTech": "By Technician",
+    "byTags": "By Tags",
+    "dateFrom": "From Date",
+    "dateTo": "To Date",
     "search": "Search jobs..."
   },
   "status": {
@@ -22,6 +32,7 @@
     "on_site": "On Site",
     "in_progress": "In Progress",
     "completed": "Completed",
+    "done_pending_approval": "Done - Pending Approval",
     "invoiced": "Invoiced",
     "paid": "Paid",
     "declined": "Declined",
@@ -40,6 +51,7 @@
     "arrived": "Arrived",
     "startWork": "Start Work",
     "complete": "Complete",
+    "donePendingApproval": "Done - Pending Approval",
     "putOnHold": "Put On Hold",
     "resume": "Resume"
   },
@@ -57,7 +69,29 @@
     "timeLog": "Time Log",
     "photos": "Photos",
     "completionNotes": "Completion Notes",
-    "declineReason": "Decline Reason"
+    "declineReason": "Decline Reason",
+    "tags": "Tags",
+    "jobType": "Job Type",
+    "subStatus": "Sub-Status"
+  },
+  "tags": {
+    "add": "Add",
+    "addPlaceholder": "Add a tag...",
+    "maxReached": "Maximum tags reached"
+  },
+  "jobTypes": {
+    "service": "Service",
+    "repair": "Repair",
+    "emergency": "Emergency",
+    "maintenance": "Maintenance",
+    "inspection": "Inspection",
+    "turn": "Turn",
+    "estimate_visit": "Estimate Visit"
+  },
+  "subStatuses": {
+    "pending_parts": "Pending Parts",
+    "waiting_approval": "Waiting Approval",
+    "done_pending_payment": "Done Pending Payment"
   },
   "materials": {
     "title": "Materials",
@@ -76,5 +110,13 @@
     "hourlyRate": "Hourly Rate",
     "noEntries": "No time entries",
     "minutes": "min"
+  },
+  "reschedule": {
+    "title": "Reschedule Job",
+    "date": "Date",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "confirm": "Reschedule",
+    "endAfterStart": "End time must be after start time"
   }
 }

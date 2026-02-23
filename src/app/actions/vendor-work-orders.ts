@@ -432,3 +432,203 @@ export async function clockOut(
 
   return { data: data as VendorWoTimeEntry };
 }
+
+// ============================================
+// Workiz Enhancements — Tags, Job Type, Sub Status, Reschedule
+// ============================================
+
+/** Helper: fetch org settings */
+async function getOrgSettings(vendorOrgId: string) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("vendor_organizations")
+    .select("settings")
+    .eq("id", vendorOrgId)
+    .single();
+  return (data?.settings ?? {}) as Record<string, unknown>;
+}
+
+/** Update job tags — normalized on client + DB trigger */
+export async function updateJobTags(
+  woId: string,
+  tags: string[]
+): Promise<{ error?: string }> {
+  const vendorAuth = await requireVendorRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  // Client-side normalization (DB trigger also normalizes)
+  const normalized = [...new Set(
+    tags
+      .map((t) => t.trim().toLowerCase())
+      .filter((t) => t.length > 0 && t.length <= 50)
+  )].slice(0, 20);
+
+  const { error } = await supabase
+    .from("vendor_work_orders")
+    .update({
+      tags: normalized,
+      updated_by: user.id,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", woId)
+    .eq("vendor_org_id", vendorAuth.vendor_org_id);
+
+  if (error) return { error: error.message };
+
+  await logActivity({
+    entityType: "work_order",
+    entityId: woId,
+    action: "tags_updated",
+    metadata: { tags: normalized },
+  });
+
+  return {};
+}
+
+/** Update job type — validated against org settings */
+export async function updateJobType(
+  woId: string,
+  jobType: string
+): Promise<{ error?: string }> {
+  const vendorAuth = await requireVendorRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  // Validate against org settings
+  const settings = await getOrgSettings(vendorAuth.vendor_org_id);
+  const allowedTypes = (settings.job_types as string[]) ?? [];
+  if (!allowedTypes.includes(jobType)) {
+    return { error: `Invalid job type: "${jobType}". Allowed: ${allowedTypes.join(", ")}` };
+  }
+
+  const { error } = await supabase
+    .from("vendor_work_orders")
+    .update({
+      job_type: jobType,
+      updated_by: user.id,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", woId)
+    .eq("vendor_org_id", vendorAuth.vendor_org_id);
+
+  if (error) return { error: error.message };
+
+  await logActivity({
+    entityType: "work_order",
+    entityId: woId,
+    action: "job_type_updated",
+    newValue: jobType,
+  });
+
+  return {};
+}
+
+/** Update sub-status — validated against org settings. null clears it. */
+export async function updateSubStatus(
+  woId: string,
+  subStatus: string | null
+): Promise<{ error?: string }> {
+  const vendorAuth = await requireVendorRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  if (subStatus !== null) {
+    const settings = await getOrgSettings(vendorAuth.vendor_org_id);
+    const allowedStatuses = (settings.sub_statuses as string[]) ?? [];
+    if (!allowedStatuses.includes(subStatus)) {
+      return { error: `Invalid sub-status: "${subStatus}". Allowed: ${allowedStatuses.join(", ")}` };
+    }
+  }
+
+  const { error } = await supabase
+    .from("vendor_work_orders")
+    .update({
+      sub_status: subStatus,
+      updated_by: user.id,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", woId)
+    .eq("vendor_org_id", vendorAuth.vendor_org_id);
+
+  if (error) return { error: error.message };
+
+  await logActivity({
+    entityType: "work_order",
+    entityId: woId,
+    action: "sub_status_updated",
+    newValue: subStatus ?? "cleared",
+  });
+
+  return {};
+}
+
+/** Reschedule a job — validate end > start, log audit metadata */
+export async function rescheduleJob(
+  woId: string,
+  date: string,
+  startTime: string,
+  endTime: string
+): Promise<{ error?: string }> {
+  const vendorAuth = await requireVendorRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  // Validate end > start
+  if (endTime && startTime && endTime <= startTime) {
+    return { error: "End time must be after start time" };
+  }
+
+  // Get previous schedule values for audit
+  const { data: wo } = await supabase
+    .from("vendor_work_orders")
+    .select("scheduled_date, scheduled_time_start, scheduled_time_end, vendor_org_id")
+    .eq("id", woId)
+    .single();
+
+  if (!wo) return { error: "Work order not found" };
+  if (wo.vendor_org_id !== vendorAuth.vendor_org_id) return { error: "Not authorized" };
+
+  const { error } = await supabase
+    .from("vendor_work_orders")
+    .update({
+      scheduled_date: date,
+      scheduled_time_start: startTime,
+      scheduled_time_end: endTime,
+      updated_by: user.id,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", woId);
+
+  if (error) return { error: error.message };
+
+  await logActivity({
+    entityType: "work_order",
+    entityId: woId,
+    action: "rescheduled",
+    metadata: {
+      rescheduled_by: user.id,
+      rescheduled_at: new Date().toISOString(),
+      previous_scheduled_date: wo.scheduled_date,
+      previous_time_start: wo.scheduled_time_start,
+      previous_time_end: wo.scheduled_time_end,
+      new_date: date,
+      new_time_start: startTime,
+      new_time_end: endTime,
+    },
+  });
+
+  return {};
+}

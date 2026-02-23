@@ -114,5 +114,66 @@
       "bond": "Fianza",
       "other": "Otro"
     }
+  },
+
+  "settings": {
+    "title": "Configuración de Organización",
+    "numbering": "Numeración",
+    "estimatePrefix": "Prefijo de Estimación",
+    "invoicePrefix": "Prefijo de Factura",
+    "nextEstimate": "Próxima Estimación #",
+    "nextInvoice": "Próxima Factura #",
+    "taxRates": "Tasas de Impuesto",
+    "taxNamePlaceholder": "Nombre del impuesto...",
+    "default": "Predeterminado",
+    "add": "Agregar",
+    "jobTypes": "Tipos de Trabajo",
+    "addJobTypePlaceholder": "Agregar tipo de trabajo...",
+    "subStatuses": "Sub-Estados",
+    "addSubStatusPlaceholder": "Agregar sub-estado...",
+    "workingHours": "Horario Laboral",
+    "startTime": "Hora de Inicio",
+    "endTime": "Hora de Fin",
+    "workDays": "Días Laborales",
+    "days": {
+      "sun": "Dom",
+      "mon": "Lun",
+      "tue": "Mar",
+      "wed": "Mié",
+      "thu": "Jue",
+      "fri": "Vie",
+      "sat": "Sáb"
+    },
+    "autoShowEstimate": "Mostrar Estimación al Propietario",
+    "autoShowEstimateDesc": "Reenviar automáticamente estimaciones aprobadas al propietario",
+    "saving": "Guardando…",
+    "save": "Guardar Configuración",
+    "saved": "Configuración guardada exitosamente",
+    "saveError": "Error al guardar configuración",
+    "taxName": "Nombre",
+    "rate": "Tasa",
+    "jobTypePlaceholder": "Agregar tipo de trabajo…",
+    "subStatusPlaceholder": "Agregar sub-estado…"
+  },
+
+  "skills": {
+    "title": "Habilidades y Certificaciones",
+    "namePlaceholder": "Nombre de habilidad...",
+    "categoryPlaceholder": "Categoría...",
+    "add": "Agregar Habilidad",
+    "created": "Habilidad creada",
+    "createError": "Error al crear habilidad",
+    "teamSkills": "Habilidades del Equipo",
+    "noSkills": "Sin habilidades asignadas",
+    "selectSkill": "Seleccionar habilidad...",
+    "assign": "Asignar",
+    "assigned": "Habilidad asignada",
+    "assignError": "Error al asignar habilidad"
+  },
+
+  "team": {
+    "title": "Gestión de Equipo",
+    "members": "Miembros del Equipo",
+    "noMembers": "Sin miembros de equipo aún"
   }
 }

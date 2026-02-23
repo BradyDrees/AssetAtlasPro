@@ -5,6 +5,8 @@
   "estimates": "Presupuestos",
   "invoices": "Facturas",
   "clients": "Clientes",
+  "reports": "Reportes",
+  "expenses": "Gastos",
   "profile": "Perfil",
   "credentials": "Credenciales",
   "team": "Equipo",
@@ -14,5 +16,6 @@
   "switchToVendor": "Cambiar a Proveedor",
   "signOut": "Cerrar Sesión",
   "vendorPortal": "Portal de Proveedores",
-  "notifications": "Notificaciones"
+  "notifications": "Notificaciones",
+  "more": "Más"
 }

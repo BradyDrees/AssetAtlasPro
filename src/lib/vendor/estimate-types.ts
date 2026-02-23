@@ -39,6 +39,12 @@ export interface VendorEstimate {
   valid_until: string | null;
   terms: string | null;
   internal_notes: string | null;
+  // Workiz enhancement fields
+  deposit_required?: boolean;
+  deposit_amount?: number;
+  custom_fields?: Record<string, unknown>;
+  approval_required?: boolean;
+  approved_by?: string | null;
   updated_by: string | null;
   created_at: string;
   updated_at: string;

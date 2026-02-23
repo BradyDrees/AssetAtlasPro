@@ -27,6 +27,12 @@ export interface VendorInvoice {
   due_date: string | null;
   notes: string | null;
   dispute_reason: string | null;
+  // Workiz enhancement fields
+  discount_type?: "percentage" | "flat" | null;
+  discount_amount?: number;
+  amount_paid?: number;
+  balance_due?: number;
+  custom_fields?: Record<string, unknown>;
   updated_by: string | null;
   created_at: string;
   updated_at: string;

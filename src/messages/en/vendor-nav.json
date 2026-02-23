@@ -5,6 +5,8 @@
   "estimates": "Estimates",
   "invoices": "Invoices",
   "clients": "Clients",
+  "reports": "Reports",
+  "expenses": "Expenses",
   "profile": "Profile",
   "credentials": "Credentials",
   "team": "Team",
@@ -14,5 +16,6 @@
   "switchToVendor": "Switch to Vendor",
   "signOut": "Sign Out",
   "vendorPortal": "Vendor Portal",
-  "notifications": "Notifications"
+  "notifications": "Notifications",
+  "more": "More"
 }

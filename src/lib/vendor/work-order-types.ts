@@ -38,6 +38,11 @@ export interface VendorWorkOrder {
   completed_at: string | null;
   completion_notes: string | null;
   decline_reason: string | null;
+  // Workiz enhancement fields
+  tags?: string[];
+  sub_status?: string | null;
+  job_type?: string | null;
+  custom_fields?: Record<string, unknown>;
   updated_by: string | null;
   created_at: string;
   updated_at: string;
@@ -125,6 +130,7 @@ export const WO_STATUS_COLORS: Record<WoStatus, string> = {
   on_site: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
   in_progress: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
   completed: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  done_pending_approval: "bg-lime-100 text-lime-700 dark:bg-lime-900/30 dark:text-lime-400",
   invoiced: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400",
   paid: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
   declined: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",

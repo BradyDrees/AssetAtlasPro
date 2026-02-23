@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { CalendarDayView } from "./calendar-day-view";
 import { CalendarWeekView } from "./calendar-week-view";
+import { CalendarMonthView } from "./calendar-month-view";
 
 interface ScheduledJob {
   id: string;
@@ -31,7 +32,7 @@ function getWeekStart(date: Date): Date {
 
 export function ScheduleView({ jobs }: ScheduleViewProps) {
   const t = useTranslations("vendor.schedule");
-  const [view, setView] = useState<"day" | "week">("week");
+  const [view, setView] = useState<"day" | "week" | "month">("week");
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const weekStart = useMemo(() => getWeekStart(selectedDate), [selectedDate]);
@@ -39,12 +40,16 @@ export function ScheduleView({ jobs }: ScheduleViewProps) {
   const goToday = () => setSelectedDate(new Date());
   const goPrev = () => {
     const d = new Date(selectedDate);
-    d.setDate(d.getDate() - (view === "day" ? 1 : 7));
+    if (view === "day") d.setDate(d.getDate() - 1);
+    else if (view === "week") d.setDate(d.getDate() - 7);
+    else d.setMonth(d.getMonth() - 1);
     setSelectedDate(d);
   };
   const goNext = () => {
     const d = new Date(selectedDate);
-    d.setDate(d.getDate() + (view === "day" ? 1 : 7));
+    if (view === "day") d.setDate(d.getDate() + 1);
+    else if (view === "week") d.setDate(d.getDate() + 7);
+    else d.setMonth(d.getMonth() + 1);
     setSelectedDate(d);
   };
 
@@ -55,9 +60,11 @@ export function ScheduleView({ jobs }: ScheduleViewProps) {
           month: "long",
           day: "numeric",
         })
-      : `${weekStart.toLocaleDateString(undefined, { month: "short", day: "numeric" })} – ${new Date(
-          weekStart.getTime() + 6 * 86400000
-        ).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}`;
+      : view === "month"
+        ? selectedDate.toLocaleDateString(undefined, { month: "long", year: "numeric" })
+        : `${weekStart.toLocaleDateString(undefined, { month: "short", day: "numeric" })} – ${new Date(
+            weekStart.getTime() + 6 * 86400000
+          ).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}`;
 
   return (
     <div className="space-y-4">
@@ -110,12 +117,24 @@ export function ScheduleView({ jobs }: ScheduleViewProps) {
           >
             {t("weekView")}
           </button>
+          <button
+            onClick={() => setView("month")}
+            className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+              view === "month"
+                ? "bg-brand-600 text-white"
+                : "bg-surface-secondary text-content-tertiary hover:bg-surface-tertiary"
+            }`}
+          >
+            {t("monthView")}
+          </button>
         </div>
       </div>
 
       {/* Calendar */}
       {view === "day" ? (
         <CalendarDayView jobs={jobs} date={selectedDate} />
+      ) : view === "month" ? (
+        <CalendarMonthView jobs={jobs} month={selectedDate} />
       ) : (
         <CalendarWeekView jobs={jobs} weekStart={weekStart} />
       )}

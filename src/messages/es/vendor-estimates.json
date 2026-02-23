@@ -170,5 +170,27 @@
       "cover": "Portada",
       "other": "Otro"
     }
+  },
+  "photos": {
+    "title": "Fotos",
+    "noPhotos": "Sin fotos aún",
+    "uploading": "Subiendo",
+    "dropOrClick": "Arrastra fotos aquí o toca para subir",
+    "browse": "Buscar Archivos",
+    "annotate": "Anotar",
+    "delete": "Eliminar",
+    "addCaption": "Agregar título...",
+    "captionPlaceholder": "Título de foto...",
+    "annotateTitle": "Anotar Foto",
+    "saveAnnotation": "Guardar",
+    "annotation": "anotación",
+    "annotations": "anotaciones",
+    "toolArrow": "Flecha",
+    "toolRect": "Rectángulo",
+    "toolText": "Texto",
+    "toolFreehand": "Mano Libre",
+    "undo": "Deshacer",
+    "clearAll": "Borrar Todo",
+    "typeText": "Escribir texto..."
   }
 }

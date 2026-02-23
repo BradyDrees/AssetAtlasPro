@@ -64,7 +64,11 @@
     "dueDiligence": "Due Diligence",
     "inspections": "Inspecciones",
     "unitTurns": "Rotacion de Unidades",
-    "dealAnalysis": "Analisis de Negocio"
+    "dealAnalysis": "Analisis de Negocio",
+    "vendors": "Proveedores",
+    "workOrders": "Órdenes de Trabajo",
+    "estimates": "Estimados",
+    "invoices": "Facturas"
   },
   "sidebar": {
     "fieldMode": "Modo Campo",

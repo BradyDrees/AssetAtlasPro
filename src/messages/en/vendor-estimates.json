@@ -170,5 +170,27 @@
       "cover": "Cover Page",
       "other": "Other"
     }
+  },
+  "photos": {
+    "title": "Photos",
+    "noPhotos": "No photos yet",
+    "uploading": "Uploading",
+    "dropOrClick": "Drop photos here or tap to upload",
+    "browse": "Browse Files",
+    "annotate": "Annotate",
+    "delete": "Delete",
+    "addCaption": "Add caption...",
+    "captionPlaceholder": "Photo caption...",
+    "annotateTitle": "Annotate Photo",
+    "saveAnnotation": "Save",
+    "annotation": "annotation",
+    "annotations": "annotations",
+    "toolArrow": "Arrow",
+    "toolRect": "Rectangle",
+    "toolText": "Text",
+    "toolFreehand": "Freehand",
+    "undo": "Undo",
+    "clearAll": "Clear All",
+    "typeText": "Type text..."
   }
 }

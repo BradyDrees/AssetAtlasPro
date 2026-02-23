@@ -64,7 +64,11 @@
     "dueDiligence": "Due Diligence",
     "inspections": "Inspections",
     "unitTurns": "Unit Turns",
-    "dealAnalysis": "Deal Analysis"
+    "dealAnalysis": "Deal Analysis",
+    "vendors": "Vendors",
+    "workOrders": "Work Orders",
+    "estimates": "Estimates",
+    "invoices": "Invoices"
   },
   "sidebar": {
     "fieldMode": "Field Mode",

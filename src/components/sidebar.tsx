@@ -38,6 +38,10 @@ export function Sidebar({ user }: { user: User }) {
     { href: "/inspections", label: t("nav.inspections"), icon: "", matchPaths: ["/inspections"] },
     { href: "/unit-turns", label: t("nav.unitTurns"), icon: "", matchPaths: ["/unit-turns"] },
     { href: "/deal-analysis", label: t("nav.dealAnalysis"), icon: "", matchPaths: ["/deal-analysis"] },
+    { href: "/vendors", label: t("nav.vendors"), icon: "", matchPaths: ["/vendors"] },
+    { href: "/work-orders", label: t("nav.workOrders"), icon: "", matchPaths: ["/work-orders"] },
+    { href: "/estimates", label: t("nav.estimates"), icon: "", matchPaths: ["/estimates"] },
+    { href: "/invoices", label: t("nav.invoices"), icon: "", matchPaths: ["/invoices"] },
   ];
 
   // Close mobile drawer on navigation

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useTransition } from "react";
+import { useState, useCallback, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type {
@@ -9,6 +9,7 @@ import type {
   VendorEstimateItem,
 } from "@/lib/vendor/estimate-types";
 import type { EstimateItemType } from "@/lib/vendor/types";
+import type { VendorEstimatePhoto } from "@/lib/vendor/estimate-types";
 import {
   updateEstimate,
   createSection,
@@ -19,8 +20,12 @@ import {
   recalculateEstimateTotals,
   sendEstimateToPm,
 } from "@/app/actions/vendor-estimates";
+import { getEstimatePhotos } from "@/app/actions/vendor-estimate-photos";
 import { EstimateSectionCard } from "./estimate-section-card";
 import { EstimateSummary } from "./estimate-summary";
+import { EstimatePhotoUpload } from "./estimate-photo-upload";
+import { EstimatePhotoGallery } from "./estimate-photo-gallery";
+import { PhotoAnnotationModal } from "./photo-annotation-modal";
 
 interface EstimateBuilderProps {
   estimate: VendorEstimate;
@@ -42,7 +47,26 @@ export function EstimateBuilder({
   const [showSendModal, setShowSendModal] = useState(false);
   const [sending, setSending] = useState(false);
 
+  // Photos state
+  const [photos, setPhotos] = useState<VendorEstimatePhoto[]>([]);
+  const [photosExpanded, setPhotosExpanded] = useState(true);
+  const [photosLoaded, setPhotosLoaded] = useState(false);
+  const [annotatingPhoto, setAnnotatingPhoto] = useState<VendorEstimatePhoto | null>(null);
+
+  const storageBaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+
   const isEditable = estimate.status === "draft" || estimate.status === "changes_requested";
+
+  // Load photos on mount
+  useEffect(() => {
+    loadPhotos();
+  }, []);
+
+  const loadPhotos = useCallback(async () => {
+    const result = await getEstimatePhotos(estimate.id);
+    setPhotos(result.data);
+    setPhotosLoaded(true);
+  }, [estimate.id]);
 
   // Refresh data from server
   const refresh = useCallback(() => {
@@ -461,6 +485,66 @@ export function EstimateBuilder({
           </div>
         )}
       </div>
+
+      {/* Photos section */}
+      <div className="bg-surface-primary rounded-xl border border-edge-primary">
+        <button
+          type="button"
+          onClick={() => setPhotosExpanded((v) => !v)}
+          className="w-full flex items-center justify-between px-4 py-3"
+        >
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-content-primary">
+              {t("photos.title")}
+            </h2>
+            {photosLoaded && photos.length > 0 && (
+              <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-medium bg-brand-600 text-white rounded-full">
+                {photos.length}
+              </span>
+            )}
+          </div>
+          <svg
+            className={`w-4 h-4 text-content-tertiary transition-transform ${photosExpanded ? "rotate-180" : ""}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+          </svg>
+        </button>
+
+        {photosExpanded && (
+          <div className="px-4 pb-4 space-y-4">
+            {isEditable && (
+              <EstimatePhotoUpload
+                estimateId={estimate.id}
+                onUploadComplete={loadPhotos}
+              />
+            )}
+
+            {photosLoaded && (
+              <EstimatePhotoGallery
+                photos={photos}
+                storageBaseUrl={storageBaseUrl}
+                readOnly={!isEditable}
+                onAnnotate={setAnnotatingPhoto}
+                onPhotosChange={loadPhotos}
+              />
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Annotation modal */}
+      {annotatingPhoto && (
+        <PhotoAnnotationModal
+          photo={annotatingPhoto}
+          storageBaseUrl={storageBaseUrl}
+          onClose={() => setAnnotatingPhoto(null)}
+          onSaved={loadPhotos}
+        />
+      )}
 
       {/* Financial summary */}
       <EstimateSummary

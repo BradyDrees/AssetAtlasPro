@@ -1,21 +1,72 @@
-"use client";
+import { getVendorProfile, getCredentialSummary } from "@/app/actions/vendor-profile";
+import { requireVendorRole } from "@/lib/vendor/role-helpers";
+import { ProfileForm } from "@/components/vendor/profile-form";
+import { getTranslations } from "next-intl/server";
+import Link from "next/link";
 
-import { useTranslations } from "next-intl";
+export default async function VendorProfilePage() {
+  const auth = await requireVendorRole();
+  const t = await getTranslations("vendor.profile");
+  const [{ org, user }, summary] = await Promise.all([
+    getVendorProfile(),
+    getCredentialSummary(),
+  ]);
 
-export default function VendorProfilePage() {
-  const t = useTranslations("vendor.profile");
+  if (!org || !user) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-surface-primary rounded-xl border border-edge-primary p-8 text-center">
+          <p className="text-red-400">{t("loadError")}</p>
+        </div>
+      </div>
+    );
+  }
+
+  const isAdmin = auth.role === "owner" || auth.role === "admin";
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold text-content-primary mb-6">
-        {t("title")}
-      </h1>
-      <div className="bg-surface-primary rounded-xl border border-edge-primary p-8 text-center">
-        <svg className="w-12 h-12 text-content-quaternary mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-        <p className="text-content-tertiary">{t("comingSoon")}</p>
+    <div className="max-w-4xl mx-auto space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-content-primary">
+          {t("title")}
+        </h1>
       </div>
+
+      {/* Credentials Summary Card */}
+      <Link
+        href="/vendor/profile/credentials"
+        className="block bg-surface-primary rounded-xl border border-edge-primary p-5 hover:border-edge-secondary transition-colors group"
+      >
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base font-semibold text-content-primary">
+            {t("credentials.title")}
+          </h2>
+          <svg className="w-5 h-5 text-content-quaternary group-hover:text-content-tertiary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </div>
+        <div className="grid grid-cols-4 gap-3">
+          <div className="text-center">
+            <p className="text-2xl font-bold text-content-primary">{summary.total}</p>
+            <p className="text-xs text-content-quaternary">{t("credentials.totalLabel")}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-green-400">{summary.active}</p>
+            <p className="text-xs text-content-quaternary">{t("credentials.active")}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-yellow-400">{summary.expiringSoon}</p>
+            <p className="text-xs text-content-quaternary">{t("credentials.expiringSoon")}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-red-400">{summary.expired}</p>
+            <p className="text-xs text-content-quaternary">{t("credentials.expired")}</p>
+          </div>
+        </div>
+      </Link>
+
+      {/* Profile Form */}
+      <ProfileForm org={org} user={user} isAdmin={isAdmin} />
     </div>
   );
 }

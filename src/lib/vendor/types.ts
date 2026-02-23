@@ -185,6 +185,63 @@ export type CredentialType =
 
 export type CredentialStatus = "active" | "expiring_soon" | "expired" | "revoked";
 
+export interface VendorCredential {
+  id: string;
+  vendor_org_id: string;
+  type: CredentialType;
+  name: string;
+  document_number: string | null;
+  storage_path: string | null;
+  file_name: string | null;
+  file_size: number | null;
+  issued_date: string | null;
+  expiration_date: string | null;
+  status: CredentialStatus;
+  notes: string | null;
+  uploaded_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateCredentialInput {
+  type: CredentialType;
+  name: string;
+  document_number?: string;
+  issued_date?: string;
+  expiration_date?: string;
+  notes?: string;
+}
+
+export interface UpdateCredentialInput {
+  name?: string;
+  document_number?: string;
+  issued_date?: string;
+  expiration_date?: string;
+  notes?: string;
+}
+
+export interface UpdateVendorOrgInput {
+  name?: string;
+  description?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  service_radius_miles?: number;
+  max_concurrent_jobs?: number;
+  trades?: string[];
+}
+
+/** Display colors for credential status */
+export const CREDENTIAL_STATUS_COLORS: Record<CredentialStatus, string> = {
+  active: "bg-green-500/20 text-green-400 border-green-500/30",
+  expiring_soon: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+  expired: "bg-red-500/20 text-red-400 border-red-500/30",
+  revoked: "bg-content-quaternary/20 text-content-quaternary border-content-quaternary/30",
+};
+
 // ============================================
 // Notification Types
 // ============================================

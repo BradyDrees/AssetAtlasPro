@@ -127,6 +127,8 @@ export async function getDashboardData(
     expensesResult,
     outstandingResult,
     pastDueResult,
+    topSourcesResult,
+    techJobsResult,
   ] = await Promise.all([
     // Active jobs
     supabase.from("vendor_work_orders").select("id").eq("vendor_org_id", vendor_org_id)
@@ -170,6 +172,16 @@ export async function getDashboardData(
       .eq("vendor_org_id", vendor_org_id)
       .in("status", ["submitted","pm_approved","processing"])
       .lt("created_at", new Date(Date.now() - 30 * 86400000).toISOString()),
+    // Top sources: paid invoices grouped by PM (for revenue by PM)
+    supabase.from("vendor_invoices").select("pm_user_id, total")
+      .eq("vendor_org_id", vendor_org_id)
+      .eq("status", "paid")
+      .gte("paid_at", fromISO),
+    // Tech scoreboard: completed jobs by assigned tech
+    supabase.from("vendor_work_orders").select("assigned_to")
+      .eq("vendor_org_id", vendor_org_id)
+      .eq("status", "completed")
+      .not("assigned_to", "is", null),
   ]);
 
   const monthlyRevenue = (paidInvResult.data ?? []).reduce((s, i) => s + Number(i.total || 0), 0);
@@ -184,6 +196,86 @@ export async function getDashboardData(
     expenseMap[cat] = (expenseMap[cat] || 0) + Number((e as { category: string; amount: number }).amount || 0);
   }
   const expensesSummary = Object.entries(expenseMap).map(([category, total]) => ({ category, total }));
+
+  // Aggregate top sources (PMs by revenue)
+  const pmRevenueMap: Record<string, { revenue: number; jobCount: number }> = {};
+  for (const inv of (topSourcesResult.data ?? [])) {
+    const row = inv as { pm_user_id: string | null; total: number };
+    if (!row.pm_user_id) continue;
+    const entry = pmRevenueMap[row.pm_user_id] || { revenue: 0, jobCount: 0 };
+    entry.revenue += Number(row.total || 0);
+    entry.jobCount += 1;
+    pmRevenueMap[row.pm_user_id] = entry;
+  }
+  const topSources: TopSource[] = Object.entries(pmRevenueMap)
+    .map(([, val]) => ({
+      pm_name: "PM", // Generic label; real names would require auth lookup
+      job_count: val.jobCount,
+      revenue: val.revenue,
+    }))
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 5);
+
+  // If we have PM IDs, look up their emails as names (best effort, single query)
+  const pmIds = Object.keys(pmRevenueMap);
+  if (pmIds.length > 0) {
+    // Try to get names from vendor_pm_connections if available
+    const { data: pmConnections } = await supabase
+      .from("vendor_pm_connections")
+      .select("pm_user_id, pm_display_name")
+      .eq("vendor_org_id", vendor_org_id)
+      .in("pm_user_id", pmIds);
+
+    if (pmConnections) {
+      const nameMap: Record<string, string> = {};
+      for (const c of pmConnections) {
+        const conn = c as { pm_user_id: string; pm_display_name: string | null };
+        if (conn.pm_display_name) nameMap[conn.pm_user_id] = conn.pm_display_name;
+      }
+      // Re-map topSources with names
+      let idx = 0;
+      for (const pmId of Object.keys(pmRevenueMap)) {
+        if (idx < topSources.length) {
+          topSources[idx].pm_name = nameMap[pmId] || `PM ${idx + 1}`;
+          idx++;
+        }
+      }
+    }
+  }
+
+  // Aggregate tech scoreboard (team members by completed jobs)
+  const techJobMap: Record<string, number> = {};
+  for (const wo of (techJobsResult.data ?? [])) {
+    const row = wo as { assigned_to: string | null };
+    if (!row.assigned_to) continue;
+    techJobMap[row.assigned_to] = (techJobMap[row.assigned_to] || 0) + 1;
+  }
+
+  let techScoreboard: TechScore[] = [];
+  const techIds = Object.keys(techJobMap);
+  if (techIds.length > 0) {
+    const { data: techs } = await supabase
+      .from("vendor_users")
+      .select("id, first_name, last_name")
+      .eq("vendor_org_id", vendor_org_id)
+      .in("id", techIds);
+
+    const techNameMap: Record<string, string> = {};
+    for (const t of (techs ?? [])) {
+      const tech = t as { id: string; first_name: string | null; last_name: string | null };
+      techNameMap[tech.id] = [tech.first_name, tech.last_name].filter(Boolean).join(" ") || "Tech";
+    }
+
+    techScoreboard = Object.entries(techJobMap)
+      .map(([userId, count]) => ({
+        user_id: userId,
+        name: techNameMap[userId] || `Tech`,
+        jobs_completed: count,
+        avg_rating: null,
+      }))
+      .sort((a, b) => b.jobs_completed - a.jobs_completed)
+      .slice(0, 5);
+  }
 
   // Enrich incoming with PM names (simple approach)
   const incoming: IncomingWorkOrder[] = (incomingResult.data ?? []).map((wo: Record<string, unknown>) => ({
@@ -205,8 +297,8 @@ export async function getDashboardData(
       completedThisMonth: (completedResult.data ?? []).length,
       avgResponseHours: 0,
     },
-    topSources: [], // TODO: aggregate from PM relationships
-    techScoreboard: [], // TODO: aggregate from team
+    topSources,
+    techScoreboard,
     upcomingJobs: (upcomingResult.data ?? []) as TodayJob[],
     revenueBalance: { outstanding, received, pastDue },
     expensesSummary,

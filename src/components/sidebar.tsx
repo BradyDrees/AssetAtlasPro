@@ -32,16 +32,54 @@ export function Sidebar({ user }: { user: User }) {
   const [isOpen, setIsOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
-  const navItems = [
-    { href: "/dashboard", label: t("nav.home"), icon: "", matchPaths: ["/dashboard"] },
-    { href: "/projects", label: t("nav.dueDiligence"), icon: "", matchPaths: ["/projects"] },
-    { href: "/inspections", label: t("nav.inspections"), icon: "", matchPaths: ["/inspections"] },
-    { href: "/unit-turns", label: t("nav.unitTurns"), icon: "", matchPaths: ["/unit-turns"] },
-    { href: "/deal-analysis", label: t("nav.dealAnalysis"), icon: "", matchPaths: ["/deal-analysis"] },
-    { href: "/vendors", label: t("nav.vendors"), icon: "", matchPaths: ["/vendors"] },
-    { href: "/work-orders", label: t("nav.workOrders"), icon: "", matchPaths: ["/work-orders"] },
-    { href: "/estimates", label: t("nav.estimates"), icon: "", matchPaths: ["/estimates"] },
-    { href: "/invoices", label: t("nav.invoices"), icon: "", matchPaths: ["/invoices"] },
+  const ic = "w-5 h-5 flex-shrink-0";
+  const navItems: { href: string; label: string; icon: React.ReactNode; matchPaths: string[] }[] = [
+    { href: "/dashboard", label: t("nav.home"), matchPaths: ["/dashboard"], icon: (
+      <svg className={ic} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+      </svg>
+    )},
+    { href: "/projects", label: t("nav.dueDiligence"), matchPaths: ["/projects"], icon: (
+      <svg className={ic} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+      </svg>
+    )},
+    { href: "/inspections", label: t("nav.inspections"), matchPaths: ["/inspections"], icon: (
+      <svg className={ic} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+      </svg>
+    )},
+    { href: "/unit-turns", label: t("nav.unitTurns"), matchPaths: ["/unit-turns"], icon: (
+      <svg className={ic} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+      </svg>
+    )},
+    { href: "/deal-analysis", label: t("nav.dealAnalysis"), matchPaths: ["/deal-analysis"], icon: (
+      <svg className={ic} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+      </svg>
+    )},
+    { href: "/vendors", label: t("nav.vendors"), matchPaths: ["/vendors"], icon: (
+      <svg className={ic} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+      </svg>
+    )},
+    { href: "/work-orders", label: t("nav.workOrders"), matchPaths: ["/work-orders"], icon: (
+      <svg className={ic} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.384 3.324a.75.75 0 01-1.15-.79l1.27-6.077-4.6-4.065a.75.75 0 01.416-1.28l6.24-.665L11.013 .309a.75.75 0 01.064-.064M11.42 15.17l2.496-2.496" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75a4.5 4.5 0 01-4.5 4.5m4.5-4.5a4.5 4.5 0 00-4.5-4.5m4.5 4.5h-4.5m0 0V2.25" />
+      </svg>
+    )},
+    { href: "/estimates", label: t("nav.estimates"), matchPaths: ["/estimates"], icon: (
+      <svg className={ic} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z" />
+      </svg>
+    )},
+    { href: "/invoices", label: t("nav.invoices"), matchPaths: ["/invoices"], icon: (
+      <svg className={ic} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+      </svg>
+    )},
   ];
 
   // Close mobile drawer on navigation
@@ -143,7 +181,7 @@ export function Sidebar({ user }: { user: User }) {
                 } ${collapsed ? "md:justify-center md:px-0" : ""}`}
                 title={collapsed ? item.label : undefined}
               >
-                {item.icon && <span className="text-base">{item.icon}</span>}
+                {item.icon && <span className="text-current">{item.icon}</span>}
                 {!collapsed && <span>{item.label}</span>}
               </Link>
             );

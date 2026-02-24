@@ -2,6 +2,7 @@
   "title": "Reports",
   "subtitle": "Business analytics and reporting",
   "comingSoon": "Report coming soon",
+  "noData": "No data available for the selected period",
   "dateFilter": {
     "thisWeek": "This Week",
     "thisMonth": "This Month",
@@ -41,28 +42,54 @@
       "description": "Taxable sales and tax collected"
     }
   },
-  "jobs": {
-    "title": "Jobs Report",
-    "backToReports": "Back to Reports"
+  "summary": {
+    "totalJobs": "Total Jobs",
+    "completed": "Completed",
+    "revenue": "Revenue",
+    "profit": "Profit",
+    "totalRevenue": "Total Revenue",
+    "totalTax": "Total Tax",
+    "invoiceCount": "Invoices",
+    "avgInvoice": "Avg Invoice",
+    "approvalRate": "Approval Rate",
+    "approved": "Approved",
+    "declined": "Declined",
+    "pending": "Pending",
+    "avgValue": "Avg Value",
+    "conversionRate": "Conversion Rate",
+    "byStatus": "By Status",
+    "totalOutstanding": "Total Outstanding",
+    "days": "days",
+    "totalHours": "Total Hours",
+    "entries": "Entries",
+    "laborCost": "Labor Cost",
+    "revenueByPeriod": "Revenue by Period",
+    "taxableSales": "Taxable Sales",
+    "taxCollected": "Tax Collected",
+    "effectiveRate": "Effective Rate",
+    "taxByMonth": "Tax by Month"
   },
-  "sales": {
-    "title": "Sales Report",
-    "backToReports": "Back to Reports"
-  },
-  "estimates": {
-    "title": "Estimates Report",
-    "backToReports": "Back to Reports"
-  },
-  "invoices": {
-    "title": "Invoices Report",
-    "backToReports": "Back to Reports"
-  },
-  "timesheets": {
-    "title": "Timesheets",
-    "backToReports": "Back to Reports"
-  },
-  "tax": {
-    "title": "Tax Report",
-    "backToReports": "Back to Reports"
+  "table": {
+    "description": "Description",
+    "trade": "Trade",
+    "status": "Status",
+    "revenue": "Revenue",
+    "costs": "Costs",
+    "profit": "Profit",
+    "margin": "Margin",
+    "employee": "Employee",
+    "clockIn": "Clock In",
+    "clockOut": "Clock Out",
+    "duration": "Duration",
+    "cost": "Cost",
+    "invoice": "Invoice",
+    "dueDate": "Due Date",
+    "amount": "Amount",
+    "daysOut": "Days Out",
+    "bucket": "Bucket",
+    "month": "Month",
+    "taxableSales": "Taxable Sales",
+    "taxCollected": "Tax Collected",
+    "invoices": "Invoices"
   }
 }

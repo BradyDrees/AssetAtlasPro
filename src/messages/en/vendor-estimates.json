@@ -192,5 +192,31 @@
     "undo": "Undo",
     "clearAll": "Clear All",
     "typeText": "Type text..."
+  },
+  "comments": {
+    "title": "Discussion",
+    "noComments": "No comments yet. Start the conversation.",
+    "placeholder": "Type a message...",
+    "vendor": "Vendor",
+    "pm": "PM",
+    "sending": "Sending..."
+  },
+  "versions": {
+    "title": "Version History",
+    "noVersions": "No saved versions yet",
+    "saveVersion": "Save Snapshot",
+    "saving": "Saving...",
+    "version": "Version",
+    "sections": "Sections",
+    "items": "items",
+    "total": "Total"
+  },
+  "signature": {
+    "title": "Signature",
+    "instruction": "Draw your signature above",
+    "clear": "Clear",
+    "save": "Save Signature",
+    "signed": "Signed",
+    "addSignature": "Add Signature"
   }
 }

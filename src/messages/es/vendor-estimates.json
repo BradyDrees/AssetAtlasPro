@@ -192,5 +192,31 @@
     "undo": "Deshacer",
     "clearAll": "Borrar Todo",
     "typeText": "Escribir texto..."
+  },
+  "comments": {
+    "title": "Discusión",
+    "noComments": "Sin comentarios aún. Inicia la conversación.",
+    "placeholder": "Escribe un mensaje...",
+    "vendor": "Proveedor",
+    "pm": "PM",
+    "sending": "Enviando..."
+  },
+  "versions": {
+    "title": "Historial de Versiones",
+    "noVersions": "Sin versiones guardadas aún",
+    "saveVersion": "Guardar Snapshot",
+    "saving": "Guardando...",
+    "version": "Versión",
+    "sections": "Secciones",
+    "items": "ítems",
+    "total": "Total"
+  },
+  "signature": {
+    "title": "Firma",
+    "instruction": "Dibuja tu firma arriba",
+    "clear": "Borrar",
+    "save": "Guardar Firma",
+    "signed": "Firmado",
+    "addSignature": "Agregar Firma"
   }
 }

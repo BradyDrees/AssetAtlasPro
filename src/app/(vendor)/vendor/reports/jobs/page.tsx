@@ -1,34 +1,88 @@
-import { getTranslations } from "next-intl/server";
-import Link from "next/link";
+"use client";
 
-export default async function JobsReportPage() {
-  const t = await getTranslations("vendor.reports");
+import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { getJobsReport } from "@/app/actions/vendor-reports";
+import type { JobsReportRow } from "@/lib/vendor/report-types";
+
+function defaultRange() {
+  const now = new Date();
+  return { start: new Date(now.getFullYear(), now.getMonth() - 2, 1).toISOString().split("T")[0], end: now.toISOString().split("T")[0] };
+}
+
+export default function JobsReportPage() {
+  const t = useTranslations("vendor.reports");
+  const [rows, setRows] = useState<JobsReportRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [range, setRange] = useState(defaultRange);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const r = await getJobsReport({ dateRange: range });
+    setRows(r.data ?? []);
+    setLoading(false);
+  }, [range]);
+  useEffect(() => { load(); }, [load]);
+
+  const totalRevenue = rows.reduce((s, r) => s + r.revenue, 0);
+  const totalProfit = rows.reduce((s, r) => s + r.profit, 0);
+  const completed = rows.filter((r) => ["completed", "invoiced", "paid"].includes(r.status)).length;
 
   return (
-    <div className="space-y-6 p-4 sm:p-6">
+    <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Link
-          href="/vendor/reports"
-          className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-secondary text-content-secondary hover:text-content-primary transition-colors"
-        >
-          <svg
-            className="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
+        <Link href="/vendor/reports" className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-secondary text-content-secondary hover:text-content-primary transition-colors">
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
         </Link>
-        <h1 className="text-2xl font-bold text-content-primary">
-          {t("cards.jobs.title")}
-        </h1>
+        <h1 className="text-2xl font-bold text-content-primary">{t("cards.jobs.title")}</h1>
       </div>
-
-      <div className="rounded-xl border border-edge-primary bg-surface-primary p-8 text-center">
-        <p className="text-content-muted">{t("comingSoon")}</p>
+      <div className="flex items-center gap-3 flex-wrap">
+        <label className="text-xs text-content-tertiary">{t("dateFilter.from")}</label>
+        <input type="date" value={range.start} onChange={(e) => setRange((p) => ({ ...p, start: e.target.value }))} className="px-2 py-1.5 text-xs bg-surface-secondary border border-edge-secondary rounded-lg text-content-primary" />
+        <label className="text-xs text-content-tertiary">{t("dateFilter.to")}</label>
+        <input type="date" value={range.end} onChange={(e) => setRange((p) => ({ ...p, end: e.target.value }))} className="px-2 py-1.5 text-xs bg-surface-secondary border border-edge-secondary rounded-lg text-content-primary" />
       </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[{ l: t("summary.totalJobs"), v: String(rows.length), c: "text-content-primary" }, { l: t("summary.completed"), v: String(completed), c: "text-green-500" }, { l: t("summary.revenue"), v: `$${totalRevenue.toFixed(2)}`, c: "text-brand-500" }, { l: t("summary.profit"), v: `$${totalProfit.toFixed(2)}`, c: totalProfit >= 0 ? "text-green-500" : "text-red-500" }].map((s, i) => (
+          <div key={i} className="bg-surface-primary rounded-xl border border-edge-primary p-4">
+            <p className="text-xs text-content-tertiary">{s.l}</p>
+            <p className={`text-2xl font-bold ${s.c}`}>{s.v}</p>
+          </div>
+        ))}
+      </div>
+      {loading ? (
+        <div className="flex justify-center py-12"><div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" /></div>
+      ) : rows.length === 0 ? (
+        <div className="bg-surface-primary rounded-xl border border-edge-primary p-8 text-center"><p className="text-content-tertiary">{t("noData")}</p></div>
+      ) : (
+        <div className="bg-surface-primary rounded-xl border border-edge-primary overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead><tr className="border-b border-edge-primary text-left">
+              <th className="px-4 py-3 text-xs font-medium text-content-tertiary">{t("table.description")}</th>
+              <th className="px-4 py-3 text-xs font-medium text-content-tertiary">{t("table.trade")}</th>
+              <th className="px-4 py-3 text-xs font-medium text-content-tertiary">{t("table.status")}</th>
+              <th className="px-4 py-3 text-xs font-medium text-content-tertiary text-right">{t("table.revenue")}</th>
+              <th className="px-4 py-3 text-xs font-medium text-content-tertiary text-right">{t("table.costs")}</th>
+              <th className="px-4 py-3 text-xs font-medium text-content-tertiary text-right">{t("table.profit")}</th>
+              <th className="px-4 py-3 text-xs font-medium text-content-tertiary text-right">{t("table.margin")}</th>
+            </tr></thead>
+            <tbody>{rows.map((row) => {
+              const costs = row.material_cost + row.expense_cost + row.labor_cost;
+              return (
+                <tr key={row.id} className="border-b border-edge-secondary/50 hover:bg-surface-secondary/30">
+                  <td className="px-4 py-3 text-content-primary max-w-[200px] truncate">{row.description || "—"}</td>
+                  <td className="px-4 py-3 text-content-secondary">{row.trade || "—"}</td>
+                  <td className="px-4 py-3"><span className="px-2 py-0.5 rounded-full text-xs font-medium bg-surface-secondary text-content-secondary">{row.status}</span></td>
+                  <td className="px-4 py-3 text-right font-medium text-content-primary">${row.revenue.toFixed(2)}</td>
+                  <td className="px-4 py-3 text-right text-content-tertiary">${costs.toFixed(2)}</td>
+                  <td className={`px-4 py-3 text-right font-medium ${row.profit >= 0 ? "text-green-500" : "text-red-500"}`}>${row.profit.toFixed(2)}</td>
+                  <td className="px-4 py-3 text-right text-content-secondary">{row.margin_pct != null ? `${row.margin_pct}%` : "—"}</td>
+                </tr>);
+            })}</tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

@@ -118,5 +118,12 @@
     "endTime": "Hora de Fin",
     "confirm": "Reprogramar",
     "endAfterStart": "La hora de fin debe ser después de la hora de inicio"
+  },
+  "intel": {
+    "title": "Historial de Propiedad",
+    "noHistory": "Sin trabajos previos en esta propiedad",
+    "pastJobs": "Trabajos Previos",
+    "totalInvoiced": "Total Facturado",
+    "previousWork": "Órdenes de Trabajo Anteriores"
   }
 }

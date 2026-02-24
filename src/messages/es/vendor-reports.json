@@ -2,6 +2,7 @@
   "title": "Reportes",
   "subtitle": "Analítica y reportes del negocio",
   "comingSoon": "Reporte próximamente",
+  "noData": "No hay datos disponibles para el período seleccionado",
   "dateFilter": {
     "thisWeek": "Esta Semana",
     "thisMonth": "Este Mes",
@@ -41,28 +42,54 @@
       "description": "Ventas gravables e impuestos recaudados"
     }
   },
-  "jobs": {
-    "title": "Reporte de Trabajos",
-    "backToReports": "Volver a Reportes"
+  "summary": {
+    "totalJobs": "Total de Trabajos",
+    "completed": "Completados",
+    "revenue": "Ingresos",
+    "profit": "Ganancia",
+    "totalRevenue": "Ingresos Totales",
+    "totalTax": "Impuestos Totales",
+    "invoiceCount": "Facturas",
+    "avgInvoice": "Factura Promedio",
+    "approvalRate": "Tasa de Aprobación",
+    "approved": "Aprobados",
+    "declined": "Rechazados",
+    "pending": "Pendientes",
+    "avgValue": "Valor Promedio",
+    "conversionRate": "Tasa de Conversión",
+    "byStatus": "Por Estado",
+    "totalOutstanding": "Total Pendiente",
+    "days": "días",
+    "totalHours": "Horas Totales",
+    "entries": "Registros",
+    "laborCost": "Costo de Mano de Obra",
+    "revenueByPeriod": "Ingresos por Período",
+    "taxableSales": "Ventas Gravables",
+    "taxCollected": "Impuestos Recaudados",
+    "effectiveRate": "Tasa Efectiva",
+    "taxByMonth": "Impuestos por Mes"
   },
-  "sales": {
-    "title": "Reporte de Ventas",
-    "backToReports": "Volver a Reportes"
-  },
-  "estimates": {
-    "title": "Reporte de Presupuestos",
-    "backToReports": "Volver a Reportes"
-  },
-  "invoices": {
-    "title": "Reporte de Facturas",
-    "backToReports": "Volver a Reportes"
-  },
-  "timesheets": {
-    "title": "Horas Trabajadas",
-    "backToReports": "Volver a Reportes"
-  },
-  "tax": {
-    "title": "Reporte Fiscal",
-    "backToReports": "Volver a Reportes"
+  "table": {
+    "description": "Descripción",
+    "trade": "Oficio",
+    "status": "Estado",
+    "revenue": "Ingresos",
+    "costs": "Costos",
+    "profit": "Ganancia",
+    "margin": "Margen",
+    "employee": "Empleado",
+    "clockIn": "Entrada",
+    "clockOut": "Salida",
+    "duration": "Duración",
+    "cost": "Costo",
+    "invoice": "Factura",
+    "dueDate": "Fecha de Vencimiento",
+    "amount": "Monto",
+    "daysOut": "Días Pendientes",
+    "bucket": "Categoría",
+    "month": "Mes",
+    "taxableSales": "Ventas Gravables",
+    "taxCollected": "Impuestos Recaudados",
+    "invoices": "Facturas"
   }
 }

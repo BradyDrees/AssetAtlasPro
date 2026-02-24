@@ -26,6 +26,8 @@ import { EstimateSummary } from "./estimate-summary";
 import { EstimatePhotoUpload } from "./estimate-photo-upload";
 import { EstimatePhotoGallery } from "./estimate-photo-gallery";
 import { PhotoAnnotationModal } from "./photo-annotation-modal";
+import { EstimateCommentThread } from "./estimate-comment-thread";
+import { EstimateVersionHistory } from "./estimate-version-history";
 
 interface EstimateBuilderProps {
   estimate: VendorEstimate;
@@ -52,6 +54,10 @@ export function EstimateBuilder({
   const [photosExpanded, setPhotosExpanded] = useState(true);
   const [photosLoaded, setPhotosLoaded] = useState(false);
   const [annotatingPhoto, setAnnotatingPhoto] = useState<VendorEstimatePhoto | null>(null);
+
+  // Comments & versions state
+  const [commentsExpanded, setCommentsExpanded] = useState(false);
+  const [versionsExpanded, setVersionsExpanded] = useState(false);
 
   const storageBaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 
@@ -580,6 +586,70 @@ export function EstimateBuilder({
           />
         </div>
       )}
+
+      {/* Comments section */}
+      <div className="bg-surface-primary rounded-xl border border-edge-primary">
+        <button
+          type="button"
+          onClick={() => setCommentsExpanded((v) => !v)}
+          className="w-full flex items-center justify-between px-4 py-3"
+        >
+          <div className="flex items-center gap-2">
+            <svg className="w-4 h-4 text-content-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+            </svg>
+            <h2 className="text-sm font-semibold text-content-primary">
+              {t("comments.title")}
+            </h2>
+          </div>
+          <svg
+            className={`w-4 h-4 text-content-tertiary transition-transform ${commentsExpanded ? "rotate-180" : ""}`}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+          </svg>
+        </button>
+        {commentsExpanded && (
+          <div className="border-t border-edge-secondary">
+            <EstimateCommentThread
+              estimateId={estimate.id}
+              role="vendor"
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Version history section */}
+      <div className="bg-surface-primary rounded-xl border border-edge-primary">
+        <button
+          type="button"
+          onClick={() => setVersionsExpanded((v) => !v)}
+          className="w-full flex items-center justify-between px-4 py-3"
+        >
+          <div className="flex items-center gap-2">
+            <svg className="w-4 h-4 text-content-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h2 className="text-sm font-semibold text-content-primary">
+              {t("versions.title")}
+            </h2>
+          </div>
+          <svg
+            className={`w-4 h-4 text-content-tertiary transition-transform ${versionsExpanded ? "rotate-180" : ""}`}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+          </svg>
+        </button>
+        {versionsExpanded && (
+          <div className="px-4 pb-4 border-t border-edge-secondary pt-3">
+            <EstimateVersionHistory
+              estimateId={estimate.id}
+              isEditable={isEditable}
+            />
+          </div>
+        )}
+      </div>
 
       {/* Action buttons */}
       {isEditable && (

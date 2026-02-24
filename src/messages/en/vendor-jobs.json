@@ -118,5 +118,12 @@
     "endTime": "End Time",
     "confirm": "Reschedule",
     "endAfterStart": "End time must be after start time"
+  },
+  "intel": {
+    "title": "Property History",
+    "noHistory": "No previous work at this property",
+    "pastJobs": "Past Jobs",
+    "totalInvoiced": "Total Invoiced",
+    "previousWork": "Previous Work Orders"
   }
 }

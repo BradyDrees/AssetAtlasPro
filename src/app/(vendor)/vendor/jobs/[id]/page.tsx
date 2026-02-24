@@ -16,6 +16,7 @@ import { JobActions } from "@/components/vendor/job-actions";
 import { MaterialsLog } from "@/components/vendor/materials-log";
 import { TimeTracker } from "@/components/vendor/time-tracker";
 import { MessageThread } from "@/components/vendor/message-thread";
+import { PropertyIntelPanel } from "@/components/vendor/property-intel";
 
 export default function JobDetailPage() {
   const params = useParams();
@@ -274,8 +275,19 @@ export default function JobDetailPage() {
           )}
         </div>
 
-        {/* Right column: materials + time */}
+        {/* Right column: intel + materials + time */}
         <div className="space-y-4">
+          {/* Property Intelligence */}
+          <div className="bg-surface-primary rounded-xl border border-edge-primary p-4">
+            <h3 className="text-sm font-semibold text-content-primary mb-3 flex items-center gap-2">
+              <svg className="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 0h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
+              </svg>
+              {t("intel.title")}
+            </h3>
+            <PropertyIntelPanel workOrderId={wo.id} />
+          </div>
+
           <MaterialsLog
             workOrderId={wo.id}
             materials={materials}

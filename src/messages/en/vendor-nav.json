@@ -18,5 +18,7 @@
   "vendorPortal": "Vendor Portal",
   "notifications": "Notifications",
   "messages": "Messages",
-  "more": "More"
+  "more": "More",
+  "markAllRead": "Mark all read",
+  "noNotifications": "No notifications"
 }

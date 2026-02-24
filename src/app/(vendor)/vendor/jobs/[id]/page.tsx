@@ -17,6 +17,8 @@ import { MaterialsLog } from "@/components/vendor/materials-log";
 import { TimeTracker } from "@/components/vendor/time-tracker";
 import { MessageThread } from "@/components/vendor/message-thread";
 import { PropertyIntelPanel } from "@/components/vendor/property-intel";
+import { ChatPanel } from "@/components/vendor/chat-panel";
+import { createClient } from "@/lib/supabase/client";
 
 export default function JobDetailPage() {
   const params = useParams();
@@ -28,11 +30,16 @@ export default function JobDetailPage() {
   const [timeEntries, setTimeEntries] = useState<VendorWoTimeEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [showMessages, setShowMessages] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [userId, setUserId] = useState<string>("");
   const mt = useTranslations("vendor.messages");
 
   useEffect(() => {
     async function load() {
       setLoading(true);
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) setUserId(user.id);
       const [woRes, matRes, timeRes] = await Promise.all([
         getWorkOrder(woId),
         getWorkOrderMaterials(woId),
@@ -249,6 +256,34 @@ export default function JobDetailPage() {
               )}
             </div>
           )}
+
+          {/* PM ↔ Vendor Chat */}
+          <div className="bg-surface-primary rounded-xl border border-edge-primary overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setShowChat(!showChat)}
+              className="w-full flex items-center justify-between px-4 py-3 hover:bg-surface-secondary transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+                </svg>
+                <span className="text-sm font-medium text-content-primary">{t("chat.title")}</span>
+              </div>
+              <svg className={`w-4 h-4 text-content-quaternary transition-transform ${showChat ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </button>
+            {showChat && userId && (
+              <div className="h-96 border-t border-edge-primary">
+                <ChatPanel
+                  workOrderId={wo.id}
+                  currentUserId={userId}
+                  role="vendor"
+                />
+              </div>
+            )}
+          </div>
 
           {/* Decline reason */}
           {wo.status === "declined" && wo.decline_reason && (

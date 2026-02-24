@@ -91,7 +91,10 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "assetAtlasPro": "Asset Atlas Pro",
-    "tagline": "See Risk. Plan Capital."
+    "tagline": "See Risk. Plan Capital.",
+    "notifications": "Notifications",
+    "markAllRead": "Mark all read",
+    "noNotifications": "No notifications"
   },
   "auth": {
     "signIn": "Sign In",

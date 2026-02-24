@@ -125,5 +125,11 @@
     "pastJobs": "Trabajos Previos",
     "totalInvoiced": "Total Facturado",
     "previousWork": "Órdenes de Trabajo Anteriores"
+  },
+  "chat": {
+    "title": "Chat con PM",
+    "noMessages": "Sin mensajes aún. ¡Inicia la conversación!",
+    "placeholder": "Escribe un mensaje...",
+    "vendor": "Proveedor"
   }
 }

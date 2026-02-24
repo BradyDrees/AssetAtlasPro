@@ -125,5 +125,11 @@
     "pastJobs": "Past Jobs",
     "totalInvoiced": "Total Invoiced",
     "previousWork": "Previous Work Orders"
+  },
+  "chat": {
+    "title": "PM Chat",
+    "noMessages": "No messages yet. Start the conversation!",
+    "placeholder": "Type a message...",
+    "vendor": "Vendor"
   }
 }

@@ -10,8 +10,13 @@ import {
 } from "@/app/actions/notifications";
 import type { VendorNotification } from "@/lib/vendor/types";
 
-export function NotificationBell() {
-  const t = useTranslations("vendor.nav");
+interface NotificationBellProps {
+  /** i18n namespace that contains notifications/markAllRead/noNotifications keys */
+  namespace?: string;
+}
+
+export function NotificationBell({ namespace = "vendor.nav" }: NotificationBellProps) {
+  const t = useTranslations(namespace);
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<VendorNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -106,7 +111,7 @@ export function NotificationBell() {
                 onClick={handleMarkAllRead}
                 className="text-xs text-brand-600 hover:text-brand-700 font-medium"
               >
-                Mark all read
+                {t("markAllRead")}
               </button>
             )}
           </div>
@@ -114,7 +119,7 @@ export function NotificationBell() {
           {notifications.length === 0 ? (
             <div className="p-6 text-center">
               <p className="text-sm text-content-quaternary">
-                No notifications
+                {t("noNotifications")}
               </p>
             </div>
           ) : (

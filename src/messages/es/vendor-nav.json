@@ -18,5 +18,7 @@
   "vendorPortal": "Portal de Proveedores",
   "notifications": "Notificaciones",
   "messages": "Mensajes",
-  "more": "Más"
+  "more": "Más",
+  "markAllRead": "Marcar todo leído",
+  "noNotifications": "Sin notificaciones"
 }

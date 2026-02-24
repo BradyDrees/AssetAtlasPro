@@ -12,6 +12,7 @@ import {
   recalculateInvoiceTotals,
   submitInvoice,
 } from "@/app/actions/vendor-invoices";
+import { generateInvoicePdf } from "@/lib/vendor/pdf/generate-invoice-pdf";
 
 interface InvoiceBuilderProps {
   invoice: VendorInvoice;
@@ -37,8 +38,21 @@ export function InvoiceBuilder({
   const [newPrice, setNewPrice] = useState(0);
   const [newType, setNewType] = useState<InvoiceItemType>("labor");
   const [addingItem, setAddingItem] = useState(false);
+  const [generatingPdf, setGeneratingPdf] = useState(false);
 
   const isEditable = invoice.status === "draft" || invoice.status === "disputed";
+
+  async function handleDownloadPdf() {
+    setGeneratingPdf(true);
+    const result = await generateInvoicePdf(invoice.id);
+    if (result.pdf) {
+      const link = document.createElement("a");
+      link.href = result.pdf;
+      link.download = `invoice-${invoice.invoice_number ?? invoice.id}.pdf`;
+      link.click();
+    }
+    setGeneratingPdf(false);
+  }
 
   const refresh = useCallback(() => {
     startTransition(() => {
@@ -249,14 +263,24 @@ export function InvoiceBuilder({
       </div>
 
       {/* Actions */}
-      {isEditable && (
-        <div className="flex items-center justify-end gap-3 pb-6">
-          <button
-            onClick={() => router.push("/vendor/invoices")}
-            className="px-4 py-2 text-sm text-content-secondary hover:text-content-primary transition-colors"
-          >
-            {t("backToList")}
-          </button>
+      <div className="flex items-center justify-end gap-3 pb-6">
+        <button
+          onClick={() => router.push("/vendor/invoices")}
+          className="px-4 py-2 text-sm text-content-secondary hover:text-content-primary transition-colors"
+        >
+          {t("backToList")}
+        </button>
+        <button
+          onClick={handleDownloadPdf}
+          disabled={generatingPdf || items.length === 0}
+          className="px-4 py-2 text-sm border border-edge-primary text-content-primary rounded-lg hover:bg-surface-secondary disabled:opacity-50 transition-colors flex items-center gap-2"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          {generatingPdf ? t("processing") : "PDF"}
+        </button>
+        {isEditable && (
           <button
             onClick={() => setShowSubmitModal(true)}
             disabled={!invoice.pm_user_id || items.length === 0}
@@ -267,8 +291,8 @@ export function InvoiceBuilder({
             </svg>
             {t("submitToPm")}
           </button>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Submit modal */}
       {showSubmitModal && (

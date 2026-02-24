@@ -8,6 +8,7 @@ import { signOut } from "@/app/actions/auth";
 import { useTheme } from "@/components/theme-provider";
 import { useAppLocale } from "@/components/locale-provider";
 import { useOffline } from "@/components/offline-provider";
+import { NotificationBell } from "@/components/vendor/notification-bell";
 import type { User } from "@supabase/supabase-js";
 
 function SombreroIcon({ className }: { className?: string }) {
@@ -161,6 +162,11 @@ export function Sidebar({ user }: { user: User }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
+        </div>
+
+        {/* Notification bell */}
+        <div className={`px-3 pt-2 flex ${collapsed ? "justify-center" : "justify-end"}`}>
+          <NotificationBell namespace="sidebar" />
         </div>
 
         {/* Navigation */}

@@ -1,0 +1,211 @@
+/**
+ * Email HTML templates for vendor platform notifications.
+ * Simple, responsive HTML emails with brand styling.
+ */
+
+const BRAND_GREEN = "#22c55e";
+const BRAND_DARK = "#1a1a1a";
+const GRAY_600 = "#4b5563";
+
+function baseTemplate(title: string, body: string, ctaUrl?: string, ctaText?: string): string {
+  const ctaHtml = ctaUrl && ctaText ? `
+    <div style="text-align:center;margin:28px 0;">
+      <a href="${ctaUrl}" style="display:inline-block;padding:12px 28px;background:${BRAND_GREEN};color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:14px;">
+        ${ctaText}
+      </a>
+    </div>
+  ` : "";
+
+  return `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f3f4f6;">
+  <div style="max-width:560px;margin:0 auto;padding:24px;">
+    <div style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+      <div style="background:${BRAND_DARK};padding:20px 24px;">
+        <h1 style="margin:0;font-size:18px;color:${BRAND_GREEN};font-weight:700;">Asset Atlas</h1>
+      </div>
+      <div style="padding:24px;">
+        <h2 style="margin:0 0 16px;font-size:18px;color:${BRAND_DARK};">${title}</h2>
+        <div style="font-size:14px;line-height:1.6;color:${GRAY_600};">${body}</div>
+        ${ctaHtml}
+      </div>
+      <div style="padding:16px 24px;border-top:1px solid #e5e7eb;font-size:12px;color:#9ca3af;text-align:center;">
+        Asset Atlas Pro &mdash; Property Operations Platform
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
+// ─── Work Order Assigned ───
+export function woAssignedEmail(params: {
+  vendorName: string;
+  propertyName: string;
+  description: string;
+  priority: string;
+  jobUrl: string;
+}): { subject: string; html: string } {
+  return {
+    subject: `New Work Order: ${params.propertyName}`,
+    html: baseTemplate(
+      "New Work Order Assigned",
+      `<p>Hi ${params.vendorName},</p>
+       <p>A new work order has been assigned to your organization:</p>
+       <div style="background:#f9fafb;border-radius:8px;padding:16px;margin:12px 0;">
+         <p style="margin:0 0 4px;font-weight:600;color:${BRAND_DARK}">${params.propertyName}</p>
+         <p style="margin:0 0 4px;">${params.description}</p>
+         <p style="margin:0;"><span style="font-weight:500;">Priority:</span> ${params.priority}</p>
+       </div>`,
+      params.jobUrl,
+      "View Work Order"
+    ),
+  };
+}
+
+// ─── Estimate Submitted (notify PM) ───
+export function estimateSubmittedEmail(params: {
+  pmName: string;
+  vendorName: string;
+  estimateNumber: string;
+  propertyName: string;
+  total: string;
+  reviewUrl: string;
+}): { subject: string; html: string } {
+  return {
+    subject: `Estimate #${params.estimateNumber} Ready for Review`,
+    html: baseTemplate(
+      "Estimate Ready for Review",
+      `<p>Hi ${params.pmName},</p>
+       <p>${params.vendorName} has submitted an estimate for your review:</p>
+       <div style="background:#f9fafb;border-radius:8px;padding:16px;margin:12px 0;">
+         <p style="margin:0 0 4px;font-weight:600;color:${BRAND_DARK}">Estimate #${params.estimateNumber}</p>
+         <p style="margin:0 0 4px;">${params.propertyName}</p>
+         <p style="margin:0;font-size:20px;font-weight:700;color:${BRAND_GREEN}">${params.total}</p>
+       </div>`,
+      params.reviewUrl,
+      "Review Estimate"
+    ),
+  };
+}
+
+// ─── Estimate Approved/Declined (notify vendor) ───
+export function estimateDecisionEmail(params: {
+  vendorName: string;
+  estimateNumber: string;
+  decision: "approved" | "declined";
+  reason?: string;
+  estimateUrl: string;
+}): { subject: string; html: string } {
+  const color = params.decision === "approved" ? BRAND_GREEN : "#ef4444";
+  const label = params.decision === "approved" ? "Approved" : "Declined";
+  return {
+    subject: `Estimate #${params.estimateNumber} ${label}`,
+    html: baseTemplate(
+      `Estimate ${label}`,
+      `<p>Hi ${params.vendorName},</p>
+       <p>Your estimate <strong>#${params.estimateNumber}</strong> has been <span style="color:${color};font-weight:600;">${label.toLowerCase()}</span>.</p>
+       ${params.reason ? `<div style="background:#fef2f2;border-left:3px solid #ef4444;padding:12px;margin:12px 0;border-radius:4px;"><p style="margin:0;font-size:13px;">${params.reason}</p></div>` : ""}`,
+      params.estimateUrl,
+      "View Estimate"
+    ),
+  };
+}
+
+// ─── Invoice Submitted (notify PM) ───
+export function invoiceSubmittedEmail(params: {
+  pmName: string;
+  vendorName: string;
+  invoiceNumber: string;
+  propertyName: string;
+  total: string;
+  reviewUrl: string;
+}): { subject: string; html: string } {
+  return {
+    subject: `Invoice #${params.invoiceNumber} Submitted`,
+    html: baseTemplate(
+      "Invoice Submitted for Review",
+      `<p>Hi ${params.pmName},</p>
+       <p>${params.vendorName} has submitted an invoice:</p>
+       <div style="background:#f9fafb;border-radius:8px;padding:16px;margin:12px 0;">
+         <p style="margin:0 0 4px;font-weight:600;color:${BRAND_DARK}">Invoice #${params.invoiceNumber}</p>
+         <p style="margin:0 0 4px;">${params.propertyName}</p>
+         <p style="margin:0;font-size:20px;font-weight:700;color:${BRAND_GREEN}">${params.total}</p>
+       </div>`,
+      params.reviewUrl,
+      "Review Invoice"
+    ),
+  };
+}
+
+// ─── Invoice Paid (notify vendor) ───
+export function invoicePaidEmail(params: {
+  vendorName: string;
+  invoiceNumber: string;
+  total: string;
+  invoiceUrl: string;
+}): { subject: string; html: string } {
+  return {
+    subject: `Invoice #${params.invoiceNumber} Paid`,
+    html: baseTemplate(
+      "Payment Received",
+      `<p>Hi ${params.vendorName},</p>
+       <p>Great news! Invoice <strong>#${params.invoiceNumber}</strong> has been marked as paid.</p>
+       <div style="background:#f0fdf4;border-radius:8px;padding:16px;margin:12px 0;text-align:center;">
+         <p style="margin:0;font-size:24px;font-weight:700;color:${BRAND_GREEN}">${params.total}</p>
+         <p style="margin:4px 0 0;font-size:13px;color:#16a34a;">Payment received</p>
+       </div>`,
+      params.invoiceUrl,
+      "View Invoice"
+    ),
+  };
+}
+
+// ─── Invoice Disputed (notify vendor) ───
+export function invoiceDisputedEmail(params: {
+  vendorName: string;
+  invoiceNumber: string;
+  reason: string;
+  invoiceUrl: string;
+}): { subject: string; html: string } {
+  return {
+    subject: `Invoice #${params.invoiceNumber} Disputed`,
+    html: baseTemplate(
+      "Invoice Disputed",
+      `<p>Hi ${params.vendorName},</p>
+       <p>Invoice <strong>#${params.invoiceNumber}</strong> has been disputed by the PM.</p>
+       <div style="background:#fef2f2;border-left:3px solid #ef4444;padding:12px;margin:12px 0;border-radius:4px;">
+         <p style="margin:0;font-size:13px;font-weight:500;">Reason:</p>
+         <p style="margin:4px 0 0;font-size:13px;">${params.reason}</p>
+       </div>
+       <p>Please review and resubmit the invoice.</p>`,
+      params.invoiceUrl,
+      "View Invoice"
+    ),
+  };
+}
+
+// ─── New Chat Message (notify recipient) ───
+export function newChatMessageEmail(params: {
+  recipientName: string;
+  senderName: string;
+  senderRole: string;
+  preview: string;
+  chatUrl: string;
+}): { subject: string; html: string } {
+  return {
+    subject: `New message from ${params.senderName}`,
+    html: baseTemplate(
+      "New Message",
+      `<p>Hi ${params.recipientName},</p>
+       <p>You have a new message from <strong>${params.senderName}</strong> (${params.senderRole}):</p>
+       <div style="background:#f9fafb;border-left:3px solid ${BRAND_GREEN};padding:12px;margin:12px 0;border-radius:4px;">
+         <p style="margin:0;font-size:13px;font-style:italic;">"${params.preview.slice(0, 200)}${params.preview.length > 200 ? "..." : ""}"</p>
+       </div>`,
+      params.chatUrl,
+      "View Conversation"
+    ),
+  };
+}

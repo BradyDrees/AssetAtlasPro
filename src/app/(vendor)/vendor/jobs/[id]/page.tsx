@@ -15,6 +15,7 @@ import { PriorityDot } from "@/components/vendor/priority-dot";
 import { JobActions } from "@/components/vendor/job-actions";
 import { MaterialsLog } from "@/components/vendor/materials-log";
 import { TimeTracker } from "@/components/vendor/time-tracker";
+import { MessageThread } from "@/components/vendor/message-thread";
 
 export default function JobDetailPage() {
   const params = useParams();
@@ -25,6 +26,8 @@ export default function JobDetailPage() {
   const [materials, setMaterials] = useState<VendorWoMaterial[]>([]);
   const [timeEntries, setTimeEntries] = useState<VendorWoTimeEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showMessages, setShowMessages] = useState(false);
+  const mt = useTranslations("vendor.messages");
 
   useEffect(() => {
     async function load() {
@@ -214,6 +217,37 @@ export default function JobDetailPage() {
               )}
             </div>
           </div>
+
+          {/* Message Tenant */}
+          {wo.tenant_phone && isActiveJob && (
+            <div className="bg-surface-primary rounded-xl border border-edge-primary overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setShowMessages(!showMessages)}
+                className="w-full flex items-center justify-between px-4 py-3 hover:bg-surface-secondary transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                  </svg>
+                  <span className="text-sm font-medium text-content-primary">{mt("messageTenant")}</span>
+                </div>
+                <svg className={`w-4 h-4 text-content-quaternary transition-transform ${showMessages ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+              </button>
+              {showMessages && (
+                <div className="h-96 border-t border-edge-primary">
+                  <MessageThread
+                    workOrderId={wo.id}
+                    tenantName={wo.tenant_name}
+                    tenantPhone={wo.tenant_phone}
+                    propertyName={wo.property_name}
+                  />
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Decline reason */}
           {wo.status === "declined" && wo.decline_reason && (

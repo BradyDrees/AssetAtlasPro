@@ -401,3 +401,52 @@ export type ExpenseCategory =
   | "travel"
   | "meals"
   | "other";
+
+// ============================================
+// Twilio Phone Masking
+// ============================================
+
+export type PhoneNumberStatus = "active" | "released";
+export type MessageDirection = "inbound" | "outbound";
+export type MessageType = "sms" | "call";
+export type MessageStatus = "sent" | "delivered" | "failed" | "received" | "queued";
+
+export interface VendorPhoneNumber {
+  id: string;
+  vendor_org_id: string;
+  twilio_number: string;
+  twilio_sid: string;
+  friendly_name: string;
+  is_default: boolean;
+  status: PhoneNumberStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface VendorMessage {
+  id: string;
+  vendor_org_id: string;
+  work_order_id: string | null;
+  phone_number_id: string | null;
+  sender_user_id: string | null;
+  direction: MessageDirection;
+  message_type: MessageType;
+  from_number: string;
+  to_number: string;
+  body: string | null;
+  status: MessageStatus;
+  twilio_sid: string | null;
+  duration_seconds: number | null;
+  read_at: string | null;
+  created_at: string;
+}
+
+export interface ConversationPreview {
+  work_order_id: string;
+  property_name: string | null;
+  tenant_name: string | null;
+  tenant_phone: string | null;
+  last_message: string | null;
+  last_message_at: string;
+  unread_count: number;
+}

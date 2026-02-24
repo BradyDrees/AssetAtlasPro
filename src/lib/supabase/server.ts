@@ -1,5 +1,18 @@
 import { createServerClient } from "@supabase/ssr";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
+
+/**
+ * Service-role client for server-side operations without user auth
+ * (e.g. webhooks, cron jobs). Bypasses RLS.
+ */
+export function createServiceClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    { auth: { persistSession: false } }
+  );
+}
 
 export async function createClient() {
   const cookieStore = await cookies();

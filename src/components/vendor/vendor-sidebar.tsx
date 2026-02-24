@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { signOut } from "@/app/actions/auth";
+import { switchRole } from "@/app/actions/switch-role";
 import { useTheme } from "@/components/theme-provider";
 import { useAppLocale } from "@/components/locale-provider";
 import { useOffline } from "@/components/offline-provider";
@@ -316,10 +317,11 @@ export function VendorSidebar({ user, hasPmRole = false }: VendorSidebarProps) {
 
           {/* Role switcher — only if user also has PM role */}
           {hasPmRole && !collapsed && (
-            <Link
-              href="/dashboard"
-              onClick={() => {
+            <button
+              onClick={async () => {
+                await switchRole("pm");
                 document.cookie = "active_role=pm; path=/; max-age=31536000; samesite=lax";
+                window.location.href = "/dashboard";
               }}
               className="flex items-center gap-2 w-full px-1 py-1.5 text-sm text-content-tertiary hover:text-content-primary rounded transition-colors mb-2"
             >
@@ -327,7 +329,7 @@ export function VendorSidebar({ user, hasPmRole = false }: VendorSidebarProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
               </svg>
               {vt("switchToPm")}
-            </Link>
+            </button>
           )}
 
           {/* Language toggle */}

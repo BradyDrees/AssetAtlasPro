@@ -1,15 +1,15 @@
 -- ============================================
--- Migration 012: Atlas Home — Homeowner Portal
+-- Migration 012: Atlas Home — Homeowner Portal (FIXED v2)
 -- ============================================
--- Run in Supabase SQL Editor AFTER migrations 001–011.
+-- Run in Supabase SQL Editor AFTER migrations 001–006.
 -- Creates homeowner tables: properties, preferences, ratings, disputes.
 -- Extends vendor_work_orders + vendor_organizations with homeowner columns.
--- Extends vendor_chat_messages sender_role for homeowner messaging.
+-- Chat messages extension deferred until migration 011 is run.
 
 -- ============================================
--- homeowner_properties
+-- 1. homeowner_properties (table only, policies later)
 -- ============================================
-CREATE TABLE homeowner_properties (
+CREATE TABLE IF NOT EXISTS homeowner_properties (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   address TEXT NOT NULL,
@@ -40,15 +40,38 @@ CREATE TABLE homeowner_properties (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE INDEX idx_homeowner_properties_user ON homeowner_properties(user_id);
-
+CREATE INDEX IF NOT EXISTS idx_homeowner_properties_user ON homeowner_properties(user_id);
 ALTER TABLE homeowner_properties ENABLE ROW LEVEL SECURITY;
 
--- Homeowner can CRUD their own properties
+-- ============================================
+-- 2. Extend vendor_work_orders FIRST (before policies that reference these columns)
+-- ============================================
+ALTER TABLE vendor_work_orders
+  ADD COLUMN IF NOT EXISTS source_type TEXT DEFAULT 'pm_routed' CHECK (source_type IN ('pm_routed','client_request')),
+  ADD COLUMN IF NOT EXISTS homeowner_id UUID REFERENCES auth.users(id),
+  ADD COLUMN IF NOT EXISTS homeowner_property_id UUID REFERENCES homeowner_properties(id),
+  ADD COLUMN IF NOT EXISTS urgency TEXT CHECK (urgency IN ('emergency','urgent','routine','whenever')),
+  ADD COLUMN IF NOT EXISTS vendor_selection_mode TEXT CHECK (vendor_selection_mode IN ('auto_match','homeowner_choice','preferred_vendor')),
+  ADD COLUMN IF NOT EXISTS warranty_expires_at TIMESTAMPTZ;
+
+CREATE INDEX IF NOT EXISTS idx_wo_homeowner ON vendor_work_orders(homeowner_id) WHERE homeowner_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_wo_homeowner_property ON vendor_work_orders(homeowner_property_id) WHERE homeowner_property_id IS NOT NULL;
+
+-- ============================================
+-- 3. Extend vendor_organizations for marketplace
+-- ============================================
+ALTER TABLE vendor_organizations
+  ADD COLUMN IF NOT EXISTS avg_rating DECIMAL(3,2) DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS total_ratings INT DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS response_time_label TEXT CHECK (response_time_label IN ('same_day','next_day','within_48hrs')),
+  ADD COLUMN IF NOT EXISTS emergency_available BOOLEAN DEFAULT false;
+
+-- ============================================
+-- 4. Policies for homeowner_properties & vendor_work_orders & vendor_organizations
+-- ============================================
 CREATE POLICY "homeowner_properties_owner" ON homeowner_properties
   FOR ALL USING (user_id = auth.uid());
 
--- Vendors can read properties for work orders assigned to them
 CREATE POLICY "homeowner_properties_vendor_read" ON homeowner_properties
   FOR SELECT USING (
     id IN (
@@ -60,10 +83,22 @@ CREATE POLICY "homeowner_properties_vendor_read" ON homeowner_properties
     )
   );
 
+CREATE POLICY "wo_homeowner_read" ON vendor_work_orders
+  FOR SELECT USING (homeowner_id = auth.uid());
+
+CREATE POLICY "wo_homeowner_insert" ON vendor_work_orders
+  FOR INSERT WITH CHECK (
+    homeowner_id = auth.uid()
+    AND source_type = 'client_request'
+  );
+
+CREATE POLICY "vendor_orgs_marketplace_read" ON vendor_organizations
+  FOR SELECT USING (status = 'active');
+
 -- ============================================
--- homeowner_vendor_preferences
+-- 5. homeowner_vendor_preferences
 -- ============================================
-CREATE TABLE homeowner_vendor_preferences (
+CREATE TABLE IF NOT EXISTS homeowner_vendor_preferences (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   vendor_org_id UUID NOT NULL REFERENCES vendor_organizations(id) ON DELETE CASCADE,
@@ -73,8 +108,8 @@ CREATE TABLE homeowner_vendor_preferences (
   UNIQUE (user_id, vendor_org_id, preference_type)
 );
 
-CREATE INDEX idx_homeowner_prefs_user ON homeowner_vendor_preferences(user_id);
-CREATE INDEX idx_homeowner_prefs_vendor ON homeowner_vendor_preferences(vendor_org_id);
+CREATE INDEX IF NOT EXISTS idx_homeowner_prefs_user ON homeowner_vendor_preferences(user_id);
+CREATE INDEX IF NOT EXISTS idx_homeowner_prefs_vendor ON homeowner_vendor_preferences(vendor_org_id);
 
 ALTER TABLE homeowner_vendor_preferences ENABLE ROW LEVEL SECURITY;
 
@@ -82,9 +117,9 @@ CREATE POLICY "homeowner_prefs_owner" ON homeowner_vendor_preferences
   FOR ALL USING (user_id = auth.uid());
 
 -- ============================================
--- vendor_ratings
+-- 6. vendor_ratings
 -- ============================================
-CREATE TABLE vendor_ratings (
+CREATE TABLE IF NOT EXISTS vendor_ratings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   work_order_id UUID NOT NULL REFERENCES vendor_work_orders(id) ON DELETE CASCADE,
   homeowner_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -95,12 +130,11 @@ CREATE TABLE vendor_ratings (
   UNIQUE (work_order_id, homeowner_id)
 );
 
-CREATE INDEX idx_vendor_ratings_org ON vendor_ratings(vendor_org_id);
-CREATE INDEX idx_vendor_ratings_homeowner ON vendor_ratings(homeowner_id);
+CREATE INDEX IF NOT EXISTS idx_vendor_ratings_org ON vendor_ratings(vendor_org_id);
+CREATE INDEX IF NOT EXISTS idx_vendor_ratings_homeowner ON vendor_ratings(homeowner_id);
 
 ALTER TABLE vendor_ratings ENABLE ROW LEVEL SECURITY;
 
--- Homeowner can create ratings on their completed WOs
 CREATE POLICY "vendor_ratings_homeowner_insert" ON vendor_ratings
   FOR INSERT WITH CHECK (
     homeowner_id = auth.uid()
@@ -112,18 +146,16 @@ CREATE POLICY "vendor_ratings_homeowner_insert" ON vendor_ratings
     )
   );
 
--- Public read for marketplace display
 CREATE POLICY "vendor_ratings_public_read" ON vendor_ratings
   FOR SELECT USING (true);
 
--- Homeowner can update their own ratings
 CREATE POLICY "vendor_ratings_homeowner_update" ON vendor_ratings
   FOR UPDATE USING (homeowner_id = auth.uid());
 
 -- ============================================
--- homeowner_disputes
+-- 7. homeowner_disputes
 -- ============================================
-CREATE TABLE homeowner_disputes (
+CREATE TABLE IF NOT EXISTS homeowner_disputes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   work_order_id UUID NOT NULL REFERENCES vendor_work_orders(id) ON DELETE CASCADE,
   homeowner_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -138,17 +170,15 @@ CREATE TABLE homeowner_disputes (
   resolved_at TIMESTAMPTZ
 );
 
-CREATE INDEX idx_disputes_wo ON homeowner_disputes(work_order_id);
-CREATE INDEX idx_disputes_homeowner ON homeowner_disputes(homeowner_id);
-CREATE INDEX idx_disputes_vendor ON homeowner_disputes(vendor_org_id);
+CREATE INDEX IF NOT EXISTS idx_disputes_wo ON homeowner_disputes(work_order_id);
+CREATE INDEX IF NOT EXISTS idx_disputes_homeowner ON homeowner_disputes(homeowner_id);
+CREATE INDEX IF NOT EXISTS idx_disputes_vendor ON homeowner_disputes(vendor_org_id);
 
 ALTER TABLE homeowner_disputes ENABLE ROW LEVEL SECURITY;
 
--- Homeowner can CRUD their own disputes
 CREATE POLICY "disputes_homeowner" ON homeowner_disputes
   FOR ALL USING (homeowner_id = auth.uid());
 
--- Vendor can read and respond to disputes on their org's WOs
 CREATE POLICY "disputes_vendor_read" ON homeowner_disputes
   FOR SELECT USING (
     vendor_org_id IN (
@@ -164,72 +194,7 @@ CREATE POLICY "disputes_vendor_respond" ON homeowner_disputes
   );
 
 -- ============================================
--- Extend vendor_work_orders for homeowner WOs
--- ============================================
-ALTER TABLE vendor_work_orders
-  ADD COLUMN IF NOT EXISTS source_type TEXT DEFAULT 'pm_routed' CHECK (source_type IN ('pm_routed','client_request')),
-  ADD COLUMN IF NOT EXISTS homeowner_id UUID REFERENCES auth.users(id),
-  ADD COLUMN IF NOT EXISTS homeowner_property_id UUID REFERENCES homeowner_properties(id),
-  ADD COLUMN IF NOT EXISTS urgency TEXT CHECK (urgency IN ('emergency','urgent','routine','whenever')),
-  ADD COLUMN IF NOT EXISTS vendor_selection_mode TEXT CHECK (vendor_selection_mode IN ('auto_match','homeowner_choice','preferred_vendor')),
-  ADD COLUMN IF NOT EXISTS warranty_expires_at TIMESTAMPTZ;
-
-CREATE INDEX IF NOT EXISTS idx_wo_homeowner ON vendor_work_orders(homeowner_id) WHERE homeowner_id IS NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_wo_homeowner_property ON vendor_work_orders(homeowner_property_id) WHERE homeowner_property_id IS NOT NULL;
-
--- Homeowner can read their own WOs
-CREATE POLICY "wo_homeowner_read" ON vendor_work_orders
-  FOR SELECT USING (homeowner_id = auth.uid());
-
--- Homeowner can create WOs
-CREATE POLICY "wo_homeowner_insert" ON vendor_work_orders
-  FOR INSERT WITH CHECK (
-    homeowner_id = auth.uid()
-    AND source_type = 'client_request'
-  );
-
--- ============================================
--- Extend vendor_organizations for marketplace
--- ============================================
-ALTER TABLE vendor_organizations
-  ADD COLUMN IF NOT EXISTS avg_rating DECIMAL(3,2) DEFAULT 0,
-  ADD COLUMN IF NOT EXISTS total_ratings INT DEFAULT 0,
-  ADD COLUMN IF NOT EXISTS response_time_label TEXT CHECK (response_time_label IN ('same_day','next_day','within_48hrs')),
-  ADD COLUMN IF NOT EXISTS emergency_available BOOLEAN DEFAULT false;
-
--- Public marketplace read for active vendor orgs
-CREATE POLICY "vendor_orgs_marketplace_read" ON vendor_organizations
-  FOR SELECT USING (status = 'active');
-
--- ============================================
--- Extend vendor_chat_messages sender_role for homeowner
--- ============================================
-ALTER TABLE vendor_chat_messages
-  DROP CONSTRAINT IF EXISTS vendor_chat_messages_sender_role_check;
-
-ALTER TABLE vendor_chat_messages
-  ADD CONSTRAINT vendor_chat_messages_sender_role_check
-  CHECK (sender_role IN ('pm', 'vendor', 'homeowner'));
-
--- Homeowner can read/insert chat messages on their WOs
-CREATE POLICY "chat_homeowner_read" ON vendor_chat_messages
-  FOR SELECT USING (
-    work_order_id IN (
-      SELECT id FROM vendor_work_orders WHERE homeowner_id = auth.uid()
-    )
-  );
-
-CREATE POLICY "chat_homeowner_insert" ON vendor_chat_messages
-  FOR INSERT WITH CHECK (
-    sender_id = auth.uid()
-    AND sender_role = 'homeowner'
-    AND work_order_id IN (
-      SELECT id FROM vendor_work_orders WHERE homeowner_id = auth.uid()
-    )
-  );
-
--- ============================================
--- Trigger: auto-update avg_rating on vendor_organizations
+-- 8. Trigger: auto-update avg_rating on vendor_organizations
 -- ============================================
 CREATE OR REPLACE FUNCTION update_vendor_avg_rating()
 RETURNS TRIGGER AS $$
@@ -253,3 +218,20 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER trg_vendor_ratings_update_avg
   AFTER INSERT OR UPDATE OR DELETE ON vendor_ratings
   FOR EACH ROW EXECUTE FUNCTION update_vendor_avg_rating();
+
+-- ============================================
+-- NOTE: vendor_chat_messages extension (homeowner sender_role + policies)
+-- is deferred until migration 011 (in-app chat) is run.
+-- Run this after 011:
+--
+-- ALTER TABLE vendor_chat_messages
+--   DROP CONSTRAINT IF EXISTS vendor_chat_messages_sender_role_check;
+-- ALTER TABLE vendor_chat_messages
+--   ADD CONSTRAINT vendor_chat_messages_sender_role_check
+--   CHECK (sender_role IN ('pm', 'vendor', 'homeowner'));
+-- CREATE POLICY "chat_homeowner_read" ON vendor_chat_messages
+--   FOR SELECT USING (work_order_id IN (SELECT id FROM vendor_work_orders WHERE homeowner_id = auth.uid()));
+-- CREATE POLICY "chat_homeowner_insert" ON vendor_chat_messages
+--   FOR INSERT WITH CHECK (sender_id = auth.uid() AND sender_role = 'homeowner'
+--     AND work_order_id IN (SELECT id FROM vendor_work_orders WHERE homeowner_id = auth.uid()));
+-- ============================================

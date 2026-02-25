@@ -49,5 +49,6 @@
   "deleting": "Deleting...",
   "edit": "Edit",
   "receipt": "Receipt attached",
-  "reimbursable": "Reimbursable"
+  "reimbursable": "Reimbursable",
+  "empty": "No expenses yet"
 }

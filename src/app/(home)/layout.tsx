@@ -10,6 +10,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { LocaleProvider } from "@/components/locale-provider";
 import { getUserRoles } from "@/lib/vendor/role-helpers";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomeLayout({
   children,
 }: {

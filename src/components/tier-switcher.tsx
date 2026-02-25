@@ -2,17 +2,19 @@
 
 import { useTranslations } from "next-intl";
 import { switchRole } from "@/app/actions/switch-role";
+import type { AppRole } from "@/lib/vendor/types";
 
-type Tier = "acquire" | "operate" | "pro";
+type Tier = "acquire" | "operate" | "pro" | "home";
 
 interface TierSwitcherProps {
   currentTier: Tier;
   hasPmRole: boolean;
   hasVendorRole: boolean;
+  hasOwnerRole?: boolean;
   collapsed?: boolean;
 }
 
-const TIER_CONFIG: Record<Tier, { label: string; color: string; hoverColor: string; bgColor: string; href: string; role: "pm" | "vendor" }> = {
+const TIER_CONFIG: Record<Tier, { label: string; color: string; hoverColor: string; bgColor: string; href: string; role: AppRole }> = {
   acquire: {
     label: "Acquire",
     color: "text-blue-400",
@@ -37,9 +39,17 @@ const TIER_CONFIG: Record<Tier, { label: string; color: string; hoverColor: stri
     href: "/pro",
     role: "vendor",
   },
+  home: {
+    label: "Home",
+    color: "text-rose-400",
+    hoverColor: "hover:text-rose-300",
+    bgColor: "hover:bg-rose-500/10",
+    href: "/home/dashboard",
+    role: "owner",
+  },
 };
 
-export function TierSwitcher({ currentTier, hasPmRole, hasVendorRole, collapsed = false }: TierSwitcherProps) {
+export function TierSwitcher({ currentTier, hasPmRole, hasVendorRole, hasOwnerRole = false, collapsed = false }: TierSwitcherProps) {
   const t = useTranslations();
 
   // Build list of available tiers (excluding current)
@@ -48,6 +58,7 @@ export function TierSwitcher({ currentTier, hasPmRole, hasVendorRole, collapsed 
   if (currentTier !== "acquire" && hasPmRole) availableTiers.push("acquire");
   if (currentTier !== "operate" && hasPmRole) availableTiers.push("operate");
   if (currentTier !== "pro" && hasVendorRole) availableTiers.push("pro");
+  if (currentTier !== "home" && hasOwnerRole) availableTiers.push("home");
 
   if (availableTiers.length === 0) return null;
 

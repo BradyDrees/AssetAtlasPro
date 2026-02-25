@@ -1,0 +1,20 @@
+{
+  "title": "Panel",
+  "subtitle": "Tu hogar de un vistazo",
+  "quickActions": "Acciones Rápidas",
+  "submitWorkOrder": "Enviar Orden de Trabajo",
+  "browseVendors": "Buscar Proveedores",
+  "activeWorkOrders": "Órdenes de Trabajo Activas",
+  "noActiveWorkOrders": "Sin órdenes de trabajo activas",
+  "yourProperty": "Tu Propiedad",
+  "propertyInfoPlaceholder": "La información de la propiedad aparecerá aquí",
+  "recentActivity": "Actividad Reciente",
+  "noRecentActivity": "Sin actividad reciente",
+  "upcomingVisits": "Próximas Visitas",
+  "noUpcomingVisits": "Sin próximas visitas",
+  "maintenancePool": "Fondo de Mantenimiento",
+  "poolBalance": "Saldo del Fondo",
+  "setupSubscription": "Configure su suscripción para empezar a construir su fondo",
+  "viewAll": "Ver Todo",
+  "viewProperty": "Ver Propiedad"
+}

@@ -1,0 +1,15 @@
+{
+  "dashboard": "Dashboard",
+  "workOrders": "Work Orders",
+  "vendors": "Vendors",
+  "messages": "Messages",
+  "property": "Property",
+  "settings": "Settings",
+  "more": "More",
+  "signOut": "Sign Out",
+  "homePortal": "Homeowner Portal",
+  "switchTo": "Switch to {tier}",
+  "openMenu": "Open menu",
+  "closeMenu": "Close menu",
+  "savedVendors": "Saved Vendors"
+}

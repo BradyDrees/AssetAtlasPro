@@ -82,6 +82,35 @@ export async function requirePmRole(): Promise<PmAuthContext> {
   return pmRole as PmAuthContext;
 }
 
+/**
+ * Verify the caller has an owner (homeowner) role.
+ * Redirects to /login if unauthenticated, /home/onboarding if no owner role.
+ */
+export async function requireOwnerRole(): Promise<{ userId: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { data: ownerRole } = await supabase
+    .from("user_roles")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("role", "owner")
+    .eq("is_active", true)
+    .single();
+
+  if (!ownerRole) {
+    redirect("/home/onboarding");
+  }
+
+  return { userId: user.id };
+}
+
 // ============================================
 // Role queries
 // ============================================
@@ -171,6 +200,18 @@ export async function switchActiveRole(
 
     if (!pmRole) {
       throw new Error("No active PM role");
+    }
+  } else if (newRole === "owner") {
+    const { data: ownerRole } = await supabase
+      .from("user_roles")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("role", "owner")
+      .eq("is_active", true)
+      .single();
+
+    if (!ownerRole) {
+      throw new Error("No active owner role");
     }
   }
 

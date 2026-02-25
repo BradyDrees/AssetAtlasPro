@@ -1,0 +1,15 @@
+{
+  "dashboard": "Panel",
+  "workOrders": "Órdenes de Trabajo",
+  "vendors": "Proveedores",
+  "messages": "Mensajes",
+  "property": "Propiedad",
+  "settings": "Configuración",
+  "more": "Más",
+  "signOut": "Cerrar Sesión",
+  "homePortal": "Portal del Propietario",
+  "switchTo": "Cambiar a {tier}",
+  "openMenu": "Abrir menú",
+  "closeMenu": "Cerrar menú",
+  "savedVendors": "Proveedores Guardados"
+}

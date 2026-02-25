@@ -1,0 +1,21 @@
+{
+  "title": "Messages",
+  "noThreads": "No conversations yet",
+  "noThreadsHint": "Messages will appear here when a vendor is assigned to your work order.",
+  "back": "← Back",
+  "typeMessage": "Type a message...",
+  "send": "Send",
+  "noMessages": "No messages yet. Start the conversation!",
+  "justNow": "Just now",
+  "you": "You",
+  "vendor": "Vendor",
+  "workOrder": "Work Order",
+  "unread": "unread",
+  "lastMessage": "Last message",
+  "viewWorkOrder": "View Work Order",
+  "search": "Search conversations...",
+  "sending": "Sending...",
+  "failedToSend": "Failed to send message",
+  "markRead": "Mark as read",
+  "allRead": "All caught up!"
+}

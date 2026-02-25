@@ -25,9 +25,10 @@ function SombreroIcon({ className }: { className?: string }) {
 interface AcquireSidebarProps {
   user: User;
   hasVendorRole?: boolean;
+  hasOwnerRole?: boolean;
 }
 
-export function AcquireSidebar({ user, hasVendorRole = false }: AcquireSidebarProps) {
+export function AcquireSidebar({ user, hasVendorRole = false, hasOwnerRole = false }: AcquireSidebarProps) {
   const pathname = usePathname();
   const t = useTranslations();
   const { theme, toggleTheme } = useTheme();
@@ -155,7 +156,7 @@ export function AcquireSidebar({ user, hasVendorRole = false }: AcquireSidebarPr
           )}
 
           {/* Tier switcher */}
-          <TierSwitcher currentTier="acquire" hasPmRole={true} hasVendorRole={hasVendorRole} collapsed={collapsed} />
+          <TierSwitcher currentTier="acquire" hasPmRole={true} hasVendorRole={hasVendorRole} hasOwnerRole={hasOwnerRole} collapsed={collapsed} />
 
           {/* Language toggle */}
           {!collapsed ? (

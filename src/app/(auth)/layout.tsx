@@ -1,15 +1,13 @@
 import Image from "next/image";
-import { cookies } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getLocale, getMessages } from "next-intl/server";
 
 export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const locale = cookieStore.get("locale")?.value === "es" ? "es" : "en";
+  const locale = (await getLocale()) as "en" | "es";
   const messages = await getMessages();
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-charcoal-950 via-charcoal-900 to-brand-950 relative overflow-hidden">

@@ -30,6 +30,16 @@ export default getRequestConfig(async () => {
   const vendorExpenses = (await import(`../messages/${locale}/vendor-expenses.json`)).default;
   const vendorMessages = (await import(`../messages/${locale}/vendor-messages.json`)).default;
 
+  // Home (homeowner) namespace files
+  const homeNav = (await import(`../messages/${locale}/home-nav.json`)).default;
+  const homeOnboarding = (await import(`../messages/${locale}/home-onboarding.json`)).default;
+  const homeDashboard = (await import(`../messages/${locale}/home-dashboard.json`)).default;
+  const homeProperty = (await import(`../messages/${locale}/home-property.json`)).default;
+  const homeWorkOrders = (await import(`../messages/${locale}/home-work-orders.json`)).default;
+  const homeVendors = (await import(`../messages/${locale}/home-vendors.json`)).default;
+  const homeMessages = (await import(`../messages/${locale}/home-messages.json`)).default;
+  const homeDisputes = (await import(`../messages/${locale}/home-disputes.json`)).default;
+
   const messages = {
     ...base,
     vendor: {
@@ -46,11 +56,23 @@ export default getRequestConfig(async () => {
       expenses: vendorExpenses,
       messages: vendorMessages,
     },
+    home: {
+      nav: homeNav,
+      onboarding: homeOnboarding,
+      dashboard: homeDashboard,
+      property: homeProperty,
+      workOrders: homeWorkOrders,
+      vendors: homeVendors,
+      messages: homeMessages,
+      disputes: homeDisputes,
+    },
   };
 
   // Usage in components:
-  // useTranslations('vendor.jobs')  → t('title') resolves to vendor.jobs.title
-  // useTranslations('vendor.nav')   → t('home') resolves to vendor.nav.home
+  // useTranslations('vendor.jobs')     → t('title') resolves to vendor.jobs.title
+  // useTranslations('vendor.nav')      → t('home') resolves to vendor.nav.home
+  // useTranslations('home.nav')        → t('dashboard') resolves to home.nav.dashboard
+  // useTranslations('home.onboarding') → t('title') resolves to home.onboarding.title
 
   return { locale, messages };
 });

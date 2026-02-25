@@ -1,11 +1,11 @@
+"use client";
+
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import { SignupForm } from "./signup-form";
 
-export const dynamic = "force-dynamic";
-
-export default async function SignupPage() {
-  const t = await getTranslations();
+export default function SignupPage() {
+  const t = useTranslations();
   return (
     <>
       <h1 className="text-2xl font-bold text-center mb-6 text-brand-950">{t("auth.signUp")}</h1>

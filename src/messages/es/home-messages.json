@@ -1,0 +1,21 @@
+{
+  "title": "Mensajes",
+  "noThreads": "Sin conversaciones aún",
+  "noThreadsHint": "Los mensajes aparecerán aquí cuando un proveedor sea asignado a su orden de trabajo.",
+  "back": "← Volver",
+  "typeMessage": "Escribe un mensaje...",
+  "send": "Enviar",
+  "noMessages": "Sin mensajes aún. ¡Inicia la conversación!",
+  "justNow": "Ahora mismo",
+  "you": "Tú",
+  "vendor": "Proveedor",
+  "workOrder": "Orden de Trabajo",
+  "unread": "sin leer",
+  "lastMessage": "Último mensaje",
+  "viewWorkOrder": "Ver Orden de Trabajo",
+  "search": "Buscar conversaciones...",
+  "sending": "Enviando...",
+  "failedToSend": "Error al enviar mensaje",
+  "markRead": "Marcar como leído",
+  "allRead": "¡Todo al día!"
+}

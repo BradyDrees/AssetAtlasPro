@@ -106,9 +106,10 @@ function ChatBubbleIcon() {
 interface ProSidebarProps {
   user: User;
   hasPmRole?: boolean;
+  hasOwnerRole?: boolean;
 }
 
-export function ProSidebar({ user, hasPmRole = false }: ProSidebarProps) {
+export function ProSidebar({ user, hasPmRole = false, hasOwnerRole = false }: ProSidebarProps) {
   const pathname = usePathname();
   const t = useTranslations();
   const vt = useTranslations("vendor.nav");
@@ -316,7 +317,7 @@ export function ProSidebar({ user, hasPmRole = false }: ProSidebarProps) {
           )}
 
           {/* Tier switcher */}
-          <TierSwitcher currentTier="pro" hasPmRole={hasPmRole ?? false} hasVendorRole={true} collapsed={collapsed} />
+          <TierSwitcher currentTier="pro" hasPmRole={hasPmRole ?? false} hasVendorRole={true} hasOwnerRole={hasOwnerRole} collapsed={collapsed} />
 
           {/* Language toggle */}
           {!collapsed ? (

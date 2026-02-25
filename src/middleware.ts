@@ -15,14 +15,25 @@ export async function middleware(request: NextRequest) {
   // 2. Role-based routing (UX redirect hint only)
   const { pathname } = request.nextUrl;
 
-  // Skip role routing for public, auth, API, and static paths
+  // Skip role routing for public, auth, API, static, and legal paths
   if (
     pathname.startsWith("/login") ||
     pathname.startsWith("/signup") ||
     pathname.startsWith("/api/") ||
     pathname.startsWith("/_next/") ||
+    pathname.startsWith("/privacy") ||
+    pathname.startsWith("/terms") ||
     pathname === "/" ||
     pathname === "/favicon.ico"
+  ) {
+    return response;
+  }
+
+  // Allow onboarding paths for any authenticated user (before role routing)
+  if (
+    pathname === "/home/onboarding" ||
+    pathname === "/pro/onboarding" ||
+    pathname.startsWith("/pro/accept-invite")
   ) {
     return response;
   }
@@ -123,17 +134,30 @@ export async function middleware(request: NextRequest) {
   }
 
   // Redirect PM users away from /pro → /acquire/dashboard
-  if (roleCookie !== "vendor" && pathname.startsWith("/pro")) {
-    // Exception: allow /pro/onboarding and /pro/accept-invite for any authenticated user
-    if (
-      pathname === "/pro/onboarding" ||
-      pathname.startsWith("/pro/accept-invite")
-    ) {
-      return response;
-    }
-
+  if (roleCookie !== "vendor" && roleCookie !== "owner" && pathname.startsWith("/pro")) {
     const url = request.nextUrl.clone();
     url.pathname = "/acquire/dashboard";
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect owner users away from PM/vendor paths → /home/dashboard
+  if (
+    roleCookie === "owner" &&
+    (pathname.startsWith("/acquire") || pathname.startsWith("/operate") || pathname.startsWith("/pro"))
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/home/dashboard";
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect non-owner users away from /home → their default tier
+  if (roleCookie !== "owner" && pathname.startsWith("/home") && pathname !== "/home/onboarding") {
+    const url = request.nextUrl.clone();
+    if (roleCookie === "vendor") {
+      url.pathname = "/pro";
+    } else {
+      url.pathname = "/acquire/dashboard";
+    }
     return NextResponse.redirect(url);
   }
 

@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getLocale, getMessages } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireVendorRole, getUserRoles } from "@/lib/vendor/role-helpers";
 import { ProSidebar } from "@/components/pro-sidebar";
@@ -24,16 +24,16 @@ export default async function ProLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Check if user also has PM role (for tier switcher)
+  // Check if user also has PM or owner role (for tier switcher)
   const roles = await getUserRoles();
   const hasPmRole = roles.some((r) => r.role === "pm" && r.is_active);
+  const hasOwnerRole = roles.some((r) => r.role === "owner" && r.is_active);
 
   // Theme + locale from cookies (zero-flash init)
   const cookieStore = await cookies();
   const raw = cookieStore.get("theme")?.value;
   const initialTheme = raw === "light" ? "light" : "dark";
-  const initialLocale =
-    cookieStore.get("locale")?.value === "es" ? "es" : "en";
+  const initialLocale = (await getLocale()) as "en" | "es";
   const messages = await getMessages();
 
   return (
@@ -41,7 +41,7 @@ export default async function ProLayout({
       <LocaleProvider initialLocale={initialLocale as "en" | "es"}>
         <ThemeProvider initialTheme={initialTheme}>
           <VendorShell>
-            <ProSidebar user={user!} hasPmRole={hasPmRole} />
+            <ProSidebar user={user!} hasPmRole={hasPmRole} hasOwnerRole={hasOwnerRole} />
             <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 pt-14 md:p-6 md:pt-6 pb-20 md:pb-6">
               {children}
             </main>

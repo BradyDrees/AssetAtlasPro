@@ -1,16 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import { cookies } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
 export default async function LegalLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const locale = cookieStore.get("locale")?.value === "es" ? "es" : "en";
+  const locale = (await getLocale()) as "en" | "es";
   const messages = await getMessages();
   const t = await getTranslations();
 

@@ -1,0 +1,20 @@
+{
+  "title": "Dashboard",
+  "subtitle": "Your home at a glance",
+  "quickActions": "Quick Actions",
+  "submitWorkOrder": "Submit Work Order",
+  "browseVendors": "Browse Vendors",
+  "activeWorkOrders": "Active Work Orders",
+  "noActiveWorkOrders": "No active work orders",
+  "yourProperty": "Your Property",
+  "propertyInfoPlaceholder": "Property info will appear here",
+  "recentActivity": "Recent Activity",
+  "noRecentActivity": "No recent activity",
+  "upcomingVisits": "Upcoming Visits",
+  "noUpcomingVisits": "No upcoming visits",
+  "maintenancePool": "Maintenance Pool",
+  "poolBalance": "Pool Balance",
+  "setupSubscription": "Set up subscription to start building your pool",
+  "viewAll": "View All",
+  "viewProperty": "View Property"
+}

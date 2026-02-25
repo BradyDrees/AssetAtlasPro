@@ -346,44 +346,151 @@ export default async function LandingPage() {
           </div>
         </div>
 
-        {/* ── ATLAS HOME BANNER ── */}
+        {/* ── ATLAS HOME ── */}
         <div className="max-w-[1200px] mx-auto mt-10">
-          <div className="bg-[#0d1320] border border-slate-800 rounded-2xl p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div>
-              <h3 className="text-[22px] font-extrabold tracking-[-0.3px] mb-1">
-                🏠 <span style={{ color: home }}>{t("landing.home.title")}</span>
-              </h3>
-              <p className="text-slate-400 text-sm mb-4 font-light leading-relaxed">
-                {t("landing.home.desc")}
-              </p>
-              <span className="inline-block text-[13px] font-semibold px-5 py-2.5 rounded-[10px] border transition-colors cursor-default"
-                style={{ borderColor: home, color: home }}
-              >
-                {t("landing.home.learnMore")} →
-              </span>
-            </div>
-            <div className="space-y-1.5">
-              {(
-                [
-                  "feat1",
-                  "feat2",
-                  "feat3",
-                  "feat4",
-                  "feat5",
-                  "feat6",
-                  "feat7",
-                ] as const
-              ).map((key) => (
+          <div
+            className="bg-[#0d1320] border border-slate-800 rounded-2xl overflow-hidden hover:-translate-y-1 hover:border-slate-700 transition-all"
+            style={{ borderTop: `3px solid ${home}` }}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+              {/* Left: info + features */}
+              <div className="px-6 pt-7 pb-6">
+                <div className="text-[32px] mb-3">🏠</div>
                 <div
-                  key={key}
-                  className="flex items-center gap-2 py-1 text-[13px] text-slate-400"
+                  className="text-2xl font-extrabold tracking-[-0.5px]"
+                  style={{ color: home }}
                 >
-                  <span className="font-bold" style={{ color: home }}>
-                    →
-                  </span>
-                  {t(`landing.home.${key}`)}
+                  {t("landing.home.title")}
                 </div>
-              ))}
+                <div className="text-[13px] font-medium mt-1 opacity-70">
+                  {t("landing.home.tagline")}
+                </div>
+                <p className="text-slate-400 text-[13px] mt-2.5 leading-relaxed font-light">
+                  {t("landing.home.desc")}
+                </p>
+                <div className="text-slate-500 text-[11px] mt-3 font-medium uppercase tracking-wide">
+                  {t("landing.home.audience")}
+                </div>
+
+                <div className="mt-5">
+                  {/* Subscription & Pool */}
+                  <FeatureGroup title={t("landing.home.subscriptionPool")} />
+                  <Feature color={home} text={t("landing.home.feat1")} />
+                  <Feature color={home} text={t("landing.home.feat2")} />
+                  <Feature color={home} text={t("landing.home.feat3")} />
+                  <Feature color={home} text={t("landing.home.feat4")} />
+
+                  {/* Work Orders */}
+                  <FeatureGroup title={t("landing.home.workOrders")} />
+                  <Feature color={home} text={t("landing.home.feat5")} />
+                  <Feature color={home} text={t("landing.home.feat6")} />
+                  <Feature color={home} text={t("landing.home.feat7")} />
+                  <Feature color={home} text={t("landing.home.feat8")} />
+
+                  {/* Vendor Marketplace */}
+                  <FeatureGroup title={t("landing.home.vendorMarketplace")} />
+                  <Feature color={home} text={t("landing.home.feat9")} />
+                  <Feature color={home} text={t("landing.home.feat10")} />
+                  <Feature
+                    color={accent}
+                    text={t("landing.home.feat11")}
+                    shared={t("landing.shared")}
+                  />
+
+                  {/* Inspections & Protection */}
+                  <FeatureGroup
+                    title={t("landing.home.inspectionsProtection")}
+                  />
+                  <Feature color={home} text={t("landing.home.feat12")} />
+                  <Feature color={home} text={t("landing.home.feat13")} />
+                  <Feature color={home} text={t("landing.home.feat14")} />
+                  <Feature color={home} text={t("landing.home.feat15")} />
+                </div>
+              </div>
+
+              {/* Right: pricing tiers */}
+              <div className="px-6 pt-7 pb-6 lg:border-l border-t lg:border-t-0 border-slate-800/50 flex flex-col justify-between">
+                <div className="space-y-3">
+                  {/* Essential */}
+                  <div className="bg-[#06090f] border border-slate-800 rounded-xl p-4">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-sm text-slate-200">
+                        {t("landing.home.essential")}
+                      </span>
+                      <span
+                        className="text-lg font-extrabold"
+                        style={{ color: home }}
+                      >
+                        {t("landing.home.essentialPrice")}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-slate-500">
+                      {t("landing.home.essentialPool")}
+                    </span>
+                  </div>
+
+                  {/* Standard */}
+                  <div
+                    className="border rounded-xl p-4 relative"
+                    style={{
+                      background: "rgba(244,63,94,0.06)",
+                      borderColor: "rgba(244,63,94,0.3)",
+                    }}
+                  >
+                    <span
+                      className="absolute -top-2.5 right-3 text-[10px] font-bold tracking-wide px-2.5 py-0.5 rounded-[5px]"
+                      style={{
+                        background: "rgba(244,63,94,0.15)",
+                        color: home,
+                      }}
+                    >
+                      {t("landing.home.standardBadge")}
+                    </span>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-sm text-white">
+                        {t("landing.home.standard")}
+                      </span>
+                      <span
+                        className="text-lg font-extrabold"
+                        style={{ color: home }}
+                      >
+                        {t("landing.home.standardPrice")}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-slate-500">
+                      {t("landing.home.standardPool")}
+                    </span>
+                  </div>
+
+                  {/* Premium */}
+                  <div className="bg-[#06090f] border border-slate-800 rounded-xl p-4">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-sm text-slate-200">
+                        {t("landing.home.premium")}
+                      </span>
+                      <span
+                        className="text-lg font-extrabold"
+                        style={{ color: home }}
+                      >
+                        {t("landing.home.premiumPrice")}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-slate-500">
+                      {t("landing.home.premiumPool")}
+                    </span>
+                  </div>
+                </div>
+
+                <Link
+                  href="/signup"
+                  className="block text-center py-3.5 text-sm font-bold rounded-[10px] mt-5 transition-all hover:-translate-y-0.5 text-white"
+                  style={{
+                    background: `linear-gradient(135deg, #e11d48, ${home}, #fb7185)`,
+                  }}
+                >
+                  {t("landing.home.cta")} →
+                </Link>
+              </div>
             </div>
           </div>
         </div>

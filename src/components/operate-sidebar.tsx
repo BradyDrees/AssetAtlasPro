@@ -25,9 +25,10 @@ function SombreroIcon({ className }: { className?: string }) {
 interface OperateSidebarProps {
   user: User;
   hasVendorRole?: boolean;
+  hasOwnerRole?: boolean;
 }
 
-export function OperateSidebar({ user, hasVendorRole = false }: OperateSidebarProps) {
+export function OperateSidebar({ user, hasVendorRole = false, hasOwnerRole = false }: OperateSidebarProps) {
   const pathname = usePathname();
   const t = useTranslations();
   const { theme, toggleTheme } = useTheme();
@@ -163,7 +164,7 @@ export function OperateSidebar({ user, hasVendorRole = false }: OperateSidebarPr
             </button>
           )}
 
-          <TierSwitcher currentTier="operate" hasPmRole={true} hasVendorRole={hasVendorRole} collapsed={collapsed} />
+          <TierSwitcher currentTier="operate" hasPmRole={true} hasVendorRole={hasVendorRole} hasOwnerRole={hasOwnerRole} collapsed={collapsed} />
 
           {!collapsed ? (
             <button onClick={toggleLocale} className="flex items-center justify-between w-full px-1 py-1.5 text-sm text-content-tertiary hover:text-content-primary rounded transition-colors mb-2 mt-2">

@@ -6,6 +6,8 @@ import { createClient } from "@/lib/supabase/server";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LocaleProvider } from "@/components/locale-provider";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Lightweight layout for pro (vendor) onboarding.
  * NO requireVendorRole() — the user doesn't have a vendor_users record yet.

@@ -9,6 +9,8 @@ import { VendorShell } from "@/components/vendor/vendor-shell";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LocaleProvider } from "@/components/locale-provider";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProLayout({
   children,
 }: {

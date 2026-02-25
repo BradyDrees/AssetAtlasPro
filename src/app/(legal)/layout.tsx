@@ -3,6 +3,8 @@ import Link from "next/link";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
+export const dynamic = "force-dynamic";
+
 export default async function LegalLayout({
   children,
 }: {

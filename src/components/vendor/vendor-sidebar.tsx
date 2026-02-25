@@ -321,7 +321,7 @@ export function VendorSidebar({ user, hasPmRole = false }: VendorSidebarProps) {
               onClick={async () => {
                 await switchRole("pm");
                 document.cookie = "active_role=pm; path=/; max-age=31536000; samesite=lax";
-                window.location.href = "/dashboard";
+                window.location.href = "/acquire/dashboard";
               }}
               className="flex items-center gap-2 w-full px-1 py-1.5 text-sm text-content-tertiary hover:text-content-primary rounded transition-colors mb-2"
             >

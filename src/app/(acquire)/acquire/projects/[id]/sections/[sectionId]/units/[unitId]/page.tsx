@@ -1,0 +1,279 @@
+import { createClient } from "@/lib/supabase/server";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { DD_GROUP_SLUGS } from "@/lib/dd-sections";
+import { UnitGradeSelector } from "@/components/unit-grade-selector";
+import { UnitBdBaSelect } from "@/components/unit-bd-ba-select";
+import { UnitAppliancesSelect } from "@/components/unit-appliances-select";
+import { UnitCabinetSelect } from "@/components/unit-cabinet-select";
+import { UnitToggleField } from "@/components/unit-toggle-field";
+import { UnitNotes } from "@/components/unit-notes";
+import { CaptureButton } from "@/components/capture-button";
+import { CaptureGallery } from "@/components/capture-gallery";
+import { NextUnitButton } from "@/components/next-unit-button";
+import { NextSectionButton } from "@/components/next-section-button";
+import { getTranslations } from "next-intl/server";
+import type { DDCapture } from "@/lib/types";
+
+export const dynamic = "force-dynamic";
+
+export default async function UnitDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string; sectionId: string; unitId: string }>;
+}) {
+  const { id: projectId, sectionId: projectSectionId, unitId } = await params;
+  const t = await getTranslations();
+  const supabase = await createClient();
+
+  // Fetch project
+  const { data: project } = await supabase
+    .from("dd_projects")
+    .select("id, name, property_name")
+    .eq("id", projectId)
+    .single();
+
+  if (!project) notFound();
+
+  // Fetch project section with master section data
+  const { data: projectSection } = await supabase
+    .from("dd_project_sections")
+    .select(`*, section:dd_sections(*)`)
+    .eq("id", projectSectionId)
+    .eq("project_id", projectId)
+    .single();
+
+  if (!projectSection) notFound();
+
+  const groupSlug = DD_GROUP_SLUGS[projectSection.section.group_name] ?? "";
+
+  // Fetch unit
+  const { data: unit } = await supabase
+    .from("dd_units")
+    .select("*")
+    .eq("id", unitId)
+    .eq("project_section_id", projectSectionId)
+    .single();
+
+  if (!unit) notFound();
+
+  // Fetch captures for this unit
+  const { data: captures } = await supabase
+    .from("dd_captures")
+    .select("*")
+    .eq("project_section_id", projectSectionId)
+    .eq("unit_id", unitId)
+    .order("sort_order", { ascending: true });
+
+  // Fetch all enabled sections for "Next Section" button
+  const { data: allEnabledSections } = await supabase
+    .from("dd_project_sections")
+    .select("id, sort_order, section:dd_sections(name)")
+    .eq("project_id", projectId)
+    .eq("enabled", true)
+    .order("sort_order", { ascending: true });
+
+  const currentIndex = (allEnabledSections ?? []).findIndex(
+    (s: any) => s.id === projectSectionId
+  );
+  const nextSection =
+    currentIndex >= 0 &&
+    currentIndex < (allEnabledSections ?? []).length - 1
+      ? (allEnabledSections ?? [])[currentIndex + 1]
+      : null;
+
+  const storageBaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+
+  return (
+    <div className="pb-36">
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4 flex-wrap">
+        <Link href="/acquire/dashboard" className="hover:text-brand-600 transition-colors">
+          {t("dashboard.projects")}
+        </Link>
+        <span>/</span>
+        <Link href={`/projects/${projectId}?group=${groupSlug}`} className="hover:text-brand-600 transition-colors">
+          {project.name}
+        </Link>
+        <span>/</span>
+        <Link
+          href={`/projects/${projectId}/sections/${projectSectionId}`}
+          className="hover:text-brand-600 transition-colors"
+        >
+          {projectSection.section.name}
+        </Link>
+        <span>/</span>
+        <span className="text-content-primary">
+          B{unit.building} — {unit.unit_number}
+        </span>
+      </div>
+
+      {/* Back button + Unit header */}
+      <div className="mb-6">
+        <Link
+          href={`/projects/${projectId}/sections/${projectSectionId}`}
+          className="inline-flex items-center gap-1.5 text-sm text-brand-600 font-medium mb-2 hover:text-brand-800 transition-colors"
+        >
+          <span>&larr;</span> {t("dashboard.backTo", { name: projectSection.section.name })}
+        </Link>
+        <h1 className="text-2xl font-bold text-content-primary">
+          {t("dashboard.buildingUnit", { building: unit.building, unit: unit.unit_number })}
+        </h1>
+        <p className="text-sm text-content-muted mt-0.5">
+          {projectSection.section.name}
+        </p>
+      </div>
+
+      {/* ===== Inspection Fields ===== */}
+      <div className="space-y-4">
+        {/* BD/BA */}
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+          <UnitBdBaSelect
+            unitId={unitId}
+            projectId={projectId}
+            projectSectionId={projectSectionId}
+            initialValue={unit.bd_ba}
+          />
+        </div>
+
+        {/* Appliances */}
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+          <UnitAppliancesSelect
+            unitId={unitId}
+            projectId={projectId}
+            projectSectionId={projectSectionId}
+            initialValue={unit.appliances ?? []}
+          />
+        </div>
+
+        {/* Tenant Grade */}
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+          <UnitGradeSelector
+            unitId={unitId}
+            projectId={projectId}
+            projectSectionId={projectSectionId}
+            type="tenant"
+            field="tenant_grade"
+            label={t("dashboard.tenantGrade")}
+            initialValue={unit.tenant_grade}
+          />
+        </div>
+
+        {/* Unit Grade */}
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+          <UnitGradeSelector
+            unitId={unitId}
+            projectId={projectId}
+            projectSectionId={projectSectionId}
+            type="unit"
+            field="unit_grade"
+            label={t("dashboard.unitGrade")}
+            initialValue={unit.unit_grade}
+          />
+        </div>
+
+        {/* Cabinets */}
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+          <UnitCabinetSelect
+            unitId={unitId}
+            projectId={projectId}
+            projectSectionId={projectSectionId}
+            field="cabinets"
+            label={t("pdf.tableHeaders.cabinets")}
+            initialValue={unit.cabinets}
+          />
+        </div>
+
+        {/* Countertop */}
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+          <UnitCabinetSelect
+            unitId={unitId}
+            projectId={projectId}
+            projectSectionId={projectSectionId}
+            field="countertop"
+            label={t("pdf.tableHeaders.counter")}
+            initialValue={unit.countertop}
+          />
+        </div>
+
+        {/* Flooring */}
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+          <UnitCabinetSelect
+            unitId={unitId}
+            projectId={projectId}
+            projectSectionId={projectSectionId}
+            field="flooring"
+            label={t("pdf.tableHeaders.floor")}
+            initialValue={unit.flooring}
+          />
+        </div>
+
+        {/* Mold */}
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+          <UnitToggleField
+            unitId={unitId}
+            projectId={projectId}
+            projectSectionId={projectSectionId}
+            field="has_mold"
+            label={t("pdf.tableHeaders.mold")}
+            initialValue={unit.has_mold}
+          />
+        </div>
+
+        {/* Washer/Dryer Connection */}
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+          <UnitToggleField
+            unitId={unitId}
+            projectId={projectId}
+            projectSectionId={projectSectionId}
+            field="has_wd_connect"
+            label={t("dashboard.wdConnection")}
+            initialValue={unit.has_wd_connect}
+            yesIsGood={true}
+          />
+        </div>
+
+        {/* Notes */}
+        <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+          <UnitNotes
+            unitId={unitId}
+            projectId={projectId}
+            projectSectionId={projectSectionId}
+            initialNotes={unit.notes ?? ""}
+          />
+        </div>
+
+        {/* Photos & Media */}
+        <h2 className="text-sm font-semibold text-content-quaternary uppercase tracking-wide mb-3 pt-2">
+          {t("dashboard.photosAndMedia")}
+        </h2>
+        <CaptureGallery
+          captures={(captures as DDCapture[]) ?? []}
+          projectId={projectId}
+          projectSectionId={projectSectionId}
+          storageBaseUrl={storageBaseUrl}
+        />
+      </div>
+
+      {/* Floating buttons */}
+      {nextSection && (
+        <NextSectionButton
+          projectId={projectId}
+          nextSectionId={nextSection.id}
+          nextSectionName={(nextSection as any).section.name}
+        />
+      )}
+      <NextUnitButton
+        projectId={projectId}
+        projectSectionId={projectSectionId}
+        currentBuilding={unit.building}
+      />
+      <CaptureButton
+        projectSectionId={projectSectionId}
+        projectId={projectId}
+        sectionSlug={projectSection.section.slug}
+        unitId={unitId}
+      />
+    </div>
+  );
+}

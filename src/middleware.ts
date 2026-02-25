@@ -27,28 +27,113 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  // Read role from cookie (set by updateSession)
+  // ============================================
+  // Legacy URL redirects (backward compatibility)
+  // ============================================
+
+  // Old /dashboard → /acquire/dashboard
+  if (pathname === "/dashboard") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/acquire/dashboard";
+    return NextResponse.redirect(url, 308);
+  }
+
+  // Old /projects/* → /acquire/projects/*
+  if (pathname.startsWith("/projects")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/acquire" + pathname;
+    return NextResponse.redirect(url, 308);
+  }
+
+  // Old /deal-analysis/* → /acquire/deal-analysis/*
+  if (pathname.startsWith("/deal-analysis")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/acquire" + pathname;
+    return NextResponse.redirect(url, 308);
+  }
+
+  // Old /inspections/* → /operate/inspections/*
+  if (pathname.startsWith("/inspections")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/operate" + pathname;
+    return NextResponse.redirect(url, 308);
+  }
+
+  // Old /unit-turns/* → /operate/unit-turns/*
+  if (pathname.startsWith("/unit-turns")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/operate" + pathname;
+    return NextResponse.redirect(url, 308);
+  }
+
+  // Old /vendors/* → /operate/vendors/*
+  if (pathname.startsWith("/vendors")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/operate" + pathname;
+    return NextResponse.redirect(url, 308);
+  }
+
+  // Old /work-orders/* → /operate/work-orders/*
+  if (pathname.startsWith("/work-orders")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/operate" + pathname;
+    return NextResponse.redirect(url, 308);
+  }
+
+  // Old /estimates/* → /operate/estimates/*
+  if (pathname.startsWith("/estimates")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/operate" + pathname;
+    return NextResponse.redirect(url, 308);
+  }
+
+  // Old /invoices/* → /operate/invoices/*
+  if (pathname.startsWith("/invoices")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/operate" + pathname;
+    return NextResponse.redirect(url, 308);
+  }
+
+  // Old /vendor → /pro/dashboard, /vendor/* → /pro/*
+  if (pathname === "/vendor") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/pro";
+    return NextResponse.redirect(url, 308);
+  }
+  if (pathname.startsWith("/vendor/")) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.replace("/vendor/", "/pro/");
+    return NextResponse.redirect(url, 308);
+  }
+
+  // ============================================
+  // Role-based routing (new tier URLs)
+  // ============================================
+
   const roleCookie = request.cookies.get("active_role")?.value;
 
-  // Redirect vendor users away from /dashboard to /vendor
-  if (roleCookie === "vendor" && pathname.startsWith("/dashboard")) {
+  // Redirect vendor users away from /acquire and /operate → /pro
+  if (
+    roleCookie === "vendor" &&
+    (pathname.startsWith("/acquire") || pathname.startsWith("/operate"))
+  ) {
     const url = request.nextUrl.clone();
-    url.pathname = "/vendor";
+    url.pathname = "/pro";
     return NextResponse.redirect(url);
   }
 
-  // Redirect PM users away from /vendor to /dashboard
-  if (roleCookie !== "vendor" && pathname.startsWith("/vendor")) {
-    // Exception: allow /vendor/onboarding and /vendor/accept-invite for any authenticated user
+  // Redirect PM users away from /pro → /acquire/dashboard
+  if (roleCookie !== "vendor" && pathname.startsWith("/pro")) {
+    // Exception: allow /pro/onboarding and /pro/accept-invite for any authenticated user
     if (
-      pathname === "/vendor/onboarding" ||
-      pathname.startsWith("/vendor/accept-invite")
+      pathname === "/pro/onboarding" ||
+      pathname.startsWith("/pro/accept-invite")
     ) {
       return response;
     }
 
     const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
+    url.pathname = "/acquire/dashboard";
     return NextResponse.redirect(url);
   }
 

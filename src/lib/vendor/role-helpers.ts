@@ -47,7 +47,7 @@ export async function requireVendorRole(): Promise<VendorAuthContext> {
     .single();
 
   if (!vendorUser) {
-    redirect("/vendor/onboarding");
+    redirect("/pro/onboarding");
   }
 
   return vendorUser as VendorAuthContext;
@@ -76,7 +76,7 @@ export async function requirePmRole(): Promise<PmAuthContext> {
     .single();
 
   if (!pmRole) {
-    redirect("/vendor");
+    redirect("/pro");
   }
 
   return pmRole as PmAuthContext;

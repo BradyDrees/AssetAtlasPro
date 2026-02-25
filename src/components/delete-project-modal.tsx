@@ -33,7 +33,7 @@ export function DeleteProjectModal({
 
     try {
       await deleteDDProject(projectId);
-      router.push("/dashboard");
+      router.push("/acquire/dashboard");
     } catch (err) {
       console.error("Failed to delete project:", err);
       setError(t("modals.deleteProject.failed"));

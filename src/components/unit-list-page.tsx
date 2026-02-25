@@ -61,7 +61,7 @@ export function UnitListPage({
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4 flex-wrap">
         <Link
-          href="/dashboard"
+          href="/acquire/dashboard"
           className="hover:text-brand-600 transition-colors"
         >
           {td("projects")}

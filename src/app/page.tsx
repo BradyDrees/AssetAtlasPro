@@ -2,110 +2,102 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
-import { FeatureCards } from "@/components/feature-cards";
+import { getTranslations } from "next-intl/server";
+import { ExpandableSection } from "@/components/expandable-section";
 
 export default async function LandingPage() {
-  // If already logged in, go straight to dashboard
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (user) {
-    redirect("/dashboard");
+    redirect("/acquire/dashboard");
   }
 
   const t = await getTranslations();
-  const cookieStore = await cookies();
-  const locale = cookieStore.get("locale")?.value === "es" ? "es" : "en";
-  const messages = await getMessages();
+
+  // Tier color definitions
+  const acquire = "#3b82f6";
+  const operate = "#22c55e";
+  const pro = "#f59e0b";
+  const home = "#f43f5e";
+  const accent = "#06b6d4";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-charcoal-950 via-charcoal-900 to-brand-950 relative">
-      {/* Background decorative shapes — fixed so they don't affect scroll */}
-      <div className="fixed top-0 left-0 w-[500px] h-[500px] bg-brand-600/8 rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-      <div className="fixed bottom-0 right-0 w-[400px] h-[400px] bg-gold-500/5 rounded-full translate-x-1/3 translate-y-1/3 pointer-events-none" />
-      <div className="fixed top-1/3 right-1/4 w-48 h-48 bg-brand-400/5 rounded-full pointer-events-none" />
-      <div className="fixed bottom-1/3 left-[8%] w-32 h-32 bg-gold-400/5 rounded-full pointer-events-none" />
-      <div className="fixed top-[15%] right-[10%] w-64 h-64 bg-brand-500/6 rounded-full pointer-events-none" />
-      <div className="fixed top-[60%] left-[5%] w-56 h-56 bg-brand-400/4 rounded-full pointer-events-none" />
-      <div className="fixed top-[80%] right-[15%] w-40 h-40 bg-gold-500/6 rounded-full pointer-events-none" />
-      <div className="fixed top-[10%] left-[40%] w-24 h-24 bg-gold-400/4 rounded-full pointer-events-none" />
-      <div className="fixed top-[45%] right-[5%] w-36 h-36 bg-brand-600/5 rounded-full pointer-events-none" />
-      <div className="fixed bottom-[15%] left-[30%] w-20 h-20 bg-brand-300/5 rounded-full pointer-events-none" />
-
-      {/* Nav */}
-      <header className="relative z-10 flex items-center justify-between px-6 py-5 md:px-12">
+    <div className="min-h-screen bg-[#06090f] text-slate-100 overflow-x-hidden">
+      {/* ═══ NAV ═══ */}
+      <nav className="fixed top-0 left-0 right-0 z-50 px-5 md:px-10 py-4 flex items-center justify-between bg-[#06090f]/85 backdrop-blur-xl border-b border-slate-800/50">
         <Link href="/" className="flex-shrink-0">
           <Image
             src="/logo-dark.png"
-            alt="Asset Atlas Pro"
+            alt="Asset Atlas"
             width={220}
             height={100}
-            className="h-16 w-auto logo-fade"
+            className="h-10 w-auto"
             priority
           />
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4 md:gap-7">
+          <a
+            href="#products"
+            className="hidden sm:inline text-[13px] font-medium text-slate-400 hover:text-white transition-colors"
+          >
+            {t("landing.exploreProducts")}
+          </a>
+          <a
+            href="#how"
+            className="hidden sm:inline text-[13px] font-medium text-slate-400 hover:text-white transition-colors"
+          >
+            {t("landing.howItConnects")}
+          </a>
           <Link
             href="/login"
-            className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors"
+            className="text-[13px] font-medium text-slate-400 hover:text-white transition-colors"
           >
             {t("auth.signIn")}
           </Link>
           <Link
             href="/signup"
-            className="px-5 py-2.5 text-sm font-semibold bg-brand-600 hover:bg-brand-500 text-white rounded-lg transition-colors shadow-lg shadow-brand-900/40"
+            className="bg-gradient-to-r from-cyan-600 to-cyan-500 text-black font-semibold text-[13px] px-5 py-2 rounded-lg hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/30 transition-all"
           >
             {t("auth.getStarted")}
           </Link>
         </div>
-      </header>
+      </nav>
 
-      {/* Hero */}
-      <section className="relative z-10 px-6 md:px-12 pt-10 md:pt-20 pb-20 max-w-5xl mx-auto">
-        <div className="text-center">
-          {/* Centered logo */}
-          <div className="flex justify-center mb-2">
-            <Image
-              src="/logo-dark.png"
-              alt="Asset Atlas Pro"
-              width={1200}
-              height={530}
-              className="h-80 md:h-[28rem] w-auto logo-fade"
-              priority
-            />
-          </div>
+      {/* ═══ HERO ═══ */}
+      <section className="pt-40 md:pt-48 pb-20 md:pb-24 px-5 md:px-10 text-center relative">
+        {/* Radial glow */}
+        <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[radial-gradient(circle,rgba(6,182,212,0.08)_0%,transparent_70%)] pointer-events-none" />
 
-          <div className="inline-flex items-center gap-2 mb-6">
-            <span className="w-2.5 h-2.5 bg-gold-400 rounded-full animate-pulse" />
-            <span className="text-sm font-medium text-gold-300">{t("landing.builtForTheField")}</span>
-          </div>
+        <div className="relative z-10 max-w-[900px] mx-auto">
+          <span className="inline-block text-xs font-semibold text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-3.5 py-1.5 rounded-full mb-6 tracking-wide">
+            {t("landing.heroBadge")}
+          </span>
 
-          <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight tracking-tight">
-            {t("landing.heroTitle")}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-300">
+          <h1 className="text-[clamp(40px,6vw,72px)] font-black leading-[1.05] tracking-[-2px] mb-5">
+            {t("landing.heroTitle")}
+            <br />
+            <span className="bg-gradient-to-r from-cyan-500 to-cyan-300 bg-clip-text text-transparent">
               {t("landing.heroTitleAccent")}
             </span>
-          </h2>
+          </h1>
 
-          <p className="mt-6 text-lg md:text-xl text-charcoal-300 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-slate-400 max-w-[640px] mx-auto mb-9 leading-relaxed font-light">
             {t("landing.heroSubtitle")}
           </p>
 
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/signup"
-              className="w-full sm:w-auto px-8 py-3.5 text-base font-semibold bg-brand-600 hover:bg-brand-500 text-white rounded-xl transition-colors shadow-xl shadow-brand-900/50"
+          <div className="flex gap-3.5 justify-center flex-wrap">
+            <a
+              href="#products"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-[10px] font-semibold text-[15px] bg-gradient-to-r from-cyan-600 to-cyan-500 text-black hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
             >
-              {t("auth.startFree")}
-            </Link>
+              {t("landing.exploreProducts")} ↓
+            </a>
             <Link
               href="/login"
-              className="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-white border border-white/15 hover:border-white/30 hover:bg-white/5 rounded-xl transition-colors"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-[10px] font-semibold text-[15px] border border-slate-600 text-white hover:border-cyan-500 hover:text-cyan-400 transition-all"
             >
               {t("auth.signIn")}
             </Link>
@@ -113,40 +105,586 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* Feature cards */}
-      <section className="relative z-10 px-6 md:px-12 pb-24 max-w-5xl mx-auto">
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <FeatureCards />
-        </NextIntlClientProvider>
-      </section>
+      {/* ═══ TIER CARDS ═══ */}
+      <section className="px-5 md:px-10 py-20" id="products">
+        <div className="text-center mb-12">
+          <h2 className="text-[clamp(28px,4vw,42px)] font-extrabold tracking-[-1px] mb-2.5">
+            {t("landing.threeProducts")}
+          </h2>
+          <p className="text-slate-400 text-base max-w-[600px] mx-auto font-light">
+            {t("landing.threeProductsSubtitle")}
+          </p>
+        </div>
 
-      {/* Bottom CTA */}
-      <section className="relative z-10 px-6 md:px-12 pb-20">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="bg-gradient-to-r from-brand-900/50 to-brand-800/50 border border-brand-700/30 rounded-2xl p-8 md:p-12 backdrop-blur-sm">
-            <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
-              {t("landing.readyToStreamline")}
-            </h3>
-            <p className="text-charcoal-300 mb-8">
-              {t("landing.getStartedInUnderAMinute")}
-            </p>
-            <Link
-              href="/signup"
-              className="inline-block px-8 py-3.5 text-base font-semibold bg-gold-500 hover:bg-gold-400 text-charcoal-950 rounded-xl transition-colors shadow-lg"
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 max-w-[1200px] mx-auto">
+          {/* ── ACQUIRE ── */}
+          <div
+            className="bg-[#0d1320] border border-slate-800 rounded-2xl overflow-hidden hover:-translate-y-1 hover:border-slate-700 transition-all"
+            style={{ borderTop: `3px solid ${acquire}` }}
+          >
+            <div className="px-6 pt-7 pb-5">
+              <div className="text-[32px] mb-3">🔍</div>
+              <div
+                className="text-2xl font-extrabold tracking-[-0.5px]"
+                style={{ color: acquire }}
+              >
+                {t("tiers.acquire")}
+              </div>
+              <div className="text-[13px] font-medium mt-1 opacity-70">
+                {t("tiers.acquireTagline")}
+              </div>
+              <p className="text-slate-400 text-[13px] mt-2.5 leading-relaxed font-light">
+                {t("landing.acquire.desc")}
+              </p>
+              <div className="text-slate-500 text-[11px] mt-3 font-medium uppercase tracking-wide">
+                {t("landing.acquire.audience")}
+              </div>
+            </div>
+            <div className="px-6 pb-6">
+              {/* DD Walks */}
+              <FeatureGroup title={t("landing.acquire.ddWalks")} />
+              <Feature color={acquire} text={t("landing.acquire.feat1")} />
+              <Feature color={acquire} text={t("landing.acquire.feat2")} />
+              <Feature color={acquire} text={t("landing.acquire.feat3")} />
+              <Feature color={acquire} text={t("landing.acquire.feat4")} />
+
+              {/* Deal Analyzer */}
+              <FeatureGroup title={t("landing.acquire.dealAnalyzer")} />
+              <Feature color={acquire} text={t("landing.acquire.feat5")} />
+              <Feature color={acquire} text={t("landing.acquire.feat6")} />
+              <Feature color={acquire} text={t("landing.acquire.feat7")} />
+
+              {/* Ecosystem */}
+              <FeatureGroup title={t("landing.acquire.ecosystem")} />
+              <Feature
+                color={accent}
+                text={t("landing.acquire.feat8")}
+                shared={t("landing.shared")}
+              />
+              <Feature
+                color={accent}
+                text={t("landing.acquire.feat9")}
+                shared={t("landing.shared")}
+              />
+              <Feature
+                color={accent}
+                text={t("landing.acquire.feat10")}
+                shared={t("landing.shared")}
+              />
+
+              <Link
+                href="/signup"
+                className="block text-center py-3.5 text-sm font-bold rounded-[10px] mt-5 transition-all hover:-translate-y-0.5 text-black"
+                style={{
+                  background: `linear-gradient(135deg, #2563eb, ${acquire}, #60a5fa)`,
+                }}
+              >
+                {t("landing.acquire.cta")} →
+              </Link>
+            </div>
+          </div>
+
+          {/* ── OPERATE ── */}
+          <div
+            className="bg-[#0d1320] border border-slate-800 rounded-2xl overflow-hidden hover:-translate-y-1 transition-all relative"
+            style={{ borderTop: `3px solid ${operate}`, borderColor: operate }}
+          >
+            {/* Most Popular badge */}
+            <span
+              className="absolute top-3.5 right-3.5 text-[10px] font-bold tracking-wide px-2.5 py-1 rounded-[5px]"
+              style={{
+                background: "rgba(16,185,129,0.15)",
+                color: operate,
+              }}
             >
-              {t("landing.createYourAccount")}
-            </Link>
+              {t("landing.mostPopular")}
+            </span>
+
+            <div className="px-6 pt-7 pb-5">
+              <div className="text-[32px] mb-3">🏢</div>
+              <div
+                className="text-2xl font-extrabold tracking-[-0.5px]"
+                style={{ color: operate }}
+              >
+                {t("tiers.operate")}
+              </div>
+              <div className="text-[13px] font-medium mt-1 opacity-70">
+                {t("tiers.operateTagline")}
+              </div>
+              <p className="text-slate-400 text-[13px] mt-2.5 leading-relaxed font-light">
+                {t("landing.operate.desc")}
+              </p>
+              <div className="text-slate-500 text-[11px] mt-3 font-medium uppercase tracking-wide">
+                {t("landing.operate.audience")}
+              </div>
+            </div>
+            <div className="px-6 pb-6">
+              {/* Inspections */}
+              <FeatureGroup title={t("landing.operate.inspections")} />
+              <Feature color={operate} text={t("landing.operate.feat1")} />
+              <Feature color={operate} text={t("landing.operate.feat2")} />
+              <Feature color={operate} text={t("landing.operate.feat3")} />
+              <Feature color={operate} text={t("landing.operate.feat4")} />
+
+              {/* Unit Turns */}
+              <FeatureGroup title={t("landing.operate.unitTurns")} />
+              <Feature color={operate} text={t("landing.operate.feat5")} />
+              <Feature color={operate} text={t("landing.operate.feat6")} />
+              <Feature color={operate} text={t("landing.operate.feat7")} />
+
+              {/* Vendor Dispatch */}
+              <FeatureGroup title={t("landing.operate.vendorDispatch")} />
+              <Feature
+                color={operate}
+                text={t("landing.operate.feat8")}
+                shared={t("landing.shared")}
+              />
+              <Feature
+                color={operate}
+                text={t("landing.operate.feat9")}
+                shared={t("landing.shared")}
+              />
+              <Feature
+                color={operate}
+                text={t("landing.operate.feat10")}
+                shared={t("landing.shared")}
+              />
+              <Feature color={operate} text={t("landing.operate.feat11")} />
+
+              <Link
+                href="/signup"
+                className="block text-center py-3.5 text-sm font-bold rounded-[10px] mt-5 transition-all hover:-translate-y-0.5 text-black"
+                style={{
+                  background: `linear-gradient(135deg, #059669, ${operate}, #34d399)`,
+                }}
+              >
+                {t("landing.operate.cta")} →
+              </Link>
+            </div>
+          </div>
+
+          {/* ── PRO ── */}
+          <div
+            className="bg-[#0d1320] border border-slate-800 rounded-2xl overflow-hidden hover:-translate-y-1 hover:border-slate-700 transition-all"
+            style={{ borderTop: `3px solid ${pro}` }}
+          >
+            <div className="px-6 pt-7 pb-5">
+              <div className="text-[32px] mb-3">🔧</div>
+              <div
+                className="text-2xl font-extrabold tracking-[-0.5px]"
+                style={{ color: pro }}
+              >
+                {t("tiers.pro")}
+              </div>
+              <div className="text-[13px] font-medium mt-1 opacity-70">
+                {t("tiers.proTagline")}
+              </div>
+              <p className="text-slate-400 text-[13px] mt-2.5 leading-relaxed font-light">
+                {t("landing.pro.desc")}
+              </p>
+              <div className="text-slate-500 text-[11px] mt-3 font-medium uppercase tracking-wide">
+                {t("landing.pro.audience")}
+              </div>
+            </div>
+            <div className="px-6 pb-6">
+              {/* Jobs */}
+              <FeatureGroup title={t("landing.pro.jobs")} />
+              <Feature
+                color={pro}
+                text={t("landing.pro.feat1")}
+                shared={t("landing.shared")}
+              />
+              <Feature color={pro} text={t("landing.pro.feat2")} />
+              <Feature color={pro} text={t("landing.pro.feat3")} />
+
+              {/* Estimating */}
+              <FeatureGroup title={t("landing.pro.estimating")} />
+              <Feature
+                color={pro}
+                text={t("landing.pro.feat4")}
+                shared={t("landing.shared")}
+              />
+              <Feature
+                color={pro}
+                text={t("landing.pro.feat5")}
+                shared={t("landing.shared")}
+              />
+              <Feature color={pro} text={t("landing.pro.feat6")} />
+
+              {/* PCA Lite */}
+              <FeatureGroup title={t("landing.pro.pcaLite")} />
+              <Feature color={pro} text={t("landing.pro.feat7")} />
+              <Feature color={pro} text={t("landing.pro.feat8")} />
+              <Feature color={pro} text={t("landing.pro.feat9")} />
+              <Feature
+                color={pro}
+                text={t("landing.pro.feat10")}
+                shared={t("landing.shared")}
+              />
+
+              {/* Business */}
+              <FeatureGroup title={t("landing.pro.business")} />
+              <Feature color={pro} text={t("landing.pro.feat11")} />
+              <Feature color={pro} text={t("landing.pro.feat12")} />
+              <Feature color={pro} text={t("landing.pro.feat13")} />
+              <Feature
+                color={pro}
+                text={t("landing.pro.feat14")}
+                shared={t("landing.shared")}
+              />
+
+              <Link
+                href="/signup"
+                className="block text-center py-3.5 text-sm font-bold rounded-[10px] mt-5 transition-all hover:-translate-y-0.5 text-black"
+                style={{
+                  background: `linear-gradient(135deg, #d97706, ${pro}, #fbbf24)`,
+                }}
+              >
+                {t("landing.pro.cta")} →
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* ── ATLAS HOME BANNER ── */}
+        <div className="max-w-[1200px] mx-auto mt-10">
+          <div className="bg-[#0d1320] border border-slate-800 rounded-2xl p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h3 className="text-[22px] font-extrabold tracking-[-0.3px] mb-1">
+                🏠 <span style={{ color: home }}>{t("landing.home.title")}</span>
+              </h3>
+              <p className="text-slate-400 text-sm mb-4 font-light leading-relaxed">
+                {t("landing.home.desc")}
+              </p>
+              <span className="inline-block text-[13px] font-semibold px-5 py-2.5 rounded-[10px] border transition-colors cursor-default"
+                style={{ borderColor: home, color: home }}
+              >
+                {t("landing.home.learnMore")} →
+              </span>
+            </div>
+            <div className="space-y-1.5">
+              {(
+                [
+                  "feat1",
+                  "feat2",
+                  "feat3",
+                  "feat4",
+                  "feat5",
+                  "feat6",
+                  "feat7",
+                ] as const
+              ).map((key) => (
+                <div
+                  key={key}
+                  className="flex items-center gap-2 py-1 text-[13px] text-slate-400"
+                >
+                  <span className="font-bold" style={{ color: home }}>
+                    →
+                  </span>
+                  {t(`landing.home.${key}`)}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 px-6 md:px-12 py-8">
-        <div className="max-w-5xl mx-auto flex flex-col items-center gap-4">
-          <Image src="/logo-dark.png" alt="Asset Atlas Pro" width={800} height={350} className="h-40 md:h-52 w-auto logo-fade" />
-          <span className="text-sm text-charcoal-400">&copy; 2026</span>
+      {/* ═══ HOW IT CONNECTS ═══ */}
+      <section className="px-5 md:px-10 py-20 bg-[#0d1320]" id="how">
+        <div className="text-center mb-12">
+          <h2 className="text-[clamp(28px,4vw,42px)] font-extrabold tracking-[-1px] mb-2.5">
+            {t("landing.howItConnects")}
+          </h2>
+          <p className="text-slate-400 text-base max-w-[600px] mx-auto font-light">
+            {t("landing.howItConnectsSubtitle")}
+          </p>
         </div>
+
+        {/* Flow diagram */}
+        <div className="max-w-[1000px] mx-auto flex items-center justify-center gap-0 flex-wrap py-5">
+          <FlowNode
+            icon="🔍"
+            name={t("tiers.acquire")}
+            desc={t("landing.acquireFlow")}
+            color={acquire}
+          />
+          <span className="text-2xl text-cyan-500 px-1 shrink-0">→</span>
+          <FlowNode
+            icon="🏢"
+            name={t("tiers.operate")}
+            desc={t("landing.operateFlow")}
+            color={operate}
+          />
+          <span className="text-2xl text-cyan-500 px-1 shrink-0">→</span>
+          <FlowNode
+            icon="🔧"
+            name={t("tiers.pro")}
+            desc={t("landing.proFlow")}
+            color={pro}
+          />
+          <span className="text-2xl text-cyan-500 px-1 shrink-0">→</span>
+          <FlowNode
+            icon="🏠"
+            name={t("tiers.home")}
+            desc={t("landing.homeFlow")}
+            color={home}
+          />
+        </div>
+
+        {/* Connection detail cards */}
+        <div className="max-w-[800px] mx-auto mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <ConnectionCard
+            title={t("landing.acquireToOperate")}
+            desc={t("landing.acquireToOperateDesc")}
+            color={acquire}
+          />
+          <ConnectionCard
+            title={t("landing.operateToPro")}
+            desc={t("landing.operateToProDesc")}
+            color={operate}
+          />
+          <ConnectionCard
+            title={t("landing.proToOperate")}
+            desc={t("landing.proToOperateDesc")}
+            color={pro}
+          />
+          <ConnectionCard
+            title={t("landing.homeToPro")}
+            desc={t("landing.homeToProDesc")}
+            color={home}
+          />
+        </div>
+      </section>
+
+      {/* ═══ EXPANDABLE ROADMAP ═══ */}
+      <section className="px-5 md:px-10 py-20" id="expand">
+        <div className="text-center mb-12">
+          <h2 className="text-[clamp(28px,4vw,42px)] font-extrabold tracking-[-1px] mb-2.5">
+            {t("landing.builtToExpand")}
+          </h2>
+          <p className="text-slate-400 text-base max-w-[600px] mx-auto font-light">
+            {t("landing.builtToExpandSubtitle")}
+          </p>
+        </div>
+
+        <div className="max-w-[1200px] mx-auto">
+          <ExpandableSection
+            title={t("landing.acquireRoadmap")}
+            color={acquire}
+            icon="🔍"
+          >
+            <p>
+              <strong>{t("landing.liveNow")}:</strong>{" "}
+              {t("landing.acquireLive").replace(/^Activo ahora: |^Live now: /, "")}
+            </p>
+            <p>
+              <strong>{t("landing.comingNext")}:</strong>{" "}
+              {t("landing.acquireComing").replace(/^Proximo: |^Coming next: /, "")}
+            </p>
+            <p>
+              <strong>{t("landing.future")}:</strong>{" "}
+              {t("landing.acquireFuture").replace(/^Futuro: |^Future: /, "")}
+            </p>
+          </ExpandableSection>
+
+          <ExpandableSection
+            title={t("landing.operateRoadmap")}
+            color={operate}
+            icon="🏢"
+          >
+            <p>
+              <strong>{t("landing.liveNow")}:</strong>{" "}
+              {t("landing.operateLive").replace(/^Activo ahora: |^Live now: /, "")}
+            </p>
+            <p>
+              <strong>{t("landing.comingNext")}:</strong>{" "}
+              {t("landing.operateComing").replace(/^Proximo: |^Coming next: /, "")}
+            </p>
+            <p>
+              <strong>{t("landing.future")}:</strong>{" "}
+              {t("landing.operateFuture").replace(/^Futuro: |^Future: /, "")}
+            </p>
+          </ExpandableSection>
+
+          <ExpandableSection
+            title={t("landing.proRoadmap")}
+            color={pro}
+            icon="🔧"
+          >
+            <p>
+              <strong>{t("landing.liveNow")}:</strong>{" "}
+              {t("landing.proLive").replace(/^Activo ahora: |^Live now: /, "")}
+            </p>
+            <p>
+              <strong>{t("landing.comingNext")}:</strong>{" "}
+              {t("landing.proComing").replace(/^Proximo: |^Coming next: /, "")}
+            </p>
+            <p>
+              <strong>{t("landing.future")}:</strong>{" "}
+              {t("landing.proFuture").replace(/^Futuro: |^Future: /, "")}
+            </p>
+          </ExpandableSection>
+
+          <ExpandableSection
+            title={t("landing.homeRoadmap")}
+            color={home}
+            icon="🏠"
+          >
+            <p>
+              <strong>{t("landing.planned")}:</strong>{" "}
+              {t("landing.homePlanned").replace(/^Planificado: |^Planned: /, "")}
+            </p>
+          </ExpandableSection>
+
+          <ExpandableSection
+            title={t("landing.sharedRoadmap")}
+            color={accent}
+            icon="⚡"
+          >
+            <p>{t("landing.sharedDesc")}</p>
+          </ExpandableSection>
+        </div>
+      </section>
+
+      {/* ═══ FINAL CTA ═══ */}
+      <section className="text-center px-5 md:px-10 py-24 relative">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[radial-gradient(circle,rgba(6,182,212,0.06)_0%,transparent_70%)] pointer-events-none" />
+        <div className="relative z-10">
+          <h2 className="text-[clamp(28px,4vw,40px)] font-extrabold tracking-[-1px] mb-3">
+            {t("landing.readyCta")}
+          </h2>
+          <p className="text-slate-400 text-base mb-8 font-light">
+            {t("landing.readyCtaSubtitle")}
+          </p>
+          <div className="flex gap-3.5 justify-center flex-wrap">
+            <Link
+              href="/signup"
+              className="px-7 py-3.5 rounded-[10px] font-semibold text-[15px] text-black hover:-translate-y-0.5 transition-all"
+              style={{
+                background: `linear-gradient(135deg, #2563eb, ${acquire}, #60a5fa)`,
+              }}
+            >
+              {t("tiers.acquire")} →
+            </Link>
+            <Link
+              href="/signup"
+              className="px-7 py-3.5 rounded-[10px] font-semibold text-[15px] text-black hover:-translate-y-0.5 transition-all"
+              style={{
+                background: `linear-gradient(135deg, #059669, ${operate}, #34d399)`,
+              }}
+            >
+              {t("tiers.operate")} →
+            </Link>
+            <Link
+              href="/signup"
+              className="px-7 py-3.5 rounded-[10px] font-semibold text-[15px] text-black hover:-translate-y-0.5 transition-all"
+              style={{
+                background: `linear-gradient(135deg, #d97706, ${pro}, #fbbf24)`,
+              }}
+            >
+              {t("tiers.pro")} →
+            </Link>
+            <span
+              className="px-7 py-3.5 rounded-[10px] font-semibold text-[15px] border cursor-default"
+              style={{ borderColor: home, color: home }}
+            >
+              {t("landing.atlasHomeFree")} →
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ FOOTER ═══ */}
+      <footer className="px-5 md:px-10 py-10 text-center border-t border-slate-800">
+        <Image
+          src="/logo-dark.png"
+          alt="Asset Atlas"
+          width={800}
+          height={350}
+          className="h-32 md:h-40 w-auto mx-auto mb-3 opacity-80"
+        />
+        <span className="text-xs text-slate-500">
+          © 2026 Asset Atlas Pro
+        </span>
       </footer>
+    </div>
+  );
+}
+
+/* ─── Helper Components ─── */
+
+function FeatureGroup({ title }: { title: string }) {
+  return (
+    <div className="text-[10px] font-bold uppercase tracking-[0.8px] text-slate-500 pt-2.5 pb-1.5 mt-4 first:mt-0 first:border-t-0 first:pt-0 border-t border-slate-800/40">
+      {title}
+    </div>
+  );
+}
+
+function Feature({
+  color,
+  text,
+  shared,
+}: {
+  color: string;
+  text: string;
+  shared?: string;
+}) {
+  return (
+    <div className="flex items-start gap-2 py-1 text-xs text-slate-400 leading-snug">
+      <span
+        className="w-1.5 h-1.5 rounded-full mt-[5px] shrink-0"
+        style={{ background: color }}
+      />
+      <span className="flex-1">
+        {text}
+        {shared && (
+          <span className="text-[8px] font-bold text-cyan-500 bg-cyan-500/10 px-1 py-px rounded-sm ml-1 align-middle">
+            {shared}
+          </span>
+        )}
+      </span>
+    </div>
+  );
+}
+
+function FlowNode({
+  icon,
+  name,
+  desc,
+  color,
+}: {
+  icon: string;
+  name: string;
+  desc: string;
+  color: string;
+}) {
+  return (
+    <div className="text-center px-5 py-5 flex-1 min-w-[160px]">
+      <div className="text-[28px] mb-2">{icon}</div>
+      <div className="text-[15px] font-bold" style={{ color }}>
+        {name}
+      </div>
+      <div className="text-[11px] text-slate-500 mt-1">{desc}</div>
+    </div>
+  );
+}
+
+function ConnectionCard({
+  title,
+  desc,
+  color,
+}: {
+  title: string;
+  desc: string;
+  color: string;
+}) {
+  return (
+    <div className="bg-[#111827] border border-slate-800 rounded-[10px] p-4.5">
+      <div className="font-bold text-sm mb-1.5" style={{ color }}>
+        {title}
+      </div>
+      <div className="text-xs text-slate-400 leading-relaxed">{desc}</div>
     </div>
   );
 }

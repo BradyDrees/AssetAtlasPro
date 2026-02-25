@@ -25,7 +25,7 @@ export async function createDealAnalysis(data: CreateDealAnalysis) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/dashboard");
+  revalidatePath("/acquire/dashboard");
   revalidatePath("/deal-analysis");
 
   return deal.id;
@@ -53,7 +53,7 @@ export async function updateDealAnalysis(id: string, updates: UpdateDealAnalysis
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/dashboard");
+  revalidatePath("/acquire/dashboard");
   revalidatePath("/deal-analysis");
   revalidatePath(`/deal-analysis/${id}`);
 }
@@ -80,6 +80,6 @@ export async function deleteDealAnalysis(id: string) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/dashboard");
+  revalidatePath("/acquire/dashboard");
   revalidatePath("/deal-analysis");
 }

@@ -26,8 +26,8 @@ export async function switchRole(role: AppRole, orgId?: string) {
 
   // Redirect to the appropriate dashboard
   if (context.active_role === "vendor") {
-    redirect("/vendor");
+    redirect("/pro");
   } else {
-    redirect("/dashboard");
+    redirect("/acquire/dashboard");
   }
 }

@@ -70,14 +70,14 @@ export function LoginForm() {
         if (activeRole === "vendor") {
           // Set cookie for middleware routing (UX hint)
           document.cookie = `active_role=vendor; path=/; max-age=31536000; samesite=lax`;
-          router.push("/vendor");
+          router.push("/pro");
         } else {
           document.cookie = `active_role=${activeRole || "pm"}; path=/; max-age=31536000; samesite=lax`;
-          router.push("/dashboard");
+          router.push("/acquire/dashboard");
         }
       } catch {
-        // Fallback: if profile query fails, go to dashboard
-        router.push("/dashboard");
+        // Fallback: if profile query fails, go to acquire dashboard
+        router.push("/acquire/dashboard");
       }
 
       router.refresh();

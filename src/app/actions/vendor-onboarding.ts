@@ -131,6 +131,6 @@ export async function createVendorAccount(input: OnboardingInput) {
     },
   });
 
-  // Redirect to vendor dashboard
-  redirect("/vendor");
+  // Redirect to pro dashboard
+  redirect("/pro");
 }

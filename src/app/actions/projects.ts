@@ -46,7 +46,7 @@ export async function createDDProject(data: CreateDDProject) {
 
   if (insertError) throw new Error(insertError.message);
 
-  revalidatePath("/dashboard");
+  revalidatePath("/acquire/dashboard");
 
   return project.id;
 }
@@ -73,7 +73,7 @@ export async function updateDDProject(id: string, data: UpdateDDProject) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/dashboard");
+  revalidatePath("/acquire/dashboard");
   revalidatePath(`/projects/${id}`);
 }
 
@@ -99,7 +99,7 @@ export async function updateProjectStatus(id: string, status: ProjectStatus) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/dashboard");
+  revalidatePath("/acquire/dashboard");
   revalidatePath(`/projects/${id}`);
   revalidatePath(`/projects/${id}/review`);
 }
@@ -151,5 +151,5 @@ export async function deleteDDProject(id: string) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/dashboard");
+  revalidatePath("/acquire/dashboard");
 }

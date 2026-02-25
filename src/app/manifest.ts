@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Asset Atlas Pro",
     short_name: "Atlas Pro",
     description: "Multifamily inspection & due diligence platform",
-    start_url: "/dashboard",
+    start_url: "/acquire/dashboard",
     display: "standalone",
     background_color: "#141414",
     theme_color: "#1a3a2a",

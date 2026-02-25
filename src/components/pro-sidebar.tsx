@@ -216,6 +216,8 @@ export function ProSidebar({ user, hasPmRole = false, hasOwnerRole = false }: Pr
           </button>
         </div>
 
+        {/* Scrollable content area — prevents clipping on short viewports / PWA */}
+        <div className="flex-1 flex flex-col overflow-y-auto overscroll-contain">
         {/* Navigation */}
         <nav className="flex-1 p-3 space-y-1">
           {navItems.map((item) => {
@@ -379,6 +381,7 @@ export function ProSidebar({ user, hasPmRole = false, hasOwnerRole = false }: Pr
               )}
             </button>
           </form>
+        </div>
         </div>
       </aside>
     </>

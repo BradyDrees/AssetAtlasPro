@@ -177,6 +177,8 @@ export function HomeSidebar({ user, hasVendorRole = false, hasPmRole = false }: 
           </button>
         </div>
 
+        {/* Scrollable content area — prevents clipping on short viewports / PWA */}
+        <div className="flex-1 flex flex-col overflow-y-auto overscroll-contain">
         {/* Navigation */}
         <nav className="flex-1 p-3 space-y-1">
           {navItems.map((item) => {
@@ -263,6 +265,7 @@ export function HomeSidebar({ user, hasVendorRole = false, hasPmRole = false }: 
               )}
             </button>
           </form>
+        </div>
         </div>
       </aside>
     </>

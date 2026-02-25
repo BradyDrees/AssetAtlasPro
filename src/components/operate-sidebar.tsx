@@ -112,6 +112,8 @@ export function OperateSidebar({ user, hasVendorRole = false, hasOwnerRole = fal
           </button>
         </div>
 
+        {/* Scrollable content area — prevents clipping on short viewports / PWA */}
+        <div className="flex-1 flex flex-col overflow-y-auto overscroll-contain">
         <div className={`px-3 pt-2 flex ${collapsed ? "justify-center" : "justify-end"}`}>
           <NotificationBell namespace="sidebar" />
         </div>
@@ -198,6 +200,7 @@ export function OperateSidebar({ user, hasVendorRole = false, hasOwnerRole = fal
               {collapsed ? <span className="text-xs">Out</span> : t("sidebar.signOut")}
             </button>
           </form>
+        </div>
         </div>
       </aside>
     </>

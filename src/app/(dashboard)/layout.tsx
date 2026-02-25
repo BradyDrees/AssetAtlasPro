@@ -7,6 +7,7 @@ import { Sidebar } from "@/components/sidebar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LocaleProvider } from "@/components/locale-provider";
 import { DashboardShell } from "@/components/dashboard-shell";
+import { getUserRoles } from "@/lib/vendor/role-helpers";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,11 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
+  // Check available tiers for tier switcher
+  const roles = await getUserRoles();
+  const hasVendorRole = roles.some((r) => r.role === "vendor" && r.is_active);
+  const hasOwnerRole = roles.some((r) => r.role === "owner" && r.is_active);
+
   const cookieStore = await cookies();
   const raw = cookieStore.get("theme")?.value;
   const initialTheme = raw === "light" ? "light" : "dark";
@@ -36,7 +42,7 @@ export default async function DashboardLayout({
       <LocaleProvider initialLocale={initialLocale as "en" | "es"}>
         <ThemeProvider initialTheme={initialTheme}>
           <DashboardShell>
-            <Sidebar user={user} />
+            <Sidebar user={user} hasVendorRole={hasVendorRole} hasOwnerRole={hasOwnerRole} />
             <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 pt-14 md:p-6 md:pt-6">
               {children}
             </main>

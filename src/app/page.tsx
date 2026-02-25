@@ -595,17 +595,36 @@ export default async function LandingPage() {
       </section>
 
       {/* ═══ FOOTER ═══ */}
-      <footer className="px-5 md:px-10 py-10 text-center border-t border-slate-800">
-        <Image
-          src="/logo-dark.png"
-          alt="Asset Atlas"
-          width={800}
-          height={350}
-          className="h-32 md:h-40 w-auto mx-auto mb-3 opacity-80"
-        />
-        <span className="text-xs text-slate-500">
-          © 2026 Asset Atlas Pro
-        </span>
+      <footer className="px-5 md:px-10 py-10 border-t border-slate-800">
+        <div className="max-w-5xl mx-auto flex flex-col items-center gap-4">
+          <Image
+            src="/logo-dark.png"
+            alt="Asset Atlas"
+            width={800}
+            height={350}
+            className="h-32 md:h-40 w-auto opacity-80"
+          />
+          <p className="text-xs text-slate-500 italic">
+            {t("landing.footerTagline")}
+          </p>
+          <div className="flex items-center gap-4 text-xs text-slate-500">
+            <Link
+              href="/terms"
+              className="hover:text-slate-300 transition-colors"
+            >
+              {t("landing.termsOfService")}
+            </Link>
+            <span>·</span>
+            <Link
+              href="/privacy"
+              className="hover:text-slate-300 transition-colors"
+            >
+              {t("landing.privacyPolicy")}
+            </Link>
+            <span>·</span>
+            <span>© 2026 Asset Atlas Pro</span>
+          </div>
+        </div>
       </footer>
     </div>
   );

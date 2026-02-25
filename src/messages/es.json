@@ -107,6 +107,55 @@
     "markAllRead": "Marcar todo leído",
     "noNotifications": "Sin notificaciones"
   },
+  "legal": {
+    "termsTitle": "Terminos de Servicio",
+    "privacyTitle": "Politica de Privacidad",
+    "lastUpdated": "Ultima actualizacion",
+    "terms": {
+      "acceptanceTitle": "Aceptacion de Terminos",
+      "acceptanceBody": "Al acceder o usar Asset Atlas Pro, aceptas estar sujeto a estos Terminos de Servicio. Si no estas de acuerdo, no uses la plataforma. Estos terminos aplican a todos los usuarios incluyendo gestores de propiedades, proveedores, contratistas y cualquier otro individuo que acceda al servicio.",
+      "descriptionTitle": "Descripcion del Servicio",
+      "descriptionBody": "Asset Atlas Pro es una plataforma de operaciones inmobiliarias que proporciona herramientas para adquisiciones y suscripcion (Atlas Acquire), gestion de propiedades y operaciones (Atlas Operate), y gestion de negocios de proveedores/contratistas (Atlas Pro). La plataforma incluye captura de inspecciones, gestion de ordenes de trabajo, presupuestos, facturacion y funciones relacionadas.",
+      "accountsTitle": "Cuentas de Usuario",
+      "accountsBody": "Debes proporcionar informacion precisa y completa al crear una cuenta. Eres responsable de mantener la confidencialidad de tus credenciales de acceso y de todas las actividades que ocurran bajo tu cuenta. Debes notificarnos inmediatamente de cualquier uso no autorizado de tu cuenta.",
+      "useTitle": "Uso Aceptable",
+      "useBody": "Aceptas usar Asset Atlas Pro solo para propositos legales y de acuerdo con estos terminos. No puedes usar la plataforma para transmitir contenido danino, intentar obtener acceso no autorizado a sistemas, interferir con el acceso de otros usuarios, o violar cualquier ley o regulacion aplicable.",
+      "ipTitle": "Propiedad Intelectual",
+      "ipBody": "Asset Atlas Pro y su contenido original, funciones y funcionalidad son propiedad de Asset Atlas Pro y estan protegidos por leyes de propiedad intelectual. Conservas la propiedad de cualquier dato, foto y contenido que subas a la plataforma. Al subir contenido, nos otorgas una licencia para almacenar, procesar y mostrar ese contenido segun sea necesario para proporcionar el servicio.",
+      "dataTitle": "Datos y Contenido",
+      "dataBody": "Eres responsable de todos los datos y contenido que ingreses en la plataforma. Los datos de inspeccion de propiedades, fotos, informacion financiera y otro contenido que crees siguen siendo tu propiedad. No venderemos tus datos a terceros. Los datos pueden compartirse entre usuarios de la plataforma segun sea necesario para el servicio.",
+      "disclaimerTitle": "Exencion de Garantias",
+      "disclaimerBody": "Asset Atlas Pro se proporciona tal cual y segun disponibilidad sin garantias de ningun tipo, expresas o implicitas. No garantizamos que el servicio sera ininterrumpido, libre de errores o seguro. Los calculos financieros, evaluaciones de propiedades y analisis de negocios proporcionados por la plataforma son herramientas de referencia y no constituyen asesoramiento financiero o inmobiliario profesional.",
+      "limitationTitle": "Limitacion de Responsabilidad",
+      "limitationBody": "En la maxima medida permitida por la ley, Asset Atlas Pro no sera responsable por danos indirectos, incidentales, especiales, consecuentes o punitivos derivados de tu uso de la plataforma. Esto incluye pero no se limita a perdida de datos, perdida de ganancias o interrupcion del negocio.",
+      "terminationTitle": "Terminacion",
+      "terminationBody": "Nos reservamos el derecho de suspender o terminar tu cuenta en cualquier momento por violacion de estos terminos. Tambien puedes terminar tu cuenta en cualquier momento contactando a soporte. Al terminar, tu derecho a usar la plataforma cesa inmediatamente, aunque podemos retener tus datos por un periodo razonable segun lo requiera la ley.",
+      "changesTitle": "Cambios a los Terminos",
+      "changesBody": "Podemos actualizar estos terminos de vez en cuando. Notificaremos a los usuarios registrados de cambios significativos por correo electronico o notificacion en la aplicacion. Tu uso continuado de la plataforma despues de los cambios constituye la aceptacion de los terminos actualizados.",
+      "contactTitle": "Contacto",
+      "contactBody": "Para preguntas sobre estos Terminos de Servicio, contactanos en support@assetatlaspro.com."
+    },
+    "privacy": {
+      "collectTitle": "Informacion que Recopilamos",
+      "collectBody": "Recopilamos informacion que proporcionas directamente: nombre, direccion de correo electronico, detalles de organizacion y credenciales de cuenta. Tambien recopilamos datos que ingresas en la plataforma incluyendo informacion de propiedades, datos de inspeccion, fotos, datos financieros, ordenes de trabajo, presupuestos y facturas. Automaticamente recopilamos datos de uso como informacion del dispositivo, tipo de navegador y patrones de interaccion para mejorar el servicio.",
+      "useTitle": "Como Usamos Tu Informacion",
+      "useBody": "Usamos tu informacion para proporcionar y mantener la plataforma, procesar tus transacciones, enviar notificaciones transaccionales, mejorar nuestros servicios y comunicarnos contigo sobre tu cuenta. No usamos tus datos con fines publicitarios.",
+      "storageTitle": "Almacenamiento y Seguridad de Datos",
+      "storageBody": "Tus datos se almacenan de forma segura usando Supabase (PostgreSQL) con Seguridad a Nivel de Fila (RLS) habilitada en todas las tablas. Las fotos y medios se almacenan en almacenamiento seguro en la nube. Usamos cifrado estandar de la industria para datos en transito (TLS/SSL) e implementamos controles de acceso para proteger tu informacion.",
+      "sharingTitle": "Compartir Datos",
+      "sharingBody": "No vendemos tu informacion personal. Los datos se comparten entre usuarios de la plataforma solo segun sea necesario para el servicio. Podemos compartir informacion con proveedores de servicios que nos ayudan a operar la plataforma bajo acuerdos estrictos de procesamiento de datos.",
+      "cookiesTitle": "Cookies y Almacenamiento Local",
+      "cookiesBody": "Usamos cookies para mantener tu sesion, recordar tu preferencia de idioma y almacenar tu estado de autenticacion. La plataforma tambien usa almacenamiento local del navegador (IndexedDB) para habilitar la funcionalidad offline — estos datos permanecen en tu dispositivo y se sincronizan con nuestros servidores cuando te reconectas.",
+      "rightsTitle": "Tus Derechos",
+      "rightsBody": "Tienes derecho a acceder, corregir o eliminar tus datos personales. Puedes exportar tus datos de inspeccion e informes en cualquier momento usando las funciones de exportacion integradas de la plataforma. Para solicitar la eliminacion de tu cuenta o una copia de todos tus datos, contacta a support@assetatlaspro.com.",
+      "childrenTitle": "Privacidad de Menores",
+      "childrenBody": "Asset Atlas Pro no esta destinado para uso por personas menores de 18 anos. No recopilamos intencionalmente informacion personal de menores.",
+      "changesTitle": "Cambios a Esta Politica",
+      "changesBody": "Podemos actualizar esta Politica de Privacidad de vez en cuando. Te notificaremos de cambios significativos por correo electronico o notificacion en la aplicacion. Tu uso continuado de la plataforma despues de los cambios constituye la aceptacion de la politica actualizada.",
+      "contactTitle": "Contacto",
+      "contactBody": "Para preguntas sobre esta Politica de Privacidad o para ejercer tus derechos de datos, contactanos en support@assetatlaspro.com."
+    }
+  },
   "auth": {
     "signIn": "Iniciar sesion",
     "signingIn": "Iniciando sesion...",
@@ -248,7 +297,10 @@
     "planned": "Planificado",
     "readyCta": "Listo para Atlas Tu Portafolio?",
     "readyCtaSubtitle": "Comienza con el producto que se adapta a tu rol. Expande cuando estes listo. Todo se conecta.",
-    "atlasHomeFree": "Atlas Home (Gratis)"
+    "atlasHomeFree": "Atlas Home (Gratis)",
+    "footerTagline": "Operaciones inmobiliarias, reimaginadas.",
+    "termsOfService": "Terminos de Servicio",
+    "privacyPolicy": "Politica de Privacidad"
   },
   "inspection": {
     "priority": "Prioridad",

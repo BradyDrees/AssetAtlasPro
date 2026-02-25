@@ -107,6 +107,55 @@
     "markAllRead": "Mark all read",
     "noNotifications": "No notifications"
   },
+  "legal": {
+    "termsTitle": "Terms of Service",
+    "privacyTitle": "Privacy Policy",
+    "lastUpdated": "Last updated",
+    "terms": {
+      "acceptanceTitle": "Acceptance of Terms",
+      "acceptanceBody": "By accessing or using Asset Atlas Pro, you agree to be bound by these Terms of Service. If you do not agree, do not use the platform. These terms apply to all users including property managers, vendors, contractors, and any other individuals accessing the service.",
+      "descriptionTitle": "Description of Service",
+      "descriptionBody": "Asset Atlas Pro is a real estate operations platform providing tools for property acquisitions and underwriting (Atlas Acquire), property management and operations (Atlas Operate), and vendor/contractor business management (Atlas Pro). The platform includes inspection capture, work order management, estimating, invoicing, and related features.",
+      "accountsTitle": "User Accounts",
+      "accountsBody": "You must provide accurate and complete information when creating an account. You are responsible for maintaining the confidentiality of your login credentials and for all activities that occur under your account. You must notify us immediately of any unauthorized use of your account.",
+      "useTitle": "Acceptable Use",
+      "useBody": "You agree to use Asset Atlas Pro only for lawful purposes and in accordance with these terms. You may not use the platform to transmit harmful content, attempt to gain unauthorized access to systems, interfere with other users' access, or violate any applicable laws or regulations.",
+      "ipTitle": "Intellectual Property",
+      "ipBody": "Asset Atlas Pro and its original content, features, and functionality are owned by Asset Atlas Pro and are protected by intellectual property laws. You retain ownership of any data, photos, and content you upload to the platform. By uploading content, you grant us a license to store, process, and display that content as necessary to provide the service.",
+      "dataTitle": "Data and Content",
+      "dataBody": "You are responsible for all data and content you enter into the platform. Property inspection data, photos, financial information, and other content you create remain your property. We will not sell your data to third parties. Data may be shared between users on the platform as necessary for the service (e.g., work orders shared between property managers and vendors).",
+      "disclaimerTitle": "Disclaimer of Warranties",
+      "disclaimerBody": "Asset Atlas Pro is provided on an \"as is\" and \"as available\" basis without warranties of any kind, either express or implied. We do not guarantee that the service will be uninterrupted, error-free, or secure. Financial calculations, property assessments, and deal analyses provided by the platform are tools for reference and do not constitute professional financial or real estate advice.",
+      "limitationTitle": "Limitation of Liability",
+      "limitationBody": "To the maximum extent permitted by law, Asset Atlas Pro shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the platform. This includes but is not limited to loss of data, loss of profits, or business interruption.",
+      "terminationTitle": "Termination",
+      "terminationBody": "We reserve the right to suspend or terminate your account at any time for violation of these terms. You may also terminate your account at any time by contacting support. Upon termination, your right to use the platform ceases immediately, though we may retain your data for a reasonable period as required by law.",
+      "changesTitle": "Changes to Terms",
+      "changesBody": "We may update these terms from time to time. We will notify registered users of significant changes via email or in-app notification. Your continued use of the platform after changes constitutes acceptance of the updated terms.",
+      "contactTitle": "Contact",
+      "contactBody": "For questions about these Terms of Service, contact us at support@assetatlaspro.com."
+    },
+    "privacy": {
+      "collectTitle": "Information We Collect",
+      "collectBody": "We collect information you provide directly: name, email address, organization details, and account credentials. We also collect data you enter into the platform including property information, inspection data, photos, financial data, work orders, estimates, and invoices. We automatically collect usage data such as device information, browser type, and interaction patterns to improve the service.",
+      "useTitle": "How We Use Your Information",
+      "useBody": "We use your information to provide and maintain the platform, process your transactions, send transactional notifications (work order updates, estimate approvals, invoice status), improve our services, and communicate with you about your account. We do not use your data for advertising purposes.",
+      "storageTitle": "Data Storage and Security",
+      "storageBody": "Your data is stored securely using Supabase (PostgreSQL) with Row Level Security (RLS) enabled on all tables. Photos and media are stored in secure cloud storage. We use industry-standard encryption for data in transit (TLS/SSL) and implement access controls to protect your information. While we strive to protect your data, no method of transmission over the internet is 100% secure.",
+      "sharingTitle": "Data Sharing",
+      "sharingBody": "We do not sell your personal information. Data is shared between platform users only as necessary for the service — for example, work orders are shared between property managers and assigned vendors, and inspection reports are shared with authorized team members. We may share information with service providers who help us operate the platform (email delivery, cloud hosting) under strict data processing agreements.",
+      "cookiesTitle": "Cookies and Local Storage",
+      "cookiesBody": "We use cookies to maintain your session, remember your language preference, and store your authentication state. The platform also uses browser local storage (IndexedDB) to enable offline functionality — this data stays on your device and syncs to our servers when you reconnect.",
+      "rightsTitle": "Your Rights",
+      "rightsBody": "You have the right to access, correct, or delete your personal data. You can export your inspection data and reports at any time using the platform's built-in export features. To request account deletion or a copy of all your data, contact support@assetatlaspro.com.",
+      "childrenTitle": "Children's Privacy",
+      "childrenBody": "Asset Atlas Pro is not intended for use by individuals under the age of 18. We do not knowingly collect personal information from children.",
+      "changesTitle": "Changes to This Policy",
+      "changesBody": "We may update this Privacy Policy from time to time. We will notify you of significant changes via email or in-app notification. Your continued use of the platform after changes constitutes acceptance of the updated policy.",
+      "contactTitle": "Contact",
+      "contactBody": "For questions about this Privacy Policy or to exercise your data rights, contact us at support@assetatlaspro.com."
+    }
+  },
   "auth": {
     "signIn": "Sign In",
     "signingIn": "Signing in...",
@@ -248,7 +297,10 @@
     "planned": "Planned",
     "readyCta": "Ready to Atlas Your Portfolio?",
     "readyCtaSubtitle": "Start with the product that fits your role. Expand when you're ready. Everything connects.",
-    "atlasHomeFree": "Atlas Home (Free)"
+    "atlasHomeFree": "Atlas Home (Free)",
+    "footerTagline": "Real estate operations, reimagined.",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy"
   },
   "inspection": {
     "priority": "Priority",

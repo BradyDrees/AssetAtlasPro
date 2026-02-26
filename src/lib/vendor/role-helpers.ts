@@ -211,7 +211,11 @@ export async function switchActiveRole(
       .single();
 
     if (!ownerRole) {
-      throw new Error("No active owner role");
+      // Auto-create owner role for authenticated user
+      await supabase.from("user_roles").upsert(
+        { user_id: user.id, role: "owner", is_active: true },
+        { onConflict: "user_id,role" }
+      );
     }
   }
 

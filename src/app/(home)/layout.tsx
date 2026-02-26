@@ -30,9 +30,7 @@ export default async function HomeLayout({
   const roles = await getUserRoles();
   const hasOwnerRole = roles.some((r) => r.role === "owner" && r.is_active);
 
-  if (!hasOwnerRole) {
-    redirect("/home/onboarding");
-  }
+  // Owner role gate removed — Home is accessible to all authenticated users
 
   // Check for other roles (for tier switcher)
   const hasVendorRole = roles.some((r) => r.role === "vendor" && r.is_active);

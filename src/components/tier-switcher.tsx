@@ -58,7 +58,7 @@ export function TierSwitcher({ currentTier, hasPmRole, hasVendorRole, hasOwnerRo
   if (currentTier !== "acquire" && hasPmRole) availableTiers.push("acquire");
   if (currentTier !== "operate" && hasPmRole) availableTiers.push("operate");
   if (currentTier !== "pro" && hasVendorRole) availableTiers.push("pro");
-  if (currentTier !== "home" && hasOwnerRole) availableTiers.push("home");
+  if (currentTier !== "home") availableTiers.push("home");
 
   if (availableTiers.length === 0) return null;
 

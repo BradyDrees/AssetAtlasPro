@@ -1,0 +1,13 @@
+{
+  "settings": "Settings",
+  "settingsDesc": "Manage your account preferences",
+  "language": "Language",
+  "english": "English",
+  "spanish": "Spanish",
+  "theme": "Theme",
+  "light": "Light",
+  "dark": "Dark",
+  "notifications": "Notifications",
+  "emailNotifications": "Email Notifications",
+  "smsNotifications": "SMS Notifications"
+}

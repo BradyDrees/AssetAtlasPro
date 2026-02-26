@@ -5,7 +5,7 @@ import { useTheme } from "@/components/theme-provider";
 import { useAppLocale } from "@/components/locale-provider";
 
 export default function HomeSettingsPage() {
-  const t = useTranslations("home.property");
+  const t = useTranslations("home.settings");
   const { theme, toggleTheme } = useTheme();
   const { locale, toggleLocale } = useAppLocale();
 
@@ -45,7 +45,7 @@ export default function HomeSettingsPage() {
 
       {/* Theme */}
       <div className="bg-surface-primary rounded-xl border border-edge-primary p-6">
-        <h2 className="text-lg font-semibold text-content-primary mb-4">Theme</h2>
+        <h2 className="text-lg font-semibold text-content-primary mb-4">{t("theme")}</h2>
         <div className="flex gap-3">
           <button
             onClick={() => { if (theme === "dark") toggleTheme(); }}
@@ -55,7 +55,7 @@ export default function HomeSettingsPage() {
                 : "bg-surface-secondary text-content-tertiary hover:text-content-primary"
             }`}
           >
-            Light
+            {t("light")}
           </button>
           <button
             onClick={() => { if (theme === "light") toggleTheme(); }}
@@ -65,7 +65,7 @@ export default function HomeSettingsPage() {
                 : "bg-surface-secondary text-content-tertiary hover:text-content-primary"
             }`}
           >
-            Dark
+            {t("dark")}
           </button>
         </div>
       </div>

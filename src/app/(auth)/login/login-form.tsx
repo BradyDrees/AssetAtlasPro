@@ -94,7 +94,7 @@ export function LoginForm() {
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-content-primary mb-1"
         >
           {t("auth.email")}
         </label>
@@ -104,13 +104,13 @@ export function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+          className="w-full px-3 py-2.5 border border-edge-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
         />
       </div>
       <div>
         <label
           htmlFor="password"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-content-primary mb-1"
         >
           {t("auth.password")}
         </label>
@@ -120,7 +120,7 @@ export function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+          className="w-full px-3 py-2.5 border border-edge-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
         />
       </div>
       <div className="flex items-center gap-2">
@@ -130,7 +130,7 @@ export function LoginForm() {
           aria-checked={rememberMe}
           onClick={() => setRememberMe((prev) => !prev)}
           className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-            rememberMe ? "bg-brand-600" : "bg-gray-300"
+            rememberMe ? "bg-brand-600" : "bg-charcoal-300"
           }`}
         >
           <span
@@ -141,7 +141,7 @@ export function LoginForm() {
         </button>
         <label
           onClick={() => setRememberMe((prev) => !prev)}
-          className="text-sm text-gray-600 cursor-pointer select-none"
+          className="text-sm text-content-secondary cursor-pointer select-none"
         >
           {t("auth.keepLoggedIn")}
         </label>

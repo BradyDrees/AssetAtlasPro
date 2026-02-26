@@ -124,7 +124,7 @@ export default async function PmInvoiceDetailPage({ params }: PmInvoiceDetailPag
         </div>
         <div className="border-t border-edge-secondary pt-2 flex items-center justify-between">
           <span className="text-content-primary font-semibold">{t("total")}</span>
-          <span className="text-lg font-bold text-brand-400">${Number(invoice.total).toFixed(2)}</span>
+          <span className="text-lg font-bold text-green-400">${Number(invoice.total).toFixed(2)}</span>
         </div>
       </div>
 

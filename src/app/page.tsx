@@ -22,7 +22,7 @@ export default async function LandingPage() {
   const operate = "#22c55e";
   const pro = "#f59e0b";
   const home = "#f43f5e";
-  const accent = "#06b6d4";
+  const accent = "#22c55e";
 
   return (
     <div className="min-h-screen bg-[#06090f] text-slate-100 overflow-x-hidden">
@@ -59,7 +59,7 @@ export default async function LandingPage() {
           </Link>
           <Link
             href="/signup"
-            className="bg-gradient-to-r from-cyan-600 to-cyan-500 text-black font-semibold text-[13px] px-5 py-2 rounded-lg hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/30 transition-all"
+            className="bg-gradient-to-r from-green-600 to-green-500 text-black font-semibold text-[13px] px-5 py-2 rounded-lg hover:-translate-y-0.5 hover:shadow-lg hover:shadow-green-500/30 transition-all"
           >
             {t("auth.getStarted")}
           </Link>
@@ -69,17 +69,17 @@ export default async function LandingPage() {
       {/* ═══ HERO ═══ */}
       <section className="pt-40 md:pt-48 pb-20 md:pb-24 px-5 md:px-10 text-center relative">
         {/* Radial glow */}
-        <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[radial-gradient(circle,rgba(6,182,212,0.08)_0%,transparent_70%)] pointer-events-none" />
+        <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[radial-gradient(circle,rgba(34,197,94,0.08)_0%,transparent_70%)] pointer-events-none" />
 
         <div className="relative z-10 max-w-[900px] mx-auto">
-          <span className="inline-block text-xs font-semibold text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-3.5 py-1.5 rounded-full mb-6 tracking-wide">
+          <span className="inline-block text-xs font-semibold text-green-400 bg-green-500/10 border border-green-500/20 px-3.5 py-1.5 rounded-full mb-6 tracking-wide">
             {t("landing.heroBadge")}
           </span>
 
           <h1 className="text-[clamp(40px,6vw,72px)] font-black leading-[1.05] tracking-[-2px] mb-5">
             {t("landing.heroTitle")}
             <br />
-            <span className="bg-gradient-to-r from-cyan-500 to-cyan-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-green-500 to-green-300 bg-clip-text text-transparent">
               {t("landing.heroTitleAccent")}
             </span>
           </h1>
@@ -91,13 +91,13 @@ export default async function LandingPage() {
           <div className="flex gap-3.5 justify-center flex-wrap">
             <a
               href="#products"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-[10px] font-semibold text-[15px] bg-gradient-to-r from-cyan-600 to-cyan-500 text-black hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-[10px] font-semibold text-[15px] bg-gradient-to-r from-green-600 to-green-500 text-black hover:-translate-y-0.5 hover:shadow-lg hover:shadow-green-500/25 transition-all"
             >
               {t("landing.exploreProducts")} ↓
             </a>
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-[10px] font-semibold text-[15px] border border-slate-600 text-white hover:border-cyan-500 hover:text-cyan-400 transition-all"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-[10px] font-semibold text-[15px] border border-slate-600 text-white hover:border-green-500 hover:text-green-400 transition-all"
             >
               {t("auth.signIn")}
             </Link>
@@ -515,21 +515,21 @@ export default async function LandingPage() {
             desc={t("landing.acquireFlow")}
             color={acquire}
           />
-          <span className="text-2xl text-cyan-500 px-1 shrink-0">→</span>
+          <span className="text-2xl text-green-500 px-1 shrink-0">→</span>
           <FlowNode
             icon="🏢"
             name={t("tiers.operate")}
             desc={t("landing.operateFlow")}
             color={operate}
           />
-          <span className="text-2xl text-cyan-500 px-1 shrink-0">→</span>
+          <span className="text-2xl text-green-500 px-1 shrink-0">→</span>
           <FlowNode
             icon="🔧"
             name={t("tiers.pro")}
             desc={t("landing.proFlow")}
             color={pro}
           />
-          <span className="text-2xl text-cyan-500 px-1 shrink-0">→</span>
+          <span className="text-2xl text-green-500 px-1 shrink-0">→</span>
           <FlowNode
             icon="🏠"
             name={t("tiers.home")}
@@ -655,7 +655,7 @@ export default async function LandingPage() {
 
       {/* ═══ FINAL CTA ═══ */}
       <section className="text-center px-5 md:px-10 py-24 relative">
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[radial-gradient(circle,rgba(6,182,212,0.06)_0%,transparent_70%)] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[radial-gradient(circle,rgba(34,197,94,0.06)_0%,transparent_70%)] pointer-events-none" />
         <div className="relative z-10">
           <h2 className="text-[clamp(28px,4vw,40px)] font-extrabold tracking-[-1px] mb-3">
             {t("landing.readyCta")}
@@ -765,7 +765,7 @@ function Feature({
       <span className="flex-1">
         {text}
         {shared && (
-          <span className="text-[8px] font-bold text-cyan-500 bg-cyan-500/10 px-1 py-px rounded-sm ml-1 align-middle">
+          <span className="text-[8px] font-bold text-green-500 bg-green-500/10 px-1 py-px rounded-sm ml-1 align-middle">
             {shared}
           </span>
         )}

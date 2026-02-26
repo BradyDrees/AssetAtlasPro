@@ -40,7 +40,7 @@ export default async function PmEstimatesPage() {
               <Link
                 key={est.id}
                 href={`/estimates/${est.id}`}
-                className="block bg-surface-primary rounded-xl border border-edge-primary p-4 hover:border-brand-500/50 transition-colors"
+                className="block bg-surface-primary rounded-xl border border-edge-primary p-4 hover:border-green-500/50 transition-colors"
               >
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div className="flex-1 min-w-0">

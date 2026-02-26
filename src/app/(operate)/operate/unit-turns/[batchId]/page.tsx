@@ -74,13 +74,13 @@ export default async function BatchDetailPage({
   return (
     <div>
       {/* Header */}
-      <div className="bg-[radial-gradient(ellipse_at_top_left,_var(--brand-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--brand-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl mb-6">
+      <div className="bg-[radial-gradient(ellipse_at_top_left,_var(--color-green-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--color-green-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl mb-6">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-brand-300 mb-3">
+        <div className="flex items-center gap-2 text-sm text-green-300 mb-3">
           <Link href="/unit-turns" className="hover:text-white transition-colors">
             {t("nav.unitTurns")}
           </Link>
-          <span className="text-brand-500">/</span>
+          <span className="text-green-500">/</span>
           <span className="text-white font-medium">{batch.name}</span>
         </div>
 
@@ -104,7 +104,7 @@ export default async function BatchDetailPage({
               {monthLabel && (
                 <p className="text-gold-300 mt-1">{monthLabel}</p>
               )}
-              <p className="text-sm text-brand-300/70 mt-0.5">
+              <p className="text-sm text-green-300/70 mt-0.5">
                 {t("dashboard.unitCount", { count: allUnits.length })}
               </p>
             </div>

@@ -130,14 +130,14 @@ export default async function InspectionGroupPage({
       <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4">
         <Link
           href="/inspections"
-          className="hover:text-brand-600 transition-colors"
+          className="hover:text-green-600 transition-colors"
         >
           {t("nav.inspections")}
         </Link>
         <span>/</span>
         <Link
           href={`/inspections/${projectId}?group=${groupSlug}`}
-          className="hover:text-brand-600 transition-colors"
+          className="hover:text-green-600 transition-colors"
         >
           {project.name}
         </Link>
@@ -150,7 +150,7 @@ export default async function InspectionGroupPage({
         <div className="flex items-center gap-3">
           <Link
             href={`/inspections/${projectId}?group=${groupSlug}`}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-green-700 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
             title={t("dashboard.backToProject")}
           >
             <svg
@@ -194,7 +194,7 @@ export default async function InspectionGroupPage({
         <div className="mt-6 flex justify-end">
           <Link
             href={`/inspections/${projectId}/groups/${nextGroupSlug}`}
-            className="px-4 py-2 bg-brand-600 text-white text-sm rounded-md hover:bg-brand-700 transition-colors"
+            className="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors"
           >
             {t("dashboard.nextLabel", { name: INSPECTION_GROUP_KEYS[nextGroupName] ? t(`inspection.sectionGroups.${INSPECTION_GROUP_KEYS[nextGroupName]}`) : nextGroupName })}
           </Link>

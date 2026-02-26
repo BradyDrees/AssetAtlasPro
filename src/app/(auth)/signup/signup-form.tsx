@@ -69,7 +69,7 @@ export function SignupForm() {
       <div>
         <label
           htmlFor="fullName"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-content-primary mb-1"
         >
           {t("auth.fullName")}
         </label>
@@ -79,13 +79,13 @@ export function SignupForm() {
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+          className="w-full px-3 py-2 border border-edge-primary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
         />
       </div>
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-content-primary mb-1"
         >
           {t("auth.email")}
         </label>
@@ -95,13 +95,13 @@ export function SignupForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+          className="w-full px-3 py-2 border border-edge-primary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
         />
       </div>
       <div>
         <label
           htmlFor="password"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-content-primary mb-1"
         >
           {t("auth.password")}
         </label>
@@ -112,9 +112,9 @@ export function SignupForm() {
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={6}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+          className="w-full px-3 py-2 border border-edge-primary rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
         />
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-content-tertiary mt-1">
           {t("auth.mustBe6Chars")}
         </p>
       </div>

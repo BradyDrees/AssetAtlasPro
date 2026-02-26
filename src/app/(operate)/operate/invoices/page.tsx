@@ -24,7 +24,7 @@ export default async function PmInvoicesPage() {
             const statusColor = INVOICE_STATUS_COLORS[inv.status as InvoiceStatus] ?? "";
             return (
               <Link key={inv.id} href={`/invoices/${inv.id}`}
-                className="block bg-surface-primary rounded-xl border border-edge-primary p-4 hover:border-brand-500/50 transition-colors">
+                className="block bg-surface-primary rounded-xl border border-edge-primary p-4 hover:border-green-500/50 transition-colors">
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div className="flex-1 min-w-0">
                     <span className="text-xs font-mono text-content-tertiary">{inv.invoice_number}</span>

@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 
 const statusStyles: Record<string, string> = {
   DRAFT: "bg-surface-tertiary text-content-tertiary",
-  IN_PROGRESS: "bg-brand-100 text-brand-700",
+  IN_PROGRESS: "bg-green-100 text-green-700",
   COMPLETE: "bg-green-100 text-green-700",
 };
 
@@ -150,16 +150,16 @@ export default async function InspectionDetailPage({
   return (
     <div>
       {/* Project header — gradient banner */}
-      <div className="bg-[radial-gradient(ellipse_at_top_left,_var(--brand-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--brand-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl mb-6">
+      <div className="bg-[radial-gradient(ellipse_at_top_left,_var(--color-green-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--color-green-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl mb-6">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-brand-300 mb-3">
+        <div className="flex items-center gap-2 text-sm text-green-300 mb-3">
           <Link
             href="/inspections"
             className="hover:text-white transition-colors"
           >
             {t("nav.inspections")}
           </Link>
-          <span className="text-brand-500">/</span>
+          <span className="text-green-500">/</span>
           <span className="text-white font-medium">{project.name}</span>
         </div>
 
@@ -198,9 +198,9 @@ export default async function InspectionDetailPage({
                   {t(`inspection.inspectionTypes.${project.inspection_type === "bank_ready" ? "bankReady" : "internal"}`)}
                 </span>
               </div>
-              <p className="text-brand-200 mt-1">{project.property_name}</p>
+              <p className="text-green-200 mt-1">{project.property_name}</p>
               {project.address && (
-                <p className="text-sm text-brand-300/70 mt-0.5">{project.address}</p>
+                <p className="text-sm text-green-300/70 mt-0.5">{project.address}</p>
               )}
             </div>
           </div>

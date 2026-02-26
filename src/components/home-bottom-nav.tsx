@@ -135,7 +135,7 @@ export function HomeBottomNav() {
             <Link
               key={tab.href}
               href={tab.href}
-              className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full text-[10px] font-medium transition-colors ${
+              className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full text-[11px] font-medium transition-colors ${
                 isActive ? "text-rose-600" : "text-content-tertiary"
               }`}
             >
@@ -150,7 +150,7 @@ export function HomeBottomNav() {
         {/* More button */}
         <button
           onClick={() => setMoreOpen(!moreOpen)}
-          className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full text-[10px] font-medium transition-colors ${
+          className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full text-[11px] font-medium transition-colors ${
             isMoreActive || moreOpen ? "text-rose-600" : "text-content-tertiary"
           }`}
         >

@@ -94,17 +94,17 @@ export default async function UnitTurnDetailPage({
   return (
     <div>
       {/* Header */}
-      <div className="bg-[radial-gradient(ellipse_at_top_left,_var(--brand-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--brand-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl mb-6">
+      <div className="bg-[radial-gradient(ellipse_at_top_left,_var(--color-green-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--color-green-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl mb-6">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-brand-300 mb-3">
+        <div className="flex items-center gap-2 text-sm text-green-300 mb-3">
           <Link href="/unit-turns" className="hover:text-white transition-colors">
             {t("nav.unitTurns")}
           </Link>
-          <span className="text-brand-500">/</span>
+          <span className="text-green-500">/</span>
           <Link href={`/unit-turns/${batchId}`} className="hover:text-white transition-colors">
             {batch.name}
           </Link>
-          <span className="text-brand-500">/</span>
+          <span className="text-green-500">/</span>
           <span className="text-white font-medium">{t("pdf.tableHeaders.unit")} {unit.unit_label}</span>
         </div>
 
@@ -122,12 +122,12 @@ export default async function UnitTurnDetailPage({
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-brand-300 bg-white/10 px-2 py-0.5 rounded">
+                <span className="text-xs font-medium text-green-300 bg-white/10 px-2 py-0.5 rounded">
                   {unit.property}
                 </span>
                 <h1 className="text-2xl font-bold text-white">{t("pdf.tableHeaders.unit")} {unit.unit_label}</h1>
               </div>
-              <p className="text-sm text-brand-300/70 mt-0.5">
+              <p className="text-sm text-green-300/70 mt-0.5">
                 {assessedItems}/{totalItems} {t("dashboard.itemsAssessed")} ({totalItems > 0 ? Math.round((assessedItems / totalItems) * 100) : 0}%)
               </p>
             </div>

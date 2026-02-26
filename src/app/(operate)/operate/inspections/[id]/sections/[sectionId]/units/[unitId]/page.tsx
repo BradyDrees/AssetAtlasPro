@@ -152,21 +152,21 @@ export default async function InspectionUnitPage({
       <div className="flex items-center gap-2 text-sm text-content-quaternary mb-4">
         <Link
           href="/inspections"
-          className="hover:text-brand-600 transition-colors"
+          className="hover:text-green-600 transition-colors"
         >
           {tn("inspections")}
         </Link>
         <span>/</span>
         <Link
           href={`/inspections/${projectId}?group=${groupSlug}`}
-          className="hover:text-brand-600 transition-colors"
+          className="hover:text-green-600 transition-colors"
         >
           {project.name}
         </Link>
         <span>/</span>
         <Link
           href={`/inspections/${projectId}/sections/${projectSectionId}`}
-          className="hover:text-brand-600 transition-colors"
+          className="hover:text-green-600 transition-colors"
         >
           {t.has(`inspection.inspSections.${nameToKey(ps.section.name)}`) ? t(`inspection.inspSections.${nameToKey(ps.section.name)}`) : ps.section.name}
         </Link>
@@ -181,7 +181,7 @@ export default async function InspectionUnitPage({
       <div className="flex items-center gap-3 mb-6">
         <Link
           href={`/inspections/${projectId}?group=${groupSlug}`}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-green-700 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
           title={t("backToProject")}
         >
           <svg
@@ -233,7 +233,7 @@ export default async function InspectionUnitPage({
           {nextUnit ? (
             <Link
               href={`/inspections/${projectId}/sections/${projectSectionId}/units/${nextUnit.id}`}
-              className="px-4 py-2 bg-brand-600 text-white text-sm rounded-md hover:bg-brand-700 transition-colors"
+              className="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors"
             >
               {(nextUnit as any).building} - {(nextUnit as any).unit_number} →
             </Link>

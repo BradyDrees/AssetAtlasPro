@@ -1,0 +1,13 @@
+{
+  "settings": "Configuraci\u00f3n",
+  "settingsDesc": "Administra tus preferencias de cuenta",
+  "language": "Idioma",
+  "english": "Ingl\u00e9s",
+  "spanish": "Espa\u00f1ol",
+  "theme": "Tema",
+  "light": "Claro",
+  "dark": "Oscuro",
+  "notifications": "Notificaciones",
+  "emailNotifications": "Notificaciones por correo",
+  "smsNotifications": "Notificaciones SMS"
+}

@@ -132,7 +132,7 @@ export default function NewWorkOrderPage() {
             <select
               value={vendorOrgId}
               onChange={(e) => setVendorOrgId(e.target.value)}
-              className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+              className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-green-500/40"
             >
               <option value="">Select vendor...</option>
               {vendors.map((v) => (
@@ -156,14 +156,14 @@ export default function NewWorkOrderPage() {
               value={propertyName}
               onChange={(e) => setPropertyName(e.target.value)}
               placeholder="Property Name"
-              className="p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+              className="p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-green-500/40"
             />
             <input
               type="text"
               value={unitNumber}
               onChange={(e) => setUnitNumber(e.target.value)}
               placeholder="Unit # (optional)"
-              className="p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+              className="p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-green-500/40"
             />
           </div>
           <input
@@ -171,7 +171,7 @@ export default function NewWorkOrderPage() {
             value={propertyAddress}
             onChange={(e) => setPropertyAddress(e.target.value)}
             placeholder="Property Address"
-            className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+            className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-green-500/40"
           />
         </div>
 
@@ -183,7 +183,7 @@ export default function NewWorkOrderPage() {
           <select
             value={trade}
             onChange={(e) => setTrade(e.target.value)}
-            className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+            className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-green-500/40"
           >
             <option value="">Select trade...</option>
             {TRADES.map((t) => (
@@ -197,7 +197,7 @@ export default function NewWorkOrderPage() {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Job description — what needs to be done?"
             rows={3}
-            className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+            className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-green-500/40"
           />
           <div className="grid md:grid-cols-2 gap-3">
             <div>
@@ -207,7 +207,7 @@ export default function NewWorkOrderPage() {
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as WoPriority)}
-                className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+                className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-green-500/40"
               >
                 <option value="normal">Normal</option>
                 <option value="urgent">Urgent</option>
@@ -222,7 +222,7 @@ export default function NewWorkOrderPage() {
                 type="date"
                 value={scheduledDate}
                 onChange={(e) => setScheduledDate(e.target.value)}
-                className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+                className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-green-500/40"
               />
             </div>
           </div>
@@ -237,7 +237,7 @@ export default function NewWorkOrderPage() {
             <select
               value={budgetType}
               onChange={(e) => setBudgetType(e.target.value as WoBudgetType | "")}
-              className="p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+              className="p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-green-500/40"
             >
               <option value="">No budget set</option>
               <option value="nte">Not-to-Exceed (NTE)</option>
@@ -252,7 +252,7 @@ export default function NewWorkOrderPage() {
                 placeholder="$ Amount"
                 min="0"
                 step="0.01"
-                className="p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+                className="p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-green-500/40"
               />
             )}
           </div>
@@ -268,14 +268,14 @@ export default function NewWorkOrderPage() {
             onChange={(e) => setPmNotes(e.target.value)}
             placeholder="Notes for the vendor (visible to them)"
             rows={2}
-            className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+            className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-green-500/40"
           />
           <textarea
             value={accessNotes}
             onChange={(e) => setAccessNotes(e.target.value)}
             placeholder="Access instructions (gate codes, lockbox, etc.)"
             rows={2}
-            className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+            className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-green-500/40"
           />
         </div>
 
@@ -290,14 +290,14 @@ export default function NewWorkOrderPage() {
               value={tenantName}
               onChange={(e) => setTenantName(e.target.value)}
               placeholder="Tenant name"
-              className="p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+              className="p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-green-500/40"
             />
             <input
               type="tel"
               value={tenantPhone}
               onChange={(e) => setTenantPhone(e.target.value)}
               placeholder="Tenant phone"
-              className="p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+              className="p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-green-500/40"
             />
           </div>
         </div>
@@ -306,7 +306,7 @@ export default function NewWorkOrderPage() {
         <button
           type="submit"
           disabled={loading || !vendorOrgId}
-          className="w-full py-3 rounded-xl text-sm font-semibold bg-brand-600 hover:bg-brand-700 text-white disabled:opacity-50 transition-colors"
+          className="w-full py-3 rounded-xl text-sm font-semibold bg-green-600 hover:bg-green-700 text-white disabled:opacity-50 transition-colors"
         >
           {loading ? "Creating..." : "Create Work Order"}
         </button>

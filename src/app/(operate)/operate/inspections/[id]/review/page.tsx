@@ -17,8 +17,8 @@ export const dynamic = "force-dynamic";
 
 const statusStyles: Record<string, string> = {
   DRAFT: "bg-charcoal-100 text-charcoal-600",
-  IN_PROGRESS: "bg-brand-100 text-brand-700",
-  COMPLETE: "bg-brand-100 text-brand-800",
+  IN_PROGRESS: "bg-green-100 text-green-700",
+  COMPLETE: "bg-green-100 text-green-800",
 };
 
 export default async function InspectionReviewPage({
@@ -136,7 +136,7 @@ export default async function InspectionReviewPage({
   return (
     <div>
       {/* Header — gradient banner */}
-      <div className="bg-[radial-gradient(ellipse_at_top_left,_var(--brand-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--brand-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl mb-6">
+      <div className="bg-[radial-gradient(ellipse_at_top_left,_var(--color-green-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--color-green-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-5 md:px-6 rounded-b-xl mb-6">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-charcoal-400 mb-3">
           <Link
@@ -181,7 +181,7 @@ export default async function InspectionReviewPage({
               {t("dashboard.reviewAndExport")}
             </h1>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-brand-200">
+              <span className="text-green-200">
                 {project.name} — {project.property_name}
               </span>
               <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-white/20 text-white">

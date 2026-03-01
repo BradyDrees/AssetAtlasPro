@@ -11,5 +11,9 @@
   "switchTo": "Switch to {tier}",
   "openMenu": "Open menu",
   "closeMenu": "Close menu",
-  "savedVendors": "Saved Vendors"
+  "savedVendors": "Saved Vendors",
+  "notifications": "Notifications",
+  "markAllRead": "Mark all read",
+  "noNotifications": "No notifications yet",
+  "projects": "Projects"
 }

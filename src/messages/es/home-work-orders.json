@@ -74,5 +74,21 @@
   "trade": "Oficio",
   "urgencyLabel": "Urgencia",
   "vendor": "Proveedor",
-  "noVendorYet": "Pendiente de asignación de proveedor"
+  "noVendorYet": "Pendiente de asignación de proveedor",
+  "photos": "Fotos",
+  "noPhotos": "Sin fotos adjuntas",
+  "takePhoto": "Tomar Foto",
+  "chooseFromGallery": "Elegir de Galería",
+  "photosAttached": "{count} foto(s) adjunta(s)",
+  "removePhoto": "Eliminar",
+  "compressingPhotos": "Comprimiendo fotos...",
+  "minCharacters": "caracteres mínimos",
+  "requestEstimate": "Solicitar Presupuesto",
+  "requestEstimateDesc": "Obtener un precio antes de que comience el trabajo",
+  "viewProfile": "Ver Perfil",
+  "browseVendors": "Buscar Proveedores",
+  "matching": "Buscando un proveedor...",
+  "open": "Abierta",
+  "noMatch": "Sin Coincidencia",
+  "donePendingApproval": "Pendiente de Aprobación"
 }

@@ -187,6 +187,80 @@ export function invoiceDisputedEmail(params: {
   };
 }
 
+// ─── Homeowner: WO Submitted ───
+export function woSubmittedEmail(params: {
+  homeownerName: string;
+  trade: string;
+  woUrl: string;
+}): { subject: string; html: string } {
+  return {
+    subject: "Your work order has been submitted",
+    html: baseTemplate(
+      "Work Order Submitted",
+      `<p>Hi ${params.homeownerName},</p>
+       <p>Your <strong>${params.trade}</strong> work order has been submitted. We're matching you with a vendor now.</p>`,
+      params.woUrl,
+      "View Work Order"
+    ),
+  };
+}
+
+// ─── Homeowner: Vendor Accepted ───
+export function woAcceptedEmail(params: {
+  homeownerName: string;
+  vendorName: string;
+  trade: string;
+  woUrl: string;
+}): { subject: string; html: string } {
+  return {
+    subject: `${params.vendorName} accepted your work order`,
+    html: baseTemplate(
+      "Vendor Accepted",
+      `<p>Hi ${params.homeownerName},</p>
+       <p><strong>${params.vendorName}</strong> has accepted your <strong>${params.trade}</strong> work order. They'll be in touch soon to schedule.</p>`,
+      params.woUrl,
+      "View Work Order"
+    ),
+  };
+}
+
+// ─── Homeowner: Work Completed ───
+export function woCompletedEmail(params: {
+  homeownerName: string;
+  vendorName: string;
+  trade: string;
+  woUrl: string;
+}): { subject: string; html: string } {
+  return {
+    subject: `${params.vendorName} completed your work order`,
+    html: baseTemplate(
+      "Work Completed",
+      `<p>Hi ${params.homeownerName},</p>
+       <p><strong>${params.vendorName}</strong> has completed the <strong>${params.trade}</strong> work. Please review and rate their service.</p>`,
+      params.woUrl,
+      "Review & Rate"
+    ),
+  };
+}
+
+// ─── Homeowner: Vendor Declined (cascade) ───
+export function woDeclinedCascadeEmail(params: {
+  homeownerName: string;
+  trade: string;
+  woUrl: string;
+}): { subject: string; html: string } {
+  return {
+    subject: "We're finding you another vendor",
+    html: baseTemplate(
+      "Finding Another Vendor",
+      `<p>Hi ${params.homeownerName},</p>
+       <p>The vendor for your <strong>${params.trade}</strong> work order was unable to take the job. We're automatically reaching out to the next best match.</p>`,
+      params.woUrl,
+      "View Work Order"
+    ),
+  };
+}
+
 // ─── New Chat Message (notify recipient) ───
 export function newChatMessageEmail(params: {
   recipientName: string;

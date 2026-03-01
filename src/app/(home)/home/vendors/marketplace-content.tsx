@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useSearchParams, useRouter } from "next/navigation";
+import { assignVendorToWo } from "@/app/actions/home-work-orders";
 
 interface VendorOrg {
   id: string;
@@ -27,11 +29,25 @@ const RESPONSE_TIME_LABELS: Record<string, string> = {
 
 export function VendorMarketplaceContent({ vendors }: { vendors: VendorOrg[] }) {
   const t = useTranslations("home.vendors");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const woId = searchParams.get("wo");
   const [search, setSearch] = useState("");
   const [tradeFilter, setTradeFilter] = useState<string>("");
   const [showFilters, setShowFilters] = useState(false);
   const [minRating, setMinRating] = useState(false);
   const [emergencyOnly, setEmergencyOnly] = useState(false);
+
+  function handleSelectForWO(vendorId: string) {
+    if (!woId) return;
+    startTransition(async () => {
+      const result = await assignVendorToWo(woId, vendorId);
+      if (result.success) {
+        router.push(`/home/work-orders/${woId}`);
+      }
+    });
+  }
 
   // Collect all unique trades
   const allTrades = Array.from(new Set(vendors.flatMap((v) => v.trades))).sort();
@@ -47,6 +63,16 @@ export function VendorMarketplaceContent({ vendors }: { vendors: VendorOrg[] }) 
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
+      {/* WO assignment banner */}
+      {woId && (
+        <div className="bg-rose-500/10 border border-rose-500/30 rounded-xl p-4 flex items-center justify-between">
+          <p className="text-sm text-rose-300 font-medium">{t("selectVendorForWO")}</p>
+          <Link href={`/home/work-orders/${woId}`} className="text-xs text-content-quaternary hover:text-content-tertiary">
+            {t("cancel")}
+          </Link>
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-content-primary">{t("title")}</h1>
@@ -132,14 +158,9 @@ export function VendorMarketplaceContent({ vendors }: { vendors: VendorOrg[] }) 
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filtered.map((vendor) => (
-            <Link
-              key={vendor.id}
-              href={`/home/vendors/${vendor.id}`}
-              className="bg-surface-primary rounded-xl border border-edge-primary p-5 hover:border-rose-500/30 transition-colors"
-            >
+          {filtered.map((vendor) => {
+            const cardContent = (
               <div className="flex items-start gap-4">
-                {/* Logo/avatar */}
                 <div className="w-12 h-12 rounded-lg bg-rose-500/10 flex items-center justify-center flex-shrink-0">
                   {vendor.logo_url ? (
                     <img src={vendor.logo_url} alt="" className="w-full h-full object-cover rounded-lg" />
@@ -181,10 +202,36 @@ export function VendorMarketplaceContent({ vendors }: { vendors: VendorOrg[] }) 
                   {vendor.city && (
                     <p className="text-xs text-content-quaternary mt-1">{vendor.city}, {vendor.state}</p>
                   )}
+                  {woId && (
+                    <button
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleSelectForWO(vendor.id); }}
+                      disabled={isPending}
+                      className="mt-3 w-full px-3 py-2 bg-rose-600 hover:bg-rose-700 disabled:bg-charcoal-700 text-white text-xs font-medium rounded-lg transition-colors"
+                    >
+                      {isPending ? t("assigning") : t("selectForWO")}
+                    </button>
+                  )}
                 </div>
               </div>
-            </Link>
-          ))}
+            );
+
+            return woId ? (
+              <div
+                key={vendor.id}
+                className="bg-surface-primary rounded-xl border border-edge-primary p-5 hover:border-rose-500/30 transition-colors"
+              >
+                {cardContent}
+              </div>
+            ) : (
+              <Link
+                key={vendor.id}
+                href={`/home/vendors/${vendor.id}`}
+                className="bg-surface-primary rounded-xl border border-edge-primary p-5 hover:border-rose-500/30 transition-colors"
+              >
+                {cardContent}
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>

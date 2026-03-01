@@ -22,7 +22,18 @@ interface WorkOrder {
   completion_notes: string | null;
 }
 
+interface VendorOrgInfo {
+  id: string;
+  name: string;
+  avg_rating: number;
+  total_ratings: number;
+  logo_url: string | null;
+}
+
 const STATUS_COLORS: Record<string, string> = {
+  open: "bg-sky-500/20 text-sky-400 border-sky-500/30",
+  matching: "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
+  no_match: "bg-orange-500/20 text-orange-400 border-orange-500/30",
   assigned: "bg-blue-500/20 text-blue-400 border-blue-500/30",
   accepted: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
   scheduled: "bg-purple-500/20 text-purple-400 border-purple-500/30",
@@ -32,11 +43,19 @@ const STATUS_COLORS: Record<string, string> = {
   paid: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
   declined: "bg-red-500/20 text-red-400 border-red-500/30",
   on_hold: "bg-charcoal-500/20 text-charcoal-400 border-charcoal-500/30",
+  done_pending_approval: "bg-lime-500/20 text-lime-400 border-lime-500/30",
 };
 
 const TIMELINE_STATUSES = ["assigned", "accepted", "scheduled", "in_progress", "completed"];
 
-export function WorkOrderDetailContent({ workOrder }: { workOrder: WorkOrder }) {
+interface WoPhoto {
+  id: string;
+  storage_path: string;
+  sort_order: number;
+  url: string | null;
+}
+
+export function WorkOrderDetailContent({ workOrder, photos, vendorOrg }: { workOrder: WorkOrder; photos: WoPhoto[]; vendorOrg?: VendorOrgInfo | null }) {
   const t = useTranslations("home.workOrders");
   const router = useRouter();
   const [rating, setRating] = useState(0);
@@ -94,7 +113,7 @@ export function WorkOrderDetailContent({ workOrder }: { workOrder: WorkOrder }) 
           </div>
           <div>
             <p className="text-xs text-content-quaternary">{t("vendor")}</p>
-            <p className="text-sm text-content-primary">{workOrder.vendor_org_id ? "Assigned" : t("noVendorYet")}</p>
+            <p className="text-sm text-content-primary">{vendorOrg ? vendorOrg.name : t("noVendorYet")}</p>
           </div>
         </div>
         {workOrder.description && (
@@ -104,6 +123,68 @@ export function WorkOrderDetailContent({ workOrder }: { workOrder: WorkOrder }) 
           </div>
         )}
       </div>
+
+      {/* Vendor Info Card */}
+      {vendorOrg ? (
+        <div className="bg-surface-primary rounded-xl border border-edge-primary p-6">
+          <h2 className="text-lg font-semibold text-content-primary mb-4">{t("vendor")}</h2>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-lg bg-rose-500/10 flex items-center justify-center flex-shrink-0">
+              {vendorOrg.logo_url ? (
+                <img src={vendorOrg.logo_url} alt="" className="w-full h-full object-cover rounded-lg" />
+              ) : (
+                <span className="text-lg font-bold text-rose-400">{vendorOrg.name.charAt(0)}</span>
+              )}
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-content-primary">{vendorOrg.name}</p>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-amber-400 text-xs">★</span>
+                <span className="text-xs text-content-primary font-medium">
+                  {vendorOrg.avg_rating > 0 ? vendorOrg.avg_rating.toFixed(1) : "—"}
+                </span>
+                <span className="text-xs text-content-quaternary">({vendorOrg.total_ratings})</span>
+              </div>
+            </div>
+            <Link
+              href={`/home/vendors/${vendorOrg.id}`}
+              className="text-xs text-rose-500 hover:text-rose-400 font-medium"
+            >
+              {t("viewProfile")}
+            </Link>
+          </div>
+        </div>
+      ) : ["open", "no_match"].includes(workOrder.status) ? (
+        <div className="bg-surface-primary rounded-xl border border-edge-primary p-6 text-center">
+          <p className="text-sm text-content-tertiary mb-3">{t("noVendorYet")}</p>
+          <Link
+            href={`/home/vendors?wo=${workOrder.id}`}
+            className="inline-block px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-sm font-medium rounded-lg transition-colors"
+          >
+            {t("browseVendors")}
+          </Link>
+        </div>
+      ) : null}
+
+      {/* Photos */}
+      {photos.length > 0 && (
+        <div className="bg-surface-primary rounded-xl border border-edge-primary p-6">
+          <h2 className="text-lg font-semibold text-content-primary mb-4">{t("photos")}</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {photos.map((photo) =>
+              photo.url ? (
+                <a key={photo.id} href={photo.url} target="_blank" rel="noopener noreferrer" className="block">
+                  <img
+                    src={photo.url}
+                    alt=""
+                    className="w-full aspect-square object-cover rounded-lg border border-edge-secondary"
+                  />
+                </a>
+              ) : null
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Timeline */}
       <div className="bg-surface-primary rounded-xl border border-edge-primary p-6">

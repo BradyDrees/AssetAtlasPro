@@ -9,5 +9,9 @@
   "dark": "Oscuro",
   "notifications": "Notificaciones",
   "emailNotifications": "Notificaciones por correo",
-  "smsNotifications": "Notificaciones SMS"
+  "smsNotifications": "Notificaciones SMS",
+  "subscription": "Suscripción y Fondo",
+  "subscriptionLink": "Administra planes y fondo de mantenimiento",
+  "matching": "Emparejamiento de Proveedores",
+  "matchingLink": "Configura preferencias de emparejamiento"
 }

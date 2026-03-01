@@ -74,5 +74,21 @@
   "trade": "Trade",
   "urgencyLabel": "Urgency",
   "vendor": "Vendor",
-  "noVendorYet": "Pending vendor assignment"
+  "noVendorYet": "Pending vendor assignment",
+  "photos": "Photos",
+  "noPhotos": "No photos attached",
+  "takePhoto": "Take Photo",
+  "chooseFromGallery": "Choose from Gallery",
+  "photosAttached": "{count} photo(s) attached",
+  "removePhoto": "Remove",
+  "compressingPhotos": "Compressing photos...",
+  "minCharacters": "min characters",
+  "requestEstimate": "Request Estimate",
+  "requestEstimateDesc": "Get a price quote before work begins",
+  "viewProfile": "View Profile",
+  "browseVendors": "Browse Vendors",
+  "matching": "Finding a vendor...",
+  "open": "Open",
+  "noMatch": "No Match",
+  "donePendingApproval": "Pending Approval"
 }

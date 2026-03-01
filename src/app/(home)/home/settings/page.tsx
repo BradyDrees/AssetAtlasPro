@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/components/theme-provider";
 import { useAppLocale } from "@/components/locale-provider";
@@ -14,6 +15,46 @@ export default function HomeSettingsPage() {
       <div>
         <h1 className="text-2xl font-bold text-content-primary">{t("settings")}</h1>
         <p className="text-sm text-content-tertiary mt-1">{t("settingsDesc")}</p>
+      </div>
+
+      {/* Quick links */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <Link
+          href="/home/settings/subscription"
+          className="bg-surface-primary border border-edge-primary rounded-xl p-5 hover:border-rose-500/30 transition-colors group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center">
+              <svg className="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-medium text-content-primary group-hover:text-rose-500 transition-colors">
+                {t("subscription")}
+              </p>
+              <p className="text-xs text-content-tertiary">{t("subscriptionLink")}</p>
+            </div>
+          </div>
+        </Link>
+        <Link
+          href="/home/settings/matching"
+          className="bg-surface-primary border border-edge-primary rounded-xl p-5 hover:border-rose-500/30 transition-colors group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center">
+              <svg className="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-medium text-content-primary group-hover:text-rose-500 transition-colors">
+                {t("matching")}
+              </p>
+              <p className="text-xs text-content-tertiary">{t("matchingLink")}</p>
+            </div>
+          </div>
+        </Link>
       </div>
 
       {/* Language */}

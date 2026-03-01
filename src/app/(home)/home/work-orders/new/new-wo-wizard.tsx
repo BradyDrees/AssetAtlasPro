@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { createHomeWorkOrder } from "@/app/actions/home-work-orders";
+import { createHomeWorkOrder, uploadWorkOrderPhotos } from "@/app/actions/home-work-orders";
+import { WoPhotoUpload } from "@/components/home/wo-photo-upload";
 
 type Trade = "plumbing" | "electrical" | "hvac" | "appliance" | "general" | "structural" | "pest" | "cleaning" | "landscaping" | "other";
 type Urgency = "emergency" | "urgent" | "routine" | "whenever";
@@ -37,6 +38,8 @@ export function NewWorkOrderWizard({ propertyId, propertyAddress }: NewWorkOrder
   const [description, setDescription] = useState("");
   const [urgency, setUrgency] = useState<Urgency | null>(null);
   const [vendorMode, setVendorMode] = useState<VendorMode | null>(null);
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [requestEstimate, setRequestEstimate] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -60,9 +63,17 @@ export function NewWorkOrderWizard({ propertyId, propertyAddress }: NewWorkOrder
         urgency,
         vendor_selection_mode: vendorMode,
         homeowner_property_id: propertyId,
+        request_estimate: requestEstimate,
       });
 
-      if (result.success) {
+      if (result.success && result.id) {
+        // Upload photos if any
+        if (photos.length > 0) {
+          const formData = new FormData();
+          formData.append("work_order_id", result.id);
+          photos.forEach((photo, i) => formData.append(`photo_${i}`, photo));
+          await uploadWorkOrderPhotos(formData);
+        }
         router.push("/home/work-orders");
       } else {
         setError(result.error ?? "Something went wrong");
@@ -133,7 +144,12 @@ export function NewWorkOrderWizard({ propertyId, propertyAddress }: NewWorkOrder
               className="w-full px-4 py-3 bg-surface-secondary border border-edge-secondary rounded-lg text-content-primary text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 resize-none"
               placeholder={t("descriptionPlaceholder")}
             />
-            <p className="text-xs text-content-quaternary mt-2">{t("photosRequired")}</p>
+            <div className="flex justify-end mt-1.5">
+              <span className={`text-xs ${description.trim().length >= 10 ? "text-green-400" : "text-content-quaternary"}`}>
+                {description.trim().length} / 10 {t("minCharacters")}
+              </span>
+            </div>
+            <WoPhotoUpload photos={photos} onPhotosChange={setPhotos} />
           </div>
         )}
 
@@ -164,6 +180,30 @@ export function NewWorkOrderWizard({ propertyId, propertyAddress }: NewWorkOrder
                 </button>
               ))}
             </div>
+
+            {/* Request Estimate toggle */}
+            <button
+              onClick={() => setRequestEstimate((v) => !v)}
+              className={`w-full flex items-center gap-3 p-4 rounded-xl border transition-all mt-4 ${
+                requestEstimate
+                  ? "border-rose-500 bg-rose-500/10"
+                  : "border-edge-secondary bg-surface-secondary hover:border-edge-primary"
+              }`}
+            >
+              <div className={`w-5 h-5 rounded flex-shrink-0 border-2 flex items-center justify-center transition-colors ${
+                requestEstimate ? "border-rose-500 bg-rose-500" : "border-edge-secondary"
+              }`}>
+                {requestEstimate && (
+                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                )}
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-semibold text-content-primary">{t("requestEstimate")}</p>
+                <p className="text-xs text-content-tertiary mt-0.5">{t("requestEstimateDesc")}</p>
+              </div>
+            </button>
           </div>
         )}
 

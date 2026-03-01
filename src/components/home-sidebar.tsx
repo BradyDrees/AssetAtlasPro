@@ -8,6 +8,7 @@ import { signOut } from "@/app/actions/auth";
 import { useTheme } from "@/components/theme-provider";
 import { useAppLocale } from "@/components/locale-provider";
 import { TierSwitcher } from "@/components/tier-switcher";
+import { NotificationBell } from "@/components/vendor/notification-bell";
 import type { User } from "@supabase/supabase-js";
 
 function SombreroIcon({ className }: { className?: string }) {
@@ -61,6 +62,14 @@ function BuildingIcon() {
   );
 }
 
+function FolderIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+    </svg>
+  );
+}
+
 function CogIcon() {
   return (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -89,6 +98,7 @@ export function HomeSidebar({ user, hasVendorRole = false, hasPmRole = false }: 
     { href: "/home/dashboard", label: ht("dashboard"), icon: <DashboardIcon />, matchExact: true },
     { href: "/home/work-orders", label: ht("workOrders"), icon: <WrenchIcon />, matchExact: false },
     { href: "/home/vendors", label: ht("vendors"), icon: <StarIcon />, matchExact: false },
+    { href: "/home/projects", label: ht("projects"), icon: <FolderIcon />, matchExact: false },
     { href: "/home/messages", label: ht("messages"), icon: <ChatBubbleIcon />, matchExact: false },
     { href: "/home/property", label: ht("property"), icon: <BuildingIcon />, matchExact: false },
     { href: "/home/settings", label: ht("settings"), icon: <CogIcon />, matchExact: false },
@@ -148,8 +158,9 @@ export function HomeSidebar({ user, hasVendorRole = false, hasPmRole = false }: 
             </Link>
           )}
 
-          {/* Desktop collapse toggle */}
+          {/* Notification bell + Desktop collapse toggle */}
           <div className="flex items-center gap-1">
+            {!collapsed && <NotificationBell namespace="home.nav" />}
             <button
               onClick={() => setCollapsed(!collapsed)}
               className="hidden md:flex p-1.5 text-charcoal-400 hover:text-white hover:bg-charcoal-700 rounded transition-colors"

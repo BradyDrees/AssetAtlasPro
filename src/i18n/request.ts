@@ -39,6 +39,10 @@ export default getRequestConfig(async () => {
   const homeVendors = (await import(`../messages/${locale}/home-vendors.json`)).default;
   const homeMessages = (await import(`../messages/${locale}/home-messages.json`)).default;
   const homeDisputes = (await import(`../messages/${locale}/home-disputes.json`)).default;
+  const homeProjects = (await import(`../messages/${locale}/home-projects.json`)).default;
+  const homeSettings = (await import(`../messages/${locale}/home-settings.json`)).default;
+  const homeSubscription = (await import(`../messages/${locale}/home-subscription.json`)).default;
+  const homeMatching = (await import(`../messages/${locale}/home-matching.json`)).default;
 
   const messages = {
     ...base,
@@ -65,6 +69,10 @@ export default getRequestConfig(async () => {
       vendors: homeVendors,
       messages: homeMessages,
       disputes: homeDisputes,
+      projects: homeProjects,
+      settings: homeSettings,
+      subscription: homeSubscription,
+      matching: homeMatching,
     },
   };
 

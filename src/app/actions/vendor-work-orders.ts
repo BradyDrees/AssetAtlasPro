@@ -105,10 +105,10 @@ export async function updateWorkOrderStatus(
 
   if (!user) return { error: "Not authenticated" };
 
-  // Fetch current WO
+  // Fetch current WO (include fields needed for homeowner notifications + cascade)
   const { data: wo, error: fetchError } = await supabase
     .from("vendor_work_orders")
-    .select("id, status, vendor_org_id, pm_user_id")
+    .select("id, status, vendor_org_id, pm_user_id, homeowner_id, urgency, source_type, trade, description, project_id, sequence_order, platform_fee_pct, homeowner_property_id")
     .eq("id", woId)
     .single();
 
@@ -183,17 +183,158 @@ export async function updateWorkOrderStatus(
     metadata: { extra },
   });
 
-  // Create notification for the PM
-  await supabase.from("vendor_notifications").insert({
-    user_id: wo.pm_user_id,
-    type: "wo_status_changed",
-    title: `Work order status: ${newStatus.replace(/_/g, " ")}`,
-    body: newStatus === "declined"
-      ? `Vendor declined: ${extra?.decline_reason || "No reason given"}`
-      : `Work order has been updated to ${newStatus.replace(/_/g, " ")}`,
-    reference_type: "work_order",
-    reference_id: woId,
-  });
+  // Create notification for the PM (if PM-routed)
+  if (wo.pm_user_id) {
+    await supabase.from("vendor_notifications").insert({
+      user_id: wo.pm_user_id,
+      type: "wo_status_changed",
+      title: `Work order status: ${newStatus.replace(/_/g, " ")}`,
+      body: newStatus === "declined"
+        ? `Vendor declined: ${extra?.decline_reason || "No reason given"}`
+        : `Work order has been updated to ${newStatus.replace(/_/g, " ")}`,
+      reference_type: "work_order",
+      reference_id: woId,
+    });
+  }
+
+  // Homeowner notifications + decline cascade (only for homeowner-submitted WOs)
+  if (wo.homeowner_id) {
+    const { notifyHomeownerStatusChange } = await import("./home-wo-notifications");
+
+    // Get vendor org name for notification body
+    let vendorOrgName: string | null = null;
+    if (wo.vendor_org_id) {
+      const { data: org } = await supabase
+        .from("vendor_organizations")
+        .select("name")
+        .eq("id", wo.vendor_org_id)
+        .single();
+      vendorOrgName = org?.name ?? null;
+    }
+
+    await notifyHomeownerStatusChange({
+      homeownerId: wo.homeowner_id,
+      woId,
+      newStatus,
+      vendorOrgName,
+    });
+
+    // Cascade on decline — only for client_request/project_trade WOs
+    if (
+      newStatus === "declined" &&
+      wo.source_type &&
+      ["client_request", "project_trade"].includes(wo.source_type)
+    ) {
+      const { cascadeNextMatch } = await import("@/lib/vendor/match-vendor");
+      const urgency = (wo.urgency ?? "routine") as "emergency" | "urgent" | "routine" | "flexible";
+
+      // Mark current match attempt as declined
+      await supabase
+        .from("vendor_match_attempts")
+        .update({ status: "declined", responded_at: new Date().toISOString() })
+        .eq("work_order_id", woId)
+        .eq("vendor_org_id", wo.vendor_org_id)
+        .eq("status", "notified");
+
+      const { advanced, vendorOrgId } = await cascadeNextMatch(woId, urgency);
+
+      if (advanced && vendorOrgId) {
+        // Update the WO with the new vendor
+        const { notifyVendorNewWO } = await import("./home-wo-notifications");
+        await notifyVendorNewWO({
+          woId,
+          vendorOrgId,
+          trade: wo.trade ?? "",
+          description: wo.description ?? "",
+          urgency: wo.urgency ?? "routine",
+        });
+      }
+    }
+
+    // WO completion payment — calculate payout and set warranty
+    if (newStatus === "completed" && wo.homeowner_id) {
+      try {
+        // Calculate vendor payout from materials total minus platform fee
+        const { data: materials } = await supabase
+          .from("vendor_wo_materials")
+          .select("total")
+          .eq("work_order_id", woId);
+
+        const materialTotal = (materials ?? []).reduce(
+          (sum: number, m: { total: number | null }) => sum + (Number(m.total) || 0),
+          0
+        );
+
+        const platformFeePct = Number(wo.platform_fee_pct ?? 5);
+        const platformFee = Math.round(materialTotal * (platformFeePct / 100) * 100) / 100;
+        const vendorPayout = Math.round((materialTotal - platformFee) * 100) / 100;
+
+        // Set warranty expiration from subscription plan
+        let warrantyExpiresAt: string | null = null;
+        if (wo.homeowner_property_id) {
+          const { data: sub } = await supabase
+            .from("subscriptions")
+            .select("plan")
+            .eq("user_id", wo.homeowner_id)
+            .eq("property_id", wo.homeowner_property_id)
+            .eq("status", "active")
+            .maybeSingle();
+
+          if (sub?.plan) {
+            const { SUBSCRIPTION_PLANS } = await import("@/lib/subscription-plans");
+            const planKey = sub.plan as keyof typeof SUBSCRIPTION_PLANS;
+            const warrantyDays = SUBSCRIPTION_PLANS[planKey]?.warranty_days ?? 30;
+            const expiry = new Date();
+            expiry.setDate(expiry.getDate() + warrantyDays);
+            warrantyExpiresAt = expiry.toISOString();
+          }
+        }
+
+        await supabase
+          .from("vendor_work_orders")
+          .update({
+            platform_fee_amount: platformFee,
+            vendor_payout_amount: vendorPayout,
+            ...(warrantyExpiresAt ? { warranty_expires_at: warrantyExpiresAt } : {}),
+          })
+          .eq("id", woId);
+
+        // Attempt Stripe transfer to vendor (if connected account exists)
+        if (vendorPayout > 0 && wo.vendor_org_id) {
+          const { isStripeConfigured } = await import("@/lib/stripe/stripe-client");
+          if (isStripeConfigured()) {
+            const { data: vendorOrg } = await supabase
+              .from("vendor_organizations")
+              .select("stripe_account_id")
+              .eq("id", wo.vendor_org_id)
+              .single();
+
+            if (vendorOrg?.stripe_account_id) {
+              const { transferToVendor } = await import("@/lib/stripe/transfer-to-vendor");
+              await transferToVendor({
+                stripeAccountId: vendorOrg.stripe_account_id,
+                amountCents: Math.round(vendorPayout * 100),
+                description: `Work order payment - ${wo.trade ?? "service"}`,
+                woId,
+              });
+            }
+          }
+        }
+      } catch (payErr) {
+        console.error("WO completion payment error:", payErr);
+      }
+    }
+
+    // Project trade activation — when a project WO completes, activate dependent trades
+    if (newStatus === "completed" && wo.project_id && wo.sequence_order != null) {
+      try {
+        const { activateNextTrades } = await import("./home-projects");
+        await activateNextTrades(wo.project_id, wo.sequence_order);
+      } catch (err) {
+        console.error("Failed to activate next project trades:", err);
+      }
+    }
+  }
 
   return {};
 }

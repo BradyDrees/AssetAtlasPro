@@ -31,5 +31,9 @@
   "responseTimeLabel": "Tiempo de Respuesta",
   "contact": "Contacto",
   "portfolio": "Portafolio",
-  "back": "Atrás"
+  "back": "Atrás",
+  "selectVendorForWO": "Seleccione un proveedor para su orden de trabajo",
+  "selectForWO": "Seleccionar para Orden",
+  "assigning": "Asignando...",
+  "cancel": "Cancelar"
 }

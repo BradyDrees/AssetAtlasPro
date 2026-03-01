@@ -9,5 +9,9 @@
   "dark": "Dark",
   "notifications": "Notifications",
   "emailNotifications": "Email Notifications",
-  "smsNotifications": "SMS Notifications"
+  "smsNotifications": "SMS Notifications",
+  "subscription": "Subscription & Pool",
+  "subscriptionLink": "Manage plans and maintenance pool",
+  "matching": "Vendor Matching",
+  "matchingLink": "Set vendor matching preferences"
 }

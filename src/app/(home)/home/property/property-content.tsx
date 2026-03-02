@@ -4,6 +4,8 @@ import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { updateProperty } from "@/app/actions/home-property";
+import type { PropertySystemPhotoRow, SystemType } from "@/lib/home/system-types";
+import { SystemPhotoSection } from "@/components/home/system-photo-section";
 
 interface PropertyData {
   id: string;
@@ -32,12 +34,59 @@ interface PropertyData {
 
 interface PropertyContentProps {
   property: PropertyData | null;
+  photosBySystem: Partial<Record<SystemType, PropertySystemPhotoRow[]>>;
 }
 
-export function PropertyContent({ property }: PropertyContentProps) {
+// System card definition
+interface SystemCardDef {
+  type: SystemType;
+  labelKey: string;
+  icon: string;
+  fields: { name: string; labelKey: string; inputType: "text" | "number"; suffix?: string }[];
+}
+
+const SYSTEM_CARDS: SystemCardDef[] = [
+  {
+    type: "hvac",
+    labelKey: "systemHvac",
+    icon: "M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636",
+    fields: [
+      { name: "hvac_model", labelKey: "hvacModel", inputType: "text" },
+      { name: "hvac_age", labelKey: "hvacAge", inputType: "number", suffix: "yrs" },
+    ],
+  },
+  {
+    type: "water_heater",
+    labelKey: "systemWaterHeater",
+    icon: "M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 6.51 6.51 0 009 11.5a3 3 0 103.976-2.84",
+    fields: [
+      { name: "water_heater_type", labelKey: "waterHeaterType", inputType: "text" },
+      { name: "water_heater_age", labelKey: "waterHeaterAge", inputType: "number", suffix: "yrs" },
+    ],
+  },
+  {
+    type: "electrical_panel",
+    labelKey: "systemElectrical",
+    icon: "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75",
+    fields: [
+      { name: "electrical_panel", labelKey: "electricalPanel", inputType: "text" },
+    ],
+  },
+  {
+    type: "roof",
+    labelKey: "systemRoof",
+    icon: "M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1m1.5.5l-1.5-.5M6.75 7.364V3h-3v18m3-13.636l10.5-3.819",
+    fields: [
+      { name: "roof_material", labelKey: "roofMaterial", inputType: "text" },
+      { name: "roof_age", labelKey: "roofAge", inputType: "number", suffix: "yrs" },
+    ],
+  },
+];
+
+export function PropertyContent({ property, photosBySystem }: PropertyContentProps) {
   const t = useTranslations("home.property");
   const router = useRouter();
-  const [editing, setEditing] = useState<"basic" | "systems" | "access" | null>(null);
+  const [editing, setEditing] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
@@ -51,7 +100,7 @@ export function PropertyContent({ property }: PropertyContentProps) {
     );
   }
 
-  const handleSave = (section: "basic" | "systems" | "access", formData: FormData) => {
+  const handleSave = (section: string, formData: FormData) => {
     startTransition(async () => {
       const input: Record<string, unknown> = { id: property.id };
 
@@ -65,14 +114,18 @@ export function PropertyContent({ property }: PropertyContentProps) {
         input.sqft = formData.get("sqft") ? parseInt(formData.get("sqft") as string) : null;
         input.beds = formData.get("beds") ? parseInt(formData.get("beds") as string) : null;
         input.baths = formData.get("baths") ? parseInt(formData.get("baths") as string) : null;
-      } else if (section === "systems") {
-        input.hvac_model = (formData.get("hvac_model") as string) || null;
-        input.hvac_age = formData.get("hvac_age") ? parseInt(formData.get("hvac_age") as string) : null;
-        input.water_heater_type = (formData.get("water_heater_type") as string) || null;
-        input.water_heater_age = formData.get("water_heater_age") ? parseInt(formData.get("water_heater_age") as string) : null;
-        input.electrical_panel = (formData.get("electrical_panel") as string) || null;
-        input.roof_material = (formData.get("roof_material") as string) || null;
-        input.roof_age = formData.get("roof_age") ? parseInt(formData.get("roof_age") as string) : null;
+      } else if (section.startsWith("system_")) {
+        // Per-system card saves — extract field values from formData
+        for (const [key, val] of formData.entries()) {
+          if (key === "submit") continue;
+          const strVal = val as string;
+          // Number fields
+          if (key === "hvac_age" || key === "water_heater_age" || key === "roof_age") {
+            input[key] = strVal ? parseInt(strVal) : null;
+          } else {
+            input[key] = strVal || null;
+          }
+        }
       } else if (section === "access") {
         input.gate_code = (formData.get("gate_code") as string) || null;
         input.lockbox_code = (formData.get("lockbox_code") as string) || null;
@@ -103,6 +156,11 @@ export function PropertyContent({ property }: PropertyContentProps) {
     condo: t("condo"),
     townhouse: t("townhouse"),
     duplex: t("duplex"),
+  };
+
+  const getFieldValue = (fieldName: string): string | number | null => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (property as unknown as Record<string, any>)[fieldName] ?? null;
   };
 
   return (
@@ -187,56 +245,120 @@ export function PropertyContent({ property }: PropertyContentProps) {
         )}
       </div>
 
-      {/* Systems */}
-      <div className="bg-surface-primary rounded-xl border border-edge-primary p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-lg font-semibold text-content-primary">{t("systems")}</h2>
-            <p className="text-xs text-content-quaternary mt-0.5">{t("systemsDesc")}</p>
-          </div>
-          {editing !== "systems" ? (
-            <button onClick={() => setEditing("systems")} className="text-sm text-rose-500 hover:text-rose-400 font-medium">
-              {t("edit")}
-            </button>
-          ) : (
-            <button onClick={() => setEditing(null)} className="text-sm text-content-quaternary hover:text-content-tertiary">
-              {t("cancel")}
-            </button>
-          )}
+      {/* Systems — 4 expandable cards */}
+      <div>
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold text-content-primary">{t("systems")}</h2>
+          <p className="text-xs text-content-quaternary mt-0.5">{t("systemsDesc")}</p>
         </div>
 
-        {editing === "systems" ? (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSave("systems", new FormData(e.currentTarget));
-            }}
-            className="space-y-3"
-          >
-            <div className="grid grid-cols-2 gap-3">
-              <div><label className={labelClass}>{t("hvacModel")}</label><input name="hvac_model" defaultValue={property.hvac_model ?? ""} className={inputClass} /></div>
-              <div><label className={labelClass}>{t("hvacAge")}</label><input name="hvac_age" type="number" defaultValue={property.hvac_age ?? ""} className={inputClass} /></div>
-              <div><label className={labelClass}>{t("waterHeaterType")}</label><input name="water_heater_type" defaultValue={property.water_heater_type ?? ""} className={inputClass} /></div>
-              <div><label className={labelClass}>{t("waterHeaterAge")}</label><input name="water_heater_age" type="number" defaultValue={property.water_heater_age ?? ""} className={inputClass} /></div>
-              <div><label className={labelClass}>{t("electricalPanel")}</label><input name="electrical_panel" defaultValue={property.electrical_panel ?? ""} className={inputClass} /></div>
-              <div><label className={labelClass}>{t("roofMaterial")}</label><input name="roof_material" defaultValue={property.roof_material ?? ""} className={inputClass} /></div>
-              <div><label className={labelClass}>{t("roofAge")}</label><input name="roof_age" type="number" defaultValue={property.roof_age ?? ""} className={inputClass} /></div>
-            </div>
-            <button type="submit" disabled={isPending} className="px-4 py-2 bg-rose-600 hover:bg-rose-700 disabled:bg-charcoal-600 text-white text-sm font-medium rounded-lg transition-colors">
-              {isPending ? t("saving") : t("save")}
-            </button>
-          </form>
-        ) : (
-          <div className="grid grid-cols-2 gap-4">
-            <div><p className={labelClass}>{t("hvacModel")}</p><p className={property.hvac_model ? valueClass : emptyClass}>{property.hvac_model ?? "—"}</p></div>
-            <div><p className={labelClass}>{t("hvacAge")}</p><p className={property.hvac_age ? valueClass : emptyClass}>{property.hvac_age ? `${property.hvac_age} yrs` : "—"}</p></div>
-            <div><p className={labelClass}>{t("waterHeaterType")}</p><p className={property.water_heater_type ? valueClass : emptyClass}>{property.water_heater_type ?? "—"}</p></div>
-            <div><p className={labelClass}>{t("waterHeaterAge")}</p><p className={property.water_heater_age ? valueClass : emptyClass}>{property.water_heater_age ? `${property.water_heater_age} yrs` : "—"}</p></div>
-            <div><p className={labelClass}>{t("electricalPanel")}</p><p className={property.electrical_panel ? valueClass : emptyClass}>{property.electrical_panel ?? "—"}</p></div>
-            <div><p className={labelClass}>{t("roofMaterial")}</p><p className={property.roof_material ? valueClass : emptyClass}>{property.roof_material ?? "—"}</p></div>
-            <div><p className={labelClass}>{t("roofAge")}</p><p className={property.roof_age ? valueClass : emptyClass}>{property.roof_age ? `${property.roof_age} yrs` : "—"}</p></div>
-          </div>
-        )}
+        <div className="space-y-4">
+          {SYSTEM_CARDS.map((card) => {
+            const sectionKey = `system_${card.type}`;
+            const isEditing = editing === sectionKey;
+            const photos = photosBySystem[card.type] ?? [];
+
+            return (
+              <div
+                key={card.type}
+                className="bg-surface-primary rounded-xl border border-edge-primary p-5"
+              >
+                {/* Card header */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center">
+                      <svg
+                        className="w-4 h-4 text-rose-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d={card.icon} />
+                      </svg>
+                    </div>
+                    <h3 className="text-sm font-semibold text-content-primary">
+                      {t(card.labelKey)}
+                    </h3>
+                  </div>
+                  {!isEditing ? (
+                    <button
+                      onClick={() => setEditing(sectionKey)}
+                      className="text-xs text-rose-500 hover:text-rose-400 font-medium"
+                    >
+                      {t("edit")}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setEditing(null)}
+                      className="text-xs text-content-quaternary hover:text-content-tertiary"
+                    >
+                      {t("cancel")}
+                    </button>
+                  )}
+                </div>
+
+                {/* Text fields — edit or display */}
+                {isEditing ? (
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleSave(sectionKey, new FormData(e.currentTarget));
+                    }}
+                    className="space-y-3"
+                  >
+                    <div className="grid grid-cols-2 gap-3">
+                      {card.fields.map((field) => (
+                        <div key={field.name}>
+                          <label className={labelClass}>{t(field.labelKey)}</label>
+                          <input
+                            name={field.name}
+                            type={field.inputType}
+                            defaultValue={(getFieldValue(field.name) as string | number) ?? ""}
+                            className={inputClass}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={isPending}
+                      className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 disabled:bg-charcoal-600 text-white text-xs font-medium rounded-lg transition-colors"
+                    >
+                      {isPending ? t("saving") : t("save")}
+                    </button>
+                  </form>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3">
+                    {card.fields.map((field) => {
+                      const val = getFieldValue(field.name);
+                      const display =
+                        val !== null && val !== undefined && val !== ""
+                          ? field.suffix
+                            ? `${val} ${field.suffix}`
+                            : String(val)
+                          : "—";
+                      const cls = display === "—" ? emptyClass : valueClass;
+                      return (
+                        <div key={field.name}>
+                          <p className={labelClass}>{t(field.labelKey)}</p>
+                          <p className={cls}>{display}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Photos section */}
+                <SystemPhotoSection
+                  propertyId={property.id}
+                  systemType={card.type}
+                  photos={photos}
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Access & Instructions */}

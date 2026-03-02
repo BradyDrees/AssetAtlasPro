@@ -48,5 +48,15 @@
   "smsNotifications": "Notificaciones por SMS",
   "language": "Idioma",
   "english": "Inglés",
-  "spanish": "Español"
+  "spanish": "Español",
+  "systemHvac": "HVAC",
+  "systemWaterHeater": "Calentador de Agua",
+  "systemElectrical": "Panel Eléctrico",
+  "systemRoof": "Techo",
+  "takePhoto": "Tomar Foto",
+  "uploadPhoto": "Subir",
+  "compressingPhoto": "Comprimiendo...",
+  "uploading": "Subiendo...",
+  "systemPhoto": "Foto del sistema",
+  "noSystemPhotos": "Aún no hay fotos — tome una foto de este sistema para ayudar a su proveedor"
 }

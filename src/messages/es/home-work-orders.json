@@ -90,5 +90,12 @@
   "matching": "Buscando un proveedor...",
   "open": "Abierta",
   "noMatch": "Sin Coincidencia",
-  "donePendingApproval": "Pendiente de Aprobación"
+  "donePendingApproval": "Pendiente de Aprobación",
+  "accessRequiredTitle": "Detalles de Acceso Requeridos",
+  "accessRequiredBody": "Antes de enviar una orden de trabajo, agregue al menos un detalle de acceso (código de portón, candado, alarma o instrucciones de estacionamiento) para que los proveedores puedan llegar a su propiedad.",
+  "accessRequiredError": "Agregue detalles de acceso a su propiedad antes de enviar una orden de trabajo.",
+  "goToProperty": "Ir a Propiedad",
+  "systemsBannerTitle": "Ayude a su proveedor a llegar preparado",
+  "systemsBannerBody": "Agregue los detalles y fotos de sus sistemas en su página de Propiedad para que los proveedores sepan con qué están trabajando.",
+  "systemsBannerLink": "Ir a Propiedad"
 }

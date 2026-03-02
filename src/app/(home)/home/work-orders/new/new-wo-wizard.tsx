@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { createHomeWorkOrder, uploadWorkOrderPhotos } from "@/app/actions/home-work-orders";
 import { WoPhotoUpload } from "@/components/home/wo-photo-upload";
 
@@ -25,12 +26,70 @@ const TRADE_ICONS: Record<Trade, string> = {
 
 const TRADES: Trade[] = ["plumbing", "electrical", "hvac", "appliance", "general", "structural", "pest", "cleaning", "landscaping", "other"];
 
+// ── Gate helpers ──────────────────────────────────────────
+interface PropertyGateData {
+  id: string;
+  gate_code: string | null;
+  lockbox_code: string | null;
+  alarm_code: string | null;
+  parking_instructions: string | null;
+  hvac_model: string | null;
+  hvac_age: number | null;
+  water_heater_type: string | null;
+  water_heater_age: number | null;
+  electrical_panel: string | null;
+  roof_material: string | null;
+  roof_age: number | null;
+}
+
+function accessEmpty(p: PropertyGateData | null): boolean {
+  if (!p) return true;
+  return !(
+    (p.gate_code?.trim() ?? "").length ||
+    (p.lockbox_code?.trim() ?? "").length ||
+    (p.alarm_code?.trim() ?? "").length ||
+    (p.parking_instructions?.trim() ?? "").length
+  );
+}
+
+function isFilledText(v: unknown): boolean {
+  return typeof v === "string" && v.trim().length > 0;
+}
+
+function isFilledNumber(v: unknown): boolean {
+  if (v === null || v === undefined) return false;
+  const n = typeof v === "number" ? v : Number(v);
+  return Number.isFinite(n) && n >= 0;
+}
+
+function systemsMostlyEmpty(p: PropertyGateData | null): boolean {
+  if (!p) return true;
+  const filled = [
+    isFilledText(p.hvac_model),
+    isFilledNumber(p.hvac_age),
+    isFilledText(p.water_heater_type),
+    isFilledNumber(p.water_heater_age),
+    isFilledText(p.electrical_panel),
+    isFilledText(p.roof_material),
+    isFilledNumber(p.roof_age),
+  ].filter(Boolean).length;
+  return filled <= 1;
+}
+
+// ── Component ─────────────────────────────────────────────
 interface NewWorkOrderWizardProps {
   propertyId: string;
   propertyAddress: string;
+  property: PropertyGateData | null;
+  systemPhotoCount: number;
 }
 
-export function NewWorkOrderWizard({ propertyId, propertyAddress }: NewWorkOrderWizardProps) {
+export function NewWorkOrderWizard({
+  propertyId,
+  propertyAddress,
+  property,
+  systemPhotoCount,
+}: NewWorkOrderWizardProps) {
   const t = useTranslations("home.workOrders");
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -42,6 +101,27 @@ export function NewWorkOrderWizard({ propertyId, propertyAddress }: NewWorkOrder
   const [requestEstimate, setRequestEstimate] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+
+  // ── Gates ──
+  const blockAccess = accessEmpty(property);
+
+  const [bannerDismissed, setBannerDismissed] = useState(true); // default hidden until checked
+  useEffect(() => {
+    if (!propertyId) return;
+    const key = `dismiss_systems_banner_${propertyId}`;
+    const dismissed = localStorage.getItem(key) === "1";
+    setBannerDismissed(dismissed);
+  }, [propertyId]);
+
+  const showSystemsBanner =
+    !bannerDismissed &&
+    systemsMostlyEmpty(property) &&
+    systemPhotoCount === 0;
+
+  const dismissBanner = () => {
+    setBannerDismissed(true);
+    localStorage.setItem(`dismiss_systems_banner_${propertyId}`, "1");
+  };
 
   const totalSteps = 4;
 
@@ -75,6 +155,9 @@ export function NewWorkOrderWizard({ propertyId, propertyAddress }: NewWorkOrder
           await uploadWorkOrderPhotos(formData);
         }
         router.push("/home/work-orders");
+      } else if (result.error === "access_required") {
+        // Server-side gate caught it — show same blocking state
+        setError(t("accessRequiredError"));
       } else {
         setError(result.error ?? "Something went wrong");
       }
@@ -88,12 +171,66 @@ export function NewWorkOrderWizard({ propertyId, propertyAddress }: NewWorkOrder
     { value: "whenever", color: "border-charcoal-600 bg-charcoal-800/50 hover:bg-charcoal-800" },
   ];
 
+  // ── Blocking modal: access required ──
+  if (blockAccess) {
+    return (
+      <div className="max-w-2xl mx-auto space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-content-primary">{t("newWorkOrder")}</h1>
+          <p className="text-sm text-content-tertiary mt-1">{propertyAddress}</p>
+        </div>
+
+        <div className="bg-surface-primary rounded-xl border border-edge-primary p-8 text-center space-y-4">
+          <div className="w-16 h-16 mx-auto rounded-full bg-amber-500/10 flex items-center justify-center">
+            <svg className="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+          </div>
+          <h2 className="text-lg font-semibold text-content-primary">{t("accessRequiredTitle")}</h2>
+          <p className="text-sm text-content-tertiary max-w-md mx-auto">
+            {t("accessRequiredBody")}
+          </p>
+          <Link
+            href="/home/property"
+            className="inline-block px-6 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-sm font-medium rounded-lg transition-colors"
+          >
+            {t("goToProperty")}
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-content-primary">{t("newWorkOrder")}</h1>
         <p className="text-sm text-content-tertiary mt-1">{propertyAddress}</p>
       </div>
+
+      {/* Systems encouragement banner */}
+      {showSystemsBanner && (
+        <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 flex items-start gap-3">
+          <svg className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
+          </svg>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-amber-200 font-medium">{t("systemsBannerTitle")}</p>
+            <p className="text-xs text-amber-300/70 mt-0.5">{t("systemsBannerBody")}</p>
+            <Link href="/home/property" className="text-xs text-amber-400 hover:text-amber-300 font-medium mt-1 inline-block">
+              {t("systemsBannerLink")} →
+            </Link>
+          </div>
+          <button
+            onClick={dismissBanner}
+            className="text-amber-500/60 hover:text-amber-500 flex-shrink-0"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
 
       {/* Progress */}
       <div className="flex items-center gap-2">

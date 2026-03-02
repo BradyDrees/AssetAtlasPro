@@ -90,5 +90,12 @@
   "matching": "Finding a vendor...",
   "open": "Open",
   "noMatch": "No Match",
-  "donePendingApproval": "Pending Approval"
+  "donePendingApproval": "Pending Approval",
+  "accessRequiredTitle": "Access Details Required",
+  "accessRequiredBody": "Before you submit a work order, add at least one access or instruction detail (gate code, lockbox, alarm, or parking instructions) so vendors can reach your property.",
+  "accessRequiredError": "Please add access details to your property before submitting a work order.",
+  "goToProperty": "Go to Property",
+  "systemsBannerTitle": "Help your vendor arrive prepared",
+  "systemsBannerBody": "Add your system details and photos on your Property page so vendors know what they're working with.",
+  "systemsBannerLink": "Go to Property"
 }

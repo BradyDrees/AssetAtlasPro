@@ -48,5 +48,15 @@
   "smsNotifications": "SMS Notifications",
   "language": "Language",
   "english": "English",
-  "spanish": "Spanish"
+  "spanish": "Spanish",
+  "systemHvac": "HVAC",
+  "systemWaterHeater": "Water Heater",
+  "systemElectrical": "Electrical Panel",
+  "systemRoof": "Roof",
+  "takePhoto": "Take Photo",
+  "uploadPhoto": "Upload",
+  "compressingPhoto": "Compressing...",
+  "uploading": "Uploading...",
+  "systemPhoto": "System photo",
+  "noSystemPhotos": "No photos yet — snap a photo of this system to help your vendor"
 }

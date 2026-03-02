@@ -33,6 +33,27 @@ export async function createHomeWorkOrder(
       return { success: false, error: "Not authenticated" };
     }
 
+    // ── Mandatory gate: Access & Instructions ──
+    const { data: prop, error: propErr } = await supabase
+      .from("homeowner_properties")
+      .select("id, gate_code, lockbox_code, alarm_code, parking_instructions")
+      .eq("id", input.homeowner_property_id)
+      .single();
+
+    if (propErr) {
+      return { success: false, error: propErr.message };
+    }
+
+    const hasAccess =
+      Boolean(prop.gate_code?.trim()) ||
+      Boolean(prop.lockbox_code?.trim()) ||
+      Boolean(prop.alarm_code?.trim()) ||
+      Boolean(prop.parking_instructions?.trim());
+
+    if (!hasAccess) {
+      return { success: false, error: "access_required" };
+    }
+
     // Map "whenever" → "flexible" for DB consistency
     const dbUrgency: Urgency =
       input.urgency === "whenever" ? "flexible" : input.urgency;

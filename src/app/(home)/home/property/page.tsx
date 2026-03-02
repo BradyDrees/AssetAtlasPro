@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getSystemPhotos } from "@/app/actions/home-property";
 import { PropertyContent } from "./property-content";
 
 export default async function PropertyPage() {
@@ -15,5 +16,10 @@ export default async function PropertyPage() {
     .limit(1)
     .single();
 
-  return <PropertyContent property={property} />;
+  // Fetch system photos grouped by type
+  const photosBySystem = property ? await getSystemPhotos(property.id) : {};
+
+  return (
+    <PropertyContent property={property} photosBySystem={photosBySystem} />
+  );
 }

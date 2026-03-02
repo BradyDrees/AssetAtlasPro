@@ -261,6 +261,70 @@ export function woDeclinedCascadeEmail(params: {
   };
 }
 
+// ─── Vendor Invite (PM inviting vendor) ───
+export function vendorInviteEmail(params: {
+  pmName: string;
+  inviteLink: string;
+  expiresAtText: string;
+}): { subject: string; html: string; text: string } {
+  return {
+    subject: `${params.pmName} invited you to connect on Asset Atlas`,
+    html: baseTemplate(
+      "You're Invited to Connect",
+      `<p>Hi,</p>
+       <p><strong>${params.pmName}</strong> has invited you to connect as a vendor on Asset Atlas.</p>
+       <p>Once connected, you'll be able to receive work orders, submit estimates, and manage jobs together.</p>
+       <p style="font-size:12px;color:#9ca3af;">This link expires ${params.expiresAtText}.</p>`,
+      params.inviteLink,
+      "Accept Invite"
+    ),
+    text: `${params.pmName} invited you to connect on Asset Atlas.\nAccept: ${params.inviteLink}\nExpires: ${params.expiresAtText}`,
+  };
+}
+
+// ─── Relationship Status Change ───
+export function relationshipStatusEmail(params: {
+  recipientName: string;
+  otherPartyName: string;
+  status: "suspended" | "terminated" | "active";
+}): { subject: string; html: string; text: string } {
+  const statusLabel = params.status === "active" ? "reactivated" : params.status;
+  const color = params.status === "active" ? BRAND_GREEN : params.status === "suspended" ? "#f59e0b" : "#ef4444";
+  return {
+    subject: `Vendor relationship ${statusLabel}: ${params.otherPartyName}`,
+    html: baseTemplate(
+      "Relationship Update",
+      `<p>Hi ${params.recipientName},</p>
+       <p>Your vendor relationship with <strong>${params.otherPartyName}</strong> has been <span style="color:${color};font-weight:600;">${statusLabel}</span>.</p>
+       ${params.status === "suspended" ? '<p>New work order assignments are paused until the relationship is reactivated.</p>' : ""}
+       ${params.status === "terminated" ? '<p>This relationship has been ended. A new invite will be needed to reconnect.</p>' : ""}
+       ${params.status === "active" ? '<p>Work order assignments can now resume as normal.</p>' : ""}`
+    ),
+    text: `Relationship update: Your relationship with ${params.otherPartyName} has been ${statusLabel}.`,
+  };
+}
+
+// ─── PM Invite (Vendor inviting PM) ───
+export function pmInviteEmail(params: {
+  vendorName: string;
+  inviteLink: string;
+  expiresAtText: string;
+}): { subject: string; html: string; text: string } {
+  return {
+    subject: `${params.vendorName} wants to connect on Asset Atlas`,
+    html: baseTemplate(
+      "Vendor Connection Request",
+      `<p>Hi,</p>
+       <p><strong>${params.vendorName}</strong> has invited you to connect as a client on Asset Atlas.</p>
+       <p>Once connected, you'll be able to assign work orders, review estimates, and manage vendor relationships.</p>
+       <p style="font-size:12px;color:#9ca3af;">This link expires ${params.expiresAtText}.</p>`,
+      params.inviteLink,
+      "Accept Invite"
+    ),
+    text: `${params.vendorName} wants to connect on Asset Atlas.\nAccept: ${params.inviteLink}\nExpires: ${params.expiresAtText}`,
+  };
+}
+
 // ─── New Chat Message (notify recipient) ───
 export function newChatMessageEmail(params: {
   recipientName: string;

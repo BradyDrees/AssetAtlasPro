@@ -2,11 +2,14 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { logActivity } from "@/lib/vendor/role-helpers";
+import { sendEmail } from "@/lib/email/resend-client";
+import { relationshipStatusEmail } from "@/lib/email/templates";
 
 /**
  * Accept an invite by raw token.
  * Verifies sha256(token) matches, checks expiry + one-time use.
  * Sets vendor_pm_relationships status to 'active'.
+ * Notifies both sides (email + in-app).
  */
 export async function acceptInvite(token: string): Promise<{
   success: boolean;
@@ -86,6 +89,89 @@ export async function acceptInvite(token: string): Promise<{
     action: "invite_accepted",
     metadata: { pm_user_id: rel.pm_user_id, vendor_org_id: rel.vendor_org_id },
   });
+
+  // ── Notify both sides ──
+
+  // Get vendor org info
+  const { data: vendorOrg } = await supabase
+    .from("vendor_organizations")
+    .select("name, email")
+    .eq("id", rel.vendor_org_id)
+    .single();
+
+  // Get PM profile info
+  const { data: pmProfile } = await supabase
+    .from("profiles")
+    .select("full_name, email")
+    .eq("id", rel.pm_user_id)
+    .single();
+
+  const vendorName = vendorOrg?.name ?? "A vendor";
+  const pmName = pmProfile?.full_name ?? "A property manager";
+
+  // In-app notification for PM
+  await supabase.from("vendor_notifications").insert({
+    user_id: rel.pm_user_id,
+    type: "invite_accepted",
+    title: "Vendor connected",
+    body: `${vendorName} has accepted your invite and is now connected.`,
+    reference_type: "relationship",
+    reference_id: rel.id,
+    is_read: false,
+  });
+
+  // In-app notification for vendor users
+  const { data: vendorUsers } = await supabase
+    .from("vendor_users")
+    .select("user_id")
+    .eq("vendor_org_id", rel.vendor_org_id)
+    .eq("is_active", true);
+
+  if (vendorUsers?.length) {
+    await supabase.from("vendor_notifications").insert(
+      vendorUsers.map((vu) => ({
+        user_id: vu.user_id,
+        type: "invite_accepted",
+        title: "New client connected",
+        body: `${pmName} is now connected as a client.`,
+        reference_type: "relationship",
+        reference_id: rel.id,
+        is_read: false,
+      }))
+    );
+  }
+
+  // Email PM
+  if (pmProfile?.email) {
+    const pmEmail = relationshipStatusEmail({
+      recipientName: pmName,
+      otherPartyName: vendorName,
+      status: "active",
+    });
+    sendEmail({
+      to: pmProfile.email,
+      subject: pmEmail.subject,
+      html: pmEmail.html,
+    }).catch((err) =>
+      console.error("[vendor-invites] PM notification email failed:", err)
+    );
+  }
+
+  // Email vendor
+  if (vendorOrg?.email) {
+    const vendorEmail = relationshipStatusEmail({
+      recipientName: vendorName,
+      otherPartyName: pmName,
+      status: "active",
+    });
+    sendEmail({
+      to: vendorOrg.email,
+      subject: vendorEmail.subject,
+      html: vendorEmail.html,
+    }).catch((err) =>
+      console.error("[vendor-invites] Vendor notification email failed:", err)
+    );
+  }
 
   return { success: true };
 }

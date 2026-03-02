@@ -34,13 +34,86 @@
   },
   "pmVendors": {
     "title": "Connected Vendors",
-    "inviteVendor": "Invite a Vendor",
+    "inviteVendor": "Invite Vendor",
+    "vendorEmail": "Vendor Email",
     "emailPlaceholder": "Vendor's business email...",
     "invite": "Send Invite",
     "sending": "Sending...",
-    "inviteSent": "Invite sent! Share this link with your vendor:",
+    "inviteSent": "Invite sent!",
+    "inviteResent": "Invite resent!",
     "inviteError": "Failed to send invite",
-    "noVendors": "No connected vendors yet"
+    "noVendors": "No connected vendors yet",
+    "noResults": "No vendors match your search",
+    "searchPlaceholder": "Search by name, email, or trade...",
+    "copyLink": "Share this invite link with your vendor:",
+    "copy": "Copy",
+    "linkExpiry": "This link expires in 7 days.",
+    "done": "Done",
+    "cancel": "Cancel",
+    "processing": "Processing...",
+    "actionError": "Action failed. Please try again.",
+    "viewProfile": "View Profile",
+    "viewJobs": "View Jobs",
+    "resendInvite": "Resend Invite",
+    "suspend": "Suspend",
+    "terminate": "Terminate",
+    "reactivate": "Reactivate",
+    "credentialsOk": "Credentials up to date",
+    "contact": "Contact",
+    "stats": "Performance",
+    "credentials": "Credentials",
+    "noCredentials": "No credentials on file",
+    "recentJobs": "Recent Jobs",
+    "settings": "Relationship Settings",
+    "notes": "Notes",
+    "notesPlaceholder": "Internal notes about this vendor...",
+    "saveNotes": "Save Notes",
+    "saving": "Saving...",
+    "loading": "Loading...",
+    "tabs": {
+      "all": "All",
+      "active": "Active",
+      "pending": "Pending",
+      "suspended": "Suspended",
+      "terminated": "Terminated"
+    },
+    "confirm": {
+      "suspend": {
+        "title": "Suspend Vendor",
+        "body": "Are you sure you want to suspend {name}? New work order assignments will be paused.",
+        "confirm": "Suspend"
+      },
+      "terminate": {
+        "title": "Terminate Relationship",
+        "body": "Are you sure you want to terminate your relationship with {name}? A new invite will be needed to reconnect.",
+        "confirm": "Terminate"
+      },
+      "reactivate": {
+        "title": "Reactivate Vendor",
+        "body": "Reactivate your relationship with {name}? Work order assignments can resume.",
+        "confirm": "Reactivate"
+      },
+      "resend": {
+        "title": "Resend Invite",
+        "body": "Send a new invite link to {name}? The previous link will be invalidated.",
+        "confirm": "Resend"
+      }
+    }
+  },
+  "invitePm": {
+    "title": "Invite PM",
+    "emailLabel": "PM Email Address",
+    "emailPlaceholder": "Property manager's email...",
+    "hint": "The PM must have an existing account on Asset Atlas.",
+    "send": "Send Invite",
+    "sending": "Sending...",
+    "sent": "Invite sent!",
+    "error": "Failed to send invite",
+    "copyLink": "Share this invite link with the PM:",
+    "copy": "Copy",
+    "linkExpiry": "This link expires in 7 days.",
+    "done": "Done",
+    "cancel": "Cancel"
   },
   "tabs": {
     "pm": "PM Clients",

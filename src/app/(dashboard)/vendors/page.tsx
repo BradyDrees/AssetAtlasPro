@@ -11,7 +11,7 @@ export default async function PmVendorsPage() {
       <h1 className="text-2xl font-bold text-content-primary">
         {t("pmVendors.title")}
       </h1>
-      <PmVendorsList vendors={vendors} />
+      <PmVendorsList initial={vendors} />
     </div>
   );
 }

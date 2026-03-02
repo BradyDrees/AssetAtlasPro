@@ -34,13 +34,86 @@
   },
   "pmVendors": {
     "title": "Vendedores Conectados",
-    "inviteVendor": "Invitar a un Vendedor",
+    "inviteVendor": "Invitar Vendedor",
+    "vendorEmail": "Correo del Vendedor",
     "emailPlaceholder": "Correo empresarial del vendedor...",
     "invite": "Enviar Invitación",
     "sending": "Enviando...",
-    "inviteSent": "¡Invitación enviada! Comparte este enlace con tu vendedor:",
+    "inviteSent": "¡Invitación enviada!",
+    "inviteResent": "¡Invitación reenviada!",
     "inviteError": "Error al enviar invitación",
-    "noVendors": "Sin vendedores conectados aún"
+    "noVendors": "Sin vendedores conectados aún",
+    "noResults": "Ningún vendedor coincide con tu búsqueda",
+    "searchPlaceholder": "Buscar por nombre, correo o oficio...",
+    "copyLink": "Comparte este enlace de invitación con tu vendedor:",
+    "copy": "Copiar",
+    "linkExpiry": "Este enlace expira en 7 días.",
+    "done": "Listo",
+    "cancel": "Cancelar",
+    "processing": "Procesando...",
+    "actionError": "La acción falló. Inténtalo de nuevo.",
+    "viewProfile": "Ver Perfil",
+    "viewJobs": "Ver Trabajos",
+    "resendInvite": "Reenviar Invitación",
+    "suspend": "Suspender",
+    "terminate": "Terminar",
+    "reactivate": "Reactivar",
+    "credentialsOk": "Credenciales al día",
+    "contact": "Contacto",
+    "stats": "Rendimiento",
+    "credentials": "Credenciales",
+    "noCredentials": "Sin credenciales en archivo",
+    "recentJobs": "Trabajos Recientes",
+    "settings": "Configuración de Relación",
+    "notes": "Notas",
+    "notesPlaceholder": "Notas internas sobre este vendedor...",
+    "saveNotes": "Guardar Notas",
+    "saving": "Guardando...",
+    "loading": "Cargando...",
+    "tabs": {
+      "all": "Todos",
+      "active": "Activos",
+      "pending": "Pendientes",
+      "suspended": "Suspendidos",
+      "terminated": "Terminados"
+    },
+    "confirm": {
+      "suspend": {
+        "title": "Suspender Vendedor",
+        "body": "¿Estás seguro de querer suspender a {name}? Las nuevas asignaciones de órdenes de trabajo serán pausadas.",
+        "confirm": "Suspender"
+      },
+      "terminate": {
+        "title": "Terminar Relación",
+        "body": "¿Estás seguro de querer terminar tu relación con {name}? Se necesitará una nueva invitación para reconectarse.",
+        "confirm": "Terminar"
+      },
+      "reactivate": {
+        "title": "Reactivar Vendedor",
+        "body": "¿Reactivar tu relación con {name}? Las asignaciones de órdenes de trabajo pueden reanudarse.",
+        "confirm": "Reactivar"
+      },
+      "resend": {
+        "title": "Reenviar Invitación",
+        "body": "¿Enviar un nuevo enlace de invitación a {name}? El enlace anterior será invalidado.",
+        "confirm": "Reenviar"
+      }
+    }
+  },
+  "invitePm": {
+    "title": "Invitar PM",
+    "emailLabel": "Correo del PM",
+    "emailPlaceholder": "Correo del administrador de propiedades...",
+    "hint": "El PM debe tener una cuenta existente en Asset Atlas.",
+    "send": "Enviar Invitación",
+    "sending": "Enviando...",
+    "sent": "¡Invitación enviada!",
+    "error": "Error al enviar invitación",
+    "copyLink": "Comparte este enlace de invitación con el PM:",
+    "copy": "Copiar",
+    "linkExpiry": "Este enlace expira en 7 días.",
+    "done": "Listo",
+    "cancel": "Cancelar"
   },
   "tabs": {
     "pm": "Clientes PM",

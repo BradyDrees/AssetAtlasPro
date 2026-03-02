@@ -441,6 +441,36 @@ export interface VendorMessage {
   created_at: string;
 }
 
+// ============================================
+// PM Vendor Management (Phase 6)
+// ============================================
+
+export interface EnrichedPmVendor {
+  relationship_id: string;
+  status: RelationshipStatus;
+  vendor_org_id: string;
+  vendor_name: string;
+  vendor_email: string | null;
+  vendor_phone: string | null;
+  vendor_logo: string | null;
+  trades: string[];
+  invite_expires_at: string | null;
+  invited_by: InvitedBy | null;
+  payment_terms: string;
+  notes: string | null;
+  created_at: string;
+  stats: {
+    active_jobs: number;
+    total_jobs: number;
+    total_spent_cents: number;
+  };
+  credential_summary: {
+    eligible: boolean;
+    missing_critical: boolean;
+    warnings: string[];
+  };
+}
+
 export interface ConversationPreview {
   work_order_id: string;
   property_name: string | null;

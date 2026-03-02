@@ -2,7 +2,11 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { requireVendorRole, logActivity } from "@/lib/vendor/role-helpers";
+import { sendEmail } from "@/lib/email/resend-client";
+import { pmInviteEmail } from "@/lib/email/templates";
 import type { VendorPmRelationship } from "@/lib/vendor/types";
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://assetatlaspro.com";
 
 // ============================================
 // Client (PM relationship) queries
@@ -173,4 +177,172 @@ export async function updateClientNotes(
 
   if (error) return { success: false, error: error.message };
   return { success: true };
+}
+
+// ============================================
+// Vendor-initiated invite (Vendor → PM)
+// ============================================
+
+/**
+ * Invite a PM by email. Since pm_user_id is NOT nullable,
+ * we must find an existing PM user by email. Returns error if not found.
+ */
+export async function invitePm(
+  email: string
+): Promise<{
+  success: boolean;
+  relationshipId?: string;
+  inviteLink?: string;
+  error?: string;
+}> {
+  const { vendor_org_id } = await requireVendorRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return { success: false, error: "Not authenticated" };
+
+  // Look up PM by email in profiles
+  const { data: pmProfile } = await supabase
+    .from("profiles")
+    .select("id, full_name, email")
+    .eq("email", email)
+    .single();
+
+  if (!pmProfile) {
+    return {
+      success: false,
+      error: "No user found with that email. They must create an account first.",
+    };
+  }
+
+  // Verify they have a PM role
+  const { data: pmRole } = await supabase
+    .from("user_roles")
+    .select("id")
+    .eq("user_id", pmProfile.id)
+    .eq("role", "pm")
+    .eq("is_active", true)
+    .single();
+
+  if (!pmRole) {
+    return {
+      success: false,
+      error: "That user does not have a property manager role.",
+    };
+  }
+
+  // Check if relationship already exists
+  const { data: existing } = await supabase
+    .from("vendor_pm_relationships")
+    .select("id, status")
+    .eq("vendor_org_id", vendor_org_id)
+    .eq("pm_user_id", pmProfile.id)
+    .single();
+
+  if (existing) {
+    if (existing.status === "active") {
+      return { success: false, error: "Already connected with this PM" };
+    }
+  }
+
+  // Generate token
+  const tokenBytes = new Uint8Array(32);
+  crypto.getRandomValues(tokenBytes);
+  const rawToken = Array.from(tokenBytes)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+
+  const encoder = new TextEncoder();
+  const hashBuffer = await crypto.subtle.digest(
+    "SHA-256",
+    encoder.encode(rawToken)
+  );
+  const tokenHash = Array.from(new Uint8Array(hashBuffer))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + 7);
+
+  let relationshipId: string;
+
+  if (existing) {
+    // Update existing relationship
+    const { error: updateErr } = await supabase
+      .from("vendor_pm_relationships")
+      .update({
+        status: "pending",
+        invited_by: "vendor",
+        invite_token_hash: tokenHash,
+        invite_expires_at: expiresAt.toISOString(),
+        invite_consumed: false,
+        updated_by: user.id,
+      })
+      .eq("id", existing.id);
+
+    if (updateErr) return { success: false, error: updateErr.message };
+    relationshipId = existing.id;
+  } else {
+    // Create new relationship
+    const { data: newRel, error: insertErr } = await supabase
+      .from("vendor_pm_relationships")
+      .insert({
+        vendor_org_id,
+        pm_user_id: pmProfile.id,
+        status: "pending",
+        invited_by: "vendor",
+        invite_token_hash: tokenHash,
+        invite_expires_at: expiresAt.toISOString(),
+        invite_consumed: false,
+        updated_by: user.id,
+      })
+      .select("id")
+      .single();
+
+    if (insertErr) return { success: false, error: insertErr.message };
+    relationshipId = newRel!.id;
+  }
+
+  const inviteLink = `${BASE_URL}/pro/accept-invite/${rawToken}`;
+
+  // Get vendor org name for email
+  const { data: vendorOrg } = await supabase
+    .from("vendor_organizations")
+    .select("name")
+    .eq("id", vendor_org_id)
+    .single();
+
+  const vendorName = vendorOrg?.name ?? "A vendor";
+
+  // Send invite email
+  if (pmProfile.email) {
+    const emailData = pmInviteEmail({
+      vendorName,
+      inviteLink,
+      expiresAtText: expiresAt.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+    });
+
+    sendEmail({
+      to: pmProfile.email,
+      subject: emailData.subject,
+      html: emailData.html,
+    }).catch((err) =>
+      console.error("[vendor-clients] PM invite email failed:", err)
+    );
+  }
+
+  await logActivity({
+    entityType: "relationship",
+    entityId: relationshipId,
+    action: "pm_invite_sent",
+    metadata: { pm_email: email, pm_user_id: pmProfile.id },
+  });
+
+  return { success: true, relationshipId, inviteLink };
 }

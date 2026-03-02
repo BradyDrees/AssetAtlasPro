@@ -1,5 +1,6 @@
 import { getVendorClients } from "@/app/actions/vendor-clients";
 import { ClientCard } from "@/components/vendor/client-card";
+import { VendorClientsHeader } from "@/components/vendor/vendor-clients-header";
 import { getTranslations } from "next-intl/server";
 
 export default async function VendorClientsPage() {
@@ -8,11 +9,7 @@ export default async function VendorClientsPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-5">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-content-primary">
-          {t("title")}
-        </h1>
-      </div>
+      <VendorClientsHeader />
 
       {clients.length === 0 ? (
         <div className="bg-surface-primary rounded-xl border border-edge-primary p-8 text-center">

@@ -9,11 +9,6 @@
   "jobAt": "Trabajo en {property}",
   "scheduledFor": "Programado para {date}",
   "timeRange": "{start} - {end}",
-  "colorBy": "Colorear Por",
-  "colorByPriority": "Prioridad",
-  "colorByStatus": "Estado",
-  "colorByTrade": "Oficio",
-  "colorByJobType": "Tipo de Trabajo",
   "days": {
     "sun": "Dom",
     "mon": "Lun",
@@ -31,5 +26,41 @@
     "workDays": "Días Laborales",
     "save": "Guardar",
     "saved": "Configuración guardada"
+  },
+  "unscheduled": {
+    "title": "Sin Programar",
+    "count": "{count} trabajos",
+    "empty": "No hay trabajos sin programar",
+    "expand": "Expandir",
+    "collapse": "Contraer"
+  },
+  "quickSchedule": {
+    "title": "Programar Rápido",
+    "selectJob": "Seleccionar Trabajo",
+    "date": "Fecha",
+    "startTime": "Inicio",
+    "endTime": "Fin",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "cancel": "Cancelar",
+    "conflictTitle": "Conflicto de horario",
+    "conflictBody": "Este horario se superpone con otro trabajo programado.",
+    "success": "Trabajo programado",
+    "error": "No se pudo programar el trabajo"
+  },
+  "reschedule": {
+    "title": "Reprogramar",
+    "current": "Horario actual",
+    "new": "Nuevo horario"
+  },
+  "workingHours": {
+    "offHours": "Fuera de horario",
+    "nonWorkDay": "Día no laboral"
+  },
+  "colorBy": {
+    "label": "Color",
+    "priority": "Prioridad",
+    "status": "Estado",
+    "trade": "Oficio"
   }
 }

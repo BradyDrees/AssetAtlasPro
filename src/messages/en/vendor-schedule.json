@@ -9,11 +9,6 @@
   "jobAt": "Job at {property}",
   "scheduledFor": "Scheduled for {date}",
   "timeRange": "{start} - {end}",
-  "colorBy": "Color By",
-  "colorByPriority": "Priority",
-  "colorByStatus": "Status",
-  "colorByTrade": "Trade",
-  "colorByJobType": "Job Type",
   "days": {
     "sun": "Sun",
     "mon": "Mon",
@@ -31,5 +26,41 @@
     "workDays": "Work Days",
     "save": "Save",
     "saved": "Settings saved"
+  },
+  "unscheduled": {
+    "title": "Unscheduled",
+    "count": "{count} jobs",
+    "empty": "No unscheduled jobs",
+    "expand": "Expand",
+    "collapse": "Collapse"
+  },
+  "quickSchedule": {
+    "title": "Quick Schedule",
+    "selectJob": "Select Job",
+    "date": "Date",
+    "startTime": "Start",
+    "endTime": "End",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "conflictTitle": "Schedule conflict",
+    "conflictBody": "This time overlaps with another scheduled job.",
+    "success": "Job scheduled",
+    "error": "Unable to schedule job"
+  },
+  "reschedule": {
+    "title": "Reschedule",
+    "current": "Current schedule",
+    "new": "New schedule"
+  },
+  "workingHours": {
+    "offHours": "Off hours",
+    "nonWorkDay": "Non-work day"
+  },
+  "colorBy": {
+    "label": "Color",
+    "priority": "Priority",
+    "status": "Status",
+    "trade": "Trade"
   }
 }

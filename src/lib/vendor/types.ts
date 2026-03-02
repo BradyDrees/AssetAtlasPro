@@ -480,3 +480,73 @@ export interface ConversationPreview {
   last_message_at: string;
   unread_count: number;
 }
+
+// ============================================
+// Scheduling Calendar (Phase 7)
+// ============================================
+
+export type ScheduleJob = {
+  id: string;
+  title: string;
+  propertyName: string;
+  trade: string;
+  priority: WoPriority;
+  status: string;
+  scheduled_date: string | null;
+  scheduled_time_start: string | null; // HH:MM (normalized)
+  scheduled_time_end: string | null;   // HH:MM (normalized)
+  vendor_org_id?: string | null;
+  pm_org_id?: string | null;
+};
+
+/** Statuses that qualify for the unscheduled jobs panel */
+export const SCHEDULABLE_STATUSES: WoStatus[] = [
+  "assigned",
+  "accepted",
+  "scheduled",
+  "en_route",
+  "on_site",
+  "in_progress",
+];
+
+/** "08:00:00" → "08:00", "9:00" → "09:00", null → null */
+export function normalizeTime(t: string | null): string | null {
+  if (!t) return null;
+  const [hRaw, mRaw] = t.split(":");
+  const h = Number(hRaw);
+  const m = Number(mRaw);
+  if (Number.isNaN(h) || Number.isNaN(m)) return null;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+/**
+ * Map a VendorWorkOrder (or PM work order — same shape) to ScheduleJob.
+ * Normalizes time fields and builds a display title.
+ */
+export function toScheduleJob(wo: {
+  id: string;
+  property_name?: string | null;
+  description?: string | null;
+  trade?: string | null;
+  priority: string;
+  status: string;
+  scheduled_date?: string | null;
+  scheduled_time_start?: string | null;
+  scheduled_time_end?: string | null;
+  vendor_org_id?: string | null;
+  pm_user_id?: string | null;
+}): ScheduleJob {
+  return {
+    id: wo.id,
+    title: wo.property_name ?? wo.description ?? "Work Order",
+    propertyName: wo.property_name ?? "",
+    trade: wo.trade ?? "",
+    priority: wo.priority as WoPriority,
+    status: wo.status,
+    scheduled_date: wo.scheduled_date ?? null,
+    scheduled_time_start: normalizeTime(wo.scheduled_time_start ?? null),
+    scheduled_time_end: normalizeTime(wo.scheduled_time_end ?? null),
+    vendor_org_id: wo.vendor_org_id ?? null,
+    pm_org_id: wo.pm_user_id ?? null,
+  };
+}

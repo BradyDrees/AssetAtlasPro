@@ -1,5 +1,5 @@
-import { getVendorWorkOrders } from "@/app/actions/vendor-work-orders";
-import { getOrgSettings } from "@/app/actions/vendor-profile";
+import { getPmWorkOrders } from "@/app/actions/pm-work-orders";
+import { rescheduleJobAsPm } from "@/app/actions/pm-work-orders";
 import { ScheduleView } from "@/components/vendor/schedule-view";
 import { getTranslations } from "next-intl/server";
 import {
@@ -14,13 +14,10 @@ const DEFAULT_WORKING_HOURS: WorkingHoursConfig = {
   days: [1, 2, 3, 4, 5],
 };
 
-export default async function VendorSchedulePage() {
+export default async function OperateSchedulePage() {
   const t = await getTranslations("vendor.schedule");
 
-  const [{ data: allJobs }, { settings }] = await Promise.all([
-    getVendorWorkOrders(),
-    getOrgSettings(),
-  ]);
+  const { data: allJobs } = await getPmWorkOrders();
 
   const mapped = allJobs.map(toScheduleJob);
   const scheduled = mapped.filter((j) => j.scheduled_date);
@@ -30,8 +27,6 @@ export default async function VendorSchedulePage() {
       SCHEDULABLE_STATUSES.includes(j.status as (typeof SCHEDULABLE_STATUSES)[number])
   );
 
-  const workingHours = settings.working_hours ?? DEFAULT_WORKING_HOURS;
-
   return (
     <div className="max-w-6xl mx-auto space-y-5">
       <h1 className="text-2xl font-bold text-content-primary">
@@ -40,8 +35,9 @@ export default async function VendorSchedulePage() {
       <ScheduleView
         jobs={scheduled}
         unscheduledJobs={unscheduled}
-        workingHours={workingHours}
-        tier="vendor"
+        workingHours={DEFAULT_WORKING_HOURS}
+        tier="operate"
+        rescheduleAction={rescheduleJobAsPm}
       />
     </div>
   );

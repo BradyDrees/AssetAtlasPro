@@ -219,3 +219,67 @@ export async function getPmVendors(): Promise<{
 
   return { data: mapped };
 }
+
+// ============================================
+// PM reschedules a work order
+// ============================================
+
+export async function rescheduleJobAsPm(
+  woId: string,
+  date: string,
+  startTime: string,
+  endTime: string
+): Promise<{ ok: boolean; error?: string }> {
+  await requirePmRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Not authenticated" };
+
+  // Validate end > start
+  if (endTime && startTime && endTime <= startTime) {
+    return { ok: false, error: "End time must be after start time" };
+  }
+
+  // Verify PM owns/created this work order
+  const { data: wo } = await supabase
+    .from("vendor_work_orders")
+    .select("id, pm_user_id, scheduled_date, scheduled_time_start, scheduled_time_end")
+    .eq("id", woId)
+    .eq("pm_user_id", user.id)
+    .single();
+
+  if (!wo) return { ok: false, error: "Work order not found or not authorized" };
+
+  const { error } = await supabase
+    .from("vendor_work_orders")
+    .update({
+      scheduled_date: date,
+      scheduled_time_start: startTime,
+      scheduled_time_end: endTime,
+      updated_by: user.id,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", woId);
+
+  if (error) return { ok: false, error: error.message };
+
+  await logActivity({
+    entityType: "work_order",
+    entityId: woId,
+    action: "rescheduled",
+    metadata: {
+      rescheduled_by: user.id,
+      rescheduled_at: new Date().toISOString(),
+      previous_scheduled_date: wo.scheduled_date,
+      previous_time_start: wo.scheduled_time_start,
+      previous_time_end: wo.scheduled_time_end,
+      new_date: date,
+      new_time_start: startTime,
+      new_time_end: endTime,
+    },
+  });
+
+  return { ok: true };
+}

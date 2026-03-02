@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/match-timeouts",
-      "schedule": "0 */12 * * *"
+      "schedule": "0 6 * * *"
     },
     {
       "path": "/api/cron/project-delays",

@@ -29,21 +29,49 @@
     "archive": "Archivar",
     "participants": "Participantes",
     "newMessages": "Nuevos mensajes ↓",
-    "loadMore": "Cargar mensajes anteriores"
+    "loadMore": "Cargar mensajes anteriores",
+    "editMessage": "Editar",
+    "deleteMessage": "Eliminar",
+    "cancelEdit": "Cancelar",
+    "saveEdit": "Guardar"
   },
   "contacts": {
     "title": "Contactos",
     "newMessage": "Nuevo mensaje",
-    "search": "Buscar contactos"
+    "search": "Buscar contactos",
+    "empty": "Aún no hay contactos.",
+    "unknown": "Desconocido",
+    "block": "Bloquear contacto",
+    "noResults": "No se encontraron contactos."
   },
   "calls": {
     "title": "Llamadas",
     "addNote": "Agregar nota de llamada",
     "duration": "Duración",
-    "missed": "Perdida"
+    "missed": "Perdida",
+    "empty": "Aún no hay llamadas.",
+    "voicemail": "Buzón de voz",
+    "outgoing": "Llamada saliente",
+    "incoming": "Llamada entrante",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "saveNote": "Guardar Nota",
+    "skip": "Omitir",
+    "postCallTitle": "Notas de Llamada",
+    "postCallWith": "Agrega notas sobre tu llamada con {name}.",
+    "postCallGeneric": "Agrega notas sobre tu llamada reciente.",
+    "postCallPlaceholder": "¿Qué se discutió?"
   },
   "notifications": {
-    "newMessageEmailSubject": "Nuevo mensaje"
+    "newMessageEmailSubject": "Nuevo mensaje",
+    "enableTitle": "Mantente informado",
+    "enableBody": "Activa las notificaciones push para recibir alertas cuando recibas nuevos mensajes.",
+    "enable": "Activar",
+    "later": "Ahora no"
+  },
+  "search": {
+    "placeholder": "Buscar mensajes…",
+    "noResults": "No se encontraron mensajes."
   },
   "nav": {
     "inbox": "Bandeja"

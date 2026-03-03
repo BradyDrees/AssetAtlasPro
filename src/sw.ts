@@ -66,4 +66,58 @@ self.addEventListener("message", (event) => {
   }
 });
 
+// ── Push Notifications ──
+self.addEventListener("push", (event) => {
+  if (!event.data) return;
+
+  try {
+    const payload = event.data.json() as {
+      title?: string;
+      body?: string;
+      url?: string;
+      icon?: string;
+      tag?: string;
+    };
+
+    const title = payload.title || "Asset Atlas";
+    const options: NotificationOptions & { vibrate?: number[]; renotify?: boolean } = {
+      body: payload.body || "",
+      icon: payload.icon || "/icons/icon-192x192.png",
+      badge: "/icons/icon-72x72.png",
+      tag: payload.tag || "default",
+      data: { url: payload.url || "/" },
+      vibrate: [100, 50, 100],
+      renotify: true,
+    };
+
+    event.waitUntil(self.registration.showNotification(title, options));
+  } catch (err) {
+    console.error("[SW] Push parse error:", err);
+  }
+});
+
+// Deep-link on notification click → open correct thread/page
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  const url = (event.notification.data?.url as string) || "/";
+
+  event.waitUntil(
+    self.clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clientList) => {
+        // Focus existing tab if URL matches
+        for (const client of clientList) {
+          if (client.url.includes(url) && "focus" in client) {
+            return client.focus();
+          }
+        }
+        // Otherwise open new tab
+        if (self.clients.openWindow) {
+          return self.clients.openWindow(url);
+        }
+      })
+  );
+});
+
 serwist.addEventListeners();

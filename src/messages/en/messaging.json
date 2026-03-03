@@ -29,21 +29,49 @@
     "archive": "Archive",
     "participants": "Participants",
     "newMessages": "New messages ↓",
-    "loadMore": "Load older messages"
+    "loadMore": "Load older messages",
+    "editMessage": "Edit",
+    "deleteMessage": "Delete",
+    "cancelEdit": "Cancel",
+    "saveEdit": "Save"
   },
   "contacts": {
     "title": "Contacts",
     "newMessage": "New message",
-    "search": "Search contacts"
+    "search": "Search contacts",
+    "empty": "No contacts yet.",
+    "unknown": "Unknown",
+    "block": "Block contact",
+    "noResults": "No contacts found."
   },
   "calls": {
     "title": "Calls",
     "addNote": "Add call note",
     "duration": "Duration",
-    "missed": "Missed"
+    "missed": "Missed",
+    "empty": "No calls yet.",
+    "voicemail": "Voicemail",
+    "outgoing": "Outgoing call",
+    "incoming": "Incoming call",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saveNote": "Save Note",
+    "skip": "Skip",
+    "postCallTitle": "Call Notes",
+    "postCallWith": "Add notes about your call with {name}.",
+    "postCallGeneric": "Add notes about your recent call.",
+    "postCallPlaceholder": "What was discussed?"
   },
   "notifications": {
-    "newMessageEmailSubject": "New message"
+    "newMessageEmailSubject": "New message",
+    "enableTitle": "Stay in the loop",
+    "enableBody": "Enable push notifications to get alerted when you receive new messages.",
+    "enable": "Enable",
+    "later": "Not now"
+  },
+  "search": {
+    "placeholder": "Search messages…",
+    "noResults": "No messages found."
   },
   "nav": {
     "inbox": "Inbox"

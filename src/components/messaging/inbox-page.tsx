@@ -11,11 +11,16 @@ import {
   archiveThread,
   muteThread,
   getUnreadInboxCount,
+  editMessage,
+  deleteMessage,
 } from "@/app/actions/messaging";
 import { useRealtimeMessages } from "@/hooks/use-realtime-messages";
 import type { InboxThread, ThreadMessage } from "@/lib/messaging/types";
 import { ThreadList } from "./thread-list";
 import { ConversationView } from "./conversation-view";
+import { NewMessageFlow } from "./new-message-flow";
+import { MessageSearch } from "./message-search";
+import { PushSubscriptionPrompt } from "./push-subscription-prompt";
 
 // ── Product theme config ──
 export type Product = "pro" | "vendor" | "operate" | "home";
@@ -101,6 +106,10 @@ export function InboxPage({ product, initialThreadId }: InboxPageProps) {
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
+  // Phase 3+6 overlays
+  const [showNewMessage, setShowNewMessage] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+
   // ── Get current user ──
   useEffect(() => {
     createClient()
@@ -127,7 +136,9 @@ export function InboxPage({ product, initialThreadId }: InboxPageProps) {
   // ── Load unread count ──
   const loadUnreadCount = useCallback(async () => {
     const result = await getUnreadInboxCount();
-    if (typeof result === "number") setUnreadCount(result);
+    if (typeof result === "object" && "count" in result) {
+      setUnreadCount(result.count);
+    }
   }, []);
 
   useEffect(() => {
@@ -135,19 +146,25 @@ export function InboxPage({ product, initialThreadId }: InboxPageProps) {
   }, [loadUnreadCount]);
 
   // ── Load messages when active thread changes ──
-  const loadMessages = useCallback(async (threadId: string) => {
-    setMessagesLoading(true);
-    const result = await getThreadMessages({ thread_id: threadId, limit: 50 });
-    if (!result.error) {
-      setMessages(result.data);
-    }
-    setMessagesLoading(false);
-    // Mark as read
-    await markThreadRead(threadId);
-    // Refresh threads to update unread badges
-    loadThreads();
-    loadUnreadCount();
-  }, [loadThreads, loadUnreadCount]);
+  const loadMessages = useCallback(
+    async (threadId: string) => {
+      setMessagesLoading(true);
+      const result = await getThreadMessages({
+        thread_id: threadId,
+        limit: 50,
+      });
+      if (!result.error) {
+        setMessages(result.data);
+      }
+      setMessagesLoading(false);
+      // Mark as read
+      await markThreadRead(threadId);
+      // Refresh threads to update unread badges
+      loadThreads();
+      loadUnreadCount();
+    },
+    [loadThreads, loadUnreadCount]
+  );
 
   useEffect(() => {
     if (activeThreadId) {
@@ -160,7 +177,12 @@ export function InboxPage({ product, initialThreadId }: InboxPageProps) {
   // ── Realtime subscriptions ──
   useRealtimeMessages(userId, {
     onNewMessage: useCallback(
-      (payload: { thread_id: string; sender_id: string; body: string | null; message_type: string }) => {
+      (payload: {
+        thread_id: string;
+        sender_id: string;
+        body: string | null;
+        message_type: string;
+      }) => {
         // If message is for the active thread, append it
         if (activeThreadId && payload.thread_id === activeThreadId) {
           loadMessages(activeThreadId);
@@ -182,12 +204,17 @@ export function InboxPage({ product, initialThreadId }: InboxPageProps) {
   });
 
   // ── Handlers ──
-  const handleSelectThread = useCallback((threadId: string) => {
-    setActiveThreadId(threadId);
-    // Update URL without full navigation
-    const path = productTheme[product].inboxPath;
-    window.history.replaceState(null, "", `${path}/${threadId}`);
-  }, [product]);
+  const handleSelectThread = useCallback(
+    (threadId: string) => {
+      setActiveThreadId(threadId);
+      setShowNewMessage(false);
+      setShowSearch(false);
+      // Update URL without full navigation
+      const path = productTheme[product].inboxPath;
+      window.history.replaceState(null, "", `${path}/${threadId}`);
+    },
+    [product]
+  );
 
   const handleBack = useCallback(() => {
     setActiveThreadId(null);
@@ -204,6 +231,28 @@ export function InboxPage({ product, initialThreadId }: InboxPageProps) {
         // Reload messages to get the new one
         loadMessages(activeThreadId);
       }
+    },
+    [activeThreadId, loadMessages]
+  );
+
+  const handleEditMessage = useCallback(
+    async (messageId: string, newBody: string) => {
+      const result = await editMessage(messageId, newBody);
+      if (!result.error && activeThreadId) {
+        loadMessages(activeThreadId);
+      }
+      return result;
+    },
+    [activeThreadId, loadMessages]
+  );
+
+  const handleDeleteMessage = useCallback(
+    async (messageId: string) => {
+      const result = await deleteMessage(messageId);
+      if (!result.error && activeThreadId) {
+        loadMessages(activeThreadId);
+      }
+      return result;
     },
     [activeThreadId, loadMessages]
   );
@@ -227,6 +276,24 @@ export function InboxPage({ product, initialThreadId }: InboxPageProps) {
     [loadThreads]
   );
 
+  // New message flow
+  const handleNewMessageThreadCreated = useCallback(
+    (threadId: string) => {
+      setShowNewMessage(false);
+      handleSelectThread(threadId);
+    },
+    [handleSelectThread]
+  );
+
+  // Search result → navigate to thread
+  const handleSearchResult = useCallback(
+    (threadId: string, _messageId: string) => {
+      setShowSearch(false);
+      handleSelectThread(threadId);
+    },
+    [handleSelectThread]
+  );
+
   // ── Active thread data ──
   const activeThread = threads.find((t) => t.id === activeThreadId) ?? null;
 
@@ -235,26 +302,55 @@ export function InboxPage({ product, initialThreadId }: InboxPageProps) {
   // Desktop: two-panel split
   return (
     <div className="flex h-[calc(100vh-3.5rem)] md:h-[calc(100vh-1.5rem)] -m-4 md:-m-6 -mt-14 md:-mt-6">
+      {/* New message overlay */}
+      {showNewMessage && (
+        <div className="absolute inset-0 z-40 md:relative md:inset-auto md:w-80 lg:w-96 md:border-r border-edge-primary bg-surface-primary">
+          <NewMessageFlow
+            product={product}
+            onThreadCreated={handleNewMessageThreadCreated}
+            onClose={() => setShowNewMessage(false)}
+          />
+        </div>
+      )}
+
+      {/* Search overlay */}
+      {showSearch && (
+        <div className="absolute inset-0 z-40 md:relative md:inset-auto md:w-80 lg:w-96 md:border-r border-edge-primary bg-surface-primary">
+          <MessageSearch
+            product={product}
+            onSelectResult={handleSearchResult}
+            onClose={() => setShowSearch(false)}
+          />
+        </div>
+      )}
+
       {/* Thread list panel */}
-      <div
-        className={`w-full md:w-80 lg:w-96 md:border-r border-edge-primary flex-shrink-0 flex flex-col bg-surface-primary ${
-          activeThreadId ? "hidden md:flex" : "flex"
-        }`}
-      >
-        <ThreadList
-          threads={threads}
-          activeThreadId={activeThreadId}
-          filter={filter}
-          onFilterChange={setFilter}
-          onSelectThread={handleSelectThread}
-          onArchive={handleArchive}
-          onMute={handleMute}
-          loading={loading}
-          product={product}
-          theme={theme}
-          userId={userId}
-        />
-      </div>
+      {!showNewMessage && !showSearch && (
+        <div
+          className={`w-full md:w-80 lg:w-96 md:border-r border-edge-primary flex-shrink-0 flex flex-col bg-surface-primary ${
+            activeThreadId ? "hidden md:flex" : "flex"
+          }`}
+        >
+          {/* Push notification prompt (Phase 5) */}
+          <PushSubscriptionPrompt product={product} />
+
+          <ThreadList
+            threads={threads}
+            activeThreadId={activeThreadId}
+            filter={filter}
+            onFilterChange={setFilter}
+            onSelectThread={handleSelectThread}
+            onArchive={handleArchive}
+            onMute={handleMute}
+            loading={loading}
+            product={product}
+            theme={theme}
+            userId={userId}
+            onNewMessage={() => setShowNewMessage(true)}
+            onSearch={() => setShowSearch(true)}
+          />
+        </div>
+      )}
 
       {/* Conversation panel */}
       <div
@@ -272,6 +368,13 @@ export function InboxPage({ product, initialThreadId }: InboxPageProps) {
             theme={theme}
             onBack={handleBack}
             onSend={handleSendMessage}
+            onEdit={handleEditMessage}
+            onDelete={handleDeleteMessage}
+            onArchive={() => handleArchive(activeThread.id)}
+            onMute={(muted) => handleMute(activeThread.id, muted)}
+            onRefreshMessages={() => {
+              if (activeThreadId) loadMessages(activeThreadId);
+            }}
           />
         ) : (
           <div className="flex-1 flex items-center justify-center text-content-tertiary">

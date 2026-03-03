@@ -37,6 +37,10 @@ interface ThreadListProps {
   product: Product;
   theme: (typeof productTheme)[Product];
   userId: string | undefined;
+  /** Phase 3: Open new message flow */
+  onNewMessage?: () => void;
+  /** Phase 6: Open search */
+  onSearch?: () => void;
 }
 
 export function ThreadList({
@@ -49,6 +53,8 @@ export function ThreadList({
   product,
   theme,
   userId,
+  onNewMessage,
+  onSearch,
 }: ThreadListProps) {
   const t = useTranslations("messaging");
 
@@ -56,9 +62,57 @@ export function ThreadList({
     <>
       {/* Header */}
       <div className="px-4 pt-4 pb-2 border-b border-edge-primary">
-        <h1 className="text-lg font-semibold text-content-primary mb-3">
-          {t("inbox.title")}
-        </h1>
+        <div className="flex items-center justify-between mb-3">
+          <h1 className="text-lg font-semibold text-content-primary">
+            {t("inbox.title")}
+          </h1>
+          <div className="flex items-center gap-1">
+            {/* Search button */}
+            {onSearch && (
+              <button
+                onClick={onSearch}
+                className="p-2 text-content-tertiary hover:text-content-primary transition-colors rounded-lg hover:bg-surface-secondary"
+                title={t("inbox.search")}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                  />
+                </svg>
+              </button>
+            )}
+            {/* New message button */}
+            {onNewMessage && (
+              <button
+                onClick={onNewMessage}
+                className={`p-2 rounded-lg transition-colors ${theme.accentText} hover:bg-surface-secondary`}
+                title={t("inbox.newMessage")}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                  />
+                </svg>
+              </button>
+            )}
+          </div>
+        </div>
 
         {/* Filter tabs */}
         <div className="flex gap-1 bg-surface-secondary rounded-lg p-1">
@@ -112,7 +166,9 @@ export function ThreadList({
             );
             const displayName =
               otherParticipants.length > 0
-                ? otherParticipants.map((p) => p.display_name || "Unknown").join(", ")
+                ? otherParticipants
+                    .map((p) => p.display_name || "Unknown")
+                    .join(", ")
                 : t("thread.you");
             const initial = (displayName[0] ?? "?").toUpperCase();
 
@@ -185,7 +241,7 @@ export function ThreadList({
                             : "text-content-tertiary"
                         }`}
                       >
-                        {thread.last_message_preview || "…"}
+                        {thread.last_message_preview || "\u2026"}
                       </p>
                       {isUnread && (
                         <span

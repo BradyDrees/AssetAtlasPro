@@ -4,6 +4,9 @@ import { createClient } from "@/lib/supabase/server";
 import { requirePmRole, logActivity } from "@/lib/vendor/role-helpers";
 import type { VendorEstimate } from "@/lib/vendor/estimate-types";
 import type { VendorEstimateSection, VendorEstimateItem } from "@/lib/vendor/estimate-types";
+import { createWorkOrder, pmUpdateWorkOrder } from "@/app/actions/pm-work-orders";
+import type { CreateWorkOrderInput } from "@/lib/vendor/work-order-types";
+import type { WoBudgetType } from "@/lib/vendor/types";
 
 // ============================================
 // PM Estimate Queries
@@ -149,6 +152,119 @@ export async function approveEstimate(
     actorRole: "pm",
     oldValue: est.status,
     newValue: "approved",
+  });
+
+  // --- Auto-conversion: link or create work order ---
+  // Best-effort: estimate is already approved at this point.
+  // Conversion failures should not block the approval response.
+  const { data: fullEst } = await supabase
+    .from("vendor_estimates")
+    .select(
+      "id, status, total, work_order_id, vendor_org_id, pm_user_id, property_name, property_address, unit_info, title, description"
+    )
+    .eq("id", estimateId)
+    .single();
+
+  if (!fullEst) {
+    // Estimate is approved already; conversion is best-effort
+    return {};
+  }
+
+  if (fullEst.work_order_id) {
+    // Scenario A: Update existing WO with approved budget (RPC)
+    const updateResult = await pmUpdateWorkOrder(fullEst.work_order_id, {
+      budget_type: "approved" as WoBudgetType,
+      budget_amount: Number(fullEst.total) || 0,
+    });
+
+    if (!updateResult?.error) {
+      await logActivity({
+        entityType: "work_order",
+        entityId: fullEst.work_order_id,
+        action: "budget_approved_from_estimate",
+        actorRole: "pm",
+        metadata: { estimate_id: estimateId, approved_amount: fullEst.total },
+      });
+    }
+
+    return {};
+  }
+
+  // Scenario B: Create new WO via createWorkOrder()
+  // Inherits PM auth + vendor_pm_relationships gating + notifications + logging
+  const woInput: CreateWorkOrderInput = {
+    vendor_org_id: fullEst.vendor_org_id,
+    property_name: fullEst.property_name || undefined,
+    property_address: fullEst.property_address || undefined,
+    unit_number: fullEst.unit_info || undefined,
+    description:
+      [fullEst.title, fullEst.description].filter(Boolean).join(" — ") ||
+      undefined,
+    budget_type: "approved" as WoBudgetType,
+    budget_amount: Number(fullEst.total) || 0,
+    priority: "normal",
+  };
+
+  const createResult = await createWorkOrder(woInput);
+  const newWoId = createResult?.data?.id;
+
+  if (newWoId) {
+    // Idempotent link: only set work_order_id if still NULL
+    const { data: linked } = await supabase
+      .from("vendor_estimates")
+      .update({ work_order_id: newWoId })
+      .eq("id", estimateId)
+      .is("work_order_id", null)
+      .select("id");
+
+    if (!linked || linked.length === 0) {
+      // Race: someone else linked first. Log and stop.
+      await logActivity({
+        entityType: "estimate",
+        entityId: estimateId,
+        action: "conversion_race_condition",
+        actorRole: "pm",
+        metadata: { attempted_wo_id: newWoId },
+      });
+      return {};
+    }
+
+    // createWorkOrder() already notifies vendor about a new WO.
+    // Add a more specific notification referencing the estimate conversion.
+    if (vendorUsers && vendorUsers.length > 0) {
+      const property = fullEst.property_name || "a property";
+      const jobNotifs = vendorUsers.map(
+        (vu: { user_id: string }) => ({
+          user_id: vu.user_id,
+          type: "job_created_from_estimate",
+          title: "Job created from estimate",
+          body: `Your approved estimate for ${property} is now an active job`,
+          reference_type: "work_order" as const,
+          reference_id: newWoId,
+        })
+      );
+      await supabase.from("vendor_notifications").insert(jobNotifs);
+    }
+
+    await logActivity({
+      entityType: "work_order",
+      entityId: newWoId,
+      action: "created_from_estimate",
+      actorRole: "pm",
+      metadata: { estimate_id: estimateId, property: fullEst.property_name },
+    });
+
+    return {};
+  }
+
+  // createWorkOrder failed (likely vendor_pm_relationships gating). Approval stands.
+  // Vendor can use manual Convert to Job fallback.
+  await logActivity({
+    entityType: "estimate",
+    entityId: estimateId,
+    action: "auto_conversion_failed",
+    actorRole: "pm",
+    metadata: { error: createResult?.error || "createWorkOrder failed" },
   });
 
   return {};

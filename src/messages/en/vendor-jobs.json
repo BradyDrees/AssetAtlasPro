@@ -131,5 +131,9 @@
     "noMessages": "No messages yet. Start the conversation!",
     "placeholder": "Type a message...",
     "vendor": "Vendor"
+  },
+  "linkedEstimate": {
+    "title": "Linked Estimate",
+    "view": "View Estimate"
   }
 }

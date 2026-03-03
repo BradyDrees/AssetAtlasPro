@@ -218,5 +218,10 @@
     "save": "Save Signature",
     "signed": "Signed",
     "addSignature": "Add Signature"
-  }
+  },
+  "convertToJob": "Convert to Job",
+  "converting": "Creating job...",
+  "convertError": "Failed to create job",
+  "viewJob": "View Job",
+  "alreadyLinked": "This estimate is already linked to a job"
 }

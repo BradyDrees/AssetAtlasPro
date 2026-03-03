@@ -562,3 +562,80 @@ export async function sendEstimateReminder(
 
   return { sent: notifications.length };
 }
+
+// ============================================
+// Estimate → Job Conversion (Vendor Fallback)
+// ============================================
+
+/** Convert an approved estimate to a work order (manual fallback) */
+export async function convertEstimateToJob(
+  estimateId: string
+): Promise<{ data?: { work_order_id: string }; error?: string }> {
+  const vendorAuth = await requireVendorRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return { error: "Not authenticated" };
+
+  const { data: est } = await supabase
+    .from("vendor_estimates")
+    .select(
+      "id, status, total, work_order_id, vendor_org_id, pm_user_id, property_name, property_address, unit_info, title, description"
+    )
+    .eq("id", estimateId)
+    .single();
+
+  if (!est) return { error: "Estimate not found" };
+  if (est.vendor_org_id !== vendorAuth.vendor_org_id)
+    return { error: "Not authorized" };
+  if (est.status !== "approved")
+    return { error: "Estimate must be approved first" };
+  if (est.work_order_id) return { error: "already_linked" };
+
+  const { data: newWo, error: woError } = await supabase
+    .from("vendor_work_orders")
+    .insert({
+      vendor_org_id: est.vendor_org_id,
+      pm_user_id: est.pm_user_id,
+      property_name: est.property_name,
+      property_address: est.property_address,
+      unit_number: est.unit_info,
+      description:
+        [est.title, est.description].filter(Boolean).join(" — ") || null,
+      budget_type: "approved",
+      budget_amount: Number(est.total) || 0,
+      priority: "normal",
+      status: "assigned",
+      updated_by: user.id,
+    })
+    .select("id")
+    .single();
+
+  if (woError || !newWo) {
+    return { error: woError?.message || "Failed to create job" };
+  }
+
+  // Idempotent link: only set work_order_id if still NULL
+  const { data: linked } = await supabase
+    .from("vendor_estimates")
+    .update({ work_order_id: newWo.id })
+    .eq("id", estimateId)
+    .is("work_order_id", null)
+    .select("id");
+
+  if (!linked || linked.length === 0) {
+    return { error: "already_linked" };
+  }
+
+  await logActivity({
+    entityType: "work_order",
+    entityId: newWo.id,
+    action: "created_from_estimate",
+    actorRole: "vendor",
+    metadata: { estimate_id: estimateId },
+  });
+
+  return { data: { work_order_id: newWo.id } };
+}

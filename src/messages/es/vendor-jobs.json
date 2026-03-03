@@ -131,5 +131,9 @@
     "noMessages": "Sin mensajes aún. ¡Inicia la conversación!",
     "placeholder": "Escribe un mensaje...",
     "vendor": "Proveedor"
+  },
+  "linkedEstimate": {
+    "title": "Presupuesto Vinculado",
+    "view": "Ver Presupuesto"
   }
 }

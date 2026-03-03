@@ -32,6 +32,9 @@ export default function JobDetailPage() {
   const [showMessages, setShowMessages] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [userId, setUserId] = useState<string>("");
+  const [linkedEstimate, setLinkedEstimate] = useState<{
+    id: string; estimate_number: string | null; title: string | null; total: number;
+  } | null>(null);
   const mt = useTranslations("vendor.messages");
 
   useEffect(() => {
@@ -48,6 +51,15 @@ export default function JobDetailPage() {
       setWo(woRes.data);
       setMaterials(matRes.data);
       setTimeEntries(timeRes.data);
+
+      // Fetch linked estimate
+      const { data: estData } = await supabase
+        .from("vendor_estimates")
+        .select("id, estimate_number, title, total")
+        .eq("work_order_id", woId)
+        .maybeSingle();
+      if (estData) setLinkedEstimate(estData as { id: string; estimate_number: string | null; title: string | null; total: number });
+
       setLoading(false);
     }
     load();
@@ -155,6 +167,34 @@ export default function JobDetailPage() {
               <p className="text-sm text-content-secondary whitespace-pre-wrap">
                 {wo.pm_notes}
               </p>
+            </div>
+          )}
+
+          {/* Linked Estimate */}
+          {linkedEstimate && (
+            <div className="bg-surface-primary rounded-xl border border-edge-primary p-4">
+              <h3 className="text-sm font-semibold text-content-primary mb-2 flex items-center gap-2">
+                <svg className="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                </svg>
+                {t("linkedEstimate.title")}
+              </h3>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-content-secondary">
+                    {linkedEstimate.estimate_number} — {linkedEstimate.title || "Estimate"}
+                  </p>
+                  <p className="text-sm font-medium text-brand-400">
+                    ${Number(linkedEstimate.total).toLocaleString()}
+                  </p>
+                </div>
+                <Link
+                  href={`/pro/estimates/${linkedEstimate.id}`}
+                  className="text-xs text-brand-400 hover:text-brand-300 font-medium"
+                >
+                  {t("linkedEstimate.view")}
+                </Link>
+              </div>
             </div>
           )}
 

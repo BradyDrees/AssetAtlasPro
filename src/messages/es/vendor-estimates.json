@@ -218,5 +218,10 @@
     "save": "Guardar Firma",
     "signed": "Firmado",
     "addSignature": "Agregar Firma"
-  }
+  },
+  "convertToJob": "Convertir a Trabajo",
+  "converting": "Creando trabajo...",
+  "convertError": "Error al crear trabajo",
+  "viewJob": "Ver Trabajo",
+  "alreadyLinked": "Este presupuesto ya está vinculado a un trabajo"
 }

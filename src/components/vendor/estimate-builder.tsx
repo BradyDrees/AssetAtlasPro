@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useCallback, useTransition, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import type {
   VendorEstimate,
@@ -19,6 +20,7 @@ import {
   deleteItem as deleteItemAction,
   recalculateEstimateTotals,
   sendEstimateToPm,
+  convertEstimateToJob,
 } from "@/app/actions/vendor-estimates";
 import { getEstimatePhotos } from "@/app/actions/vendor-estimate-photos";
 import { EstimateSectionCard } from "./estimate-section-card";
@@ -58,6 +60,32 @@ export function EstimateBuilder({
   // Comments & versions state
   const [commentsExpanded, setCommentsExpanded] = useState(false);
   const [versionsExpanded, setVersionsExpanded] = useState(false);
+
+  // Job conversion state
+  const pathname = usePathname();
+  const tierPrefix = pathname.startsWith("/pro") ? "/pro" : "/vendor";
+  const [converting, setConverting] = useState(false);
+  const [convertErr, setConvertErr] = useState<string | null>(null);
+
+  async function handleConvertToJob() {
+    setConvertErr(null);
+    setConverting(true);
+
+    const result = await convertEstimateToJob(estimate.id);
+
+    if (result.data?.work_order_id) {
+      router.push(`${tierPrefix}/jobs/${result.data.work_order_id}`);
+      return;
+    }
+
+    if (result.error === "already_linked") {
+      setConvertErr(t("alreadyLinked"));
+    } else {
+      setConvertErr(t("convertError"));
+    }
+
+    setConverting(false);
+  }
 
   const storageBaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 
@@ -323,6 +351,44 @@ export function EstimateBuilder({
           <p className="text-sm text-amber-300/80">
             {estimate.change_request_notes}
           </p>
+        </div>
+      )}
+
+      {/* Job conversion card — shows only for approved estimates */}
+      {estimate.status === "approved" && (
+        <div className="bg-brand-900/20 border border-brand-700/30 rounded-xl p-4">
+          <div className="mb-2 text-sm font-semibold text-content-primary">
+            {estimate.work_order_id ? t("viewJob") : t("convertToJob")}
+          </div>
+
+          {estimate.work_order_id ? (
+            <Link
+              href={`${tierPrefix}/jobs/${estimate.work_order_id}`}
+              className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0" />
+              </svg>
+              {t("viewJob")}
+            </Link>
+          ) : (
+            <button
+              onClick={handleConvertToJob}
+              disabled={converting}
+              className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700 transition-colors disabled:opacity-50"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0" />
+              </svg>
+              {converting ? t("converting") : t("convertToJob")}
+            </button>
+          )}
+
+          {convertErr && (
+            <div className="mt-3 rounded-lg border border-red-500/30 bg-red-500/10 p-2 text-sm text-red-400">
+              {convertErr}
+            </div>
+          )}
         </div>
       )}
 

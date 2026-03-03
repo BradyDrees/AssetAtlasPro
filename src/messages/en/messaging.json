@@ -4,14 +4,32 @@
     "all": "All",
     "unread": "Unread",
     "archived": "Archived",
-    "empty": "No conversations yet."
+    "empty": "No conversations yet.",
+    "selectThread": "Select a conversation to start messaging.",
+    "search": "Search conversations…",
+    "newMessage": "New Message"
   },
   "thread": {
     "typeMessage": "Type a message…",
     "send": "Send",
     "markRead": "Mark as read",
     "archived": "Archived",
-    "muted": "Muted"
+    "muted": "Muted",
+    "you": "You",
+    "edited": "edited",
+    "deleted": "This message was deleted",
+    "noMessages": "No messages yet. Start the conversation!",
+    "workOrder": "Work Order",
+    "estimate": "Estimate",
+    "job": "Job",
+    "viewLinkedItem": "View details",
+    "addParticipant": "Add Participant",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "archive": "Archive",
+    "participants": "Participants",
+    "newMessages": "New messages ↓",
+    "loadMore": "Load older messages"
   },
   "contacts": {
     "title": "Contacts",
@@ -26,5 +44,8 @@
   },
   "notifications": {
     "newMessageEmailSubject": "New message"
+  },
+  "nav": {
+    "inbox": "Inbox"
   }
 }

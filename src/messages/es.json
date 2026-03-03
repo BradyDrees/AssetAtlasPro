@@ -69,7 +69,8 @@
     "vendors": "Proveedores",
     "workOrders": "Órdenes de Trabajo",
     "estimates": "Estimados",
-    "invoices": "Facturas"
+    "invoices": "Facturas",
+    "messages": "Mensajes"
   },
   "tiers": {
     "acquire": "Atlas Acquire",

@@ -60,7 +60,7 @@ export function HomeBottomNav() {
       ),
     },
     {
-      href: "/home/messages",
+      href: "/home/inbox",
       label: ht("messages"),
       matchExact: false,
       icon: (

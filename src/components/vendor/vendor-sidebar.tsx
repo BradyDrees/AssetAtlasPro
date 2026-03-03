@@ -11,6 +11,7 @@ import { useAppLocale } from "@/components/locale-provider";
 import { useOffline } from "@/components/offline-provider";
 import type { User } from "@supabase/supabase-js";
 import { NotificationBell } from "./notification-bell";
+import { UnreadBadge } from "@/components/messaging/unread-badge";
 
 function SombreroIcon({ className }: { className?: string }) {
   return (
@@ -127,7 +128,7 @@ export function VendorSidebar({ user, hasPmRole = false }: VendorSidebarProps) {
     { href: "/vendor/clients", label: vt("clients"), icon: <UsersIcon />, matchExact: false },
     { href: "/vendor/reports", label: vt("reports"), icon: <ChartBarIcon />, matchExact: false },
     { href: "/vendor/expenses", label: vt("expenses"), icon: <BanknotesIcon />, matchExact: false },
-    { href: "/vendor/messages", label: vt("messages"), icon: <ChatBubbleIcon />, matchExact: false },
+    { href: "/vendor/inbox", label: vt("messages"), icon: <ChatBubbleIcon />, matchExact: false, showUnreadBadge: true },
     { href: "/vendor/profile", label: vt("profile"), icon: <UserCircleIcon />, matchExact: false },
   ];
 
@@ -233,7 +234,10 @@ export function VendorSidebar({ user, hasPmRole = false }: VendorSidebarProps) {
                 } ${collapsed ? "md:justify-center md:px-0" : ""}`}
                 title={collapsed ? item.label : undefined}
               >
-                {item.icon}
+                <span className="relative">
+                  {item.icon}
+                  {item.showUnreadBadge && <UnreadBadge className="bg-brand-600" />}
+                </span>
                 {!collapsed && <span>{item.label}</span>}
               </Link>
             );

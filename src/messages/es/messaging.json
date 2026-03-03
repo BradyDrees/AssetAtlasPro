@@ -4,14 +4,32 @@
     "all": "Todos",
     "unread": "No leídos",
     "archived": "Archivados",
-    "empty": "Aún no hay conversaciones."
+    "empty": "Aún no hay conversaciones.",
+    "selectThread": "Selecciona una conversación para empezar a enviar mensajes.",
+    "search": "Buscar conversaciones…",
+    "newMessage": "Nuevo Mensaje"
   },
   "thread": {
     "typeMessage": "Escribe un mensaje…",
     "send": "Enviar",
     "markRead": "Marcar como leído",
     "archived": "Archivado",
-    "muted": "Silenciado"
+    "muted": "Silenciado",
+    "you": "Tú",
+    "edited": "editado",
+    "deleted": "Este mensaje fue eliminado",
+    "noMessages": "Sin mensajes aún. ¡Inicia la conversación!",
+    "workOrder": "Orden de Trabajo",
+    "estimate": "Estimación",
+    "job": "Trabajo",
+    "viewLinkedItem": "Ver detalles",
+    "addParticipant": "Agregar Participante",
+    "mute": "Silenciar",
+    "unmute": "Desilenciar",
+    "archive": "Archivar",
+    "participants": "Participantes",
+    "newMessages": "Nuevos mensajes ↓",
+    "loadMore": "Cargar mensajes anteriores"
   },
   "contacts": {
     "title": "Contactos",
@@ -26,5 +44,8 @@
   },
   "notifications": {
     "newMessageEmailSubject": "Nuevo mensaje"
+  },
+  "nav": {
+    "inbox": "Bandeja"
   }
 }

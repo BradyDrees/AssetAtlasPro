@@ -9,6 +9,7 @@ import { useTheme } from "@/components/theme-provider";
 import { useAppLocale } from "@/components/locale-provider";
 import { TierSwitcher } from "@/components/tier-switcher";
 import { NotificationBell } from "@/components/vendor/notification-bell";
+import { UnreadBadge } from "@/components/messaging/unread-badge";
 import type { User } from "@supabase/supabase-js";
 
 function SombreroIcon({ className }: { className?: string }) {
@@ -99,7 +100,7 @@ export function HomeSidebar({ user, hasVendorRole = false, hasPmRole = false }: 
     { href: "/home/work-orders", label: ht("workOrders"), icon: <WrenchIcon />, matchExact: false },
     { href: "/home/vendors", label: ht("vendors"), icon: <StarIcon />, matchExact: false },
     { href: "/home/projects", label: ht("projects"), icon: <FolderIcon />, matchExact: false },
-    { href: "/home/messages", label: ht("messages"), icon: <ChatBubbleIcon />, matchExact: false },
+    { href: "/home/inbox", label: ht("messages"), icon: <ChatBubbleIcon />, matchExact: false, showUnreadBadge: true },
     { href: "/home/property", label: ht("property"), icon: <BuildingIcon />, matchExact: false },
     { href: "/home/settings", label: ht("settings"), icon: <CogIcon />, matchExact: false },
   ];
@@ -208,7 +209,10 @@ export function HomeSidebar({ user, hasVendorRole = false, hasPmRole = false }: 
                 } ${collapsed ? "md:justify-center md:px-0" : ""}`}
                 title={collapsed ? item.label : undefined}
               >
-                {item.icon}
+                <span className="relative">
+                  {item.icon}
+                  {item.showUnreadBadge && <UnreadBadge className="bg-rose-500" />}
+                </span>
                 {!collapsed && <span>{item.label}</span>}
               </Link>
             );

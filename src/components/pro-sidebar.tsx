@@ -11,6 +11,7 @@ import { useOffline } from "@/components/offline-provider";
 import { TierSwitcher } from "@/components/tier-switcher";
 import type { User } from "@supabase/supabase-js";
 import { NotificationBell } from "./vendor/notification-bell";
+import { UnreadBadge } from "./messaging/unread-badge";
 
 function SombreroIcon({ className }: { className?: string }) {
   return (
@@ -128,7 +129,7 @@ export function ProSidebar({ user, hasPmRole = false, hasOwnerRole = false }: Pr
     { href: "/pro/clients", label: vt("clients"), icon: <UsersIcon />, matchExact: false },
     { href: "/pro/reports", label: vt("reports"), icon: <ChartBarIcon />, matchExact: false },
     { href: "/pro/expenses", label: vt("expenses"), icon: <BanknotesIcon />, matchExact: false },
-    { href: "/pro/messages", label: vt("messages"), icon: <ChatBubbleIcon />, matchExact: false },
+    { href: "/pro/inbox", label: vt("messages"), icon: <ChatBubbleIcon />, matchExact: false, showUnreadBadge: true },
     { href: "/pro/profile", label: vt("profile"), icon: <UserCircleIcon />, matchExact: false },
   ];
 
@@ -236,7 +237,10 @@ export function ProSidebar({ user, hasPmRole = false, hasOwnerRole = false }: Pr
                 } ${collapsed ? "md:justify-center md:px-0" : ""}`}
                 title={collapsed ? item.label : undefined}
               >
-                {item.icon}
+                <span className="relative">
+                  {item.icon}
+                  {item.showUnreadBadge && <UnreadBadge className="bg-amber-600" />}
+                </span>
                 {!collapsed && <span>{item.label}</span>}
               </Link>
             );

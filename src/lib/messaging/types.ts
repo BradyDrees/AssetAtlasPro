@@ -131,29 +131,20 @@ export type PushSubscriptionRecord = {
   created_at: string;
 };
 
-export type InboxThread = {
-  thread: MessageThread;
+/** Flattened thread for inbox display */
+export type InboxThread = MessageThread & {
   participants: Array<{
     user_id: string;
     role: ParticipantRole;
-    name?: string | null;
+    display_name?: string | null;
     avatar_url?: string | null;
   }>;
   unread_count: number;
-  linked_summary: {
-    type: ThreadType;
-    id: string | null;
-    title?: string | null;
-    status?: string | null;
-    property_name?: string | null;
-  };
 };
 
+/** Message with sender info for display */
 export type ThreadMessage = Message & {
-  sender: {
-    id: string;
-    name?: string | null;
-    avatar_url?: string | null;
-    role?: ParticipantRole | null;
-  };
+  sender_name?: string | null;
+  sender_avatar_url?: string | null;
+  sender_role?: ParticipantRole | null;
 };

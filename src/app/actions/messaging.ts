@@ -9,6 +9,7 @@ import type {
   Message,
   MessageThread,
   ParticipantRole,
+  ThreadMessage,
   ThreadType,
   UserContact,
 } from "@/lib/messaging/types";
@@ -333,23 +334,23 @@ export async function getInboxThreads(params: {
     partsByThread.set(p.thread_id, arr);
   }
 
-  // Build inbox threads
+  // Build inbox threads (flattened: MessageThread + participants + unread_count)
   const result: InboxThread[] = threads.map((t) => {
     const thread = t as MessageThread;
-    const participants = partsByThread.get(thread.id) ?? [];
+    const participants = (partsByThread.get(thread.id) ?? []).map((p) => ({
+      ...p,
+      display_name: null as string | null,
+      avatar_url: null as string | null,
+    }));
     const myLastRead = readMap.get(thread.id) ?? null;
     const hasUnread =
       thread.last_message_at &&
       (!myLastRead || new Date(thread.last_message_at) > new Date(myLastRead));
 
     return {
-      thread,
+      ...thread,
       participants,
       unread_count: hasUnread ? 1 : 0,
-      linked_summary: {
-        type: thread.thread_type,
-        id: thread.work_order_id ?? thread.estimate_id ?? thread.job_id ?? null,
-      },
     };
   });
 
@@ -455,7 +456,7 @@ export async function getThreadMessages(params: {
   thread_id: string;
   limit?: number;
   before?: string | null; // created_at ISO for pagination
-}): Promise<{ data: Message[]; error?: string }> {
+}): Promise<{ data: ThreadMessage[]; error?: string }> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -478,7 +479,16 @@ export async function getThreadMessages(params: {
   const { data, error } = await query;
   if (error) return { data: [], error: error.message };
 
-  return { data: (data ?? []) as Message[] };
+  // Return as ThreadMessage with null sender metadata
+  // (caller can enrich with participant data if needed)
+  return {
+    data: (data ?? []).map((m) => ({
+      ...(m as Message),
+      sender_name: null,
+      sender_avatar_url: null,
+      sender_role: null,
+    })),
+  };
 }
 
 /** Mark a thread as read (updates participant last_read_at). */

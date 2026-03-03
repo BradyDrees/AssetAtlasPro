@@ -7,6 +7,7 @@ import {
   vendorOrgRoleToTransitionRole,
 } from "@/lib/vendor/state-machine";
 import type { EstimateStatus } from "@/lib/vendor/types";
+import { createContextualThread } from "@/app/actions/messaging";
 import type {
   VendorEstimate,
   VendorEstimateSection,
@@ -479,6 +480,18 @@ export async function sendEstimateToPm(
     oldValue: currentStatus,
     newValue: "sent",
   });
+
+  // ── Communications: auto-create contextual thread for estimate discussion ──
+  try {
+    await createContextualThread({
+      thread_type: "estimate",
+      linked_item_id: estimateId,
+      participant_ids: [user.id, est.pm_user_id],
+    });
+  } catch (err) {
+    // Non-fatal — estimate was already sent successfully
+    console.error("Failed to create messaging thread for estimate:", err);
+  }
 
   return {};
 }

@@ -1,0 +1,30 @@
+{
+  "inbox": {
+    "title": "Inbox",
+    "all": "All",
+    "unread": "Unread",
+    "archived": "Archived",
+    "empty": "No conversations yet."
+  },
+  "thread": {
+    "typeMessage": "Type a message…",
+    "send": "Send",
+    "markRead": "Mark as read",
+    "archived": "Archived",
+    "muted": "Muted"
+  },
+  "contacts": {
+    "title": "Contacts",
+    "newMessage": "New message",
+    "search": "Search contacts"
+  },
+  "calls": {
+    "title": "Calls",
+    "addNote": "Add call note",
+    "duration": "Duration",
+    "missed": "Missed"
+  },
+  "notifications": {
+    "newMessageEmailSubject": "New message"
+  }
+}

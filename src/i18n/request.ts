@@ -30,6 +30,9 @@ export default getRequestConfig(async () => {
   const vendorExpenses = (await import(`../messages/${locale}/vendor-expenses.json`)).default;
   const vendorMessages = (await import(`../messages/${locale}/vendor-messages.json`)).default;
 
+  // Shared messaging module (used across Pro, Vendor, Home, Operate)
+  const messaging = (await import(`../messages/${locale}/messaging.json`)).default;
+
   // Home (homeowner) namespace files
   const homeNav = (await import(`../messages/${locale}/home-nav.json`)).default;
   const homeOnboarding = (await import(`../messages/${locale}/home-onboarding.json`)).default;
@@ -46,6 +49,7 @@ export default getRequestConfig(async () => {
 
   const messages = {
     ...base,
+    messaging,
     vendor: {
       nav: vendorNav,
       onboarding: vendorOnboarding,

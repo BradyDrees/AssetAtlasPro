@@ -1,0 +1,30 @@
+{
+  "inbox": {
+    "title": "Bandeja de entrada",
+    "all": "Todos",
+    "unread": "No leídos",
+    "archived": "Archivados",
+    "empty": "Aún no hay conversaciones."
+  },
+  "thread": {
+    "typeMessage": "Escribe un mensaje…",
+    "send": "Enviar",
+    "markRead": "Marcar como leído",
+    "archived": "Archivado",
+    "muted": "Silenciado"
+  },
+  "contacts": {
+    "title": "Contactos",
+    "newMessage": "Nuevo mensaje",
+    "search": "Buscar contactos"
+  },
+  "calls": {
+    "title": "Llamadas",
+    "addNote": "Agregar nota de llamada",
+    "duration": "Duración",
+    "missed": "Perdida"
+  },
+  "notifications": {
+    "newMessageEmailSubject": "Nuevo mensaje"
+  }
+}

@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requirePmRole, logActivity } from "@/lib/vendor/role-helpers";
 import type { CreateWorkOrderInput } from "@/lib/vendor/work-order-types";
 import type { VendorWorkOrder } from "@/lib/vendor/work-order-types";
+import { createContextualThread, syncContactsFromWorkOrder } from "@/app/actions/messaging";
 
 // ============================================
 // PM creates a work order for a vendor
@@ -102,6 +103,26 @@ export async function createWorkOrder(
       vendor_org_id: input.vendor_org_id,
     },
   });
+
+  // ── Communications: auto-create contextual thread ──
+  // Collect participant IDs: PM + assigned vendor user (if set)
+  const participantIds: string[] = [user.id];
+  if (input.assigned_to) {
+    participantIds.push(input.assigned_to);
+  }
+
+  try {
+    await createContextualThread({
+      thread_type: "work_order",
+      linked_item_id: wo.id,
+      participant_ids: participantIds,
+    });
+    // Sync contacts so PM ↔ vendor can DM later
+    await syncContactsFromWorkOrder(wo.id);
+  } catch (err) {
+    // Non-fatal — WO was already created successfully
+    console.error("Failed to create messaging thread for WO:", err);
+  }
 
   return { data: wo };
 }

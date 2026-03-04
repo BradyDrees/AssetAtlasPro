@@ -138,6 +138,19 @@ export interface PageSnapshot {
 }
 
 // ============================================
+// Inspection Terms Cache (Operate autocomplete)
+// ============================================
+
+export interface LocalInspectionTerm {
+  id: string;
+  userId: string;
+  termType: "category" | "location" | "tag";
+  termValue: string;
+  useCount: number;
+  lastUsedAt: number;
+}
+
+// ============================================
 // Vendor Offline Types (Phase 2+)
 // ============================================
 
@@ -253,6 +266,8 @@ export class OfflineDB extends Dexie {
   localNotePhotos!: Table<LocalNotePhoto, string>;
   localUnits!: Table<LocalUnit, string>;
   pageSnapshots!: Table<PageSnapshot, string>;
+  // Inspection terms cache (v5)
+  inspectionTerms!: Table<LocalInspectionTerm, string>;
   // Vendor tables (v4)
   vendorWorkOrders!: Table<LocalVendorWorkOrder, string>;
   vendorWoMaterials!: Table<LocalVendorWoMaterial, string>;
@@ -329,6 +344,34 @@ export class OfflineDB extends Dexie {
       vendorInvoiceItems: "&localId, invoiceId, syncStatus",
     }).upgrade(() => {
       console.log("Dexie v4: vendor tables added");
+    });
+
+    // Version 5: Add inspection terms cache for Operate autocomplete
+    this.version(5).stores({
+      syncQueue: "&id, status, createdAt",
+      localFindings:
+        "&localId, projectId, projectSectionId, syncStatus",
+      localCaptures:
+        "&localId, projectId, findingLocalId, syncStatus",
+      localNotes: "&localId, batchId, unitId, syncStatus",
+      localNotePhotos: "&localId, noteLocalId, syncStatus",
+      localUnits:
+        "&localId, projectId, projectSectionId, syncStatus, building, unitNumber",
+      pageSnapshots: "&pageId, pageType, snapshotAt",
+      // Vendor tables
+      vendorWorkOrders: "&localId, vendorOrgId, status, scheduledDate, pmUserId, syncStatus",
+      vendorWoMaterials: "&localId, workOrderId, syncStatus",
+      vendorWoTimeEntries: "&localId, workOrderId, syncStatus",
+      vendorPhotos: "&localId, workOrderId, estimateId, syncStatus",
+      vendorEstimates: "&localId, vendorOrgId, status, pmUserId, syncStatus",
+      vendorEstimateSections: "&localId, estimateId, syncStatus",
+      vendorEstimateItems: "&localId, sectionId, syncStatus",
+      vendorInvoices: "&localId, vendorOrgId, status, pmUserId, syncStatus",
+      vendorInvoiceItems: "&localId, invoiceId, syncStatus",
+      // Inspection terms cache
+      inspectionTerms: "&id, [termType+termValue], termType, useCount",
+    }).upgrade(() => {
+      console.log("Dexie v5: inspection terms cache added");
     });
   }
 }

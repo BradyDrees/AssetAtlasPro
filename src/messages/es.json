@@ -525,6 +525,36 @@
     "deleteFinding": "Eliminar hallazgo",
     "deleting": "Eliminando...",
     "deleteConfirm": "Eliminar este hallazgo y todas sus fotos?",
+    "confirmDeleteFinding": "Eliminar este hallazgo y todas sus fotos?",
+    "noFindings": "Aún no hay hallazgos",
+    "findings": "Hallazgos",
+    "capture": {
+      "addPhoto": "Agregar foto",
+      "addToLast": "Agregar al hallazgo anterior",
+      "category": "Categoría",
+      "location": "Ubicación",
+      "priority": "Prioridad",
+      "riskFlags": "Banderas de riesgo",
+      "tags": "Etiquetas",
+      "notes": "Notas",
+      "save": "Guardar"
+    },
+    "autocomplete": {
+      "placeholderCategory": "Escriba una categoría...",
+      "placeholderLocation": "Escriba una ubicación...",
+      "placeholderTag": "Escriba una etiqueta..."
+    },
+    "tags": {
+      "leasingImpact": "Impacto en arrendamiento",
+      "propertyCleanliness": "Limpieza de la propiedad",
+      "curbAppeal": "Aspecto exterior",
+      "deferredMaintenance": "Mantenimiento diferido",
+      "codeViolation": "Violación de código",
+      "tenantComplaint": "Queja de inquilino",
+      "capitalPlanning": "Planificación de capital",
+      "energyEfficiency": "Eficiencia energética",
+      "adaCompliance": "Cumplimiento ADA"
+    },
     "activityBySection": "Actividad por Seccion",
     "newInspection": "+ Nueva Inspección",
     "newInspectionTitle": "Nueva Inspección",

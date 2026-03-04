@@ -6,6 +6,8 @@ import { InspectionChecklistPanel } from "@/components/inspection-checklist-pane
 import { InspectionFindingsList } from "@/components/inspection-findings-list";
 import { InspectionUnitList } from "@/components/inspection-unit-list";
 import { SnapshotSync } from "@/components/snapshot-sync";
+import { OperatePhotoStream } from "@/components/operate/operate-photo-stream";
+import { OperateSectionClient } from "@/components/operate/operate-section-client";
 import { getTranslations } from "next-intl/server";
 import { INSPECTION_GROUP_SLUGS } from "@/lib/inspection-sections";
 import { nameToKey, INSPECTION_GROUP_KEYS } from "@/lib/translate-sections";
@@ -204,7 +206,18 @@ export default async function InspectionSectionPage({
           sectionSlug={ps.section.slug}
           currentUserId={user?.id}
         />
+      ) : project.inspection_type === "internal" ? (
+        /* Operate: camera-first photo stream + capture FAB */
+        <OperateSectionClient
+          findings={(findings ?? []) as InspectionFinding[]}
+          captures={(captures ?? []) as InspectionCapture[]}
+          projectId={projectId}
+          projectSectionId={projectSectionId}
+          sectionSlug={ps.section.slug}
+          currentUserId={user?.id ?? ""}
+        />
       ) : (
+        /* Acquire: existing checklist + findings (unchanged) */
         <>
           {/* Checklist items panel */}
           <InspectionChecklistPanel

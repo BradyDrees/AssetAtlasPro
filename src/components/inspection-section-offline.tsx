@@ -127,6 +127,7 @@ export function InspectionSectionOffline({
         exposure_bucket: null,
         exposure_custom: null,
         risk_flags: [] as InspectionFinding["risk_flags"],
+        tags: [] as string[],
         notes: lf.notes ?? "",
         sort_order: findings.length + 1,
         created_at: new Date(lf.createdAt).toISOString(),

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import type { CreateInspectionFinding } from "@/lib/inspection-types";
+import type { CreateInspectionFinding, InspectionTerm } from "@/lib/inspection-types";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 // Whitelist of fields that can be updated on a finding
@@ -13,6 +13,7 @@ const ALLOWED_FIELDS = new Set([
   "exposure_bucket",
   "exposure_custom",
   "risk_flags",
+  "tags",
   "notes",
 ]);
 
@@ -222,4 +223,202 @@ export async function deleteInspectionFinding(
     `/inspections/${projectId}/sections/${projectSectionId}`
   );
   revalidatePath(`/inspections/${projectId}/groups`, "layout");
+}
+
+// ============================================
+// Operate Capture — Learning Autocomplete
+// ============================================
+
+/**
+ * Atomic upsert: insert term or increment use_count via RPC.
+ */
+export async function upsertInspectionTerm(
+  termType: "category" | "location" | "tag",
+  termValue: string
+): Promise<InspectionTerm | null> {
+  const supabase = await createClient();
+
+  const cleaned = termValue.trim();
+  if (!cleaned) return null;
+
+  const { data, error } = await supabase.rpc("increment_term_use_count", {
+    p_term_type: termType,
+    p_term_value: cleaned,
+  });
+
+  if (error) throw error;
+  return (data as InspectionTerm) ?? null;
+}
+
+/**
+ * Fetch user's learned terms, sorted by use_count DESC.
+ * Optional prefix query for type-ahead filtering.
+ */
+export async function getInspectionTerms(
+  termType: "category" | "location" | "tag",
+  query?: string
+): Promise<InspectionTerm[]> {
+  const supabase = await createClient();
+
+  let q = supabase
+    .from("inspection_terms")
+    .select("id, user_id, term_type, term_value, use_count, last_used_at, created_at")
+    .eq("term_type", termType)
+    .order("use_count", { ascending: false })
+    .limit(50);
+
+  if (query && query.trim()) {
+    q = q.ilike("term_value", `${query.trim()}%`);
+  }
+
+  const { data, error } = await q;
+  if (error) throw error;
+  return (data as InspectionTerm[]) ?? [];
+}
+
+/**
+ * Create a finding + capture in one call (camera-first flow).
+ * Also learns the category, location, and tag terms.
+ */
+export async function createQuickFinding(params: {
+  projectId: string;
+  projectSectionId: string;
+  storagePath: string;
+  category: string;
+  location: string;
+  priority: number | null;
+  riskFlags: string[];
+  tags: string[];
+  notes?: string;
+  unitId?: string | null;
+}): Promise<string> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  // 1) Get next sort_order
+  const { data: maxSort } = await supabase
+    .from("inspection_findings")
+    .select("sort_order")
+    .eq("project_section_id", params.projectSectionId)
+    .order("sort_order", { ascending: false })
+    .limit(1)
+    .single();
+  const nextSort = (maxSort?.sort_order ?? -1) + 1;
+
+  // 2) Insert finding
+  const { data: finding, error: findingErr } = await supabase
+    .from("inspection_findings")
+    .insert({
+      project_id: params.projectId,
+      project_section_id: params.projectSectionId,
+      checklist_item_id: null,
+      unit_id: params.unitId ?? null,
+      title: params.category, // Use category as the finding title
+      location: params.location,
+      priority: params.priority,
+      risk_flags: params.riskFlags ?? [],
+      tags: params.tags ?? [],
+      notes: params.notes ?? "",
+      sort_order: nextSort,
+      created_by: user.id,
+    })
+    .select("id")
+    .single();
+
+  if (findingErr) throw new Error(findingErr.message);
+
+  // 3) Attach capture to finding
+  const { data: maxCapSort } = await supabase
+    .from("inspection_captures")
+    .select("sort_order")
+    .eq("project_section_id", params.projectSectionId)
+    .order("sort_order", { ascending: false })
+    .limit(1)
+    .single();
+  const nextCapSort = (maxCapSort?.sort_order ?? -1) + 1;
+
+  const { error: capErr } = await supabase.from("inspection_captures").insert({
+    project_section_id: params.projectSectionId,
+    finding_id: finding.id,
+    unit_id: params.unitId ?? null,
+    file_type: "image",
+    image_path: params.storagePath,
+    caption: "",
+    sort_order: nextCapSort,
+    created_by: user.id,
+  });
+
+  if (capErr) throw new Error(capErr.message);
+
+  // 4) Learn terms (non-blocking)
+  const termPromises: Promise<unknown>[] = [];
+  if (params.category.trim()) {
+    termPromises.push(upsertInspectionTerm("category", params.category));
+  }
+  if (params.location.trim()) {
+    termPromises.push(upsertInspectionTerm("location", params.location));
+  }
+  for (const tag of params.tags ?? []) {
+    if (tag.trim()) {
+      termPromises.push(upsertInspectionTerm("tag", tag));
+    }
+  }
+  await Promise.allSettled(termPromises);
+
+  // 5) Recalculate health
+  await recalculateSubsectionHealth(supabase, params.projectSectionId);
+
+  revalidatePath(`/inspections/${params.projectId}`, "page");
+  revalidatePath(
+    `/inspections/${params.projectId}/sections/${params.projectSectionId}`
+  );
+  revalidatePath(`/inspections/${params.projectId}/groups`, "layout");
+
+  return finding.id;
+}
+
+/**
+ * Add a capture to an existing finding (the "Add to last" flow).
+ */
+export async function addCaptureToFinding(params: {
+  projectId: string;
+  projectSectionId: string;
+  findingId: string;
+  storagePath: string;
+  unitId?: string | null;
+}): Promise<void> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  const { data: maxCapSort } = await supabase
+    .from("inspection_captures")
+    .select("sort_order")
+    .eq("project_section_id", params.projectSectionId)
+    .order("sort_order", { ascending: false })
+    .limit(1)
+    .single();
+  const nextCapSort = (maxCapSort?.sort_order ?? -1) + 1;
+
+  const { error } = await supabase.from("inspection_captures").insert({
+    project_section_id: params.projectSectionId,
+    finding_id: params.findingId,
+    unit_id: params.unitId ?? null,
+    file_type: "image",
+    image_path: params.storagePath,
+    caption: "",
+    sort_order: nextCapSort,
+    created_by: user.id,
+  });
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath(
+    `/inspections/${params.projectId}/sections/${params.projectSectionId}`
+  );
 }

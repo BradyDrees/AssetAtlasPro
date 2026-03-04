@@ -8,6 +8,7 @@ import type {
   RulBucket,
   RiskFlag,
   InspectionUnitGrade,
+  OperationalTag,
 } from "./inspection-types";
 
 // ----- Priority Scale (5-level, industry standard) -----
@@ -95,6 +96,47 @@ export const RISK_FLAG_OPTIONS: RiskFlag[] = [
   "electrical_hazard",
   "structural",
 ];
+
+// ----- Operational Tags (Operate inspections) -----
+export const OPERATIONAL_TAG_LABELS: Record<
+  OperationalTag,
+  { label: string; color: string; i18nKey: string }
+> = {
+  leasing_impact: { label: "Leasing Impact", color: "bg-orange-100 text-orange-700", i18nKey: "inspection.tags.leasingImpact" },
+  property_cleanliness: { label: "Property Cleanliness", color: "bg-blue-100 text-blue-700", i18nKey: "inspection.tags.propertyCleanliness" },
+  curb_appeal: { label: "Curb Appeal", color: "bg-green-100 text-green-700", i18nKey: "inspection.tags.curbAppeal" },
+  deferred_maintenance: { label: "Deferred Maintenance", color: "bg-yellow-100 text-yellow-700", i18nKey: "inspection.tags.deferredMaintenance" },
+  code_violation: { label: "Code Violation", color: "bg-red-100 text-red-700", i18nKey: "inspection.tags.codeViolation" },
+  tenant_complaint: { label: "Tenant Complaint", color: "bg-purple-100 text-purple-700", i18nKey: "inspection.tags.tenantComplaint" },
+  capital_planning: { label: "Capital Planning", color: "bg-slate-100 text-slate-700", i18nKey: "inspection.tags.capitalPlanning" },
+  energy_efficiency: { label: "Energy Efficiency", color: "bg-teal-100 text-teal-700", i18nKey: "inspection.tags.energyEfficiency" },
+  ada_compliance: { label: "ADA Compliance", color: "bg-indigo-100 text-indigo-700", i18nKey: "inspection.tags.adaCompliance" },
+};
+
+export const OPERATIONAL_TAG_OPTIONS: OperationalTag[] = [
+  "leasing_impact",
+  "property_cleanliness",
+  "curb_appeal",
+  "deferred_maintenance",
+  "code_violation",
+  "tenant_complaint",
+  "capital_planning",
+  "energy_efficiency",
+  "ada_compliance",
+];
+
+// ----- Operate Capture Seed Lists -----
+export const OPERATE_CATEGORY_SEEDS = [
+  "Plumbing", "HVAC", "Electrical", "Roofing", "Flooring", "Paint",
+  "Appliances", "Cabinetry", "Windows/Doors", "Exterior", "Common Area",
+  "Landscaping", "Pest", "Fire Safety",
+] as const;
+
+export const OPERATE_LOCATION_SEEDS = [
+  "Lobby", "Hallway", "Stairwell", "Parking", "Pool", "Gym",
+  "Laundry", "Office", "Exterior North", "Exterior South",
+  "Exterior East", "Exterior West", "Roof", "Basement", "Mechanical Room",
+] as const;
 
 // ----- Remaining Useful Life (RUL) -----
 export const RUL_OPTIONS: RulBucket[] = [

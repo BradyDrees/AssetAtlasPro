@@ -28,6 +28,27 @@ export type RiskFlag =
   | "electrical_hazard"
   | "structural";
 
+export type OperationalTag =
+  | "leasing_impact"
+  | "property_cleanliness"
+  | "curb_appeal"
+  | "deferred_maintenance"
+  | "code_violation"
+  | "tenant_complaint"
+  | "capital_planning"
+  | "energy_efficiency"
+  | "ada_compliance";
+
+export interface InspectionTerm {
+  id: string;
+  user_id: string;
+  term_type: "category" | "location" | "tag";
+  term_value: string;
+  use_count: number;
+  last_used_at: string; // ISO
+  created_at: string;   // ISO
+}
+
 export type InspectionUnitGrade = "A" | "B" | "C" | "D" | "E" | "F";
 
 export type OccupancyStatus = "VACANT" | "OCCUPIED" | "MODEL" | "DOWN" | "UNKNOWN";
@@ -140,6 +161,7 @@ export interface InspectionFinding {
   exposure_bucket: ExposureBucket | null;
   exposure_custom: number | null;
   risk_flags: RiskFlag[];
+  tags: string[];
   notes: string;
   sort_order: number;
   created_at: string;

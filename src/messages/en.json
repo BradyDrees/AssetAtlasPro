@@ -525,6 +525,36 @@
     "deleteFinding": "Delete Finding",
     "deleting": "Deleting...",
     "deleteConfirm": "Delete this finding and all its photos?",
+    "confirmDeleteFinding": "Delete this finding and all its photos?",
+    "noFindings": "No findings yet",
+    "findings": "Findings",
+    "capture": {
+      "addPhoto": "Add Photo",
+      "addToLast": "Add to previous finding",
+      "category": "Category",
+      "location": "Location",
+      "priority": "Priority",
+      "riskFlags": "Risk Flags",
+      "tags": "Tags",
+      "notes": "Notes",
+      "save": "Save"
+    },
+    "autocomplete": {
+      "placeholderCategory": "Type a category...",
+      "placeholderLocation": "Type a location...",
+      "placeholderTag": "Type a tag..."
+    },
+    "tags": {
+      "leasingImpact": "Leasing Impact",
+      "propertyCleanliness": "Property Cleanliness",
+      "curbAppeal": "Curb Appeal",
+      "deferredMaintenance": "Deferred Maintenance",
+      "codeViolation": "Code Violation",
+      "tenantComplaint": "Tenant Complaint",
+      "capitalPlanning": "Capital Planning",
+      "energyEfficiency": "Energy Efficiency",
+      "adaCompliance": "ADA Compliance"
+    },
     "activityBySection": "Activity by Section",
     "newInspection": "+ New Inspection",
     "newInspectionTitle": "New Inspection",

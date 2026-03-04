@@ -7,6 +7,7 @@ import {
   notifyVendorNewWO,
   notifyHomeownerSubmission,
 } from "./home-wo-notifications";
+import { createContextualThread, syncContactsFromWorkOrder } from "@/app/actions/messaging";
 
 interface CreateWOInput {
   trade: string;
@@ -144,6 +145,47 @@ export async function createHomeWorkOrder(
       vendorAssigned,
     });
 
+    // ── Communications: auto-create contextual thread ──
+    if (vendorAssigned) {
+      try {
+        // Get vendor org members to include as thread participants
+        const { data: vendorOrgData } = await supabase
+          .from("vendor_work_orders")
+          .select("vendor_org_id")
+          .eq("id", woId)
+          .single();
+
+        const participantIds: string[] = [user.id]; // Homeowner
+
+        if (vendorOrgData?.vendor_org_id) {
+          const { data: vendorUsers } = await supabase
+            .from("vendor_users")
+            .select("user_id")
+            .eq("vendor_org_id", vendorOrgData.vendor_org_id)
+            .eq("is_active", true);
+
+          for (const vu of vendorUsers ?? []) {
+            if (vu.user_id && !participantIds.includes(vu.user_id)) {
+              participantIds.push(vu.user_id);
+            }
+          }
+        }
+
+        await createContextualThread({
+          thread_type: "work_order",
+          linked_item_id: woId,
+          participant_ids: participantIds,
+          title: `WO: ${input.trade} — ${input.description?.slice(0, 40) || "Work Order"}`,
+        });
+
+        // Sync contacts so all parties can DM later
+        await syncContactsFromWorkOrder(woId);
+      } catch (err) {
+        // Non-fatal — WO was already created successfully
+        console.error("Failed to create messaging thread for home WO:", err);
+      }
+    }
+
     return { success: true, id: woId };
   } catch (err) {
     return {
@@ -196,6 +238,34 @@ export async function assignVendorToWo(
       description: wo.description ?? "",
       urgency: wo.urgency ?? "routine",
     });
+
+    // ── Communications: auto-create contextual thread ──
+    try {
+      const participantIds: string[] = [user.id]; // Homeowner
+
+      const { data: vendorUsers } = await supabase
+        .from("vendor_users")
+        .select("user_id")
+        .eq("vendor_org_id", vendorOrgId)
+        .eq("is_active", true);
+
+      for (const vu of vendorUsers ?? []) {
+        if (vu.user_id && !participantIds.includes(vu.user_id)) {
+          participantIds.push(vu.user_id);
+        }
+      }
+
+      await createContextualThread({
+        thread_type: "work_order",
+        linked_item_id: woId,
+        participant_ids: participantIds,
+        title: `WO: ${wo.trade ?? "Work Order"}`,
+      });
+
+      await syncContactsFromWorkOrder(woId);
+    } catch (err) {
+      console.error("Failed to create messaging thread for assigned WO:", err);
+    }
 
     return { success: true };
   } catch (err) {

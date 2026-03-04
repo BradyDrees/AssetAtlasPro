@@ -105,10 +105,30 @@ export async function createWorkOrder(
   });
 
   // ── Communications: auto-create contextual thread ──
-  // Collect participant IDs: PM + assigned vendor user (if set)
+  // Collect participant auth UUIDs: PM + assigned vendor user (if set)
   const participantIds: string[] = [user.id];
+
+  // input.assigned_to is vendor_users.id (table PK), NOT the auth UUID.
+  // Resolve the actual auth user_id from vendor_users before adding as participant.
   if (input.assigned_to) {
-    participantIds.push(input.assigned_to);
+    const { data: vendorUser } = await supabase
+      .from("vendor_users")
+      .select("user_id")
+      .eq("id", input.assigned_to)
+      .single();
+
+    if (vendorUser?.user_id) {
+      participantIds.push(vendorUser.user_id);
+    }
+  }
+
+  // Also add all active vendor org members as participants
+  if (vendorUsers) {
+    for (const vu of vendorUsers) {
+      if (!participantIds.includes(vu.user_id)) {
+        participantIds.push(vu.user_id);
+      }
+    }
   }
 
   try {
@@ -116,6 +136,7 @@ export async function createWorkOrder(
       thread_type: "work_order",
       linked_item_id: wo.id,
       participant_ids: participantIds,
+      title: `WO: ${input.property_name || "Work Order"}`,
     });
     // Sync contacts so PM ↔ vendor can DM later
     await syncContactsFromWorkOrder(wo.id);

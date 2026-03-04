@@ -1,19 +1,27 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import webpush from "web-push";
 
 /**
- * Server-side push notification sender.
- * Uses the web-push protocol via fetch (no external npm dependency).
+ * Server-side push notification sender using the web-push protocol.
  *
- * For production, install `web-push` and use VAPID keys:
- *   npm install web-push
- *   const webpush = require('web-push');
- *   webpush.setVapidDetails('mailto:...', publicKey, privateKey);
- *
- * This implementation is a stub that logs push payloads.
- * Replace with actual web-push calls once VAPID keys are configured.
+ * Requires environment variables:
+ *   NEXT_PUBLIC_VAPID_PUBLIC_KEY  — VAPID public key (also used on the client)
+ *   VAPID_PRIVATE_KEY             — VAPID private key (server-only)
+ *   VAPID_CONTACT_EMAIL           — mailto: contact (defaults to noreply@assetatlaspro.com)
  */
+
+// Configure VAPID once on module load (no-ops if keys missing)
+const VAPID_PUBLIC = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? "";
+const VAPID_PRIVATE = process.env.VAPID_PRIVATE_KEY ?? "";
+const VAPID_EMAIL = process.env.VAPID_CONTACT_EMAIL || "mailto:noreply@assetatlaspro.com";
+
+const vapidConfigured = Boolean(VAPID_PUBLIC && VAPID_PRIVATE);
+
+if (vapidConfigured) {
+  webpush.setVapidDetails(VAPID_EMAIL, VAPID_PUBLIC, VAPID_PRIVATE);
+}
 
 interface PushPayload {
   title: string;
@@ -25,12 +33,17 @@ interface PushPayload {
 
 /**
  * Send a push notification to a specific user.
- * Skips if user has muted notifications or is within quiet hours.
+ * Skips gracefully if VAPID keys are not configured or user has no subscriptions.
  */
 export async function sendPushToUser(
   targetUserId: string,
   payload: PushPayload
 ): Promise<void> {
+  if (!vapidConfigured) {
+    console.log("[push] VAPID keys not configured — skipping push");
+    return;
+  }
+
   try {
     const supabase = await createClient();
 
@@ -44,42 +57,38 @@ export async function sendPushToUser(
       return; // No subscriptions — silent return
     }
 
-    // TODO: Check quiet hours preference from user profile
-    // const { data: profile } = await supabase
-    //   .from("profiles")
-    //   .select("quiet_hours_start, quiet_hours_end, timezone")
-    //   .eq("id", targetUserId)
-    //   .single();
-    //
-    // if (isWithinQuietHours(profile)) return;
+    const jsonPayload = JSON.stringify(payload);
 
     for (const sub of subscriptions) {
       try {
-        // Stub: log the push payload
-        // In production, use web-push library:
-        //
-        // await webpush.sendNotification(
-        //   {
-        //     endpoint: sub.endpoint,
-        //     keys: { p256dh: sub.p256dh, auth: sub.auth_key },
-        //   },
-        //   JSON.stringify(payload)
-        // );
-
-        console.log(
-          `[push] Would send to ${targetUserId}:`,
-          JSON.stringify(payload).slice(0, 200)
+        await webpush.sendNotification(
+          {
+            endpoint: sub.endpoint,
+            keys: {
+              p256dh: sub.p256dh,
+              auth: sub.auth_key,
+            },
+          },
+          jsonPayload,
+          {
+            TTL: 60 * 60, // 1 hour
+            urgency: "normal",
+          }
         );
-      } catch (pushErr) {
-        // If subscription is expired/invalid, clean it up
-        const errStr = String(pushErr);
-        if (errStr.includes("410") || errStr.includes("expired")) {
+      } catch (pushErr: unknown) {
+        const errObj = pushErr as { statusCode?: number; message?: string };
+        const statusCode = errObj?.statusCode ?? 0;
+
+        // 410 Gone or 404 Not Found = subscription expired, clean it up
+        if (statusCode === 410 || statusCode === 404) {
           await supabase
             .from("push_subscriptions")
             .delete()
             .eq("id", sub.id);
+          console.log(`[push] Removed expired subscription ${sub.id}`);
+        } else {
+          console.error("[push] Send error:", pushErr);
         }
-        console.error("[push] Send error:", pushErr);
       }
     }
   } catch (err) {
@@ -89,12 +98,15 @@ export async function sendPushToUser(
 
 /**
  * Send push notification to all participants of a thread (except sender).
+ * Skips muted participants.
  */
 export async function sendPushToThreadParticipants(
   threadId: string,
   senderUserId: string,
   payload: PushPayload
 ): Promise<void> {
+  if (!vapidConfigured) return;
+
   try {
     const supabase = await createClient();
 
@@ -107,10 +119,12 @@ export async function sendPushToThreadParticipants(
 
     if (!participants) return;
 
-    for (const p of participants) {
-      if (p.is_muted) continue; // Skip muted participants
-      await sendPushToUser(p.user_id, payload);
-    }
+    // Send in parallel for speed
+    const pushPromises = participants
+      .filter((p) => !p.is_muted)
+      .map((p) => sendPushToUser(p.user_id, payload));
+
+    await Promise.allSettled(pushPromises);
   } catch (err) {
     console.error("[push] sendPushToThreadParticipants error:", err);
   }

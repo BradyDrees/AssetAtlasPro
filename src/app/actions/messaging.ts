@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createServiceClient } from "@/lib/supabase/server";
 import type {
   CallLog,
   CallStatus,
@@ -13,6 +13,7 @@ import type {
   ThreadType,
   UserContact,
 } from "@/lib/messaging/types";
+import { sendPushToThreadParticipants } from "@/lib/messaging/push";
 
 // ============================================
 // Helpers
@@ -448,6 +449,14 @@ export async function sendMessage(params: {
     })
     .eq("id", params.thread_id);
 
+  // ── Push notifications to other participants (non-blocking) ──
+  sendPushToThreadParticipants(params.thread_id, user.id, {
+    title: "New message",
+    body: previewFromBody(msg.body) || "You have a new message",
+    url: `/messaging/${params.thread_id}`,
+    tag: `thread-${params.thread_id}`,
+  }).catch((err) => console.error("[push] Failed to push:", err));
+
   return { data: msg as Message };
 }
 
@@ -648,31 +657,137 @@ export async function blockContact(
 
 /**
  * Auto-populate contacts from work order parties.
- * Stub: resolve actual party user IDs from your WO schema when wiring.
+ * Creates bidirectional user_contacts for all parties (PM, vendor users, homeowner).
+ * Uses service-role client to bypass RLS for "other user" inserts.
  */
 export async function syncContactsFromWorkOrder(
   workOrderId: string
 ): Promise<{ error?: string }> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return { error: "Not authenticated" };
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return { error: "Not authenticated" };
 
-  // TODO: Resolve party user IDs from existing tables:
-  // - PM user (from vendor_work_orders.pm_user_id)
-  // - Vendor org users (from vendor_users where vendor_org_id matches)
-  // - Homeowner user (if applicable)
-  //
-  // For each pair of users, insert bidirectional user_contacts rows
-  // with relationship_source = 'work_order' and source_ref_id = workOrderId.
-  //
-  // Stub for Phase 1 — will be wired when auto-creation triggers are added.
-  console.log(
-    `[messaging] syncContactsFromWorkOrder stub called for WO: ${workOrderId}`
-  );
+    // Fetch WO to get party references
+    const { data: wo, error: woErr } = await supabase
+      .from("vendor_work_orders")
+      .select("pm_user_id, vendor_org_id, homeowner_id")
+      .eq("id", workOrderId)
+      .single();
 
-  return {};
+    if (woErr || !wo) return { error: woErr?.message || "WO not found" };
+
+    // Collect all party auth user IDs
+    const partyIds: string[] = [];
+
+    // PM user
+    if (wo.pm_user_id) partyIds.push(wo.pm_user_id);
+
+    // Homeowner user
+    if (wo.homeowner_id) partyIds.push(wo.homeowner_id);
+
+    // Vendor org users (resolve auth UUIDs from vendor_users table)
+    if (wo.vendor_org_id) {
+      const { data: vendorUsers } = await supabase
+        .from("vendor_users")
+        .select("user_id, first_name, last_name, phone, role")
+        .eq("vendor_org_id", wo.vendor_org_id)
+        .eq("is_active", true);
+
+      if (vendorUsers) {
+        for (const vu of vendorUsers) {
+          if (vu.user_id && !partyIds.includes(vu.user_id)) {
+            partyIds.push(vu.user_id);
+          }
+        }
+      }
+    }
+
+    // Dedupe
+    const uniqueIds = Array.from(new Set(partyIds)).filter(Boolean);
+    if (uniqueIds.length < 2) return {}; // Need at least 2 parties
+
+    // Build bidirectional contact pairs
+    // Use service-role client to bypass RLS for inserts where user_id ≠ auth.uid()
+    const adminClient = createServiceClient();
+
+    // Look up display names for vendor users
+    const vendorNameMap = new Map<string, { name: string; role: string; phone: string | null }>();
+    if (wo.vendor_org_id) {
+      const { data: vendorUsers } = await supabase
+        .from("vendor_users")
+        .select("user_id, first_name, last_name, phone, role")
+        .eq("vendor_org_id", wo.vendor_org_id)
+        .eq("is_active", true);
+
+      for (const vu of vendorUsers ?? []) {
+        const name = [vu.first_name, vu.last_name].filter(Boolean).join(" ") || null;
+        vendorNameMap.set(vu.user_id, {
+          name: name || "Vendor",
+          role: vu.role || "vendor",
+          phone: vu.phone,
+        });
+      }
+    }
+
+    // Determine role labels for each user
+    const roleMap = new Map<string, string>();
+    if (wo.pm_user_id) roleMap.set(wo.pm_user_id, "pm");
+    if (wo.homeowner_id) roleMap.set(wo.homeowner_id, "homeowner");
+    for (const [uid, info] of vendorNameMap) {
+      roleMap.set(uid, info.role || "vendor");
+    }
+
+    // Insert bidirectional contacts for every pair
+    for (let i = 0; i < uniqueIds.length; i++) {
+      for (let j = i + 1; j < uniqueIds.length; j++) {
+        const userA = uniqueIds[i];
+        const userB = uniqueIds[j];
+
+        const vendorInfoA = vendorNameMap.get(userA);
+        const vendorInfoB = vendorNameMap.get(userB);
+
+        // A → B contact
+        await adminClient.from("user_contacts").upsert(
+          {
+            user_id: userA,
+            contact_id: userB,
+            relationship_source: "work_order",
+            source_ref_id: workOrderId,
+            contact_name: vendorInfoB?.name || null,
+            contact_role: roleMap.get(userB) || null,
+            contact_phone: vendorInfoB?.phone || null,
+          },
+          { onConflict: "user_id,contact_id" }
+        );
+
+        // B → A contact
+        await adminClient.from("user_contacts").upsert(
+          {
+            user_id: userB,
+            contact_id: userA,
+            relationship_source: "work_order",
+            source_ref_id: workOrderId,
+            contact_name: vendorInfoA?.name || null,
+            contact_role: roleMap.get(userA) || null,
+            contact_phone: vendorInfoA?.phone || null,
+          },
+          { onConflict: "user_id,contact_id" }
+        );
+      }
+    }
+
+    console.log(
+      `[messaging] Synced ${uniqueIds.length} contacts for WO: ${workOrderId}`
+    );
+
+    return {};
+  } catch (err) {
+    console.error("[messaging] syncContactsFromWorkOrder error:", err);
+    return { error: err instanceof Error ? err.message : "Contact sync failed" };
+  }
 }
 
 // ============================================

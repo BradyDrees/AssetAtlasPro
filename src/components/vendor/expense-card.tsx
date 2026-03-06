@@ -31,7 +31,7 @@ export default function ExpenseCard({ expense, onEdit, onDelete }: ExpenseCardPr
               {expense.description}
             </p>
             <p className="text-xs text-content-tertiary mt-0.5">
-              {t("category." + expense.category)} &middot; {formattedDate}
+              {t("categories." + expense.category)} &middot; {formattedDate}
             </p>
           </div>
         </div>

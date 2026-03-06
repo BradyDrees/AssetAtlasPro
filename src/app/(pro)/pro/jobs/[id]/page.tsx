@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -37,32 +37,45 @@ export default function JobDetailPage() {
   } | null>(null);
   const mt = useTranslations("vendor.messages");
 
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) setUserId(user.id);
+    const [woRes, matRes, timeRes] = await Promise.all([
+      getWorkOrder(woId),
+      getWorkOrderMaterials(woId),
+      getTimeEntries(woId),
+    ]);
+    setWo(woRes.data);
+    setMaterials(matRes.data);
+    setTimeEntries(timeRes.data);
+
+    // Fetch linked estimate
+    const { data: estData } = await supabase
+      .from("vendor_estimates")
+      .select("id, estimate_number, title, total")
+      .eq("work_order_id", woId)
+      .maybeSingle();
+    if (estData) setLinkedEstimate(estData as { id: string; estimate_number: string | null; title: string | null; total: number });
+
+    setLoading(false);
+  }, [woId]);
+
   useEffect(() => {
-    async function load() {
-      setLoading(true);
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) setUserId(user.id);
-      const [woRes, matRes, timeRes] = await Promise.all([
-        getWorkOrder(woId),
-        getWorkOrderMaterials(woId),
-        getTimeEntries(woId),
-      ]);
-      setWo(woRes.data);
-      setMaterials(matRes.data);
-      setTimeEntries(timeRes.data);
+    loadData();
+  }, [loadData]);
 
-      // Fetch linked estimate
-      const { data: estData } = await supabase
-        .from("vendor_estimates")
-        .select("id, estimate_number, title, total")
-        .eq("work_order_id", woId)
-        .maybeSingle();
-      if (estData) setLinkedEstimate(estData as { id: string; estimate_number: string | null; title: string | null; total: number });
+  /** Re-fetch materials after add/delete */
+  const refreshMaterials = useCallback(async () => {
+    const matRes = await getWorkOrderMaterials(woId);
+    setMaterials(matRes.data);
+  }, [woId]);
 
-      setLoading(false);
-    }
-    load();
+  /** Re-fetch time entries after clock-in/out */
+  const refreshTimeEntries = useCallback(async () => {
+    const timeRes = await getTimeEntries(woId);
+    setTimeEntries(timeRes.data);
   }, [woId]);
 
   if (loading) {
@@ -121,7 +134,7 @@ export default function JobDetailPage() {
             <div className="flex items-center gap-2 mb-1">
               <PriorityDot priority={wo.priority} showLabel />
               <h1 className="text-xl font-bold text-content-primary">
-                {wo.property_name || t("detail.property")}
+                {wo.property_name || wo.description || wo.trade || t("title")}
               </h1>
             </div>
             {wo.property_address && (
@@ -367,11 +380,13 @@ export default function JobDetailPage() {
             workOrderId={wo.id}
             materials={materials}
             readOnly={!isActiveJob}
+            onMutate={refreshMaterials}
           />
           <TimeTracker
             workOrderId={wo.id}
             timeEntries={timeEntries}
             readOnly={!isActiveJob}
+            onMutate={refreshTimeEntries}
           />
         </div>
       </div>

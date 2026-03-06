@@ -29,11 +29,11 @@ export default async function ExpensesPage() {
       {/* Summary */}
       {summary && summary.length > 0 && (
         <div className="bg-surface-primary rounded-xl border border-edge-primary p-4">
-          <h2 className="text-sm font-semibold text-content-secondary mb-3">{t("summary")}</h2>
+          <h2 className="text-sm font-semibold text-content-secondary mb-3">{t("summary.title")}</h2>
           <ul className="space-y-2">
             {summary.map((item) => (
               <li key={item.category} className="flex items-center justify-between text-sm">
-                <span className="text-content-secondary">{t("category." + item.category)}</span>
+                <span className="text-content-secondary">{t("categories." + item.category)}</span>
                 <span className="font-medium text-content-primary">
                   {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(item.total)}
                 </span>

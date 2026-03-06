@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import type { VendorWoMaterial } from "@/lib/vendor/work-order-types";
 import {
   addMaterial,
@@ -13,15 +12,16 @@ interface MaterialsLogProps {
   workOrderId: string;
   materials: VendorWoMaterial[];
   readOnly?: boolean;
+  onMutate?: () => void | Promise<void>;
 }
 
 export function MaterialsLog({
   workOrderId,
   materials,
   readOnly = false,
+  onMutate,
 }: MaterialsLogProps) {
   const t = useTranslations("vendor.jobs");
-  const router = useRouter();
   const [showAdd, setShowAdd] = useState(false);
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState("1");
@@ -51,7 +51,7 @@ export function MaterialsLog({
       setQuantity("1");
       setUnitCost("");
       setShowAdd(false);
-      router.refresh();
+      onMutate?.();
     }
   }
 
@@ -60,7 +60,7 @@ export function MaterialsLog({
     if (error) {
       alert(error);
     } else {
-      router.refresh();
+      onMutate?.();
     }
   }
 

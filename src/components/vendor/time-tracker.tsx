@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import type { VendorWoTimeEntry } from "@/lib/vendor/work-order-types";
 import { clockIn, clockOut } from "@/app/actions/vendor-work-orders";
 
@@ -10,15 +9,16 @@ interface TimeTrackerProps {
   workOrderId: string;
   timeEntries: VendorWoTimeEntry[];
   readOnly?: boolean;
+  onMutate?: () => void | Promise<void>;
 }
 
 export function TimeTracker({
   workOrderId,
   timeEntries,
   readOnly = false,
+  onMutate,
 }: TimeTrackerProps) {
   const t = useTranslations("vendor.jobs");
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   // Check if there's an open entry (no clock_out)
@@ -37,7 +37,7 @@ export function TimeTracker({
     if (error) {
       alert(error);
     } else {
-      router.refresh();
+      onMutate?.();
     }
   }
 
@@ -48,7 +48,7 @@ export function TimeTracker({
     if (error) {
       alert(error);
     } else {
-      router.refresh();
+      onMutate?.();
     }
   }
 

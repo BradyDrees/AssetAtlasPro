@@ -86,7 +86,14 @@ export function SkillsManager({
     const parts: string[] = [];
     if (m.first_name) parts.push(m.first_name);
     if (m.last_name) parts.push(m.last_name);
-    return parts.length > 0 ? parts.join(" ") : m.user_id.slice(0, 8);
+    if (parts.length > 0) return parts.join(" ");
+    // Fallback: show role in title case instead of a raw UUID
+    return m.role
+      ? m.role
+          .split("_")
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(" ")
+      : m.user_id.slice(0, 8);
   }
 
   // ---------------------------------------------------------------------------

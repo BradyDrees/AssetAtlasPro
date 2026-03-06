@@ -70,6 +70,8 @@
     "saveNotes": "Save Notes",
     "saving": "Saving...",
     "loading": "Loading...",
+    "noPmAccess": "Client management requires property manager access. Contact support if you need this feature.",
+    "backToJobs": "← Back to Jobs",
     "tabs": {
       "all": "All",
       "active": "Active",

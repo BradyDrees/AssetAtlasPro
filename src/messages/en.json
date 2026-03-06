@@ -1192,6 +1192,8 @@
     "utDescription": "Make-ready workflows and turn packages",
     "daDescription": "Underwrite deals with financial modeling tools",
     "woDescription": "Create, assign, and track work orders",
+    "noWorkOrders": "No work orders yet",
+    "createFirstWo": "Create your first work order to assign a job to a vendor.",
     "vendorsDescription": "Manage your vendor network and relationships",
     "estimatesDescription": "Review and approve vendor estimates",
     "invoicesDescription": "Review and approve vendor invoices",

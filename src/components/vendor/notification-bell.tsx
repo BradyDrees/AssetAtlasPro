@@ -101,7 +101,7 @@ export function NotificationBell({ namespace = "vendor.nav" }: NotificationBellP
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto bg-surface-primary rounded-xl border border-edge-primary shadow-lg z-50">
+        <div className="absolute right-0 top-full mt-2 w-80 max-w-[calc(100vw-2rem)] max-h-96 overflow-y-auto bg-surface-primary rounded-xl border border-edge-primary shadow-lg z-[60]">
           <div className="flex items-center justify-between p-3 border-b border-edge-secondary">
             <h3 className="text-sm font-semibold text-content-primary">
               {t("notifications")}

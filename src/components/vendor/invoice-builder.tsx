@@ -44,14 +44,21 @@ export function InvoiceBuilder({
 
   async function handleDownloadPdf() {
     setGeneratingPdf(true);
-    const result = await generateInvoicePdf(invoice.id);
-    if (result.pdf) {
-      const link = document.createElement("a");
-      link.href = result.pdf;
-      link.download = `invoice-${invoice.invoice_number ?? invoice.id}.pdf`;
-      link.click();
+    try {
+      const result = await generateInvoicePdf(invoice.id);
+      if (result.error) {
+        alert(result.error);
+      } else if (result.pdf) {
+        const link = document.createElement("a");
+        link.href = result.pdf;
+        link.download = `invoice-${invoice.invoice_number ?? invoice.id}.pdf`;
+        link.click();
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to generate PDF");
+    } finally {
+      setGeneratingPdf(false);
     }
-    setGeneratingPdf(false);
   }
 
   const refresh = useCallback(() => {

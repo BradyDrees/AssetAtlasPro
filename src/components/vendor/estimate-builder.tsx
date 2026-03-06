@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useTransition, useEffect } from "react";
+import { useState, useCallback, useTransition, useEffect, useMemo } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -90,6 +90,35 @@ export function EstimateBuilder({
   const storageBaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 
   const isEditable = estimate.status === "draft" || estimate.status === "changes_requested";
+
+  // Live-compute financial totals from sections (so UI updates instantly on item edits)
+  const liveSubtotal = useMemo(
+    () =>
+      sections.reduce(
+        (sum, s) =>
+          sum +
+          s.items.reduce(
+            (isum, item) => isum + Number(item.total || 0),
+            0
+          ),
+        0
+      ),
+    [sections]
+  );
+  const liveMarkupAmount = useMemo(
+    () => liveSubtotal * ((Number(estimate.markup_pct) || 0) / 100),
+    [liveSubtotal, estimate.markup_pct]
+  );
+  const liveTaxAmount = useMemo(
+    () =>
+      (liveSubtotal + liveMarkupAmount) *
+      ((Number(estimate.tax_pct) || 0) / 100),
+    [liveSubtotal, liveMarkupAmount, estimate.tax_pct]
+  );
+  const liveTotal = useMemo(
+    () => liveSubtotal + liveMarkupAmount + liveTaxAmount,
+    [liveSubtotal, liveMarkupAmount, liveTaxAmount]
+  );
 
   // Load photos on mount
   useEffect(() => {
@@ -618,14 +647,14 @@ export function EstimateBuilder({
         />
       )}
 
-      {/* Financial summary */}
+      {/* Financial summary — compute live from local sections state */}
       <EstimateSummary
-        subtotal={Number(estimate.subtotal) || 0}
+        subtotal={liveSubtotal}
         markupPct={Number(estimate.markup_pct) || 0}
-        markupAmount={Number(estimate.markup_amount) || 0}
+        markupAmount={liveMarkupAmount}
         taxPct={Number(estimate.tax_pct) || 0}
-        taxAmount={Number(estimate.tax_amount) || 0}
-        total={Number(estimate.total) || 0}
+        taxAmount={liveTaxAmount}
+        total={liveTotal}
         onMarkupPctChange={isEditable ? handleMarkupChange : undefined}
         onTaxPctChange={isEditable ? handleTaxChange : undefined}
         readOnly={!isEditable}

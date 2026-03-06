@@ -73,7 +73,9 @@ export function ChatPanel({ workOrderId, currentUserId, role }: ChatPanelProps) 
       ? await sendChatMessage(workOrderId, body)
       : await sendPmChatMessage(workOrderId, body);
 
-    if (result.data) {
+    if (result.error) {
+      alert(result.error);
+    } else if (result.data) {
       setMessages((prev) => [...prev, { ...result.data!, sender_name: "You" }]);
       setInput("");
     }

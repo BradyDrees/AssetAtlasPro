@@ -21,6 +21,7 @@ const STATUS_TO_ACTION_KEY: Partial<Record<WoStatus, string>> = {
   on_site: "arrived",
   in_progress: "startWork",
   completed: "complete",
+  done_pending_approval: "donePendingApproval",
   on_hold: "putOnHold",
 };
 

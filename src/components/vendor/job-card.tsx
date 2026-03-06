@@ -30,7 +30,7 @@ export function JobCard({ wo }: JobCardProps) {
           <div className="flex items-center gap-2 mb-1">
             <PriorityDot priority={wo.priority} />
             <h3 className="text-sm font-semibold text-content-primary truncate">
-              {wo.property_name || t("detail.property")}
+              {wo.property_name || wo.description || wo.trade || t("title")}
             </h3>
           </div>
           {wo.unit_number && (

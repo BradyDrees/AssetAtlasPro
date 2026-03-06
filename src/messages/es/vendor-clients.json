@@ -70,6 +70,8 @@
     "saveNotes": "Guardar Notas",
     "saving": "Guardando...",
     "loading": "Cargando...",
+    "noPmAccess": "La gestión de clientes requiere acceso de administrador de propiedades. Contacte soporte si necesita esta función.",
+    "backToJobs": "← Volver a Trabajos",
     "tabs": {
       "all": "Todos",
       "active": "Activos",

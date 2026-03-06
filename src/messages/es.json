@@ -1192,6 +1192,8 @@
     "utDescription": "Flujos de trabajo de preparacion y paquetes de rotacion",
     "daDescription": "Modele negocios con herramientas de analisis financiero",
     "woDescription": "Crear, asignar y rastrear ordenes de trabajo",
+    "noWorkOrders": "Sin órdenes de trabajo aún",
+    "createFirstWo": "Crea tu primera orden de trabajo para asignar un trabajo a un proveedor.",
     "vendorsDescription": "Gestione su red de proveedores y relaciones",
     "estimatesDescription": "Revisar y aprobar estimados de proveedores",
     "invoicesDescription": "Revisar y aprobar facturas de proveedores",

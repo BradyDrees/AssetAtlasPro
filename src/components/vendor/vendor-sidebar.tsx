@@ -145,6 +145,14 @@ interface VendorSidebarProps {
   vendorRole?: VendorOrgRole;
 }
 
+const VIEW_AS_ROLES: VendorOrgRole[] = ["owner", "admin", "office_manager", "tech"];
+const VIEW_AS_LABELS: Record<VendorOrgRole, string> = {
+  owner: "Owner",
+  admin: "Admin",
+  office_manager: "Office Mgr",
+  tech: "Tech",
+};
+
 export function VendorSidebar({ user, hasPmRole = false, vendorRole = "owner" }: VendorSidebarProps) {
   const pathname = usePathname();
   const t = useTranslations();
@@ -155,8 +163,14 @@ export function VendorSidebar({ user, hasPmRole = false, vendorRole = "owner" }:
   const [isOpen, setIsOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
-  const isTech = vendorRole === "tech";
-  const isOfficeMgr = vendorRole === "office_manager";
+  // "View As" role preview — only for owners/admins
+  const isOwnerOrAdmin = vendorRole === "owner" || vendorRole === "admin";
+  const [viewAsRole, setViewAsRole] = useState<VendorOrgRole>(vendorRole);
+  const [showViewAs, setShowViewAs] = useState(false);
+
+  const effectiveRole = isOwnerOrAdmin ? viewAsRole : vendorRole;
+  const isTech = effectiveRole === "tech";
+  const isOfficeMgr = effectiveRole === "office_manager";
 
   // Role-based nav items
   const navItems = isTech
@@ -276,6 +290,54 @@ export function VendorSidebar({ user, hasPmRole = false, vendorRole = "owner" }:
             </svg>
           </button>
         </div>
+
+        {/* View As role preview — owner/admin only */}
+        {isOwnerOrAdmin && !collapsed && (
+          <div className="px-3 pt-2 relative">
+            <button
+              onClick={() => setShowViewAs(!showViewAs)}
+              className={`flex items-center justify-between w-full px-2.5 py-1.5 text-xs rounded-lg border transition-colors ${
+                viewAsRole !== vendorRole
+                  ? "bg-gold-500/10 border-gold-500/30 text-gold-400"
+                  : "bg-surface-secondary border-edge-secondary text-content-tertiary hover:text-content-primary"
+              }`}
+            >
+              <span className="flex items-center gap-1.5">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                {viewAsRole !== vendorRole
+                  ? `${vt("viewingAs")} ${VIEW_AS_LABELS[viewAsRole]}`
+                  : vt("viewAs")}
+              </span>
+              <svg className={`w-3 h-3 transition-transform ${showViewAs ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </button>
+
+            {showViewAs && (
+              <div className="absolute left-3 right-3 top-full mt-1 bg-surface-primary rounded-lg border border-edge-primary shadow-lg z-50 py-1">
+                {VIEW_AS_ROLES.map((role) => (
+                  <button
+                    key={role}
+                    onClick={() => { setViewAsRole(role); setShowViewAs(false); }}
+                    className={`flex items-center justify-between w-full px-3 py-1.5 text-xs transition-colors ${
+                      viewAsRole === role
+                        ? "text-brand-400 bg-brand-500/10"
+                        : "text-content-secondary hover:bg-surface-secondary"
+                    }`}
+                  >
+                    <span>{VIEW_AS_LABELS[role]}</span>
+                    {role === vendorRole && (
+                      <span className="text-[10px] text-content-quaternary">({vt("yourRole")})</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Navigation */}
         <nav className="flex-1 p-3 space-y-1">

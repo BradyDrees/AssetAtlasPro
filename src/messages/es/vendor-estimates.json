@@ -100,6 +100,7 @@
   "internalNotesPlaceholder": "Notas privadas (no visibles para el PM)...",
   "backToList": "Volver a Estimaciones",
   "sendToPm": "Enviar al PM",
+  "noPmAssigned": "Sin PM asignado — asigna un PM primero",
   "confirmSendTitle": "¿Enviar Estimación?",
   "confirmSendMessage": "Esto enviará la estimación al PM para revisión. Puede hacer cambios si solicitan revisiones.",
   "confirmSend": "Enviar",

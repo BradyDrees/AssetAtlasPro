@@ -77,10 +77,30 @@ export async function createVendorAccount(input: OnboardingInput) {
   }
 
   // Step 2: Create vendor user record (owner role)
+  // Pull name from auth metadata or profiles table
+  const meta = user.user_metadata ?? {};
+  let firstName = meta.first_name || meta.full_name?.split(" ")[0] || null;
+  let lastName = meta.last_name || meta.full_name?.split(" ").slice(1).join(" ") || null;
+
+  // Fallback: try profiles table
+  if (!firstName) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("first_name, last_name")
+      .eq("id", user.id)
+      .single();
+    if (profile) {
+      firstName = profile.first_name || firstName;
+      lastName = profile.last_name || lastName;
+    }
+  }
+
   const { error: vuError } = await supabase.from("vendor_users").insert({
     user_id: user.id,
     vendor_org_id: orgId,
     role: "owner",
+    first_name: firstName,
+    last_name: lastName,
     email: user.email || input.email || null,
     phone: input.phone || null,
     trades: input.trades,

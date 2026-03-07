@@ -100,6 +100,7 @@
   "internalNotesPlaceholder": "Private notes (not visible to PM)...",
   "backToList": "Back to Estimates",
   "sendToPm": "Send to PM",
+  "noPmAssigned": "No PM assigned — assign a PM first",
   "confirmSendTitle": "Send Estimate?",
   "confirmSendMessage": "This will send the estimate to the PM for review. You can make changes if they request revisions.",
   "confirmSend": "Send",

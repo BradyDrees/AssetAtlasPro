@@ -755,26 +755,33 @@ export function EstimateBuilder({
           >
             {t("backToList")}
           </button>
-          <button
-            onClick={() => setShowSendModal(true)}
-            disabled={!estimate.pm_user_id || sections.length === 0}
-            className="px-5 py-2 text-sm bg-brand-600 text-white rounded-lg hover:bg-brand-500 disabled:opacity-50 transition-colors flex items-center gap-2"
-          >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
+          <div className="relative group">
+            <button
+              onClick={() => setShowSendModal(true)}
+              disabled={!estimate.pm_user_id || sections.length === 0}
+              className="px-5 py-2 text-sm bg-brand-600 text-white rounded-lg hover:bg-brand-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
-              />
-            </svg>
-            {t("sendToPm")}
-          </button>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+                />
+              </svg>
+              {t("sendToPm")}
+            </button>
+            {!estimate.pm_user_id && (
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block px-3 py-1.5 bg-charcoal-900 border border-edge-primary rounded-lg text-[10px] text-content-tertiary whitespace-nowrap z-10">
+                {t("noPmAssigned")}
+              </div>
+            )}
+          </div>
         </div>
       )}
 

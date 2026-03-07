@@ -89,6 +89,7 @@
     "expired": "Expired",
     "revoked": "Revoked",
     "daysLeft": "days left",
+    "docNumber": "Document #",
     "noCredentials": "No credentials uploaded yet",
     "totalLabel": "Total",
     "createError": "Failed to create credential",

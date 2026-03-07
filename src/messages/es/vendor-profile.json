@@ -89,6 +89,7 @@
     "expired": "Vencido",
     "revoked": "Revocado",
     "daysLeft": "días restantes",
+    "docNumber": "Documento #",
     "noCredentials": "Sin credenciales subidas aún",
     "totalLabel": "Total",
     "createError": "Error al crear credencial",

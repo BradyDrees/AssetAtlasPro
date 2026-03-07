@@ -31,7 +31,7 @@ export function CredentialCard({ credential }: CredentialCardProps) {
   const t = useTranslations("vendor.profile");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [showActions, setShowActions] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [revoking, setRevoking] = useState(false);
 
@@ -61,115 +61,116 @@ export function CredentialCard({ credential }: CredentialCardProps) {
   }, [credential.id, router]);
 
   return (
-    <div className="bg-surface-primary rounded-xl border border-edge-primary p-4 hover:border-edge-secondary transition-colors">
-      <div className="flex items-start justify-between">
-        {/* Left: Type icon + info */}
-        <div className="flex items-start gap-3 min-w-0 flex-1">
-          {/* Type icon */}
-          <div className="w-10 h-10 rounded-lg bg-surface-secondary border border-edge-secondary flex items-center justify-center flex-shrink-0">
-            <CredentialTypeIcon type={credential.type} />
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-sm font-medium text-content-primary truncate">
-                {credential.name}
-              </h3>
-              <span
-                className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${statusColors}`}
-              >
-                {t(`credentials.${credential.status}`)}
-              </span>
+    <div className="bg-surface-primary rounded-xl border border-edge-primary hover:border-edge-secondary transition-colors">
+      {/* Clickable header area */}
+      <button
+        type="button"
+        onClick={() => setExpanded(!expanded)}
+        className="w-full text-left p-4"
+      >
+        <div className="flex items-start justify-between">
+          {/* Left: Type icon + info */}
+          <div className="flex items-start gap-3 min-w-0 flex-1">
+            {/* Type icon */}
+            <div className="w-10 h-10 rounded-lg bg-surface-secondary border border-edge-secondary flex items-center justify-center flex-shrink-0">
+              <CredentialTypeIcon type={credential.type} />
             </div>
 
-            <p className="text-xs text-content-tertiary mt-0.5">
-              {t(`credentials.types.${credential.type}`)}
-            </p>
-
-            {credential.document_number && (
-              <p className="text-xs text-content-quaternary mt-0.5">
-                #{credential.document_number}
-              </p>
-            )}
-
-            {/* Dates row */}
-            <div className="flex items-center gap-3 mt-2 text-xs text-content-quaternary">
-              {credential.issued_date && (
-                <span>
-                  {t("credentials.issued")}: {new Date(credential.issued_date).toLocaleDateString()}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-sm font-medium text-content-primary truncate">
+                  {credential.name}
+                </h3>
+                <span
+                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${statusColors}`}
+                >
+                  {t(`credentials.${credential.status}`)}
                 </span>
-              )}
+              </div>
+
+              <p className="text-xs text-content-tertiary mt-0.5">
+                {t(`credentials.types.${credential.type}`)}
+              </p>
+
               {credential.expiration_date && (
-                <span className={expirationColor}>
+                <p className={`text-xs mt-1 ${expirationColor}`}>
                   {t("credentials.expires")}: {new Date(credential.expiration_date).toLocaleDateString()}
                   {daysLeft !== null && daysLeft > 0 && (
                     <> ({daysLeft} {t("credentials.daysLeft")})</>
                   )}
-                </span>
+                </p>
               )}
             </div>
+          </div>
 
-            {/* File info */}
-            {credential.file_name && (
-              <div className="flex items-center gap-2 mt-2">
-                <svg className="w-3.5 h-3.5 text-content-quaternary" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                </svg>
-                <span className="text-xs text-content-quaternary truncate">
-                  {credential.file_name}
-                </span>
-                {credential.file_size && (
-                  <span className="text-xs text-content-quaternary">
-                    ({formatFileSize(credential.file_size)})
-                  </span>
-                )}
-              </div>
+          {/* Expand chevron */}
+          <svg
+            className={`w-4 h-4 text-content-quaternary flex-shrink-0 ml-2 transition-transform ${expanded ? "rotate-180" : ""}`}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </button>
+
+      {/* Expanded detail section */}
+      {expanded && (
+        <div className="px-4 pb-4 border-t border-edge-secondary pt-3 space-y-3">
+          {credential.document_number && (
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-content-tertiary">{t("credentials.docNumber")}</span>
+              <span className="text-content-primary font-mono">#{credential.document_number}</span>
+            </div>
+          )}
+
+          {credential.issued_date && (
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-content-tertiary">{t("credentials.issued")}</span>
+              <span className="text-content-primary">{new Date(credential.issued_date).toLocaleDateString()}</span>
+            </div>
+          )}
+
+          {credential.expiration_date && (
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-content-tertiary">{t("credentials.expires")}</span>
+              <span className={expirationColor}>{new Date(credential.expiration_date).toLocaleDateString()}</span>
+            </div>
+          )}
+
+          {/* File info */}
+          {credential.file_name && (
+            <div className="flex items-center gap-2 text-xs">
+              <svg className="w-3.5 h-3.5 text-content-quaternary" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+              </svg>
+              <span className="text-content-quaternary truncate">{credential.file_name}</span>
+              {credential.file_size && (
+                <span className="text-content-quaternary">({formatFileSize(credential.file_size)})</span>
+              )}
+            </div>
+          )}
+
+          {/* Actions row */}
+          <div className="flex items-center gap-2 pt-1">
+            {credential.status !== "revoked" && (
+              <button
+                onClick={(e) => { e.stopPropagation(); handleRevoke(); }}
+                disabled={revoking || isPending}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium text-yellow-400 bg-yellow-400/10 border border-yellow-400/20 hover:bg-yellow-400/20 disabled:opacity-50"
+              >
+                {revoking ? t("credentials.revoking") : t("credentials.revoke")}
+              </button>
             )}
+            <button
+              onClick={(e) => { e.stopPropagation(); handleDelete(); }}
+              disabled={deleting || isPending}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium text-red-400 bg-red-400/10 border border-red-400/20 hover:bg-red-400/20 disabled:opacity-50"
+            >
+              {deleting ? t("credentials.deleting") : t("credentials.delete")}
+            </button>
           </div>
         </div>
-
-        {/* Right: Actions menu */}
-        <div className="relative">
-          <button
-            onClick={() => setShowActions(!showActions)}
-            className="p-1.5 rounded-lg hover:bg-surface-secondary text-content-tertiary"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
-            </svg>
-          </button>
-
-          {showActions && (
-            <>
-              <div className="fixed inset-0 z-10" onClick={() => setShowActions(false)} />
-              <div className="absolute right-0 top-full mt-1 z-20 w-44 rounded-lg bg-surface-secondary border border-edge-primary shadow-lg py-1">
-                {credential.status !== "revoked" && (
-                  <button
-                    onClick={() => {
-                      setShowActions(false);
-                      handleRevoke();
-                    }}
-                    disabled={revoking || isPending}
-                    className="w-full text-left px-3 py-2 text-sm text-yellow-400 hover:bg-surface-tertiary disabled:opacity-50"
-                  >
-                    {revoking ? t("credentials.revoking") : t("credentials.revoke")}
-                  </button>
-                )}
-                <button
-                  onClick={() => {
-                    setShowActions(false);
-                    handleDelete();
-                  }}
-                  disabled={deleting || isPending}
-                  className="w-full text-left px-3 py-2 text-sm text-red-400 hover:bg-surface-tertiary disabled:opacity-50"
-                >
-                  {deleting ? t("credentials.deleting") : t("credentials.delete")}
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -63,12 +63,12 @@ export async function getJobsReport(
 
     const jobIds = jobs.map((j) => j.id);
 
-    // Fetch paid invoices for revenue
+    // Fetch invoices for revenue (all statuses except draft — shows billed + paid)
     const { data: invoices } = await supabase
       .from('vendor_invoices')
       .select('work_order_id, total')
       .eq('vendor_org_id', vendor_org_id)
-      .eq('status', 'paid')
+      .neq('status', 'draft')
       .in('work_order_id', jobIds);
 
     // Fetch material costs

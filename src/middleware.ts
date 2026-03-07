@@ -123,11 +123,9 @@ export async function middleware(request: NextRequest) {
 
   const roleCookie = request.cookies.get("active_role")?.value;
 
-  // Redirect vendor users away from /acquire and /operate → /pro
-  if (
-    roleCookie === "vendor" &&
-    (pathname.startsWith("/acquire") || pathname.startsWith("/operate"))
-  ) {
+  // Redirect vendor users away from /acquire → /pro
+  // Note: vendors CAN access /operate if they also have a PM role (dual-role users)
+  if (roleCookie === "vendor" && pathname.startsWith("/acquire")) {
     const url = request.nextUrl.clone();
     url.pathname = "/pro";
     return NextResponse.redirect(url);

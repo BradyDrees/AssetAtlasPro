@@ -25,13 +25,13 @@ export function PushSubscriptionPrompt({
 
   useEffect(() => {
     // Only show if Notification API exists and permission is "default" (not yet decided)
+    // Show after 30s delay to avoid interfering with initial inbox interactions
     if (
       typeof window !== "undefined" &&
       "Notification" in window &&
       Notification.permission === "default"
     ) {
-      // Delay showing prompt to avoid overwhelming on first visit
-      const timer = setTimeout(() => setVisible(true), 5000);
+      const timer = setTimeout(() => setVisible(true), 30000);
       return () => clearTimeout(timer);
     }
   }, []);

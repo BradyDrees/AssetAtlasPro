@@ -46,7 +46,13 @@
     "amountPlaceholder": "0.00",
     "confirm": "Record",
     "recording": "Recording...",
-    "balanceDue": "Balance Due"
+    "balanceDue": "Balance Due",
+    "payNow": "Pay Now",
+    "processing": "Processing...",
+    "payOnline": "Pay Online",
+    "stripeNotConfigured": "Online payments coming soon",
+    "paymentSuccess": "Payment received! Thank you.",
+    "paymentCancelled": "Payment was cancelled."
   },
   "propertyName": "Property Name",
   "propertyNamePlaceholder": "e.g. Sunset Apartments",

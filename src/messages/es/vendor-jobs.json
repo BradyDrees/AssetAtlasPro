@@ -143,5 +143,35 @@
     "assignSuccess": "Trabajador asignado exitosamente",
     "assignError": "Error al asignar trabajador",
     "noMembers": "Sin miembros del equipo"
+  },
+  "profitability": {
+    "title": "Rentabilidad del Trabajo",
+    "revenue": "Ingresos",
+    "materials": "Materiales",
+    "labor": "Mano de Obra",
+    "expenses": "Gastos",
+    "profit": "Ganancia",
+    "margin": "Margen"
+  },
+  "property": {
+    "title": "Info de Propiedad",
+    "type": "Tipo",
+    "yearBuilt": "Año de Construcción",
+    "yearsOld": "años",
+    "sqft": "Pies Cuadrados",
+    "bedsBaths": "Habitaciones / Baños",
+    "bd": "hab",
+    "ba": "ba",
+    "systems": "Sistemas",
+    "yrs": "años",
+    "unknownAge": "N/D",
+    "showCodes": "Mostrar Códigos de Acceso",
+    "hideCodes": "Ocultar Códigos de Acceso",
+    "gateCode": "Código de Portón",
+    "lockboxCode": "Código de Caja de Llaves",
+    "alarmCode": "Código de Alarma",
+    "petWarning": "Advertencia de Mascotas",
+    "parking": "Estacionamiento",
+    "pastJobs": "{count} trabajos previos"
   }
 }

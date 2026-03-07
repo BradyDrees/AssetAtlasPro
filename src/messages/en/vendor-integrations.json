@@ -1,0 +1,30 @@
+{
+  "title": "Integrations",
+  "subtitle": "Connect your accounting and payment tools.",
+
+  "connected": "Connected",
+  "notConnected": "Not Connected",
+  "comingSoon": "Coming Soon",
+
+  "connect": "Connect",
+  "disconnect": "Disconnect",
+  "disconnecting": "Disconnecting...",
+  "syncNow": "Sync Now",
+  "syncing": "Syncing...",
+  "syncComplete": "Sync complete",
+  "lastSync": "Last synced",
+
+  "invoices": "invoices",
+  "expenses": "expenses",
+
+  "notConfiguredDesc": "Contact support to enable this integration.",
+
+  "syncLog": "Sync History",
+  "noSyncLog": "No sync history yet",
+  "syncStatus": {
+    "success": "Success",
+    "error": "Error",
+    "pending": "Pending",
+    "skipped": "Skipped"
+  }
+}

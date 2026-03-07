@@ -81,6 +81,14 @@ function ChartBarIcon() {
   );
 }
 
+function AgreementsIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
+    </svg>
+  );
+}
+
 function BanknotesIcon() {
   return (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -101,6 +109,23 @@ function ChatBubbleIcon() {
   return (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+    </svg>
+  );
+}
+
+function PricebookIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+    </svg>
+  );
+}
+
+function TemplatesIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 15h6m-6-3h6" />
     </svg>
   );
 }
@@ -155,8 +180,11 @@ export function VendorSidebar({ user, hasPmRole = false, vendorRole = "owner" }:
           { href: "/vendor", label: vt("home"), icon: <HomeIcon />, matchExact: true },
           { href: "/vendor/jobs", label: vt("jobs"), icon: <BriefcaseIcon />, matchExact: false },
           { href: "/vendor/schedule", label: vt("schedule"), icon: <CalendarIcon />, matchExact: false },
-          { href: "/vendor/estimates", label: vt("estimates"), icon: <CalculatorIcon />, matchExact: false },
+          { href: "/vendor/estimates", label: vt("estimates"), icon: <CalculatorIcon />, matchExact: true },
+          { href: "/vendor/estimates/pricebook", label: vt("pricebook"), icon: <PricebookIcon />, matchExact: false },
+          { href: "/vendor/estimates/templates", label: vt("templates"), icon: <TemplatesIcon />, matchExact: false },
           { href: "/vendor/invoices", label: vt("invoices"), icon: <ReceiptIcon />, matchExact: false },
+          { href: "/vendor/agreements", label: vt("agreements"), icon: <AgreementsIcon />, matchExact: false },
           { href: "/vendor/clients", label: vt("clients"), icon: <UsersIcon />, matchExact: false },
           { href: "/vendor/reports", label: vt("reports"), icon: <ChartBarIcon />, matchExact: false },
           { href: "/vendor/expenses", label: vt("expenses"), icon: <BanknotesIcon />, matchExact: false },

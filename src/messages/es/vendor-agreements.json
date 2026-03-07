@@ -1,0 +1,50 @@
+{
+  "title": "Acuerdos de Servicio",
+  "create": "Nuevo Acuerdo",
+  "noAgreements": "Sin acuerdos de servicio aún",
+  "createFirst": "Crea tu primer acuerdo",
+  "filterAll": "Todos",
+  "monthlyRevenue": "Ingresos Mensuales",
+
+  "serviceType": "Tipo de Servicio",
+  "serviceTypePlaceholder": "ej. Mantenimiento HVAC",
+  "trade": "Oficio",
+  "tradePlaceholder": "ej. HVAC",
+  "propertyName": "Propiedad",
+  "propertyNamePlaceholder": "ej. Apartamentos Sunset",
+  "description": "Descripción",
+  "descriptionPlaceholder": "Alcance del trabajo recurrente...",
+  "frequencyLabel": "Frecuencia",
+  "price": "Precio",
+  "startDate": "Fecha de Inicio",
+  "endDate": "Fecha de Fin",
+  "notes": "Notas",
+  "notesPlaceholder": "Notas adicionales...",
+  "nextDue": "Próxima Fecha",
+  "lastGenerated": "Última Generación",
+  "notFound": "Acuerdo no encontrado",
+
+  "status": {
+    "active": "Activo",
+    "paused": "Pausado",
+    "cancelled": "Cancelado",
+    "expired": "Vencido"
+  },
+  "frequency": {
+    "weekly": "Semanal",
+    "biweekly": "Quincenal",
+    "monthly": "Mensual",
+    "quarterly": "Trimestral",
+    "semi_annual": "Semestral",
+    "annual": "Anual"
+  },
+
+  "generateWo": "Generar Orden de Trabajo",
+  "pause": "Pausar",
+  "resume": "Reanudar",
+  "cancelAgreement": "Cancelar Acuerdo",
+
+  "cancel": "Cancelar",
+  "save": "Crear Acuerdo",
+  "saving": "Creando..."
+}

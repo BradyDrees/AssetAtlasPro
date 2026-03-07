@@ -27,6 +27,9 @@ export interface VendorInvoice {
   due_date: string | null;
   notes: string | null;
   dispute_reason: string | null;
+  // Stripe payment fields
+  stripe_payment_intent_id?: string | null;
+  payment_url?: string | null;
   // Workiz enhancement fields
   discount_type?: "percentage" | "flat" | null;
   discount_amount?: number;

@@ -143,5 +143,35 @@
     "assignSuccess": "Worker assigned successfully",
     "assignError": "Failed to assign worker",
     "noMembers": "No team members"
+  },
+  "profitability": {
+    "title": "Job Profitability",
+    "revenue": "Revenue",
+    "materials": "Materials",
+    "labor": "Labor",
+    "expenses": "Expenses",
+    "profit": "Profit",
+    "margin": "Margin"
+  },
+  "property": {
+    "title": "Property Intel",
+    "type": "Type",
+    "yearBuilt": "Year Built",
+    "yearsOld": "yrs old",
+    "sqft": "Sq Ft",
+    "bedsBaths": "Beds / Baths",
+    "bd": "bd",
+    "ba": "ba",
+    "systems": "Systems",
+    "yrs": "yrs",
+    "unknownAge": "N/A",
+    "showCodes": "Show Access Codes",
+    "hideCodes": "Hide Access Codes",
+    "gateCode": "Gate Code",
+    "lockboxCode": "Lockbox Code",
+    "alarmCode": "Alarm Code",
+    "petWarning": "Pet Warning",
+    "parking": "Parking",
+    "pastJobs": "{count} past jobs"
   }
 }

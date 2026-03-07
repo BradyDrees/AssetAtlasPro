@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import type { EnrichedPmVendor } from "@/lib/vendor/types";
+import { VendorScorecard } from "./vendor-scorecard";
 
 interface PmVendorCardProps {
   vendor: EnrichedPmVendor;
@@ -27,6 +28,7 @@ function formatCents(cents: number): string {
 
 export function PmVendorCard({ vendor, onViewDetail, onAction }: PmVendorCardProps) {
   const t = useTranslations("vendor.clients");
+  const [showScorecard, setShowScorecard] = useState(false);
 
   const credDot = vendor.credential_summary.missing_critical
     ? "bg-red-400"
@@ -119,6 +121,39 @@ export function PmVendorCard({ vendor, onViewDetail, onAction }: PmVendorCardPro
         {/* Right: Three-dot menu */}
         <VendorCardMenu vendor={vendor} onAction={onAction} />
       </div>
+
+      {/* Scorecard expand */}
+      {vendor.status === "active" && (
+        <>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowScorecard(!showScorecard);
+            }}
+            className="mt-3 flex items-center gap-1 text-xs text-brand-500 hover:text-brand-400 transition-colors"
+          >
+            <svg
+              className={`w-3 h-3 transition-transform ${showScorecard ? "rotate-180" : ""}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+            {showScorecard ? t("scorecard.hide") : t("scorecard.show")}
+          </button>
+          {showScorecard && (
+            <div
+              className="mt-2 -mx-5 -mb-5 border-t border-edge-primary bg-surface-secondary/50 rounded-b-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <VendorScorecard vendorOrgId={vendor.vendor_org_id} />
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }

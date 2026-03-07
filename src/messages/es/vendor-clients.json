@@ -117,6 +117,22 @@
     "done": "Listo",
     "cancel": "Cancelar"
   },
+  "scorecard": {
+    "show": "Mostrar Evaluación",
+    "hide": "Ocultar Evaluación",
+    "reviews": "reseñas",
+    "noRatings": "Sin calificaciones aún",
+    "confidence": "Confianza Wilson",
+    "totalJobs": "Trabajos Completados",
+    "thisMonth": "Este Mes",
+    "sameDay": "Mismo Día",
+    "nextDay": "Día Siguiente",
+    "within48": "Dentro de 48hrs",
+    "noData": "Sin datos",
+    "emergency": "Emergencia",
+    "onTime": "A Tiempo",
+    "accuracy": "Precisión de Estimación"
+  },
   "tabs": {
     "pm": "Clientes PM",
     "direct": "Clientes Directos"

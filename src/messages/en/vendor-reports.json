@@ -1,7 +1,6 @@
 {
   "title": "Reports",
   "subtitle": "Business analytics and reporting",
-  "comingSoon": "Report coming soon",
   "noData": "No data available for the selected period",
   "dateFilter": {
     "thisWeek": "This Week",

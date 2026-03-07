@@ -51,6 +51,18 @@ export function OrgSettingsForm({ initialSettings }: OrgSettingsFormProps) {
   // Auto-Show Estimate
   const [autoShowEstimate, setAutoShowEstimate] = useState(initialSettings.auto_show_estimate || false);
 
+  // SMS Notification Statuses
+  const SMS_STATUSES = ["scheduled", "en_route", "on_site", "completed"] as const;
+  const [smsStatuses, setSmsStatuses] = useState<string[]>(
+    initialSettings.sms_notification_statuses ?? [...SMS_STATUSES]
+  );
+
+  function toggleSmsStatus(status: string) {
+    setSmsStatuses((prev) =>
+      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
+    );
+  }
+
   // Feedback
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -130,6 +142,7 @@ export function OrgSettingsForm({ initialSettings }: OrgSettingsFormProps) {
           },
           auto_show_estimate: autoShowEstimate,
           custom_field_schemas: initialSettings.custom_field_schemas ?? { work_orders: [], estimates: [], invoices: [] },
+          sms_notification_statuses: smsStatuses,
         };
         const result = await updateOrgSettings(settings);
         if (result?.error) {
@@ -443,6 +456,31 @@ export function OrgSettingsForm({ initialSettings }: OrgSettingsFormProps) {
               }
             />
           </button>
+        </div>
+      </div>
+
+      {/* SMS Notifications */}
+      <div className="rounded-xl border border-edge-primary bg-surface-primary p-5">
+        <h3 className="mb-1 text-sm font-semibold text-content-primary">
+          {t("settings.smsNotifications")}
+        </h3>
+        <p className="mb-4 text-xs text-content-secondary">
+          {t("settings.smsNotificationsDesc")}
+        </p>
+        <div className="space-y-2">
+          {SMS_STATUSES.map((status) => (
+            <label key={status} className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={smsStatuses.includes(status)}
+                onChange={() => toggleSmsStatus(status)}
+                className="h-4 w-4 rounded border-edge-primary text-brand-600 focus:ring-brand-600"
+              />
+              <span className="text-sm text-content-primary">
+                {t(`settings.smsStatus_${status}`)}
+              </span>
+            </label>
+          ))}
         </div>
       </div>
 

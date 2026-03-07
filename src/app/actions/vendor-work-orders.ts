@@ -218,6 +218,11 @@ export async function updateWorkOrderStatus(
     });
   }
 
+  // Auto-SMS to tenant (fire-and-forget, non-blocking)
+  import("./vendor-sms-notifications").then(({ sendWoStatusSms }) => {
+    void sendWoStatusSms(woId, newStatus);
+  }).catch(() => {});
+
   // Homeowner notifications + decline cascade (only for homeowner-submitted WOs)
   if (wo.homeowner_id) {
     const { notifyHomeownerStatusChange } = await import("./home-wo-notifications");

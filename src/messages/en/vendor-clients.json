@@ -117,6 +117,22 @@
     "done": "Done",
     "cancel": "Cancel"
   },
+  "scorecard": {
+    "show": "Show Scorecard",
+    "hide": "Hide Scorecard",
+    "reviews": "reviews",
+    "noRatings": "No ratings yet",
+    "confidence": "Wilson Confidence",
+    "totalJobs": "Completed Jobs",
+    "thisMonth": "This Month",
+    "sameDay": "Same Day",
+    "nextDay": "Next Day",
+    "within48": "Within 48hrs",
+    "noData": "No data",
+    "emergency": "Emergency",
+    "onTime": "On Time",
+    "accuracy": "Estimate Accuracy"
+  },
   "tabs": {
     "pm": "PM Clients",
     "direct": "Direct Clients"

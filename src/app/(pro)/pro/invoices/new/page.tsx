@@ -27,7 +27,7 @@ export default function NewInvoicePage() {
         tax_pct: taxPct,
       });
       if (error) { alert(error); return; }
-      if (data) router.push(`/vendor/invoices/${data.id}`);
+      if (data) router.push(`/pro/invoices/${data.id}`);
     } finally {
       setCreating(false);
     }

@@ -19,6 +19,8 @@ import { MessageThread } from "@/components/vendor/message-thread";
 import { PropertyIntelPanel } from "@/components/vendor/property-intel";
 import { ChatPanel } from "@/components/vendor/chat-panel";
 import { WorkerAssignDropdown } from "@/components/vendor/worker-assign-dropdown";
+import { JobProfitabilityCard } from "@/components/vendor/job-profitability-card";
+import { PropertyContextCard } from "@/components/vendor/property-context-card";
 import { createClient } from "@/lib/supabase/client";
 
 export default function JobDetailPage() {
@@ -371,9 +373,15 @@ export default function JobDetailPage() {
           )}
         </div>
 
-        {/* Right column: intel + materials + time */}
+        {/* Right column: profitability + property context + intel + materials + time */}
         <div className="space-y-4">
-          {/* Property Intelligence */}
+          {/* Job Profitability */}
+          <JobProfitabilityCard woId={wo.id} woStatus={wo.status} />
+
+          {/* Property Context (homeowner data) */}
+          <PropertyContextCard woId={wo.id} />
+
+          {/* Property Intelligence (vendor WO history) */}
           <div className="bg-surface-primary rounded-xl border border-edge-primary p-4">
             <h3 className="text-sm font-semibold text-content-primary mb-3 flex items-center gap-2">
               <svg className="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>

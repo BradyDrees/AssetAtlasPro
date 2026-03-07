@@ -7,6 +7,14 @@
     {
       "path": "/api/cron/project-delays",
       "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron/generate-agreement-wos",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/qbo-nightly-sync",
+      "schedule": "0 3 * * *"
     }
   ]
 }

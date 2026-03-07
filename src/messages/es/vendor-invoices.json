@@ -46,7 +46,13 @@
     "amountPlaceholder": "0.00",
     "confirm": "Registrar",
     "recording": "Registrando...",
-    "balanceDue": "Saldo Pendiente"
+    "balanceDue": "Saldo Pendiente",
+    "payNow": "Pagar Ahora",
+    "processing": "Procesando...",
+    "payOnline": "Pagar en Línea",
+    "stripeNotConfigured": "Pagos en línea próximamente",
+    "paymentSuccess": "¡Pago recibido! Gracias.",
+    "paymentCancelled": "El pago fue cancelado."
   },
   "propertyName": "Nombre de Propiedad",
   "propertyNamePlaceholder": "ej. Apartamentos Sunset",

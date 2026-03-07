@@ -14,5 +14,5 @@ export default async function InvoiceDetailPage({ params }: InvoiceDetailPagePro
     redirect("/pro/invoices");
   }
 
-  return <InvoiceBuilder invoice={invoice} items={items} />;
+  return <InvoiceBuilder invoice={invoice} items={items} showPayButton />;
 }

@@ -11,6 +11,8 @@
   "credentials": "Credentials",
   "team": "Team",
   "pricebook": "Pricebook",
+  "templates": "Templates",
+  "agreements": "Agreements",
   "fieldMode": "Field Mode",
   "switchToPm": "Switch to PM",
   "switchToVendor": "Switch to Vendor",

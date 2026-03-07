@@ -337,6 +337,7 @@ export interface VendorOrgSettings {
   working_hours: WorkingHoursConfig;
   auto_show_estimate: boolean;
   custom_field_schemas: CustomFieldSchemas;
+  sms_notification_statuses?: string[];
 }
 
 /** Default org settings (matches migration default) */

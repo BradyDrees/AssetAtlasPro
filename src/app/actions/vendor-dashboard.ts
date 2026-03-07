@@ -16,6 +16,7 @@ export interface DashboardStats {
   pendingEstimates: number;
   unpaidInvoices: number;
   monthlyRevenue: number;
+  monthlyProfit: number;
   completedThisMonth: number;
   avgResponseHours: number;
 }
@@ -185,6 +186,8 @@ export async function getDashboardData(
   ]);
 
   const monthlyRevenue = (paidInvResult.data ?? []).reduce((s, i) => s + Number(i.total || 0), 0);
+  const totalExpenses = (expensesResult.data ?? []).reduce((s, e) => s + Number((e as { amount: number }).amount || 0), 0);
+  const monthlyProfit = monthlyRevenue - totalExpenses;
   const received = monthlyRevenue;
   const outstanding = (outstandingResult.data ?? []).reduce((s, i) => s + Number(i.balance_due || 0), 0);
   const pastDue = (pastDueResult.data ?? []).reduce((s, i) => s + Number(i.balance_due || 0), 0);
@@ -294,6 +297,7 @@ export async function getDashboardData(
       pendingEstimates: (pendingEstResult.data ?? []).length,
       unpaidInvoices: (unpaidInvResult.data ?? []).length,
       monthlyRevenue,
+      monthlyProfit,
       completedThisMonth: (completedResult.data ?? []).length,
       avgResponseHours: 0,
     },

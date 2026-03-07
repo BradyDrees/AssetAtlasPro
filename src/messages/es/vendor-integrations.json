@@ -1,0 +1,30 @@
+{
+  "title": "Integraciones",
+  "subtitle": "Conecta tus herramientas de contabilidad y pagos.",
+
+  "connected": "Conectado",
+  "notConnected": "No Conectado",
+  "comingSoon": "Próximamente",
+
+  "connect": "Conectar",
+  "disconnect": "Desconectar",
+  "disconnecting": "Desconectando...",
+  "syncNow": "Sincronizar",
+  "syncing": "Sincronizando...",
+  "syncComplete": "Sincronización completa",
+  "lastSync": "Última sincronización",
+
+  "invoices": "facturas",
+  "expenses": "gastos",
+
+  "notConfiguredDesc": "Contacta soporte para habilitar esta integración.",
+
+  "syncLog": "Historial de Sincronización",
+  "noSyncLog": "Sin historial de sincronización aún",
+  "syncStatus": {
+    "success": "Éxito",
+    "error": "Error",
+    "pending": "Pendiente",
+    "skipped": "Omitido"
+  }
+}

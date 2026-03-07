@@ -1,0 +1,50 @@
+{
+  "title": "Service Agreements",
+  "create": "New Agreement",
+  "noAgreements": "No service agreements yet",
+  "createFirst": "Create your first agreement",
+  "filterAll": "All",
+  "monthlyRevenue": "Monthly Revenue",
+
+  "serviceType": "Service Type",
+  "serviceTypePlaceholder": "e.g. HVAC Maintenance",
+  "trade": "Trade",
+  "tradePlaceholder": "e.g. HVAC",
+  "propertyName": "Property",
+  "propertyNamePlaceholder": "e.g. Sunset Apartments",
+  "description": "Description",
+  "descriptionPlaceholder": "Scope of recurring work...",
+  "frequencyLabel": "Frequency",
+  "price": "Price",
+  "startDate": "Start Date",
+  "endDate": "End Date",
+  "notes": "Notes",
+  "notesPlaceholder": "Additional notes...",
+  "nextDue": "Next Due",
+  "lastGenerated": "Last Generated",
+  "notFound": "Agreement not found",
+
+  "status": {
+    "active": "Active",
+    "paused": "Paused",
+    "cancelled": "Cancelled",
+    "expired": "Expired"
+  },
+  "frequency": {
+    "weekly": "Weekly",
+    "biweekly": "Biweekly",
+    "monthly": "Monthly",
+    "quarterly": "Quarterly",
+    "semi_annual": "Semi-Annual",
+    "annual": "Annual"
+  },
+
+  "generateWo": "Generate Work Order",
+  "pause": "Pause",
+  "resume": "Resume",
+  "cancelAgreement": "Cancel Agreement",
+
+  "cancel": "Cancel",
+  "save": "Create Agreement",
+  "saving": "Creating..."
+}

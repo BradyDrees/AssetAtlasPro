@@ -4,15 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { createEstimate } from "@/app/actions/vendor-estimates";
-import { getPmVendors } from "@/app/actions/pm-work-orders";
-
-interface PmClient {
-  id: string;
-  vendor_org_id: string;
-  vendor_name: string;
-  trades: string[];
-  status: string;
-}
+import { getVendorPmClients } from "@/app/actions/vendor-pm-list";
 
 export default function NewEstimatePage() {
   const t = useTranslations("vendor.estimates");
@@ -38,12 +30,8 @@ export default function NewEstimatePage() {
   useEffect(() => {
     async function loadClients() {
       try {
-        // Fetch vendor's PM relationships from a vendor-specific action
-        const res = await fetch("/api/vendor/pm-clients");
-        if (res.ok) {
-          const data = await res.json();
-          setPmClients(data.clients || []);
-        }
+        const clients = await getVendorPmClients();
+        setPmClients(clients);
       } catch {
         // Silently fail — PM selection will be optional
       } finally {
@@ -71,7 +59,7 @@ export default function NewEstimatePage() {
       }
 
       if (data) {
-        router.push(`/vendor/estimates/${data.id}`);
+        router.push(`/pro/estimates/${data.id}`);
       }
     } finally {
       setCreating(false);

@@ -141,6 +141,24 @@ export async function POST(req: NextRequest) {
           .eq("stripe_subscription_id", subscription.id);
         break;
       }
+
+      case "checkout.session.completed": {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = event.data.object as any;
+        const invoiceId = session.metadata?.invoice_id;
+        if (invoiceId) {
+          // This is a vendor invoice payment
+          const { markInvoicePaidViaStripe } = await import(
+            "@/app/actions/vendor-invoice-payment"
+          );
+          await markInvoicePaidViaStripe(
+            invoiceId,
+            session.payment_intent ?? session.id,
+            session.amount_total ?? 0
+          );
+        }
+        break;
+      }
     }
   } catch (err) {
     console.error("Webhook handler error:", err);

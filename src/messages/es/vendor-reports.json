@@ -1,7 +1,6 @@
 {
   "title": "Reportes",
   "subtitle": "Analítica y reportes del negocio",
-  "comingSoon": "Reporte próximamente",
   "noData": "No hay datos disponibles para el período seleccionado",
   "dateFilter": {
     "thisWeek": "Esta Semana",

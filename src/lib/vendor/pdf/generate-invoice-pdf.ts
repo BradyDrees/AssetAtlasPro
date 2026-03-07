@@ -204,6 +204,16 @@ export async function generateInvoicePdf(
     doc.text(splitNotes, 14, y);
   }
 
+  // ─── Payment link ───
+  if (invoice.payment_url && invoice.status !== "paid") {
+    y += 12;
+    doc.setFontSize(9);
+    doc.setTextColor(34, 139, 34);
+    doc.text("Pay Online:", 14, y);
+    doc.setTextColor(50, 100, 200);
+    doc.textWithLink(invoice.payment_url, 42, y, { url: invoice.payment_url });
+  }
+
   // ─── Paid stamp ───
   if (invoice.status === "paid") {
     doc.setFontSize(48);

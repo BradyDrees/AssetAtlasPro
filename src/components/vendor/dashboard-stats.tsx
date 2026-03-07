@@ -15,6 +15,7 @@ export function DashboardStatsGrid({ stats }: DashboardStatsProps) {
     { label: dt("stats.pendingEstimates"), value: stats.pendingEstimates, color: "text-content-primary" },
     { label: dt("stats.unpaidInvoices"), value: stats.unpaidInvoices, color: "text-content-primary" },
     { label: dt("stats.monthlyRevenue"), value: `$${stats.monthlyRevenue.toLocaleString("en-US", { minimumFractionDigits: 0 })}`, color: "text-green-400" },
+    { label: dt("stats.profit"), value: `$${stats.monthlyProfit.toLocaleString("en-US", { minimumFractionDigits: 0 })}`, color: stats.monthlyProfit >= 0 ? "text-green-400" : "text-red-400" },
     { label: dt("stats.completedThisMonth"), value: stats.completedThisMonth, color: "text-brand-400" },
     { label: dt("stats.avgResponseTime"), value: `${stats.avgResponseHours} ${dt("stats.hours")}`, color: "text-content-primary" },
   ];

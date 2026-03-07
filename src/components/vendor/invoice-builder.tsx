@@ -13,15 +13,19 @@ import {
   submitInvoice,
 } from "@/app/actions/vendor-invoices";
 import { generateInvoicePdf } from "@/lib/vendor/pdf/generate-invoice-pdf";
+import { InvoicePayButton } from "@/components/vendor/invoice-pay-button";
 
 interface InvoiceBuilderProps {
   invoice: VendorInvoice;
   items: VendorInvoiceItem[];
+  /** Whether the current viewer can pay (PM viewing a submitted/approved invoice) */
+  showPayButton?: boolean;
 }
 
 export function InvoiceBuilder({
   invoice: initialInvoice,
   items: initialItems,
+  showPayButton = false,
 }: InvoiceBuilderProps) {
   const t = useTranslations("vendor.invoices");
   const router = useRouter();
@@ -267,6 +271,18 @@ export function InvoiceBuilder({
           <span className="text-content-primary font-semibold">{t("total")}</span>
           <span className="text-lg font-bold text-brand-400">${total.toFixed(2)}</span>
         </div>
+
+        {/* Pay Now button — shown for PM on submitted/approved invoices */}
+        {showPayButton && ["submitted", "pm_approved"].includes(invoice.status) && total > 0 && (
+          <div className="pt-2 border-t border-edge-secondary">
+            <InvoicePayButton
+              invoiceId={invoice.id}
+              existingPaymentUrl={invoice.payment_url}
+              total={total}
+              balanceDue={invoice.balance_due}
+            />
+          </div>
+        )}
       </div>
 
       {/* Actions */}

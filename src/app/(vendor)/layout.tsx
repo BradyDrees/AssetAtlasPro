@@ -6,6 +6,7 @@ import { requireVendorRole, getUserRoles } from "@/lib/vendor/role-helpers";
 import { VendorSidebar } from "@/components/vendor/vendor-sidebar";
 import { VendorBottomNav } from "@/components/vendor/vendor-bottom-nav";
 import { VendorShell } from "@/components/vendor/vendor-shell";
+import { VendorRoleProvider } from "@/components/vendor/vendor-role-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LocaleProvider } from "@/components/locale-provider";
 
@@ -18,7 +19,7 @@ export default async function VendorLayout({
 }) {
   // Server-side role enforcement (Correction 7) — checks vendor_users membership table
   // Redirects to /login if not authenticated, /vendor/onboarding if no vendor membership
-  await requireVendorRole();
+  const vendorAuth = await requireVendorRole();
 
   // Get user for sidebar display
   const supabase = await createClient();
@@ -42,13 +43,15 @@ export default async function VendorLayout({
     <NextIntlClientProvider locale={initialLocale} messages={messages}>
       <LocaleProvider initialLocale={initialLocale as "en" | "es"}>
         <ThemeProvider initialTheme={initialTheme}>
-          <VendorShell>
-            <VendorSidebar user={user!} hasPmRole={hasPmRole} />
-            <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 pt-14 md:p-6 md:pt-6 pb-20 md:pb-6">
-              {children}
-            </main>
-            <VendorBottomNav />
-          </VendorShell>
+          <VendorRoleProvider role={vendorAuth.role}>
+            <VendorShell>
+              <VendorSidebar user={user!} hasPmRole={hasPmRole} vendorRole={vendorAuth.role} />
+              <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 pt-14 md:p-6 md:pt-6 pb-20 md:pb-6">
+                {children}
+              </main>
+              <VendorBottomNav />
+            </VendorShell>
+          </VendorRoleProvider>
         </ThemeProvider>
       </LocaleProvider>
     </NextIntlClientProvider>

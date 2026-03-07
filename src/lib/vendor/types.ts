@@ -495,6 +495,7 @@ export type ScheduleJob = {
   scheduled_date: string | null;
   scheduled_time_start: string | null; // HH:MM (normalized)
   scheduled_time_end: string | null;   // HH:MM (normalized)
+  assigned_to?: string | null;
   vendor_org_id?: string | null;
   pm_org_id?: string | null;
 };
@@ -533,6 +534,7 @@ export function toScheduleJob(wo: {
   scheduled_date?: string | null;
   scheduled_time_start?: string | null;
   scheduled_time_end?: string | null;
+  assigned_to?: string | null;
   vendor_org_id?: string | null;
   pm_user_id?: string | null;
 }): ScheduleJob {
@@ -546,6 +548,7 @@ export function toScheduleJob(wo: {
     scheduled_date: wo.scheduled_date ?? null,
     scheduled_time_start: normalizeTime(wo.scheduled_time_start ?? null),
     scheduled_time_end: normalizeTime(wo.scheduled_time_end ?? null),
+    assigned_to: wo.assigned_to ?? null,
     vendor_org_id: wo.vendor_org_id ?? null,
     pm_org_id: wo.pm_user_id ?? null,
   };

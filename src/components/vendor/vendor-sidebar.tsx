@@ -10,6 +10,7 @@ import { useTheme } from "@/components/theme-provider";
 import { useAppLocale } from "@/components/locale-provider";
 import { useOffline } from "@/components/offline-provider";
 import type { User } from "@supabase/supabase-js";
+import type { VendorOrgRole } from "@/lib/vendor/types";
 import { NotificationBell } from "./notification-bell";
 import { UnreadBadge } from "@/components/messaging/unread-badge";
 
@@ -104,12 +105,22 @@ function ChatBubbleIcon() {
   );
 }
 
+// Team icon
+function TeamIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+    </svg>
+  );
+}
+
 interface VendorSidebarProps {
   user: User;
   hasPmRole?: boolean;
+  vendorRole?: VendorOrgRole;
 }
 
-export function VendorSidebar({ user, hasPmRole = false }: VendorSidebarProps) {
+export function VendorSidebar({ user, hasPmRole = false, vendorRole = "owner" }: VendorSidebarProps) {
   const pathname = usePathname();
   const t = useTranslations();
   const vt = useTranslations("vendor.nav");
@@ -119,18 +130,40 @@ export function VendorSidebar({ user, hasPmRole = false }: VendorSidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
-  const navItems = [
-    { href: "/vendor", label: vt("home"), icon: <HomeIcon />, matchExact: true },
-    { href: "/vendor/jobs", label: vt("jobs"), icon: <BriefcaseIcon />, matchExact: false },
-    { href: "/vendor/schedule", label: vt("schedule"), icon: <CalendarIcon />, matchExact: false },
-    { href: "/vendor/estimates", label: vt("estimates"), icon: <CalculatorIcon />, matchExact: false },
-    { href: "/vendor/invoices", label: vt("invoices"), icon: <ReceiptIcon />, matchExact: false },
-    { href: "/vendor/clients", label: vt("clients"), icon: <UsersIcon />, matchExact: false },
-    { href: "/vendor/reports", label: vt("reports"), icon: <ChartBarIcon />, matchExact: false },
-    { href: "/vendor/expenses", label: vt("expenses"), icon: <BanknotesIcon />, matchExact: false },
-    { href: "/vendor/inbox", label: vt("messages"), icon: <ChatBubbleIcon />, matchExact: false, showUnreadBadge: true },
-    { href: "/vendor/profile", label: vt("profile"), icon: <UserCircleIcon />, matchExact: false },
-  ];
+  const isTech = vendorRole === "tech";
+  const isOfficeMgr = vendorRole === "office_manager";
+
+  // Role-based nav items
+  const navItems = isTech
+    ? [
+        { href: "/vendor/schedule", label: vt("mySchedule"), icon: <CalendarIcon />, matchExact: false },
+        { href: "/vendor/jobs", label: vt("myJobs"), icon: <BriefcaseIcon />, matchExact: false },
+        { href: "/vendor/inbox", label: vt("messages"), icon: <ChatBubbleIcon />, matchExact: false, showUnreadBadge: true },
+        { href: "/vendor/profile", label: vt("profile"), icon: <UserCircleIcon />, matchExact: false },
+      ]
+    : isOfficeMgr
+      ? [
+          { href: "/vendor", label: vt("home"), icon: <HomeIcon />, matchExact: true },
+          { href: "/vendor/jobs", label: vt("jobs"), icon: <BriefcaseIcon />, matchExact: false },
+          { href: "/vendor/schedule", label: vt("schedule"), icon: <CalendarIcon />, matchExact: false },
+          { href: "/vendor/team", label: vt("team"), icon: <TeamIcon />, matchExact: false },
+          { href: "/vendor/inbox", label: vt("messages"), icon: <ChatBubbleIcon />, matchExact: false, showUnreadBadge: true },
+          { href: "/vendor/profile", label: vt("profile"), icon: <UserCircleIcon />, matchExact: false },
+        ]
+      : [
+          // Owner/Admin — full nav
+          { href: "/vendor", label: vt("home"), icon: <HomeIcon />, matchExact: true },
+          { href: "/vendor/jobs", label: vt("jobs"), icon: <BriefcaseIcon />, matchExact: false },
+          { href: "/vendor/schedule", label: vt("schedule"), icon: <CalendarIcon />, matchExact: false },
+          { href: "/vendor/estimates", label: vt("estimates"), icon: <CalculatorIcon />, matchExact: false },
+          { href: "/vendor/invoices", label: vt("invoices"), icon: <ReceiptIcon />, matchExact: false },
+          { href: "/vendor/clients", label: vt("clients"), icon: <UsersIcon />, matchExact: false },
+          { href: "/vendor/reports", label: vt("reports"), icon: <ChartBarIcon />, matchExact: false },
+          { href: "/vendor/expenses", label: vt("expenses"), icon: <BanknotesIcon />, matchExact: false },
+          { href: "/vendor/team", label: vt("team"), icon: <TeamIcon />, matchExact: false },
+          { href: "/vendor/inbox", label: vt("messages"), icon: <ChatBubbleIcon />, matchExact: false, showUnreadBadge: true },
+          { href: "/vendor/profile", label: vt("profile"), icon: <UserCircleIcon />, matchExact: false },
+        ];
 
   // Close mobile drawer on navigation
   useEffect(() => {

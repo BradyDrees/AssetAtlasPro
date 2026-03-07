@@ -19,20 +19,27 @@ import type {
 // Work Order Queries
 // ============================================
 
-/** Get all work orders for the current vendor org */
+/** Get all work orders for the current vendor org.
+ *  Tech role: auto-filters to only assigned_to = self.
+ *  Owner/Admin/Office Manager: full org view. */
 export async function getVendorWorkOrders(filters?: {
   status?: WoStatus | WoStatus[];
   priority?: string;
   trade?: string;
 }): Promise<{ data: VendorWorkOrder[]; error?: string }> {
-  const { vendor_org_id } = await requireVendorRole();
+  const vendorAuth = await requireVendorRole();
   const supabase = await createClient();
 
   let query = supabase
     .from("vendor_work_orders")
     .select("*")
-    .eq("vendor_org_id", vendor_org_id)
+    .eq("vendor_org_id", vendorAuth.vendor_org_id)
     .order("created_at", { ascending: false });
+
+  // Tech role: only see assigned jobs
+  if (vendorAuth.role === "tech") {
+    query = query.eq("assigned_to", vendorAuth.id);
+  }
 
   if (filters?.status) {
     if (Array.isArray(filters.status)) {
@@ -60,11 +67,12 @@ export async function getVendorWorkOrders(filters?: {
   return { data: (data ?? []) as VendorWorkOrder[] };
 }
 
-/** Get a single work order by ID */
+/** Get a single work order by ID.
+ *  Tech role: rejects if not assigned to them. */
 export async function getWorkOrder(
   woId: string
 ): Promise<{ data: VendorWorkOrder | null; error?: string }> {
-  await requireVendorRole();
+  const vendorAuth = await requireVendorRole();
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -78,7 +86,14 @@ export async function getWorkOrder(
     return { data: null, error: error.message };
   }
 
-  return { data: data as VendorWorkOrder };
+  const wo = data as VendorWorkOrder;
+
+  // Tech role: can only view their assigned jobs
+  if (vendorAuth.role === "tech" && wo.assigned_to !== vendorAuth.id) {
+    return { data: null, error: "Not authorized for this work order" };
+  }
+
+  return { data: wo };
 }
 
 // ============================================
@@ -354,6 +369,81 @@ export async function declineWorkOrder(
   return updateWorkOrderStatus(woId, "declined", {
     decline_reason: reason,
   });
+}
+
+// ============================================
+// Worker Assignment
+// ============================================
+
+/** Assign or unassign a worker to a job.
+ *  Allowed: owner, admin, office_manager. Tech cannot assign. */
+export async function assignWorkerToJob(
+  woId: string,
+  vendorUserId: string | null
+): Promise<{ error?: string }> {
+  const vendorAuth = await requireVendorRole();
+
+  // Only owner/admin/office_manager can assign
+  if (vendorAuth.role === "tech") {
+    return { error: "Not authorized to assign workers" };
+  }
+
+  const supabase = await createClient();
+
+  // Verify WO belongs to caller's org
+  const { data: wo, error: woErr } = await supabase
+    .from("vendor_work_orders")
+    .select("id, vendor_org_id, assigned_to")
+    .eq("id", woId)
+    .single();
+
+  if (woErr || !wo) {
+    return { error: "Work order not found" };
+  }
+
+  if (wo.vendor_org_id !== vendorAuth.vendor_org_id) {
+    return { error: "Not authorized for this work order" };
+  }
+
+  // If assigning (not unassigning), verify worker belongs to same org and is active
+  if (vendorUserId) {
+    const { data: worker, error: workerErr } = await supabase
+      .from("vendor_users")
+      .select("id, vendor_org_id, is_active")
+      .eq("id", vendorUserId)
+      .single();
+
+    if (workerErr || !worker) {
+      return { error: "Worker not found" };
+    }
+
+    if (worker.vendor_org_id !== vendorAuth.vendor_org_id) {
+      return { error: "Worker does not belong to this organization" };
+    }
+
+    if (!worker.is_active) {
+      return { error: "Worker is not active" };
+    }
+  }
+
+  const { error: updateErr } = await supabase
+    .from("vendor_work_orders")
+    .update({ assigned_to: vendorUserId })
+    .eq("id", woId);
+
+  if (updateErr) {
+    return { error: updateErr.message };
+  }
+
+  await logActivity({
+    entityType: "work_order",
+    entityId: woId,
+    action: "worker_assigned",
+    oldValue: wo.assigned_to ?? "unassigned",
+    newValue: vendorUserId ?? "unassigned",
+  });
+
+  return {};
 }
 
 // ============================================

@@ -21,5 +21,7 @@
   "messages": "Mensajes",
   "more": "Más",
   "markAllRead": "Marcar todo leído",
-  "noNotifications": "Sin notificaciones"
+  "noNotifications": "Sin notificaciones",
+  "mySchedule": "Mi Horario",
+  "myJobs": "Mis Trabajos"
 }

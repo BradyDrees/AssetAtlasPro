@@ -18,6 +18,7 @@ import { TimeTracker } from "@/components/vendor/time-tracker";
 import { MessageThread } from "@/components/vendor/message-thread";
 import { PropertyIntelPanel } from "@/components/vendor/property-intel";
 import { ChatPanel } from "@/components/vendor/chat-panel";
+import { WorkerAssignDropdown } from "@/components/vendor/worker-assign-dropdown";
 import { createClient } from "@/lib/supabase/client";
 
 export default function JobDetailPage() {
@@ -149,6 +150,15 @@ export default function JobDetailPage() {
             )}
           </div>
           <StatusBadge status={wo.status} size="md" />
+        </div>
+
+        {/* Worker Assignment */}
+        <div className="flex items-center gap-3 mb-3">
+          <WorkerAssignDropdown
+            woId={wo.id}
+            currentAssignedTo={wo.assigned_to ?? null}
+            onAssigned={loadData}
+          />
         </div>
 
         {/* Actions */}

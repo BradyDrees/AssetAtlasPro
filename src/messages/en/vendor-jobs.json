@@ -72,7 +72,8 @@
     "declineReason": "Decline Reason",
     "tags": "Tags",
     "jobType": "Job Type",
-    "subStatus": "Sub-Status"
+    "subStatus": "Sub-Status",
+    "assignedTo": "Assigned To"
   },
   "tags": {
     "add": "Add",
@@ -135,5 +136,12 @@
   "linkedEstimate": {
     "title": "Linked Estimate",
     "view": "View Estimate"
+  },
+  "assignment": {
+    "assignWorker": "Assign Worker",
+    "unassigned": "Unassigned",
+    "assignSuccess": "Worker assigned successfully",
+    "assignError": "Failed to assign worker",
+    "noMembers": "No team members"
   }
 }

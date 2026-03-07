@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import type { ScheduleJob, WorkingHoursConfig } from "@/lib/vendor/types";
 import { getJobColor, type ColorBy } from "@/lib/vendor/schedule-colors";
@@ -13,8 +13,6 @@ interface CalendarDayViewProps {
   workingHours?: WorkingHoursConfig;
   colorBy?: ColorBy;
 }
-
-const HOURS = Array.from({ length: 14 }, (_, i) => i + 6); // 6am to 7pm
 
 function parseTime(time: string | null): number | null {
   if (!time) return null;
@@ -39,6 +37,28 @@ export function CalendarDayView({
   colorBy = "priority",
 }: CalendarDayViewProps) {
   const t = useTranslations("vendor.schedule");
+
+  const HOURS = useMemo(() => {
+    if (!workingHours) return Array.from({ length: 14 }, (_, i) => i + 6);
+    const startH = parseTime(workingHours.start);
+    const endH = parseTime(workingHours.end);
+    if (startH == null || endH == null || startH >= endH) {
+      return Array.from({ length: 14 }, (_, i) => i + 6); // fallback
+    }
+    const first = Math.max(0, Math.floor(startH) - 1);
+    const last = Math.min(23, Math.ceil(endH) + 1);
+    return Array.from({ length: last - first + 1 }, (_, i) => i + first);
+  }, [workingHours]);
+
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const iv = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(iv);
+  }, []);
+
+  const isToday = toDateStr(date) === toDateStr(now);
+  const currentHour = now.getHours() + now.getMinutes() / 60;
+  const inRange = isToday && currentHour >= HOURS[0] && currentHour <= HOURS[HOURS.length - 1] + 1;
 
   const dateStr = useMemo(() => toDateStr(date), [date]);
   const dayOfWeek = date.getDay(); // 0=Sun
@@ -155,6 +175,24 @@ export function CalendarDayView({
             </div>
           );
         })}
+
+        {/* Current time indicator */}
+        {inRange && (() => {
+          const totalHours = HOURS.length;
+          const offset = currentHour - HOURS[0];
+          const pct = (offset / totalHours) * 100;
+          return (
+            <div
+              className="absolute left-0 right-0 z-10 pointer-events-none"
+              style={{ top: `${pct}%` }}
+            >
+              <div className="flex items-center">
+                <div className="w-2.5 h-2.5 rounded-full bg-red-500 -ml-1 flex-shrink-0" />
+                <div className="flex-1 h-0.5 bg-red-500" />
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {dayJobs.length === 0 && (

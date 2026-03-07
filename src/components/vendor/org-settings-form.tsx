@@ -7,6 +7,13 @@ import type { VendorOrgSettings, TaxRate } from "@/lib/vendor/types";
 
 const DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
 
+/** Format raw underscore strings like "pending_parts" → "Pending Parts" */
+function formatLabel(raw: string): string {
+  return raw
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 interface OrgSettingsFormProps {
   initialSettings: VendorOrgSettings;
 }
@@ -283,7 +290,7 @@ export function OrgSettingsForm({ initialSettings }: OrgSettingsFormProps) {
                 key={jt}
                 className="inline-flex items-center gap-1 rounded-full border border-edge-secondary bg-surface-secondary px-3 py-1 text-xs font-medium text-content-primary"
               >
-                {jt}
+                {formatLabel(jt)}
                 <button
                   type="button"
                   onClick={() => removeJobType(jt)}
@@ -328,7 +335,7 @@ export function OrgSettingsForm({ initialSettings }: OrgSettingsFormProps) {
                 key={ss}
                 className="inline-flex items-center gap-1 rounded-full border border-edge-secondary bg-surface-secondary px-3 py-1 text-xs font-medium text-content-primary"
               >
-                {ss}
+                {formatLabel(ss)}
                 <button
                   type="button"
                   onClick={() => removeSubStatus(ss)}

@@ -146,7 +146,7 @@
       "sat": "Sáb"
     },
     "autoShowEstimate": "Mostrar Estimación al Propietario",
-    "autoShowEstimateDesc": "Reenviar automáticamente estimaciones aprobadas al propietario",
+    "autoShowEstimateDesc": "Reenviar automáticamente estimaciones aprobadas al propietario.",
     "saving": "Guardando…",
     "save": "Guardar Configuración",
     "saved": "Configuración guardada exitosamente",

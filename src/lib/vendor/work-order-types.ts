@@ -19,6 +19,7 @@ export interface VendorWorkOrder {
   pm_user_id: string;
   property_name: string | null;
   property_address: string | null;
+  property_zip: string | null;
   unit_number: string | null;
   description: string | null;
   pm_notes: string | null;

@@ -34,7 +34,7 @@
       "description": "Aging buckets and outstanding balances"
     },
     "timesheets": {
-      "title": "Timesheets",
+      "title": "Timesheets Report",
       "description": "Hours worked per employee per period"
     },
     "tax": {

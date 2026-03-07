@@ -51,7 +51,7 @@
   "selectPm": "Enviar A (PM)",
   "selectPmPlaceholder": "Seleccione un administrador de propiedad...",
   "loadingClients": "Cargando...",
-  "noPmConnections": "Sin conexiones PM aún. Puede asignar un PM después.",
+  "noPmConnections": "Sin conexiones PM aún.",
   "pmAssignLater": "Puede asignar un PM después en el constructor de estimaciones.",
   "cancel": "Cancelar",
   "creating": "Creando...",

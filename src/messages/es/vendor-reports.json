@@ -34,7 +34,7 @@
       "description": "Antigüedad y saldos pendientes"
     },
     "timesheets": {
-      "title": "Horas Trabajadas",
+      "title": "Reporte de Horas Trabajadas",
       "description": "Horas por empleado por período"
     },
     "tax": {

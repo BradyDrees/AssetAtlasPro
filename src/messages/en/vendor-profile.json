@@ -146,7 +146,7 @@
       "sat": "Sat"
     },
     "autoShowEstimate": "Auto-Show Estimate to Owner",
-    "autoShowEstimateDesc": "Automatically forward approved estimates to property owner",
+    "autoShowEstimateDesc": "Automatically forward approved estimates to property owner.",
     "saving": "Saving…",
     "save": "Save Settings",
     "saved": "Settings saved successfully",

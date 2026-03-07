@@ -6,7 +6,8 @@ import {
   validateWoTransition,
   vendorOrgRoleToTransitionRole,
 } from "@/lib/vendor/state-machine";
-import type { WoStatus } from "@/lib/vendor/types";
+import type { WoStatus, ScheduleJob } from "@/lib/vendor/types";
+import { toScheduleJob, SCHEDULABLE_STATUSES } from "@/lib/vendor/types";
 import type {
   VendorWorkOrder,
   VendorWoMaterial,
@@ -14,6 +15,11 @@ import type {
   AddMaterialInput,
   ClockInInput,
 } from "@/lib/vendor/work-order-types";
+import {
+  computeSmartSchedule,
+  type SmartScheduleResult,
+  type ScheduleProposal,
+} from "@/lib/vendor/smart-scheduler";
 
 // ============================================
 // Work Order Queries
@@ -801,6 +807,135 @@ export async function updateSubStatus(
   });
 
   return {};
+}
+
+// ============================================
+// Smart Scheduler
+// ============================================
+
+/** Preview smart schedule — groups unscheduled jobs by zip and proposes times.
+ *  Owner/Admin/Office Manager only. */
+export async function getSmartSchedulePreview(
+  targetDate: string,
+  options?: { durationMinutes?: number; maxJobsPerDay?: number }
+): Promise<{ data: SmartScheduleResult | null; error?: string }> {
+  const vendorAuth = await requireVendorRole();
+
+  if (vendorAuth.role === "tech") {
+    return { data: null, error: "Not authorized" };
+  }
+
+  const supabase = await createClient();
+
+  // Fetch unscheduled jobs (no date or no time)
+  const { data: rawUnscheduled, error: unschedErr } = await supabase
+    .from("vendor_work_orders")
+    .select("*")
+    .eq("vendor_org_id", vendorAuth.vendor_org_id)
+    .in("status", SCHEDULABLE_STATUSES as string[])
+    .or("scheduled_date.is.null,scheduled_time_start.is.null");
+
+  if (unschedErr) {
+    return { data: null, error: unschedErr.message };
+  }
+
+  // Fetch existing scheduled jobs for the target date
+  const { data: rawScheduled, error: schedErr } = await supabase
+    .from("vendor_work_orders")
+    .select("*")
+    .eq("vendor_org_id", vendorAuth.vendor_org_id)
+    .eq("scheduled_date", targetDate)
+    .not("scheduled_time_start", "is", null);
+
+  if (schedErr) {
+    return { data: null, error: schedErr.message };
+  }
+
+  // Fetch org working hours
+  const orgSettings = await getOrgSettings(vendorAuth.vendor_org_id);
+  const wh = orgSettings.working_hours as { start?: string; end?: string } | undefined;
+  const workingHours = {
+    start: wh?.start ?? "08:00",
+    end: wh?.end ?? "17:00",
+  };
+
+  // Convert to ScheduleJob
+  const unscheduledJobs = (rawUnscheduled ?? []).map((wo: VendorWorkOrder) =>
+    toScheduleJob(wo)
+  );
+  const existingSchedule = (rawScheduled ?? []).map((wo: VendorWorkOrder) =>
+    toScheduleJob(wo)
+  );
+
+  const result = computeSmartSchedule({
+    unscheduledJobs,
+    existingSchedule,
+    targetDate,
+    workingHours,
+    defaultDurationMinutes: options?.durationMinutes ?? 60,
+    maxJobsPerDay: options?.maxJobsPerDay,
+  });
+
+  return { data: result };
+}
+
+/** Apply smart schedule proposals — batch-update jobs with proposed times.
+ *  Owner/Admin/Office Manager only. */
+export async function applySmartSchedule(
+  proposals: { jobId: string; scheduledDate: string; scheduledTime: string; endTime: string }[]
+): Promise<{ applied: number; errors: string[] }> {
+  const vendorAuth = await requireVendorRole();
+
+  if (vendorAuth.role === "tech") {
+    return { applied: 0, errors: ["Not authorized"] };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return { applied: 0, errors: ["Not authenticated"] };
+
+  const errors: string[] = [];
+  let applied = 0;
+
+  // Process each proposal
+  for (const p of proposals) {
+    const { error } = await supabase
+      .from("vendor_work_orders")
+      .update({
+        scheduled_date: p.scheduledDate,
+        scheduled_time_start: p.scheduledTime,
+        scheduled_time_end: p.endTime,
+        updated_by: user.id,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", p.jobId)
+      .eq("vendor_org_id", vendorAuth.vendor_org_id);
+
+    if (error) {
+      errors.push(`${p.jobId}: ${error.message}`);
+    } else {
+      applied++;
+    }
+  }
+
+  // Log activity
+  if (applied > 0) {
+    await logActivity({
+      entityType: "vendor_org",
+      entityId: vendorAuth.vendor_org_id,
+      action: "smart_schedule_applied",
+      metadata: {
+        jobCount: applied,
+        targetDate: proposals[0]?.scheduledDate,
+        totalProposed: proposals.length,
+      },
+    });
+  }
+
+  return { applied, errors };
 }
 
 /** Reschedule a job — validate end > start, log audit metadata */

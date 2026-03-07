@@ -7,6 +7,7 @@ import type { ScheduleJob } from "@/lib/vendor/types";
 export interface UnscheduledJobsPanelProps {
   jobs: ScheduleJob[];
   onJobClick: (jobId: string) => void;
+  onSmartSchedule?: () => void;
 }
 
 const priorityDot: Record<string, string> = {
@@ -18,6 +19,7 @@ const priorityDot: Record<string, string> = {
 export function UnscheduledJobsPanel({
   jobs,
   onJobClick,
+  onSmartSchedule,
 }: UnscheduledJobsPanelProps) {
   const t = useTranslations("vendor.schedule");
   const [expanded, setExpanded] = useState(true);
@@ -36,9 +38,33 @@ export function UnscheduledJobsPanel({
             {jobs.length}
           </span>
         </div>
-        <span className="text-xs text-content-tertiary">
-          {expanded ? t("unscheduled.collapse") : t("unscheduled.expand")}
-        </span>
+        <div className="flex items-center gap-2">
+          {onSmartSchedule && jobs.length > 0 && (
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSmartSchedule();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.stopPropagation();
+                  onSmartSchedule();
+                }
+              }}
+              className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium text-brand-400 bg-brand-600/10 hover:bg-brand-600/20 transition-colors cursor-pointer"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+              </svg>
+              {t("smartScheduler.title")}
+            </span>
+          )}
+          <span className="text-xs text-content-tertiary">
+            {expanded ? t("unscheduled.collapse") : t("unscheduled.expand")}
+          </span>
+        </div>
       </button>
 
       {expanded && (

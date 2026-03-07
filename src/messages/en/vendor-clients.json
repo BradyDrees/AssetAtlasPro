@@ -33,7 +33,7 @@
     "goToDashboard": "Go to Dashboard"
   },
   "pmVendors": {
-    "title": "Connected Vendors",
+    "title": "Connected Clients",
     "inviteVendor": "Invite Vendor",
     "vendorEmail": "Vendor Email",
     "emailPlaceholder": "Vendor's business email...",
@@ -70,7 +70,7 @@
     "saveNotes": "Save Notes",
     "saving": "Saving...",
     "loading": "Loading...",
-    "noPmAccess": "Client management requires property manager access. Contact support if you need this feature.",
+    "noPmAccess": "You don't have permission to manage clients. Only owners, admins, and office managers can access this feature.",
     "backToJobs": "← Back to Jobs",
     "tabs": {
       "all": "All",

@@ -62,5 +62,35 @@
     "priority": "Priority",
     "status": "Status",
     "trade": "Trade"
+  },
+  "smartScheduler": {
+    "title": "Smart Schedule",
+    "description": "Auto-schedule jobs grouped by zip code to minimize travel",
+    "targetDate": "Schedule Date",
+    "duration": "Job Duration",
+    "minutes": "minutes",
+    "generate": "Generate Preview",
+    "generating": "Analyzing jobs...",
+    "noJobs": "No unscheduled jobs with zip codes found",
+    "preview": "Schedule Preview",
+    "zipGroup": "{count} jobs in {zip}",
+    "unschedulable": "Could not schedule",
+    "reasonNoZip": "No zip code on address",
+    "reasonNoTime": "No time remaining in work day",
+    "summary": "Scheduling {count} jobs across {groups} areas on {date}",
+    "apply": "Apply Schedule",
+    "applying": "Scheduling jobs...",
+    "success": "{count} jobs scheduled successfully",
+    "errors": "{count} jobs could not be scheduled",
+    "done": "Done",
+    "back": "Back",
+    "remove": "Remove",
+    "durationOptions": {
+      "30": "30 min",
+      "45": "45 min",
+      "60": "1 hour",
+      "90": "1.5 hours",
+      "120": "2 hours"
+    }
   }
 }

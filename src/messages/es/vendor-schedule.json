@@ -62,5 +62,35 @@
     "priority": "Prioridad",
     "status": "Estado",
     "trade": "Oficio"
+  },
+  "smartScheduler": {
+    "title": "Programar Inteligente",
+    "description": "Programar trabajos agrupados por codigo postal para minimizar viaje",
+    "targetDate": "Fecha de Programacion",
+    "duration": "Duracion del Trabajo",
+    "minutes": "minutos",
+    "generate": "Generar Vista Previa",
+    "generating": "Analizando trabajos...",
+    "noJobs": "No se encontraron trabajos sin programar con codigo postal",
+    "preview": "Vista Previa del Horario",
+    "zipGroup": "{count} trabajos en {zip}",
+    "unschedulable": "No se pudieron programar",
+    "reasonNoZip": "Sin codigo postal en la direccion",
+    "reasonNoTime": "No queda tiempo en el dia laboral",
+    "summary": "Programando {count} trabajos en {groups} areas el {date}",
+    "apply": "Aplicar Horario",
+    "applying": "Programando trabajos...",
+    "success": "{count} trabajos programados exitosamente",
+    "errors": "{count} trabajos no se pudieron programar",
+    "done": "Listo",
+    "back": "Volver",
+    "remove": "Quitar",
+    "durationOptions": {
+      "30": "30 min",
+      "45": "45 min",
+      "60": "1 hora",
+      "90": "1.5 horas",
+      "120": "2 horas"
+    }
   }
 }

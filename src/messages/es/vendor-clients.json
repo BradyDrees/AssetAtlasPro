@@ -33,7 +33,7 @@
     "goToDashboard": "Ir al Panel"
   },
   "pmVendors": {
-    "title": "Vendedores Conectados",
+    "title": "Clientes Conectados",
     "inviteVendor": "Invitar Vendedor",
     "vendorEmail": "Correo del Vendedor",
     "emailPlaceholder": "Correo empresarial del vendedor...",
@@ -70,7 +70,7 @@
     "saveNotes": "Guardar Notas",
     "saving": "Guardando...",
     "loading": "Cargando...",
-    "noPmAccess": "La gestión de clientes requiere acceso de administrador de propiedades. Contacte soporte si necesita esta función.",
+    "noPmAccess": "No tienes permiso para gestionar clientes. Solo propietarios, administradores y gerentes de oficina pueden acceder a esta función.",
     "backToJobs": "← Volver a Trabajos",
     "tabs": {
       "all": "Todos",

@@ -498,6 +498,8 @@ export type ScheduleJob = {
   assigned_to?: string | null;
   vendor_org_id?: string | null;
   pm_org_id?: string | null;
+  property_zip?: string | null;
+  property_address?: string | null;
 };
 
 /** Statuses that qualify for the unscheduled jobs panel */
@@ -527,6 +529,8 @@ export function normalizeTime(t: string | null): string | null {
 export function toScheduleJob(wo: {
   id: string;
   property_name?: string | null;
+  property_address?: string | null;
+  property_zip?: string | null;
   description?: string | null;
   trade?: string | null;
   priority: string;
@@ -551,5 +555,7 @@ export function toScheduleJob(wo: {
     assigned_to: wo.assigned_to ?? null,
     vendor_org_id: wo.vendor_org_id ?? null,
     pm_org_id: wo.pm_user_id ?? null,
+    property_zip: wo.property_zip ?? null,
+    property_address: wo.property_address ?? null,
   };
 }

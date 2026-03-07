@@ -51,7 +51,7 @@
   "selectPm": "Send To (PM)",
   "selectPmPlaceholder": "Select a property manager...",
   "loadingClients": "Loading...",
-  "noPmConnections": "No PM connections yet. You can assign a PM later.",
+  "noPmConnections": "No PM connections yet.",
   "pmAssignLater": "You can assign a PM later in the estimate builder.",
   "cancel": "Cancel",
   "creating": "Creating...",

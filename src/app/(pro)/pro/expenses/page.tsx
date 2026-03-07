@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { getVendorExpenses, getExpenseSummary } from "@/app/actions/vendor-expenses";
-import ExpenseCard from "@/components/vendor/expense-card";
+import ExpenseList from "@/components/vendor/expense-list";
 
 export default async function ExpensesPage() {
   const t = await getTranslations("vendor.expenses");
@@ -47,11 +47,7 @@ export default async function ExpensesPage() {
       {expenses.length === 0 ? (
         <p className="text-center text-sm text-content-muted py-12">{t("empty")}</p>
       ) : (
-        <div className="space-y-3">
-          {expenses.map((expense) => (
-            <ExpenseCard key={expense.id} expense={expense} />
-          ))}
-        </div>
+        <ExpenseList expenses={expenses} />
       )}
     </div>
   );

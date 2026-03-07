@@ -52,30 +52,30 @@ export default function ExpenseForm({
     <form onSubmit={handleSubmit} className="bg-surface-primary rounded-xl border border-edge-primary p-5 space-y-4">
       {/* Category */}
       <div>
-        <label className={labelClass}>{t("field.category")}</label>
+        <label className={labelClass}>{t("form.category")}</label>
         <select value={category} onChange={(e) => setCategory(e.target.value as ExpenseCategory)} className={inputClass}>
           {EXPENSE_CATEGORIES.map((cat: ExpenseCategory) => (
-            <option key={cat} value={cat}>{t("category." + cat)}</option>
+            <option key={cat} value={cat}>{t("categories." + cat)}</option>
           ))}
         </select>
       </div>
 
       {/* Description */}
       <div>
-        <label className={labelClass}>{t("field.description")}</label>
+        <label className={labelClass}>{t("form.description")}</label>
         <input
           type="text"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
-          placeholder={t("placeholder.description")}
+          placeholder={t("form.descriptionPlaceholder")}
           className={inputClass}
         />
       </div>
 
       {/* Amount */}
       <div>
-        <label className={labelClass}>{t("field.amount")}</label>
+        <label className={labelClass}>{t("form.amount")}</label>
         <input
           type="number"
           step="0.01"
@@ -90,7 +90,7 @@ export default function ExpenseForm({
 
       {/* Date */}
       <div>
-        <label className={labelClass}>{t("field.date")}</label>
+        <label className={labelClass}>{t("form.date")}</label>
         <input
           type="date"
           value={date}
@@ -102,12 +102,12 @@ export default function ExpenseForm({
 
       {/* Notes */}
       <div>
-        <label className={labelClass}>{t("field.notes")}</label>
+        <label className={labelClass}>{t("form.notes")}</label>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={3}
-          placeholder={t("placeholder.notes")}
+          placeholder={t("form.notesPlaceholder")}
           className={inputClass}
         />
       </div>
@@ -115,9 +115,9 @@ export default function ExpenseForm({
       {/* Work Order */}
       {workOrders && workOrders.length > 0 && (
         <div>
-          <label className={labelClass}>{t("field.workOrder")}</label>
+          <label className={labelClass}>{t("form.workOrder")}</label>
           <select value={workOrderId} onChange={(e) => setWorkOrderId(e.target.value)} className={inputClass}>
-            <option value="">{t("field.noWorkOrder")}</option>
+            <option value="">{t("form.workOrderNone")}</option>
             {workOrders.map((wo) => (
               <option key={wo.id} value={wo.id}>{wo.description || wo.id}</option>
             ))}
@@ -133,7 +133,7 @@ export default function ExpenseForm({
           onChange={(e) => setIsReimbursable(e.target.checked)}
           className="h-4 w-4 rounded border-edge-primary text-brand-600 focus:ring-brand-500"
         />
-        <span className="text-sm text-content-secondary">{t("field.reimbursable")}</span>
+        <span className="text-sm text-content-secondary">{t("form.reimbursable")}</span>
       </label>
 
       {/* Actions */}
@@ -143,14 +143,14 @@ export default function ExpenseForm({
           disabled={loading}
           className="flex-1 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50 transition-colors"
         >
-          {loading ? t("saving") : t("save")}
+          {loading ? t("form.saving") : t("form.save")}
         </button>
         <button
           type="button"
           onClick={onCancel}
           className="flex-1 rounded-lg border border-edge-primary px-4 py-2.5 text-sm font-semibold text-content-secondary hover:bg-surface-secondary transition-colors"
         >
-          {t("cancel")}
+          {t("form.cancel")}
         </button>
       </div>
     </form>

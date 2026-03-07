@@ -72,6 +72,7 @@
     "name": "Nombre del Documento",
     "namePlaceholder": "ej. Póliza de Responsabilidad General",
     "nameRequired": "El nombre del documento es obligatorio",
+    "dateError": "La fecha de emisión debe ser anterior a la fecha de vencimiento",
     "number": "Número de Documento",
     "numberPlaceholder": "ej. POL-123456",
     "issued": "Emitido",

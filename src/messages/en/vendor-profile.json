@@ -72,6 +72,7 @@
     "name": "Document Name",
     "namePlaceholder": "e.g. General Liability Policy",
     "nameRequired": "Document name is required",
+    "dateError": "Issued date must be before expiration date",
     "number": "Document Number",
     "numberPlaceholder": "e.g. POL-123456",
     "issued": "Issued",

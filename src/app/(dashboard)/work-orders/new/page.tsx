@@ -38,6 +38,7 @@ export default function NewWorkOrderPage() {
   const [vendors, setVendors] = useState<VendorOption[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingVendors, setLoadingVendors] = useState(true);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   // Form state
   const [vendorOrgId, setVendorOrgId] = useState("");
@@ -64,24 +65,30 @@ export default function NewWorkOrderPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const errors: Record<string, string> = {};
 
-    if (!vendorOrgId) {
-      alert("Please select a vendor");
+    if (!vendorOrgId) errors.vendor = "Please select a vendor";
+    if (!trade) errors.trade = "Please select a trade";
+    if (!description.trim()) errors.description = "Please enter a job description";
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
       return;
     }
 
+    setFormErrors({});
     setLoading(true);
     const { error } = await createWorkOrder({
       vendor_org_id: vendorOrgId,
       property_name: propertyName || undefined,
       property_address: propertyAddress || undefined,
       unit_number: unitNumber || undefined,
-      description: description || undefined,
+      description: description.trim(),
       pm_notes: pmNotes || undefined,
       access_notes: accessNotes || undefined,
       tenant_name: tenantName || undefined,
       tenant_phone: tenantPhone || undefined,
-      trade: trade || undefined,
+      trade,
       priority,
       budget_type: (budgetType as WoBudgetType) || undefined,
       budget_amount: budgetAmount ? Number(budgetAmount) : undefined,
@@ -90,7 +97,7 @@ export default function NewWorkOrderPage() {
     setLoading(false);
 
     if (error) {
-      alert(error);
+      setFormErrors({ submit: error });
     } else {
       router.push("/dashboard");
     }
@@ -117,6 +124,13 @@ export default function NewWorkOrderPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Form-level error */}
+        {formErrors.submit && (
+          <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
+            {formErrors.submit}
+          </div>
+        )}
+
         {/* Vendor selection */}
         <div className="bg-surface-primary rounded-xl border border-edge-primary p-5 space-y-4">
           <h2 className="text-sm font-semibold text-content-primary">
@@ -129,19 +143,22 @@ export default function NewWorkOrderPage() {
               No connected vendors. Invite a vendor first.
             </p>
           ) : (
-            <select
-              value={vendorOrgId}
-              onChange={(e) => setVendorOrgId(e.target.value)}
-              className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
-            >
-              <option value="">Select vendor...</option>
-              {vendors.map((v) => (
-                <option key={v.vendor_org_id} value={v.vendor_org_id}>
-                  {v.vendor_name}
-                  {v.trades.length > 0 && ` (${v.trades.join(", ")})`}
-                </option>
-              ))}
-            </select>
+            <>
+              <select
+                value={vendorOrgId}
+                onChange={(e) => { setVendorOrgId(e.target.value); setFormErrors((p) => { const n = { ...p }; delete n.vendor; return n; }); }}
+                className={`w-full p-3 bg-surface-secondary border rounded-lg text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-brand-500/40 ${formErrors.vendor ? "border-red-500" : "border-edge-primary"}`}
+              >
+                <option value="">Select vendor...</option>
+                {vendors.map((v) => (
+                  <option key={v.vendor_org_id} value={v.vendor_org_id}>
+                    {v.vendor_name}
+                    {v.trades.length > 0 && ` (${v.trades.join(", ")})`}
+                  </option>
+                ))}
+              </select>
+              {formErrors.vendor && <p className="text-xs text-red-400 mt-1">{formErrors.vendor}</p>}
+            </>
           )}
         </div>
 
@@ -180,25 +197,31 @@ export default function NewWorkOrderPage() {
           <h2 className="text-sm font-semibold text-content-primary">
             Job Details
           </h2>
-          <select
-            value={trade}
-            onChange={(e) => setTrade(e.target.value)}
-            className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
-          >
-            <option value="">Select trade...</option>
-            {TRADES.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Job description — what needs to be done?"
-            rows={3}
-            className="w-full p-3 bg-surface-secondary border border-edge-primary rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-brand-500/40"
-          />
+          <div>
+            <select
+              value={trade}
+              onChange={(e) => { setTrade(e.target.value); setFormErrors((p) => { const n = { ...p }; delete n.trade; return n; }); }}
+              className={`w-full p-3 bg-surface-secondary border rounded-lg text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-brand-500/40 ${formErrors.trade ? "border-red-500" : "border-edge-primary"}`}
+            >
+              <option value="">Select trade... *</option>
+              {TRADES.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+            {formErrors.trade && <p className="text-xs text-red-400 mt-1">{formErrors.trade}</p>}
+          </div>
+          <div>
+            <textarea
+              value={description}
+              onChange={(e) => { setDescription(e.target.value); setFormErrors((p) => { const n = { ...p }; delete n.description; return n; }); }}
+              placeholder="Job description — what needs to be done? *"
+              rows={3}
+              className={`w-full p-3 bg-surface-secondary border rounded-lg text-sm text-content-primary placeholder:text-content-quaternary focus:outline-none focus:ring-2 focus:ring-brand-500/40 ${formErrors.description ? "border-red-500" : "border-edge-primary"}`}
+            />
+            {formErrors.description && <p className="text-xs text-red-400 mt-1">{formErrors.description}</p>}
+          </div>
           <div className="grid md:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs text-content-tertiary mb-1">
@@ -305,7 +328,7 @@ export default function NewWorkOrderPage() {
         {/* Submit */}
         <button
           type="submit"
-          disabled={loading || !vendorOrgId}
+          disabled={loading || !vendorOrgId || !trade || !description.trim()}
           className="w-full py-3 rounded-xl text-sm font-semibold bg-brand-600 hover:bg-brand-700 text-white disabled:opacity-50 transition-colors"
         >
           {loading ? "Creating..." : "Create Work Order"}

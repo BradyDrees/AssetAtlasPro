@@ -172,6 +172,11 @@ export async function createCredential(
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Validate issued_date < expiration_date when both provided
+  if (input.issued_date && input.expiration_date && input.issued_date >= input.expiration_date) {
+    return { credential: null, error: "Issued date must be before expiration date" };
+  }
+
   const { data, error } = await supabase
     .from("vendor_credentials")
     .insert({
@@ -209,6 +214,28 @@ export async function updateCredential(
 ): Promise<{ success: boolean; error?: string }> {
   await requireVendorRole();
   const supabase = await createClient();
+
+  // Validate issued_date < expiration_date when both provided in update
+  if (input.issued_date && input.expiration_date && input.issued_date >= input.expiration_date) {
+    return { success: false, error: "Issued date must be before expiration date" };
+  }
+
+  // If only one date provided, fetch the other to cross-validate
+  if ((input.issued_date && !input.expiration_date) || (!input.issued_date && input.expiration_date)) {
+    const { data: existing } = await supabase
+      .from("vendor_credentials")
+      .select("issued_date, expiration_date")
+      .eq("id", credentialId)
+      .single();
+
+    if (existing) {
+      const issued = input.issued_date ?? existing.issued_date;
+      const expiration = input.expiration_date ?? existing.expiration_date;
+      if (issued && expiration && issued >= expiration) {
+        return { success: false, error: "Issued date must be before expiration date" };
+      }
+    }
+  }
 
   const { error } = await supabase
     .from("vendor_credentials")

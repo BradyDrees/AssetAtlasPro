@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import ExpenseForm from "@/components/vendor/expense-form";
 import { createExpense } from "@/app/actions/vendor-expenses";
@@ -9,9 +9,13 @@ import { CreateExpenseInput } from "@/lib/vendor/expense-types";
 
 export default function ExpenseFormClient() {
   const router = useRouter();
+  const pathname = usePathname();
   const t = useTranslations("vendor.expenses");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Determine base path from current URL (/pro/expenses/new → /pro/expenses, /vendor/expenses/new → /vendor/expenses)
+  const basePath = pathname.includes("/pro/") ? "/pro/expenses" : "/vendor/expenses";
 
   async function handleSubmit(data: CreateExpenseInput) {
     setLoading(true);
@@ -23,15 +27,15 @@ export default function ExpenseFormClient() {
         setLoading(false);
         return;
       }
-      router.push("/vendor/expenses");
+      router.push(basePath);
     } catch {
-      setError(t("errorGeneric"));
+      setError(t("form.saveError"));
       setLoading(false);
     }
   }
 
   function handleCancel() {
-    router.push("/vendor/expenses");
+    router.push(basePath);
   }
 
   return (

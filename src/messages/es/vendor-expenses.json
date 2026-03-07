@@ -47,6 +47,7 @@
   },
   "delete": "Eliminar",
   "deleting": "Eliminando...",
+  "deleteConfirm": "¿Estás seguro de que quieres eliminar este gasto? Esta acción no se puede deshacer.",
   "edit": "Editar",
   "receipt": "Recibo adjunto",
   "reimbursable": "Reembolsable",

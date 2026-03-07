@@ -78,6 +78,12 @@ export function CredentialUpload({ open, onClose }: CredentialUploadProps) {
       return;
     }
 
+    // Validate issued_date < expiration_date when both are provided
+    if (issuedDate && expirationDate && issuedDate >= expirationDate) {
+      setError(t("credentials.dateError"));
+      return;
+    }
+
     setSaving(true);
     setError(null);
 

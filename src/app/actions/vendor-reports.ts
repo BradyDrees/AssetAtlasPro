@@ -422,13 +422,13 @@ export async function getTimesheetsReport(
     // Join through work orders to scope by vendor_org_id
     let query = supabase
       .from('vendor_wo_time_entries')
-      .select('id, work_order_id, user_id, clock_in, clock_out, hourly_rate, notes, vendor_work_orders!inner(vendor_org_id)')
+      .select('id, work_order_id, vendor_user_id, clock_in, clock_out, hourly_rate, notes, duration_minutes, vendor_work_orders!inner(vendor_org_id, property_name, trade)')
       .eq('vendor_work_orders.vendor_org_id', vendor_org_id)
       .gte('clock_in', dateRange.start)
       .lte('clock_in', dateRange.end);
 
     if (userId) {
-      query = query.eq('user_id', userId);
+      query = query.eq('vendor_user_id', userId);
     }
 
     const { data: entries, error } = await query.order('clock_in', { ascending: false });
@@ -459,11 +459,12 @@ export async function getTimesheetsReport(
       totalMinutes += durationMinutes;
       totalLaborCost += cost;
 
+      const woData = te.vendor_work_orders as unknown as { vendor_org_id: string; property_name: string | null; trade: string | null };
       return {
-        vendor_user_id: te.user_id,
+        vendor_user_id: te.vendor_user_id,
         user_name: null,
         work_order_id: te.work_order_id,
-        property_name: null,
+        property_name: woData?.property_name ?? null,
         clock_in: te.clock_in,
         clock_out: te.clock_out || null,
         duration_minutes: durationMinutes,

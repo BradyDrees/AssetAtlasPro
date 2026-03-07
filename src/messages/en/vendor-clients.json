@@ -102,6 +102,31 @@
       }
     }
   },
+  "clientInvite": {
+    "button": "Invite Client",
+    "title": "Invite Client",
+    "subtitle": "Send an invite link to connect a new client",
+    "selectApp": "Which app should they use?",
+    "appHome": "Atlas Home",
+    "appHomeDesc": "For homeowners — manage services",
+    "appOperate": "Atlas Pro",
+    "appOperateDesc": "For property managers — manage ops",
+    "name": "Client Name",
+    "namePlaceholder": "Client's name...",
+    "deliveryMethod": "How should we send the invite?",
+    "viaSms": "Send via Text Message",
+    "viaEmail": "Send via Email",
+    "copyLink": "Copy invite link instead",
+    "copied": "Copied!",
+    "send": "Send Invite",
+    "sending": "Sending...",
+    "sent": "Invite Sent!",
+    "sentBoth": "Invite sent via text and email",
+    "sentSms": "Invite sent via text message",
+    "sentEmail": "Invite sent via email",
+    "done": "Done",
+    "cancel": "Cancel"
+  },
   "invitePm": {
     "title": "Invite PM",
     "emailLabel": "PM Email Address",

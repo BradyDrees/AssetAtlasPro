@@ -10,6 +10,7 @@ import {
   WorkOrderFilters,
   TAB_STATUS_MAP,
 } from "@/components/vendor/work-order-filters";
+import { NewJobModal } from "@/components/vendor/new-job-modal";
 
 export default function VendorJobsPage() {
   const t = useTranslations("vendor.jobs");
@@ -19,6 +20,7 @@ export default function VendorJobsPage() {
     "incoming" | "active" | "completed" | "all"
   >("incoming");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showNewJob, setShowNewJob] = useState(false);
 
   const loadWorkOrders = useCallback(async () => {
     setLoading(true);
@@ -51,9 +53,20 @@ export default function VendorJobsPage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-4">
-      <h1 className="text-2xl font-bold text-content-primary">
-        {t("title")}
-      </h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-content-primary">
+          {t("title")}
+        </h1>
+        <button
+          onClick={() => setShowNewJob(true)}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-medium transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          {t("newJob.button")}
+        </button>
+      </div>
 
       <WorkOrderFilters
         activeTab={activeTab}
@@ -101,6 +114,12 @@ export default function VendorJobsPage() {
           ))}
         </div>
       )}
+
+      <NewJobModal
+        open={showNewJob}
+        onClose={() => setShowNewJob(false)}
+        tier="pro"
+      />
     </div>
   );
 }

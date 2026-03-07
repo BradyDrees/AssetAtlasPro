@@ -102,6 +102,31 @@
       }
     }
   },
+  "clientInvite": {
+    "button": "Invitar Cliente",
+    "title": "Invitar Cliente",
+    "subtitle": "Envía un enlace de invitación para conectar un nuevo cliente",
+    "selectApp": "¿Qué aplicación debería usar?",
+    "appHome": "Atlas Home",
+    "appHomeDesc": "Para propietarios — gestionar servicios",
+    "appOperate": "Atlas Pro",
+    "appOperateDesc": "Para administradores — gestionar operaciones",
+    "name": "Nombre del Cliente",
+    "namePlaceholder": "Nombre del cliente...",
+    "deliveryMethod": "¿Cómo enviamos la invitación?",
+    "viaSms": "Enviar por Mensaje de Texto",
+    "viaEmail": "Enviar por Correo Electrónico",
+    "copyLink": "Copiar enlace de invitación",
+    "copied": "¡Copiado!",
+    "send": "Enviar Invitación",
+    "sending": "Enviando...",
+    "sent": "¡Invitación Enviada!",
+    "sentBoth": "Invitación enviada por texto y correo",
+    "sentSms": "Invitación enviada por mensaje de texto",
+    "sentEmail": "Invitación enviada por correo electrónico",
+    "done": "Listo",
+    "cancel": "Cancelar"
+  },
   "invitePm": {
     "title": "Invitar PM",
     "emailLabel": "Correo del PM",

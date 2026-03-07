@@ -22,7 +22,7 @@ export function UnscheduledJobsPanel({
   onSmartSchedule,
 }: UnscheduledJobsPanelProps) {
   const t = useTranslations("vendor.schedule");
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(jobs.length > 0);
 
   return (
     <div className="bg-surface-primary rounded-xl border border-edge-primary">

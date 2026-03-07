@@ -383,6 +383,87 @@ export async function declineWorkOrder(
 }
 
 // ============================================
+// Create Vendor Job (vendor-initiated, no PM)
+// ============================================
+
+export interface CreateVendorJobInput {
+  property_name?: string;
+  property_address?: string;
+  unit_number?: string;
+  description?: string;
+  trade?: string;
+  priority?: "normal" | "urgent" | "emergency";
+  scheduled_date?: string;
+  scheduled_time_start?: string;
+  scheduled_time_end?: string;
+  assigned_to?: string;
+  tenant_name?: string;
+  tenant_phone?: string;
+  budget_type?: string;
+  budget_amount?: number;
+}
+
+/** Create a new job directly by the vendor (not from a PM).
+ *  Owner/Admin/Office Manager only. Tech cannot create jobs. */
+export async function createVendorJob(
+  input: CreateVendorJobInput
+): Promise<{ data?: { id: string }; error?: string }> {
+  const vendorAuth = await requireVendorRole();
+
+  if (vendorAuth.role === "tech") {
+    return { error: "Not authorized to create jobs" };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  // Start as accepted (vendor is creating for themselves) or scheduled if date provided
+  const initialStatus = input.scheduled_date ? "scheduled" : "accepted";
+
+  const { data, error } = await supabase
+    .from("vendor_work_orders")
+    .insert({
+      vendor_org_id: vendorAuth.vendor_org_id,
+      status: initialStatus,
+      property_name: input.property_name || null,
+      property_address: input.property_address || null,
+      unit_number: input.unit_number || null,
+      description: input.description || null,
+      trade: input.trade || null,
+      priority: input.priority || "normal",
+      scheduled_date: input.scheduled_date || null,
+      scheduled_time_start: input.scheduled_time_start || null,
+      scheduled_time_end: input.scheduled_time_end || null,
+      assigned_to: input.assigned_to || null,
+      tenant_name: input.tenant_name || null,
+      tenant_phone: input.tenant_phone || null,
+      budget_type: input.budget_type || null,
+      budget_amount: input.budget_amount || null,
+      source_type: "vendor_direct",
+      updated_by: user.id,
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    console.error("Failed to create vendor job:", error);
+    return { error: error.message };
+  }
+
+  await logActivity({
+    entityType: "work_order",
+    entityId: data.id,
+    action: "created",
+    metadata: { source: "vendor_direct", trade: input.trade },
+  });
+
+  return { data: { id: data.id } };
+}
+
+// ============================================
 // Worker Assignment
 // ============================================
 

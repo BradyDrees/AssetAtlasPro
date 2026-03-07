@@ -153,6 +153,23 @@
     "profit": "Profit",
     "margin": "Margin"
   },
+  "newJob": {
+    "button": "New Job",
+    "title": "Create New Job",
+    "subtitle": "Create a job for your team to work on",
+    "propertyPlaceholder": "Property name...",
+    "address": "Address",
+    "addressPlaceholder": "123 Main St, City, State",
+    "descriptionPlaceholder": "Describe the work to be done...",
+    "selectTrade": "Select trade...",
+    "priority": "Priority",
+    "schedule": "Schedule (optional)",
+    "tenantPlaceholder": "Tenant name...",
+    "tenantPhone": "Phone",
+    "cancel": "Cancel",
+    "create": "Create Job",
+    "creating": "Creating..."
+  },
   "property": {
     "title": "Property Intel",
     "type": "Type",

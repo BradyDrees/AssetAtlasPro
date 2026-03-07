@@ -153,6 +153,23 @@
     "profit": "Ganancia",
     "margin": "Margen"
   },
+  "newJob": {
+    "button": "Nuevo Trabajo",
+    "title": "Crear Nuevo Trabajo",
+    "subtitle": "Crea un trabajo para tu equipo",
+    "propertyPlaceholder": "Nombre de propiedad...",
+    "address": "Dirección",
+    "addressPlaceholder": "123 Calle Principal, Ciudad, Estado",
+    "descriptionPlaceholder": "Describe el trabajo a realizar...",
+    "selectTrade": "Seleccionar oficio...",
+    "priority": "Prioridad",
+    "schedule": "Programar (opcional)",
+    "tenantPlaceholder": "Nombre del inquilino...",
+    "tenantPhone": "Teléfono",
+    "cancel": "Cancelar",
+    "create": "Crear Trabajo",
+    "creating": "Creando..."
+  },
   "property": {
     "title": "Info de Propiedad",
     "type": "Tipo",

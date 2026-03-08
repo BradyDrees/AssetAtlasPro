@@ -56,6 +56,7 @@ export async function createWorkOrder(
       scheduled_date: input.scheduled_date || null,
       scheduled_time_start: input.scheduled_time_start || null,
       scheduled_time_end: input.scheduled_time_end || null,
+      source_type: "pm",
       status: "assigned",
       updated_by: user.id,
     })

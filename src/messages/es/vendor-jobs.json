@@ -170,6 +170,35 @@
     "create": "Crear Trabajo",
     "creating": "Creando..."
   },
+  "photos": {
+    "title": "Fotos del Trabajo",
+    "all": "Todas",
+    "before": "Antes",
+    "during": "Durante",
+    "after": "Después",
+    "general": "General",
+    "noPhotos": "Sin fotos aún",
+    "uploading": "Subiendo",
+    "dropOrClick": "Arrastra fotos aquí o toca para subir",
+    "addCaption": "Agregar descripción..."
+  },
+  "tracking": {
+    "copyLink": "Copiar Enlace de Seguimiento",
+    "sendLink": "Enviar Enlace de Seguimiento",
+    "linkCopied": "¡Enlace copiado!",
+    "linkSent": "¡Enlace enviado!",
+    "noPhone": "Sin número de teléfono del inquilino",
+    "sendError": "Error al enviar enlace de seguimiento",
+    "statusTimeline": "Línea de Tiempo del Estado",
+    "eta": "Llegada Estimada",
+    "completedAt": "Completado",
+    "poweredBy": "Impulsado por Asset Atlas Pro",
+    "notFound": "Enlace de seguimiento no encontrado",
+    "notFoundDesc": "Este enlace de seguimiento es inválido o ha expirado.",
+    "vendorInfo": "Tu Proveedor de Servicio",
+    "scheduledFor": "Programado Para",
+    "jobStatus": "Estado del Trabajo"
+  },
   "property": {
     "title": "Info de Propiedad",
     "type": "Tipo",

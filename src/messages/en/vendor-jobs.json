@@ -170,6 +170,35 @@
     "create": "Create Job",
     "creating": "Creating..."
   },
+  "photos": {
+    "title": "Job Photos",
+    "all": "All",
+    "before": "Before",
+    "during": "During",
+    "after": "After",
+    "general": "General",
+    "noPhotos": "No photos yet",
+    "uploading": "Uploading",
+    "dropOrClick": "Drop photos here or tap to upload",
+    "addCaption": "Add caption..."
+  },
+  "tracking": {
+    "copyLink": "Copy Tracking Link",
+    "sendLink": "Send Tracking Link",
+    "linkCopied": "Tracking link copied!",
+    "linkSent": "Tracking link sent!",
+    "noPhone": "No tenant phone number",
+    "sendError": "Failed to send tracking link",
+    "statusTimeline": "Status Timeline",
+    "eta": "Estimated Arrival",
+    "completedAt": "Completed",
+    "poweredBy": "Powered by Asset Atlas Pro",
+    "notFound": "Tracking link not found",
+    "notFoundDesc": "This tracking link is invalid or expired.",
+    "vendorInfo": "Your Service Provider",
+    "scheduledFor": "Scheduled For",
+    "jobStatus": "Job Status"
+  },
   "property": {
     "title": "Property Intel",
     "type": "Type",

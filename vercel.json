@@ -15,6 +15,14 @@
     {
       "path": "/api/cron/qbo-nightly-sync",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/auto-followups",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/recurring-invoices",
+      "schedule": "0 8 * * *"
     }
   ]
 }

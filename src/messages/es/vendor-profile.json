@@ -154,6 +154,8 @@
     "smsStatus_en_route": "Técnico en Camino",
     "smsStatus_on_site": "Técnico Llegó",
     "smsStatus_completed": "Trabajo Completado",
+    "autoFollowups": "Seguimientos Automáticos",
+    "autoFollowupsDesc": "Enviar recordatorios automáticamente para facturas vencidas, estimaciones pendientes y solicitudes de reseña después de completar trabajos.",
     "saving": "Guardando…",
     "save": "Guardar Configuración",
     "saved": "Configuración guardada exitosamente",

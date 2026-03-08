@@ -325,6 +325,69 @@ export function pmInviteEmail(params: {
   };
 }
 
+// ─── Invoice Overdue Reminder ───
+export function invoiceOverdueEmail(params: {
+  invoiceNumber: string;
+  amount: string;
+  daysOverdue: number;
+  vendorName: string;
+}): { subject: string; html: string } {
+  const tone =
+    params.daysOverdue >= 30
+      ? { label: "Final Notice", color: "#dc2626", msg: "This invoice is significantly overdue. Please arrange payment immediately to avoid further action." }
+      : params.daysOverdue >= 14
+        ? { label: "Escalation Notice", color: "#ea580c", msg: "This invoice is now two weeks overdue. Please prioritize payment at your earliest convenience." }
+        : params.daysOverdue >= 7
+          ? { label: "Payment Reminder", color: "#d97706", msg: "This invoice is one week past due. Please arrange payment soon." }
+          : { label: "Friendly Reminder", color: "#2563eb", msg: "This invoice is a few days past due. A quick payment would be appreciated." };
+
+  return {
+    subject: `${tone.label}: Invoice #${params.invoiceNumber} — ${params.daysOverdue} days overdue`,
+    html: baseTemplate(
+      tone.label,
+      `<p>Hi,</p>
+       <p>Invoice <strong>#${params.invoiceNumber}</strong> from <strong>${params.vendorName}</strong> is <span style="color:${tone.color};font-weight:600;">${params.daysOverdue} days overdue</span>.</p>
+       <div style="background:#f9fafb;border-radius:8px;padding:16px;margin:12px 0;text-align:center;">
+         <p style="margin:0;font-size:24px;font-weight:700;color:${tone.color}">${params.amount}</p>
+       </div>
+       <p>${tone.msg}</p>`
+    ),
+  };
+}
+
+// ─── Estimate Follow-Up ───
+export function estimateFollowUpEmail(params: {
+  estimateNumber: string;
+  vendorName: string;
+}): { subject: string; html: string } {
+  return {
+    subject: `Estimate #${params.estimateNumber} awaiting your review`,
+    html: baseTemplate(
+      "Estimate Awaiting Review",
+      `<p>Hi,</p>
+       <p><strong>${params.vendorName}</strong> submitted estimate <strong>#${params.estimateNumber}</strong> and it's still awaiting your review.</p>
+       <p>Please take a moment to review and approve, request changes, or decline.</p>`
+    ),
+  };
+}
+
+// ─── Review Request (post-completion) ───
+export function reviewRequestEmail(params: {
+  homeownerName: string;
+  vendorName: string;
+  serviceSummary: string;
+}): { subject: string; html: string } {
+  return {
+    subject: `How was your ${params.serviceSummary} service?`,
+    html: baseTemplate(
+      "Rate Your Service",
+      `<p>Hi ${params.homeownerName},</p>
+       <p>Your <strong>${params.serviceSummary}</strong> work with <strong>${params.vendorName}</strong> has been completed.</p>
+       <p>We'd love to hear about your experience. Your feedback helps us improve service quality.</p>`
+    ),
+  };
+}
+
 // ─── New Chat Message (notify recipient) ───
 export function newChatMessageEmail(params: {
   recipientName: string;

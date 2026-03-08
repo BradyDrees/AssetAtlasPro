@@ -1,0 +1,59 @@
+{
+  "title": "Recurring Invoices",
+  "create": "New Recurring",
+  "createFirst": "Create your first recurring invoice",
+  "noTemplates": "No recurring invoice templates yet",
+  "backToInvoices": "Back to Invoices",
+  "templateTitle": "Template Title",
+  "titlePlaceholder": "e.g. Monthly Maintenance — Unit 101",
+  "propertyName": "Property",
+  "propertyPlaceholder": "e.g. Sunset Apartments",
+  "unitInfo": "Unit / Area",
+  "unitPlaceholder": "e.g. Unit 101",
+  "frequencyLabel": "Frequency",
+  "nextDue": "Next Due",
+  "lastGenerated": "Last Generated",
+  "lineItems": "Line Items",
+  "itemDescription": "Description...",
+  "qty": "Qty",
+  "price": "Price",
+  "addItem": "Add",
+  "taxPct": "Tax %",
+  "subtotal": "Subtotal",
+  "tax": "Tax",
+  "total": "Total",
+  "notes": "Notes",
+  "notesPlaceholder": "Optional notes for generated invoices...",
+  "items": "items",
+  "cancelBtn": "Cancel",
+  "createBtn": "Create Template",
+  "saving": "Creating...",
+  "validationError": "Title, next due date, and at least one line item are required",
+  "generateNow": "Generate Now",
+  "pause": "Pause",
+  "resume": "Resume",
+  "cancel": "Cancel",
+  "status": {
+    "active": "Active",
+    "paused": "Paused",
+    "cancelled": "Cancelled"
+  },
+  "filter": {
+    "all": "All",
+    "active": "Active",
+    "paused": "Paused",
+    "cancelled": "Cancelled"
+  },
+  "frequency": {
+    "weekly": "Weekly",
+    "biweekly": "Biweekly",
+    "monthly": "Monthly",
+    "quarterly": "Quarterly",
+    "annual": "Annual"
+  },
+  "itemType": {
+    "labor": "Labor",
+    "material": "Material",
+    "other": "Other"
+  }
+}

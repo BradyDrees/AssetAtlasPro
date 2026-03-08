@@ -6,10 +6,13 @@ import { useRouter } from "next/navigation";
 import type { WoStatus } from "@/lib/vendor/types";
 import { getValidWoTransitions } from "@/lib/vendor/state-machine";
 import { updateWorkOrderStatus } from "@/app/actions/vendor-work-orders";
+import { sendTrackingLinkSms } from "@/app/track/[token]/track-actions";
 
 interface JobActionsProps {
   woId: string;
   currentStatus: WoStatus;
+  trackingToken?: string | null;
+  tenantPhone?: string | null;
 }
 
 /** Action label keys that map to status transitions */
@@ -33,11 +36,13 @@ const STATUS_TO_BUTTON_STYLE: Partial<Record<WoStatus, string>> = {
   on_hold: "bg-gray-500 hover:bg-gray-600 text-white",
 };
 
-export function JobActions({ woId, currentStatus }: JobActionsProps) {
+export function JobActions({ woId, currentStatus, trackingToken, tenantPhone }: JobActionsProps) {
   const t = useTranslations("vendor.jobs");
   const router = useRouter();
   const [loading, setLoading] = useState<WoStatus | null>(null);
   const [showDeclineModal, setShowDeclineModal] = useState(false);
+  const [trackingCopied, setTrackingCopied] = useState(false);
+  const [sendingLink, setSendingLink] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   const [declineReason, setDeclineReason] = useState("");
@@ -120,7 +125,24 @@ export function JobActions({ woId, currentStatus }: JobActionsProps) {
     }
   }
 
-  if (validTransitions.length === 0) return null;
+  async function handleCopyTrackingLink() {
+    if (!trackingToken) return;
+    const baseUrl = window.location.origin;
+    const url = `${baseUrl}/track/${trackingToken}`;
+    await navigator.clipboard.writeText(url);
+    setTrackingCopied(true);
+    setTimeout(() => setTrackingCopied(false), 2000);
+  }
+
+  async function handleSendTrackingLink() {
+    if (!tenantPhone) return;
+    setSendingLink(true);
+    const result = await sendTrackingLinkSms(woId);
+    setSendingLink(false);
+    if (result.error) {
+      alert(result.error);
+    }
+  }
 
   return (
     <>
@@ -151,6 +173,27 @@ export function JobActions({ woId, currentStatus }: JobActionsProps) {
             </button>
           );
         })}
+
+        {/* Tracking Link Buttons */}
+        {trackingToken && (
+          <>
+            <button
+              onClick={handleCopyTrackingLink}
+              className="px-3 py-2 rounded-lg text-sm font-medium border border-edge-primary text-content-secondary hover:bg-surface-secondary transition-colors"
+            >
+              {trackingCopied ? t("tracking.linkCopied") : t("tracking.copyLink")}
+            </button>
+            {tenantPhone && (
+              <button
+                onClick={handleSendTrackingLink}
+                disabled={sendingLink}
+                className="px-3 py-2 rounded-lg text-sm font-medium border border-brand-500/30 text-brand-500 hover:bg-brand-500/10 transition-colors disabled:opacity-50"
+              >
+                {sendingLink ? "..." : t("tracking.sendLink")}
+              </button>
+            )}
+          </>
+        )}
       </div>
 
       {/* Decline Modal */}

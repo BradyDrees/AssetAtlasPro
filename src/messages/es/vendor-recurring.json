@@ -1,0 +1,59 @@
+{
+  "title": "Facturas Recurrentes",
+  "create": "Nueva Recurrente",
+  "createFirst": "Crea tu primera factura recurrente",
+  "noTemplates": "Aún no hay plantillas de facturación recurrente",
+  "backToInvoices": "Volver a Facturas",
+  "templateTitle": "Título de Plantilla",
+  "titlePlaceholder": "ej. Mantenimiento Mensual — Unidad 101",
+  "propertyName": "Propiedad",
+  "propertyPlaceholder": "ej. Apartamentos Sunset",
+  "unitInfo": "Unidad / Área",
+  "unitPlaceholder": "ej. Unidad 101",
+  "frequencyLabel": "Frecuencia",
+  "nextDue": "Próximo Vencimiento",
+  "lastGenerated": "Última Generación",
+  "lineItems": "Líneas de Artículos",
+  "itemDescription": "Descripción...",
+  "qty": "Cant.",
+  "price": "Precio",
+  "addItem": "Agregar",
+  "taxPct": "Impuesto %",
+  "subtotal": "Subtotal",
+  "tax": "Impuesto",
+  "total": "Total",
+  "notes": "Notas",
+  "notesPlaceholder": "Notas opcionales para facturas generadas...",
+  "items": "artículos",
+  "cancelBtn": "Cancelar",
+  "createBtn": "Crear Plantilla",
+  "saving": "Creando...",
+  "validationError": "Se requiere título, fecha de vencimiento y al menos un artículo",
+  "generateNow": "Generar Ahora",
+  "pause": "Pausar",
+  "resume": "Reanudar",
+  "cancel": "Cancelar",
+  "status": {
+    "active": "Activo",
+    "paused": "Pausado",
+    "cancelled": "Cancelado"
+  },
+  "filter": {
+    "all": "Todos",
+    "active": "Activos",
+    "paused": "Pausados",
+    "cancelled": "Cancelados"
+  },
+  "frequency": {
+    "weekly": "Semanal",
+    "biweekly": "Quincenal",
+    "monthly": "Mensual",
+    "quarterly": "Trimestral",
+    "annual": "Anual"
+  },
+  "itemType": {
+    "labor": "Mano de Obra",
+    "material": "Material",
+    "other": "Otro"
+  }
+}

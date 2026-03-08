@@ -154,6 +154,8 @@
     "smsStatus_en_route": "Technician En Route",
     "smsStatus_on_site": "Technician Arrived",
     "smsStatus_completed": "Job Completed",
+    "autoFollowups": "Automated Follow-Ups",
+    "autoFollowupsDesc": "Automatically send reminders for overdue invoices, pending estimates, and review requests after job completion.",
     "saving": "Saving…",
     "save": "Save Settings",
     "saved": "Settings saved successfully",

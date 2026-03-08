@@ -21,6 +21,7 @@ import { ChatPanel } from "@/components/vendor/chat-panel";
 import { WorkerAssignDropdown } from "@/components/vendor/worker-assign-dropdown";
 import { JobProfitabilityCard } from "@/components/vendor/job-profitability-card";
 import { PropertyContextCard } from "@/components/vendor/property-context-card";
+import { WoPhotoSection } from "@/components/vendor/wo-photo-section";
 import { createClient } from "@/lib/supabase/client";
 
 export default function JobDetailPage() {
@@ -161,7 +162,7 @@ export default function JobDetailPage() {
         </div>
 
         {/* Actions */}
-        <JobActions woId={wo.id} currentStatus={wo.status} />
+        <JobActions woId={wo.id} currentStatus={wo.status} trackingToken={wo.tracking_token} tenantPhone={wo.tenant_phone} />
       </div>
 
       {/* Details grid */}
@@ -391,6 +392,9 @@ export default function JobDetailPage() {
             </h3>
             <PropertyIntelPanel workOrderId={wo.id} />
           </div>
+
+          {/* Job Photos */}
+          <WoPhotoSection woId={wo.id} readOnly={!isActiveJob} />
 
           <MaterialsLog
             workOrderId={wo.id}

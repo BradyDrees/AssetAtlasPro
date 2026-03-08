@@ -338,6 +338,7 @@ export interface VendorOrgSettings {
   auto_show_estimate: boolean;
   custom_field_schemas: CustomFieldSchemas;
   sms_notification_statuses?: string[];
+  auto_followups_enabled?: boolean;
 }
 
 /** Default org settings (matches migration default) */

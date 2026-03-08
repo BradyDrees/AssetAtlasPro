@@ -63,6 +63,9 @@ export function OrgSettingsForm({ initialSettings }: OrgSettingsFormProps) {
     );
   }
 
+  // Auto Follow-Ups
+  const [autoFollowups, setAutoFollowups] = useState(initialSettings.auto_followups_enabled ?? true);
+
   // Feedback
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -143,6 +146,7 @@ export function OrgSettingsForm({ initialSettings }: OrgSettingsFormProps) {
           auto_show_estimate: autoShowEstimate,
           custom_field_schemas: initialSettings.custom_field_schemas ?? { work_orders: [], estimates: [], invoices: [] },
           sms_notification_statuses: smsStatuses,
+          auto_followups_enabled: autoFollowups,
         };
         const result = await updateOrgSettings(settings);
         if (result?.error) {
@@ -481,6 +485,37 @@ export function OrgSettingsForm({ initialSettings }: OrgSettingsFormProps) {
               </span>
             </label>
           ))}
+        </div>
+      </div>
+
+      {/* Auto Follow-Ups */}
+      <div className="rounded-xl border border-edge-primary bg-surface-primary p-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-semibold text-content-primary">
+              {t("settings.autoFollowups")}
+            </h3>
+            <p className="mt-0.5 text-xs text-content-secondary">
+              {t("settings.autoFollowupsDesc")}
+            </p>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={autoFollowups}
+            onClick={() => setAutoFollowups(!autoFollowups)}
+            className={
+              "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors " +
+              (autoFollowups ? "bg-brand-600" : "bg-surface-tertiary")
+            }
+          >
+            <span
+              className={
+                "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition-transform " +
+                (autoFollowups ? "translate-x-5" : "translate-x-0")
+              }
+            />
+          </button>
         </div>
       </div>
 

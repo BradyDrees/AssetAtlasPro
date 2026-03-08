@@ -44,6 +44,7 @@ export interface VendorWorkOrder {
   sub_status?: string | null;
   job_type?: string | null;
   custom_fields?: Record<string, unknown>;
+  tracking_token?: string | null;
   updated_by: string | null;
   created_at: string;
   updated_at: string;

@@ -1,13 +1,17 @@
-import { getOrgSettings } from "@/app/actions/vendor-profile";
+import { getOrgSettings, getBookingSettings } from "@/app/actions/vendor-profile";
 import { requireVendorRole } from "@/lib/vendor/role-helpers";
 import { OrgSettingsForm } from "@/components/vendor/org-settings-form";
+import { BookingSettingsForm } from "@/components/vendor/booking-settings-form";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 
 export default async function OrgSettingsPage() {
   const auth = await requireVendorRole();
   const t = await getTranslations("vendor.profile");
-  const { settings } = await getOrgSettings();
+  const [{ settings }, booking] = await Promise.all([
+    getOrgSettings(),
+    getBookingSettings(),
+  ]);
 
   const isAdmin = auth.role === "owner" || auth.role === "admin" || auth.role === "office_manager";
 
@@ -32,6 +36,15 @@ export default async function OrgSettingsPage() {
         <h1 className="text-2xl font-bold text-content-primary">{t("settings.title")}</h1>
       </div>
       <OrgSettingsForm initialSettings={settings} />
+      <BookingSettingsForm
+        initialSlug={booking.slug}
+        initialEnabled={booking.booking_enabled}
+        initialHeadline={booking.booking_headline}
+        initialDescription={booking.booking_description}
+        initialBookingTrades={booking.booking_trades}
+        initialApiKey={booking.api_key}
+        orgTrades={booking.trades}
+      />
     </div>
   );
 }

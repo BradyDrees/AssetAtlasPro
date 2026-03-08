@@ -52,6 +52,12 @@ export interface VendorOrganization {
   max_concurrent_jobs: number;
   trades: string[];
   status: VendorOrgStatus;
+  slug: string | null;
+  booking_enabled: boolean;
+  booking_headline: string | null;
+  booking_description: string | null;
+  booking_trades: string[] | null;
+  api_key: string | null;
   updated_by: string | null;
   created_at: string;
   updated_at: string;
@@ -236,6 +242,11 @@ export interface UpdateVendorOrgInput {
   service_radius_miles?: number;
   max_concurrent_jobs?: number;
   trades?: string[];
+  slug?: string | null;
+  booking_enabled?: boolean;
+  booking_headline?: string | null;
+  booking_description?: string | null;
+  booking_trades?: string[] | null;
 }
 
 /** Display colors for credential status */

@@ -567,3 +567,69 @@ export async function getCredentialSummary(): Promise<{
     expired: creds.filter((c) => c.status === "expired").length,
   };
 }
+
+// ============================================
+// Booking Settings
+// ============================================
+
+/** Get booking settings for the current org */
+export async function getBookingSettings(): Promise<{
+  slug: string | null;
+  booking_enabled: boolean;
+  booking_headline: string | null;
+  booking_description: string | null;
+  booking_trades: string[] | null;
+  api_key: string | null;
+  trades: string[];
+  error?: string;
+}> {
+  const auth = await requireVendorRole();
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("vendor_organizations")
+    .select("slug, booking_enabled, booking_headline, booking_description, booking_trades, api_key, trades")
+    .eq("id", auth.vendor_org_id)
+    .single();
+
+  if (error || !data) {
+    return {
+      slug: null, booking_enabled: false, booking_headline: null,
+      booking_description: null, booking_trades: null, api_key: null,
+      trades: [], error: error?.message,
+    };
+  }
+
+  return {
+    slug: data.slug,
+    booking_enabled: data.booking_enabled ?? false,
+    booking_headline: data.booking_headline,
+    booking_description: data.booking_description,
+    booking_trades: data.booking_trades,
+    api_key: data.api_key,
+    trades: data.trades ?? [],
+  };
+}
+
+/** Regenerate API key for the current org */
+export async function regenerateApiKey(): Promise<{
+  api_key: string | null;
+  error?: string;
+}> {
+  const auth = await requireVendorRole();
+  if (auth.role !== "owner" && auth.role !== "admin") {
+    return { api_key: null, error: "Only owner or admin can regenerate API key" };
+  }
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("vendor_organizations")
+    .update({ api_key: crypto.randomUUID() })
+    .eq("id", auth.vendor_org_id)
+    .select("api_key")
+    .single();
+
+  if (error) return { api_key: null, error: error.message };
+  return { api_key: data?.api_key ?? null };
+}

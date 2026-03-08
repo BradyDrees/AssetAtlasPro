@@ -19,6 +19,15 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      // Embed booking pages — allow iframe embedding
+      {
+        source: "/book/:slug/embed",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Content-Security-Policy", value: "frame-ancestors *" },
+          { key: "X-DNS-Prefetch-Control", value: "on" },
+        ],
+      },
       {
         source: "/(.*)",
         headers: [

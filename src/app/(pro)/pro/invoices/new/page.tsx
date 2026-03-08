@@ -17,6 +17,7 @@ export default function NewInvoicePage() {
   const [taxPct, setTaxPct] = useState(0);
 
   const handleCreate = async () => {
+    if (creating) return;
     setCreating(true);
     try {
       const { data, error } = await createInvoice({
@@ -26,9 +27,9 @@ export default function NewInvoicePage() {
         due_date: dueDate || undefined,
         tax_pct: taxPct,
       });
-      if (error) { alert(error); return; }
+      if (error) { alert(error); setCreating(false); return; }
       if (data) router.push(`/pro/invoices/${data.id}`);
-    } finally {
+    } catch {
       setCreating(false);
     }
   };

@@ -42,6 +42,7 @@ export default function NewEstimatePage() {
   }, []);
 
   const handleCreate = async () => {
+    if (creating) return;
     setCreating(true);
     try {
       const { data, error } = await createEstimate({
@@ -55,13 +56,14 @@ export default function NewEstimatePage() {
 
       if (error) {
         alert(error);
+        setCreating(false);
         return;
       }
 
       if (data) {
         router.push(`/pro/estimates/${data.id}`);
       }
-    } finally {
+    } catch {
       setCreating(false);
     }
   };

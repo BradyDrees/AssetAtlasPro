@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { VendorInvoice, VendorInvoiceItem } from "@/lib/vendor/invoice-types";
 import type { InvoiceItemType } from "@/lib/vendor/types";
@@ -29,6 +29,8 @@ export function InvoiceBuilder({
 }: InvoiceBuilderProps) {
   const t = useTranslations("vendor.invoices");
   const router = useRouter();
+  const pathname = usePathname();
+  const basePath = pathname.startsWith("/pro") ? "/pro" : "/vendor";
   const [isPending, startTransition] = useTransition();
 
   const [invoice, setInvoice] = useState(initialInvoice);
@@ -114,11 +116,11 @@ export function InvoiceBuilder({
         return;
       }
       setShowSubmitModal(false);
-      router.push("/vendor/invoices");
+      router.push(`${basePath}/invoices`);
     } finally {
       setSubmitting(false);
     }
-  }, [invoice.id, router]);
+  }, [invoice.id, router, basePath]);
 
   const subtotal = items.reduce((sum, i) => sum + Number(i.total || 0), 0);
   const taxPct = Number(invoice.tax_pct) || 0;
@@ -130,7 +132,7 @@ export function InvoiceBuilder({
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
-          onClick={() => router.push("/vendor/invoices")}
+          onClick={() => router.push(`${basePath}/invoices`)}
           className="p-2 text-content-tertiary hover:text-content-primary transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -288,7 +290,7 @@ export function InvoiceBuilder({
       {/* Actions */}
       <div className="flex items-center justify-end gap-3 pb-6">
         <button
-          onClick={() => router.push("/vendor/invoices")}
+          onClick={() => router.push(`${basePath}/invoices`)}
           className="px-4 py-2 text-sm text-content-secondary hover:text-content-primary transition-colors"
         >
           {t("backToList")}

@@ -345,7 +345,7 @@ export default function JobDetailPage() {
                 <ChatPanel
                   workOrderId={wo.id}
                   currentUserId={userId}
-                  role="vendor"
+                  role="pm"
                 />
               </div>
             )}

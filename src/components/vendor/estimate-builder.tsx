@@ -318,18 +318,18 @@ export function EstimateBuilder({
         return;
       }
       setShowSendModal(false);
-      router.push("/vendor/estimates");
+      router.push(`${tierPrefix}/estimates`);
     } finally {
       setSending(false);
     }
-  }, [estimate.id, router]);
+  }, [estimate.id, router, tierPrefix]);
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Back link + header */}
       <div className="flex items-center gap-3">
         <button
-          onClick={() => router.push("/vendor/estimates")}
+          onClick={() => router.push(`${tierPrefix}/estimates`)}
           className="p-2 text-content-tertiary hover:text-content-primary transition-colors"
         >
           <svg
@@ -750,7 +750,7 @@ export function EstimateBuilder({
       {isEditable && (
         <div className="flex items-center justify-end gap-3 pb-6">
           <button
-            onClick={() => router.push("/vendor/estimates")}
+            onClick={() => router.push(`${tierPrefix}/estimates`)}
             className="px-4 py-2 text-sm text-content-secondary hover:text-content-primary transition-colors"
           >
             {t("backToList")}

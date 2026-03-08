@@ -77,12 +77,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
-  // Old /vendors/* → /operate/vendors/*
-  if (pathname.startsWith("/vendors")) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/operate" + pathname;
-    return NextResponse.redirect(url, 308);
-  }
+  // Old /vendors/* → /operate/vendors/* (REMOVED — /vendors is now the public vendor directory)
 
   // Old /work-orders/* → /operate/work-orders/*
   if (pathname.startsWith("/work-orders")) {

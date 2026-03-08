@@ -2,7 +2,12 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { requireVendorRole, logActivity } from '@/lib/vendor/role-helpers';
-import { isRedirectError } from 'next/dist/client/components/redirect-error';
+// Check for Next.js redirect errors (thrown by redirect() calls)
+function isNextRedirectError(err: unknown): boolean {
+  return typeof err === 'object' && err !== null && 'digest' in err &&
+    typeof (err as Record<string, unknown>).digest === 'string' &&
+    ((err as Record<string, string>).digest.startsWith('NEXT_REDIRECT'));
+}
 import type {
   VendorExpense,
   CreateExpenseInput,
@@ -51,7 +56,7 @@ export async function getVendorExpenses(filters?: {
 
     return { data: (data as VendorExpense[]) ?? [] };
   } catch (err) {
-    if (isRedirectError(err)) throw err;
+    if (isNextRedirectError(err)) throw err;
     const message = err instanceof Error ? err.message : 'Failed to fetch expenses';
     console.error('[getVendorExpenses] Error:', message);
     return { data: [], error: message };
@@ -102,7 +107,7 @@ export async function createExpense(
 
     return { data: data as VendorExpense };
   } catch (err) {
-    if (isRedirectError(err)) throw err;
+    if (isNextRedirectError(err)) throw err;
     const message = err instanceof Error ? err.message : 'Failed to create expense';
     console.error('[createExpense] Error:', message);
     return { error: message };
@@ -139,7 +144,7 @@ export async function updateExpense(
 
     return { success: true };
   } catch (err) {
-    if (isRedirectError(err)) throw err;
+    if (isNextRedirectError(err)) throw err;
     const message = err instanceof Error ? err.message : 'Failed to update expense';
     console.error('[updateExpense] Error:', message);
     return { success: false, error: message };
@@ -185,7 +190,7 @@ export async function deleteExpense(
 
     return { success: true };
   } catch (err) {
-    if (isRedirectError(err)) throw err;
+    if (isNextRedirectError(err)) throw err;
     const message = err instanceof Error ? err.message : 'Failed to delete expense';
     console.error('[deleteExpense] Error:', message);
     return { success: false, error: message };
@@ -252,7 +257,7 @@ export async function getExpenseSummary(
 
     return { data: summaries };
   } catch (err) {
-    if (isRedirectError(err)) throw err;
+    if (isNextRedirectError(err)) throw err;
     const message = err instanceof Error ? err.message : 'Failed to fetch expense summary';
     console.error('[getExpenseSummary] Error:', message);
     return { data: [], error: message };
@@ -364,7 +369,7 @@ export async function getJobProfitability(
 
     return { data: result };
   } catch (err) {
-    if (isRedirectError(err)) throw err;
+    if (isNextRedirectError(err)) throw err;
     const message = err instanceof Error ? err.message : 'Failed to calculate profitability';
     console.error('[getJobProfitability] Error:', message);
     return { error: message };

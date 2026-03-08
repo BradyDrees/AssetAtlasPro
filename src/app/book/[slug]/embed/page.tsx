@@ -4,14 +4,7 @@ import { useState, useEffect } from "react";
 import { getBookingPageData, submitBookingRequest } from "../book-actions";
 import type { BookingPageData, BookingInput } from "../book-actions";
 import { useParams } from "next/navigation";
-
-const TRADE_LABELS: Record<string, string> = {
-  plumbing: "Plumbing", electrical: "Electrical", hvac: "HVAC",
-  general: "General Maintenance", painting: "Painting", flooring: "Flooring",
-  roofing: "Roofing", landscaping: "Landscaping", appliance: "Appliance Repair",
-  carpentry: "Carpentry", drywall: "Drywall", pest_control: "Pest Control",
-  locksmith: "Locksmith", cleaning: "Cleaning", other: "Other",
-};
+import { TRADE_LABELS } from "@/lib/vendor/directory-utils";
 
 export default function EmbedBookingPage() {
   const params = useParams();

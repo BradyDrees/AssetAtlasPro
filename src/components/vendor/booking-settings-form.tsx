@@ -3,16 +3,7 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { updateVendorOrg, regenerateApiKey } from "@/app/actions/vendor-profile";
-
-const TRADE_LABELS: Record<string, string> = {
-  plumbing: "Plumbing", electrical: "Electrical", hvac: "HVAC / Climate",
-  painting: "Painting", flooring: "Flooring", roofing: "Roofing",
-  carpentry: "Carpentry", drywall: "Drywall", appliance_repair: "Appliance Repair",
-  locksmith: "Locksmith", landscaping: "Landscaping", pest_control: "Pest Control",
-  cleaning: "Cleaning", general_maintenance: "General Maintenance",
-  demolition: "Demolition", concrete: "Concrete", fencing: "Fencing",
-  gutters: "Gutters", windows_doors: "Windows & Doors", fire_safety: "Fire Safety",
-};
+import { TRADE_LABELS, isReservedSlug } from "@/lib/vendor/directory-utils";
 
 interface BookingSettingsFormProps {
   initialSlug: string | null;
@@ -80,6 +71,11 @@ export function BookingSettingsForm({
 
     if (enabled && !cleanSlug) {
       setError("A URL slug is required when booking is enabled");
+      return;
+    }
+
+    if (cleanSlug && isReservedSlug(cleanSlug)) {
+      setError("This URL slug is reserved. Please choose a different one.");
       return;
     }
 

@@ -1,0 +1,43 @@
+{
+  "title": "Find Local Service Professionals",
+  "subtitle": "Browse verified contractors in your area",
+  "filterTrade": "Service Type",
+  "filterCity": "City",
+  "allTrades": "All Services",
+  "allCities": "All Cities",
+  "noResults": "No vendors found matching your filters.",
+  "rating": "rating",
+  "ratings": "ratings",
+  "noRatings": "New",
+  "responseTime": {
+    "same_day": "Same Day",
+    "next_day": "Next Day",
+    "within_48hrs": "Within 48hrs"
+  },
+  "emergency": "24/7 Emergency",
+  "bookNow": "Book Now",
+  "viewProfile": "View Profile",
+  "searchPlaceholder": "Search vendors...",
+  "profile": {
+    "services": "Services Offered",
+    "reviews": "Customer Reviews",
+    "noReviews": "No reviews yet",
+    "serviceArea": "Service Area",
+    "serviceAreaDesc": "{miles} mile radius from {city}, {state}",
+    "bookVendor": "Book {name}",
+    "about": "About",
+    "verified": "Verified Business",
+    "starsOutOf": "out of 5 stars",
+    "basedOn": "based on {count} reviews",
+    "verifiedCustomer": "Verified Customer"
+  },
+  "landing": {
+    "title": "{trade} in {city}, {state}",
+    "subtitle": "Find trusted {trade} professionals near you",
+    "description": "Browse {count} verified {trade} contractors in {city}, {state}. Compare ratings, read reviews, and book service online.",
+    "noVendors": "No {trade} vendors found in {city}, {state} yet.",
+    "browseAll": "Browse All Vendors",
+    "otherTrades": "Other Services in {city}",
+    "otherCities": "Find {trade} in Other Cities"
+  }
+}

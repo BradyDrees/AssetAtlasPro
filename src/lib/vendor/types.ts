@@ -58,6 +58,10 @@ export interface VendorOrganization {
   booking_description: string | null;
   booking_trades: string[] | null;
   api_key: string | null;
+  avg_rating: number;
+  total_ratings: number;
+  response_time_label: string | null;
+  emergency_available: boolean;
   updated_by: string | null;
   created_at: string;
   updated_at: string;

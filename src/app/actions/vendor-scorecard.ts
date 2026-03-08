@@ -25,7 +25,7 @@ export async function getVendorScorecard(
     // Fetch org basics
     const { data: org } = await supabase
       .from("vendor_organizations")
-      .select("name, avg_rating, total_ratings, response_time, handles_emergency")
+      .select("name, avg_rating, total_ratings, response_time_label, emergency_available")
       .eq("id", vendorOrgId)
       .single();
 
@@ -141,8 +141,8 @@ export async function getVendorScorecard(
         monthly_jobs: monthlyJobsRes.count ?? 0,
         on_time_pct: onTimePct,
         estimate_accuracy_pct: estimateAccuracyPct,
-        response_time_label: org.response_time ?? null,
-        handles_emergency: org.handles_emergency ?? false,
+        response_time_label: org.response_time_label ?? null,
+        handles_emergency: org.emergency_available ?? false,
       },
     };
   } catch (err) {

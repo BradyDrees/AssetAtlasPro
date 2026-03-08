@@ -10,6 +10,7 @@ import type {
   UpdateCredentialInput,
   UpdateVendorOrgInput,
 } from "@/lib/vendor/types";
+import { isReservedSlug } from "@/lib/vendor/directory-utils";
 
 // ============================================
 // Profile Queries
@@ -64,6 +65,18 @@ export async function updateVendorOrg(
   // Only owner/admin can edit org
   if (auth.role !== "owner" && auth.role !== "admin") {
     return { success: false, error: "Only owner or admin can update organization" };
+  }
+
+  // Backend slug validation
+  if (input.slug !== undefined && input.slug !== null) {
+    const cleanSlug = input.slug.toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+    if (cleanSlug && isReservedSlug(cleanSlug)) {
+      return { success: false, error: "This URL slug is reserved. Please choose a different one." };
+    }
+    if (cleanSlug && cleanSlug.length > 60) {
+      return { success: false, error: "URL slug must be 60 characters or fewer." };
+    }
+    input = { ...input, slug: cleanSlug || null };
   }
 
   const { error } = await supabase

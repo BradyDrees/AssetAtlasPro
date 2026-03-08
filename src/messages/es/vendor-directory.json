@@ -1,0 +1,43 @@
+{
+  "title": "Encuentra Profesionales de Servicio Locales",
+  "subtitle": "Explora contratistas verificados en tu zona",
+  "filterTrade": "Tipo de Servicio",
+  "filterCity": "Ciudad",
+  "allTrades": "Todos los Servicios",
+  "allCities": "Todas las Ciudades",
+  "noResults": "No se encontraron proveedores con esos filtros.",
+  "rating": "calificación",
+  "ratings": "calificaciones",
+  "noRatings": "Nuevo",
+  "responseTime": {
+    "same_day": "Mismo Día",
+    "next_day": "Día Siguiente",
+    "within_48hrs": "En 48 hrs"
+  },
+  "emergency": "Emergencia 24/7",
+  "bookNow": "Reservar",
+  "viewProfile": "Ver Perfil",
+  "searchPlaceholder": "Buscar proveedores...",
+  "profile": {
+    "services": "Servicios Ofrecidos",
+    "reviews": "Reseñas de Clientes",
+    "noReviews": "Sin reseñas aún",
+    "serviceArea": "Área de Servicio",
+    "serviceAreaDesc": "Radio de {miles} millas desde {city}, {state}",
+    "bookVendor": "Reservar {name}",
+    "about": "Acerca de",
+    "verified": "Negocio Verificado",
+    "starsOutOf": "de 5 estrellas",
+    "basedOn": "basado en {count} reseñas",
+    "verifiedCustomer": "Cliente Verificado"
+  },
+  "landing": {
+    "title": "{trade} en {city}, {state}",
+    "subtitle": "Encuentra profesionales de {trade} confiables cerca de ti",
+    "description": "Explora {count} contratistas de {trade} verificados en {city}, {state}. Compara calificaciones, lee reseñas y reserva servicio en línea.",
+    "noVendors": "No hay proveedores de {trade} en {city}, {state} aún.",
+    "browseAll": "Ver Todos los Proveedores",
+    "otherTrades": "Otros Servicios en {city}",
+    "otherCities": "Encontrar {trade} en Otras Ciudades"
+  }
+}

@@ -34,6 +34,7 @@ export default getRequestConfig(async () => {
   const vendorIntegrations = (await import(`../messages/${locale}/vendor-integrations.json`)).default;
   const vendorRecurring = (await import(`../messages/${locale}/vendor-recurring.json`)).default;
   const vendorBooking = (await import(`../messages/${locale}/vendor-booking.json`)).default;
+  const vendorDirectory = (await import(`../messages/${locale}/vendor-directory.json`)).default;
 
   // Shared messaging module (used across Pro, Vendor, Home, Operate)
   const messaging = (await import(`../messages/${locale}/messaging.json`)).default;
@@ -73,6 +74,7 @@ export default getRequestConfig(async () => {
       integrations: vendorIntegrations,
       recurring: vendorRecurring,
       booking: vendorBooking,
+      directory: vendorDirectory,
     },
     home: {
       nav: homeNav,

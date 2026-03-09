@@ -100,5 +100,13 @@
   "goToProperty": "Ir a Propiedad",
   "systemsBannerTitle": "Ayude a su proveedor a llegar preparado",
   "systemsBannerBody": "Agregue los detalles y fotos de sus sistemas en su página de Propiedad para que los proveedores sepan con qué están trabajando.",
-  "systemsBannerLink": "Ir a Propiedad"
+  "systemsBannerLink": "Ir a Propiedad",
+  "selectTier": "Seleccione un nivel de precio",
+  "selectTierRequired": "Seleccione un nivel antes de aprobar",
+  "selectedTierLabel": "Nivel seleccionado",
+  "tier_good": "Bueno",
+  "tier_better": "Mejor",
+  "tier_best": "Óptimo",
+  "noEstimateYet": "Aún no se ha recibido presupuesto",
+  "estimateNumber": "Presupuesto"
 }

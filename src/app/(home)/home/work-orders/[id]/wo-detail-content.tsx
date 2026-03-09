@@ -5,6 +5,24 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { rateWorkOrder } from "@/app/actions/home-work-orders";
+import { EstimateApproval } from "@/components/home/estimate-approval";
+import { TierComparison } from "@/components/vendor/tier-comparison";
+
+interface EstimateData {
+  id: string;
+  estimate_number: string;
+  total: number;
+  status: string;
+  tier_mode: string;
+  selected_tier: string | null;
+  sections: Array<{
+    id: string;
+    title: string;
+    tier: string | null;
+    subtotal: number;
+    items: Array<{ description: string; quantity: number; unit_price: number; total: number }>;
+  }>;
+}
 
 interface WorkOrder {
   id: string;
@@ -55,7 +73,7 @@ interface WoPhoto {
   url: string | null;
 }
 
-export function WorkOrderDetailContent({ workOrder, photos, vendorOrg, googleReviewUrl }: { workOrder: WorkOrder; photos: WoPhoto[]; vendorOrg?: VendorOrgInfo | null; googleReviewUrl?: string }) {
+export function WorkOrderDetailContent({ workOrder, photos, vendorOrg, googleReviewUrl, estimateData }: { workOrder: WorkOrder; photos: WoPhoto[]; vendorOrg?: VendorOrgInfo | null; googleReviewUrl?: string; estimateData?: EstimateData | null }) {
   const t = useTranslations("home.workOrders");
   const router = useRouter();
   const [rating, setRating] = useState(0);
@@ -228,11 +246,43 @@ export function WorkOrderDetailContent({ workOrder, photos, vendorOrg, googleRev
         </div>
       </div>
 
-      {/* Estimate (placeholder) */}
-      <div className="bg-surface-primary rounded-xl border border-edge-primary p-6">
-        <h2 className="text-lg font-semibold text-content-primary mb-4">{t("estimate")}</h2>
-        <p className="text-sm text-content-quaternary text-center py-4">{t("paymentNote")}</p>
-      </div>
+      {/* Estimate */}
+      {estimateData ? (
+        <div className="space-y-4">
+          {/* Tier Comparison for tiered estimates */}
+          {estimateData.tier_mode && estimateData.tier_mode !== "none" && (
+            <TierComparison sections={estimateData.sections.map((s) => ({
+              ...s,
+              name: s.title,
+              items: s.items.map((item, idx) => ({ ...item, id: `${s.id}-${idx}` })),
+            }))} />
+          )}
+
+          {/* Selected tier badge if already approved */}
+          {estimateData.status === "approved" && estimateData.selected_tier && (
+            <div className="bg-surface-primary rounded-xl border border-edge-primary p-4 flex items-center gap-2">
+              <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="text-sm text-content-primary font-medium">
+                {t("selectedTierLabel")}: {t(`tier_${estimateData.selected_tier}`)}
+              </span>
+            </div>
+          )}
+
+          {/* Approval widget (shows approved state or approval form) */}
+          <EstimateApproval
+            woId={workOrder.id}
+            estimate={estimateData}
+            poolBalance={0}
+          />
+        </div>
+      ) : (
+        <div className="bg-surface-primary rounded-xl border border-edge-primary p-6">
+          <h2 className="text-lg font-semibold text-content-primary mb-4">{t("estimate")}</h2>
+          <p className="text-sm text-content-quaternary text-center py-4">{t("noEstimateYet")}</p>
+        </div>
+      )}
 
       {/* Rating (show for completed WOs) */}
       {isCompleted && workOrder.vendor_org_id && (

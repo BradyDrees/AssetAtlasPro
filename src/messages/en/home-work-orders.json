@@ -100,5 +100,13 @@
   "goToProperty": "Go to Property",
   "systemsBannerTitle": "Help your vendor arrive prepared",
   "systemsBannerBody": "Add your system details and photos on your Property page so vendors know what they're working with.",
-  "systemsBannerLink": "Go to Property"
+  "systemsBannerLink": "Go to Property",
+  "selectTier": "Select a pricing tier",
+  "selectTierRequired": "Please select a tier before approving",
+  "selectedTierLabel": "Selected tier",
+  "tier_good": "Good",
+  "tier_better": "Better",
+  "tier_best": "Best",
+  "noEstimateYet": "No estimate received yet",
+  "estimateNumber": "Estimate"
 }

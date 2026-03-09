@@ -542,6 +542,7 @@ export async function getHomeWorkOrder(id: string) {
 export async function approveEstimate(input: {
   woId: string;
   estimateId: string;
+  selectedTier?: "good" | "better" | "best";
 }): Promise<{
   success: boolean;
   clientSecret?: string | null;
@@ -566,10 +567,10 @@ export async function approveEstimate(input: {
 
     if (!wo) return { success: false, error: "Work order not found" };
 
-    // Get the estimate total
+    // Get the estimate total + tier mode
     const { data: estimate } = await supabase
       .from("vendor_estimates")
-      .select("id, total, status")
+      .select("id, total, status, tier_mode")
       .eq("id", input.estimateId)
       .single();
 
@@ -577,7 +578,24 @@ export async function approveEstimate(input: {
     if (estimate.status === "approved")
       return { success: false, error: "Estimate already approved" };
 
-    const totalAmount = Number(estimate.total) || 0;
+    // Require tier selection on tiered estimates
+    const isTiered = estimate.tier_mode && estimate.tier_mode !== "none";
+    if (isTiered && !input.selectedTier) {
+      return { success: false, error: "Tier selection required for tiered estimates" };
+    }
+
+    // For tiered estimates, compute total from selected tier's sections/items
+    let totalAmount = Number(estimate.total) || 0;
+    if (isTiered && input.selectedTier) {
+      const { data: sections } = await supabase
+        .from("vendor_estimate_sections")
+        .select("subtotal, tier")
+        .eq("estimate_id", input.estimateId)
+        .eq("tier", input.selectedTier);
+      if (sections && sections.length > 0) {
+        totalAmount = sections.reduce((sum, s) => sum + (Number(s.subtotal) || 0), 0);
+      }
+    }
     const feePct = Number(wo.platform_fee_pct) || 5;
     const platformFee = Math.round(totalAmount * (feePct / 100) * 100) / 100;
 
@@ -657,10 +675,14 @@ export async function approveEstimate(input: {
       }
     }
 
-    // Approve the estimate
+    // Approve the estimate (with selected tier if tiered)
     await supabase
       .from("vendor_estimates")
-      .update({ status: "approved", updated_at: new Date().toISOString() })
+      .update({
+        status: "approved",
+        ...(input.selectedTier ? { selected_tier: input.selectedTier } : {}),
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", input.estimateId);
 
     // Update WO with financial details

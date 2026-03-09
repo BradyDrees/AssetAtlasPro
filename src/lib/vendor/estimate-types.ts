@@ -45,6 +45,7 @@ export interface VendorEstimate {
   custom_fields?: Record<string, unknown>;
   approval_required?: boolean;
   approved_by?: string | null;
+  selected_tier: EstimateTier | null;
   updated_by: string | null;
   created_at: string;
   updated_at: string;

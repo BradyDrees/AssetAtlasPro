@@ -5,6 +5,7 @@ import {
   invoiceOverdueEmail,
   estimateFollowUpEmail,
   reviewRequestEmail,
+  reviewReminderEmail,
 } from "@/lib/email/templates";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -190,21 +191,20 @@ export async function GET(req: NextRequest) {
     results.errors.push(`Estimate reminders: ${err instanceof Error ? err.message : "Unknown error"}`);
   }
 
-  // ─── 3. Review Requests (completed jobs 24h+ ago) ───
+  // ─── 3. Review Request Cascade (3-tier: 24h, 7d, 14d post-completion) ───
   try {
-    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
-
-    const { data: completedWos } = await supabase
+    // Find review-eligible WOs: post-service statuses, has homeowner, under 3 contacts, no existing rating
+    const { data: candidateWos } = await supabase
       .from("vendor_work_orders")
-      .select("id, vendor_org_id, homeowner_id, trade, description, completed_at")
-      .eq("status", "completed")
+      .select("id, vendor_org_id, homeowner_id, trade, description, completed_at, review_requested_at, review_reminder_count, review_last_contact_at")
+      .in("status", ["completed", "invoiced", "paid"])
       .not("homeowner_id", "is", null)
-      .lt("completed_at", oneDayAgo);
+      .lt("review_reminder_count", 3);
 
-    for (const wo of completedWos ?? []) {
-      if (!wo.homeowner_id) continue;
+    for (const wo of candidateWos ?? []) {
+      if (!wo.homeowner_id || !wo.completed_at) continue;
 
-      // Check if a review already exists
+      // Check if a review already exists — skip entirely
       const { data: existingRating } = await supabase
         .from("vendor_ratings")
         .select("id")
@@ -213,53 +213,86 @@ export async function GET(req: NextRequest) {
 
       if (existingRating) continue;
 
-      // Check if already notified about review for this WO
-      const { data: existingNotif } = await supabase
-        .from("vendor_notifications")
-        .select("id")
-        .eq("user_id", wo.homeowner_id)
-        .eq("type", "review_request")
-        .eq("reference_id", wo.id)
-        .maybeSingle();
+      const completedAt = new Date(wo.completed_at);
+      const hoursSinceCompletion = (now.getTime() - completedAt.getTime()) / (1000 * 60 * 60);
+      const count = wo.review_reminder_count ?? 0;
 
-      if (existingNotif) continue;
+      // Determine which tier this WO qualifies for based on absolute time from completed_at
+      let tier: 1 | 2 | 3 | null = null;
+      if (count === 0 && hoursSinceCompletion >= 24) tier = 1;
+      else if (count === 1 && hoursSinceCompletion >= 7 * 24) tier = 2;
+      else if (count === 2 && hoursSinceCompletion >= 14 * 24) tier = 3;
+
+      if (!tier) continue;
+
+      // 48h debounce: skip if last contact was within 48 hours
+      if (wo.review_last_contact_at) {
+        const hoursSinceLastContact = (now.getTime() - new Date(wo.review_last_contact_at).getTime()) / (1000 * 60 * 60);
+        if (hoursSinceLastContact < 48) continue;
+      }
 
       // Get homeowner email
       const { data: homeProfile } = await supabase
         .from("profiles")
-        .select("email, display_name")
+        .select("email, full_name")
         .eq("id", wo.homeowner_id)
         .single();
 
+      const { data: vendorOrg } = await supabase
+        .from("vendor_organizations")
+        .select("name")
+        .eq("id", wo.vendor_org_id)
+        .single();
+
+      const serviceName = wo.trade || wo.description || "service";
+      const homeownerName = homeProfile?.full_name || "there";
+      const vendorName = vendorOrg?.name ?? "your vendor";
+
+      // Send email (all tiers)
       if (homeProfile?.email) {
-        const { data: vendorOrg } = await supabase
-          .from("vendor_organizations")
-          .select("name")
-          .eq("id", wo.vendor_org_id)
-          .single();
+        const email = tier === 1
+          ? reviewRequestEmail({ homeownerName, vendorName, serviceSummary: serviceName })
+          : reviewReminderEmail({ homeownerName, vendorName, serviceSummary: serviceName });
 
-        const email = reviewRequestEmail({
-          homeownerName: homeProfile.display_name || "there",
-          vendorName: vendorOrg?.name ?? "your vendor",
-          serviceSummary: wo.trade || wo.description || "service",
-        });
-
-        await sendEmail({
-          to: homeProfile.email,
-          subject: email.subject,
-          html: email.html,
-        });
+        try {
+          await sendEmail({ to: homeProfile.email, subject: email.subject, html: email.html });
+        } catch {
+          // Email failure still increments count (intentional — prevents infinite retry loops)
+        }
       }
 
-      // In-app notification
-      await supabase.from("vendor_notifications").insert({
-        user_id: wo.homeowner_id,
-        type: "review_request",
-        title: "How was the service?",
-        body: `Please rate your ${wo.trade || "service"} experience`,
-        reference_type: "work_order",
-        reference_id: wo.id,
-      });
+      // In-app notification only on Tier 1
+      if (tier === 1) {
+        // Dedupe guard: check if review_request notification already exists for this WO
+        const { data: existingNotif } = await supabase
+          .from("vendor_notifications")
+          .select("id")
+          .eq("user_id", wo.homeowner_id)
+          .eq("type", "review_request")
+          .eq("reference_id", wo.id)
+          .maybeSingle();
+
+        if (!existingNotif) {
+          await supabase.from("vendor_notifications").insert({
+            user_id: wo.homeowner_id,
+            type: "review_request",
+            title: "How was the service?",
+            body: `Please rate your ${serviceName} experience`,
+            reference_type: "work_order",
+            reference_id: wo.id,
+          });
+        }
+      }
+
+      // Update cascade tracking columns
+      await supabase
+        .from("vendor_work_orders")
+        .update({
+          ...(count === 0 ? { review_requested_at: now.toISOString() } : {}),
+          review_last_contact_at: now.toISOString(),
+          review_reminder_count: count + 1,
+        })
+        .eq("id", wo.id);
 
       results.reviewRequests++;
     }

@@ -55,12 +55,13 @@ interface WoPhoto {
   url: string | null;
 }
 
-export function WorkOrderDetailContent({ workOrder, photos, vendorOrg }: { workOrder: WorkOrder; photos: WoPhoto[]; vendorOrg?: VendorOrgInfo | null }) {
+export function WorkOrderDetailContent({ workOrder, photos, vendorOrg, googleReviewUrl }: { workOrder: WorkOrder; photos: WoPhoto[]; vendorOrg?: VendorOrgInfo | null; googleReviewUrl?: string }) {
   const t = useTranslations("home.workOrders");
   const router = useRouter();
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
+  const [showGooglePrompt, setShowGooglePrompt] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const currentIdx = TIMELINE_STATUSES.indexOf(workOrder.status);
@@ -77,6 +78,9 @@ export function WorkOrderDetailContent({ workOrder, photos, vendorOrg }: { workO
       });
       if (result.success) {
         setRatingSubmitted(true);
+        if (result.created && googleReviewUrl) {
+          setShowGooglePrompt(true);
+        }
       }
     });
   };
@@ -235,7 +239,30 @@ export function WorkOrderDetailContent({ workOrder, photos, vendorOrg }: { workO
         <div className="bg-surface-primary rounded-xl border border-edge-primary p-6">
           <h2 className="text-lg font-semibold text-content-primary mb-4">{t("rateVendor")}</h2>
           {ratingSubmitted ? (
-            <p className="text-sm text-green-400 text-center py-4">{t("ratingSubmitted")}</p>
+            <div className="space-y-4">
+              <p className="text-sm text-green-400 text-center py-2">{t("ratingSubmitted")}</p>
+              {showGooglePrompt && (
+                <div className="bg-surface-secondary rounded-lg border border-edge-secondary p-4 text-center space-y-3">
+                  <p className="text-sm text-content-secondary">{t("googleReviewPrompt")}</p>
+                  <div className="flex justify-center gap-3">
+                    <a
+                      href={googleReviewUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+                    >
+                      {t("leaveGoogleReview")}
+                    </a>
+                    <button
+                      onClick={() => setShowGooglePrompt(false)}
+                      className="px-4 py-2 text-sm text-content-quaternary hover:text-content-secondary transition-colors"
+                    >
+                      {t("noThanks")}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
             <div className="space-y-4">
               {/* Stars */}

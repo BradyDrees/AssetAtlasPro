@@ -691,7 +691,7 @@ export async function rateWorkOrder(input: {
   vendor_org_id: string;
   rating: number;
   review?: string;
-}): Promise<{ success: boolean; error?: string }> {
+}): Promise<{ success: boolean; created?: boolean; error?: string }> {
   try {
     const supabase = await createClient();
     const {
@@ -702,6 +702,28 @@ export async function rateWorkOrder(input: {
       return { success: false, error: "Not authenticated" };
     }
 
+    // Check if a rating already exists for this WO
+    const { data: existing } = await supabase
+      .from("vendor_ratings")
+      .select("id")
+      .eq("work_order_id", input.work_order_id)
+      .maybeSingle();
+
+    if (existing) {
+      // Update existing rating
+      const { error } = await supabase
+        .from("vendor_ratings")
+        .update({
+          rating: input.rating,
+          review: input.review ?? null,
+        })
+        .eq("id", existing.id);
+
+      if (error) return { success: false, error: error.message };
+      return { success: true, created: false };
+    }
+
+    // Insert new rating
     const { error } = await supabase.from("vendor_ratings").insert({
       work_order_id: input.work_order_id,
       homeowner_id: user.id,
@@ -714,7 +736,7 @@ export async function rateWorkOrder(input: {
       return { success: false, error: error.message };
     }
 
-    return { success: true };
+    return { success: true, created: true };
   } catch (err) {
     return {
       success: false,

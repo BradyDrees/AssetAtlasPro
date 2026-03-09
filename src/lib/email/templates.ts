@@ -371,7 +371,7 @@ export function estimateFollowUpEmail(params: {
   };
 }
 
-// ─── Review Request (post-completion) ───
+// ─── Review Request (post-completion, Tier 1) ───
 export function reviewRequestEmail(params: {
   homeownerName: string;
   vendorName: string;
@@ -383,7 +383,28 @@ export function reviewRequestEmail(params: {
       "Rate Your Service",
       `<p>Hi ${params.homeownerName},</p>
        <p>Your <strong>${params.serviceSummary}</strong> work with <strong>${params.vendorName}</strong> has been completed.</p>
-       <p>We'd love to hear about your experience. Your feedback helps us improve service quality.</p>`
+       <p>We'd love to hear about your experience. Your feedback helps us improve service quality and helps other homeowners find great vendors.</p>`,
+      "https://assetatlaspro.com/login",
+      "Leave a Review"
+    ),
+  };
+}
+
+// ─── Review Reminder (Tiers 2 & 3) ───
+export function reviewReminderEmail(params: {
+  homeownerName: string;
+  vendorName: string;
+  serviceSummary: string;
+}): { subject: string; html: string } {
+  return {
+    subject: `Quick reminder: How was your ${params.serviceSummary} service?`,
+    html: baseTemplate(
+      "We'd Love Your Feedback",
+      `<p>Hi ${params.homeownerName},</p>
+       <p>Just a friendly reminder — we'd appreciate your feedback on the <strong>${params.serviceSummary}</strong> work done by <strong>${params.vendorName}</strong>.</p>
+       <p>It only takes a moment and helps the community.</p>`,
+      "https://assetatlaspro.com/login",
+      "Leave a Review"
     ),
   };
 }

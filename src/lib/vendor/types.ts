@@ -354,6 +354,7 @@ export interface VendorOrgSettings {
   custom_field_schemas: CustomFieldSchemas;
   sms_notification_statuses?: string[];
   auto_followups_enabled?: boolean;
+  google_review_url?: string;
 }
 
 /** Default org settings (matches migration default) */

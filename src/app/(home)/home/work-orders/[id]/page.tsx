@@ -22,11 +22,11 @@ export default async function WorkOrderDetailPage({ params }: { params: Promise<
   }
 
   // Fetch vendor org details if assigned
-  let vendorOrg: { id: string; name: string; avg_rating: number; total_ratings: number; logo_url: string | null } | null = null;
+  let vendorOrg: { id: string; name: string; avg_rating: number; total_ratings: number; logo_url: string | null; settings: Record<string, unknown> | null } | null = null;
   if (workOrder.vendor_org_id) {
     const { data } = await supabase
       .from("vendor_organizations")
-      .select("id, name, avg_rating, total_ratings, logo_url")
+      .select("id, name, avg_rating, total_ratings, logo_url, settings")
       .eq("id", workOrder.vendor_org_id)
       .single();
     vendorOrg = data;
@@ -34,5 +34,10 @@ export default async function WorkOrderDetailPage({ params }: { params: Promise<
 
   const photos = await getWorkOrderPhotos(id);
 
-  return <WorkOrderDetailContent workOrder={workOrder} photos={photos} vendorOrg={vendorOrg} />;
+  // Extract google review URL from vendor settings
+  const googleReviewUrl = typeof vendorOrg?.settings?.google_review_url === "string"
+    ? vendorOrg.settings.google_review_url
+    : undefined;
+
+  return <WorkOrderDetailContent workOrder={workOrder} photos={photos} vendorOrg={vendorOrg} googleReviewUrl={googleReviewUrl} />;
 }

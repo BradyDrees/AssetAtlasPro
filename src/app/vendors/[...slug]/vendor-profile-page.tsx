@@ -165,6 +165,23 @@ export function VendorProfilePage({ vendor, reviews }: VendorProfilePageProps) {
                     <p className="text-sm text-gray-600">{r.review}</p>
                   )}
                   <p className="text-xs text-gray-400 mt-1">Verified Customer</p>
+                  {r.vendor_response && (
+                    <div className="mt-3 ml-4 pl-3 border-l-2 border-green-200">
+                      <p className="text-xs font-medium text-green-700 mb-0.5">
+                        Response from {vendor.name}
+                      </p>
+                      <p className="text-sm text-gray-600">{r.vendor_response}</p>
+                      {r.vendor_responded_at && (
+                        <p className="text-xs text-gray-400 mt-0.5">
+                          {new Date(r.vendor_responded_at).toLocaleDateString(undefined, {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

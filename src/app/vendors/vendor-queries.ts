@@ -34,6 +34,8 @@ export interface VendorReview {
   rating: number;
   review: string | null;
   created_at: string;
+  vendor_response: string | null;
+  vendor_responded_at: string | null;
 }
 
 const DIRECTORY_SELECT =
@@ -96,7 +98,7 @@ export async function getVendorReviews(vendorOrgId: string, limit = 20): Promise
 
   const { data } = await supabase
     .from("vendor_ratings")
-    .select("id, rating, review, created_at")
+    .select("id, rating, review, created_at, vendor_response, vendor_responded_at")
     .eq("vendor_org_id", vendorOrgId)
     .order("created_at", { ascending: false })
     .limit(limit);

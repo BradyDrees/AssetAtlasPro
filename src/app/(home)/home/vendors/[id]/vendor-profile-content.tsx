@@ -27,6 +27,8 @@ interface Rating {
   rating: number;
   review: string | null;
   created_at: string;
+  vendor_response: string | null;
+  vendor_responded_at: string | null;
 }
 
 interface VendorProfileContentProps {
@@ -184,6 +186,19 @@ export function VendorProfileContent({ vendor, ratings, initialSaved, initialPre
                   <span className="text-xs text-content-quaternary">{new Date(r.created_at).toLocaleDateString()}</span>
                 </div>
                 {r.review && <p className="text-sm text-content-secondary mt-1">{r.review}</p>}
+                {r.vendor_response && (
+                  <div className="mt-2 ml-4 pl-3 border-l-2 border-brand-400/30">
+                    <p className="text-xs font-medium text-brand-400 mb-0.5">
+                      {vendor.name}
+                    </p>
+                    <p className="text-sm text-content-tertiary">{r.vendor_response}</p>
+                    {r.vendor_responded_at && (
+                      <p className="text-xs text-content-quaternary mt-0.5">
+                        {new Date(r.vendor_responded_at).toLocaleDateString()}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>

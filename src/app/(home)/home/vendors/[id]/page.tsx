@@ -20,7 +20,7 @@ export default async function VendorProfilePage({ params }: { params: Promise<{ 
   // Get ratings
   const { data: ratings } = await supabase
     .from("vendor_ratings")
-    .select("id, rating, review, created_at")
+    .select("id, rating, review, created_at, vendor_response, vendor_responded_at")
     .eq("vendor_org_id", id)
     .order("created_at", { ascending: false })
     .limit(10);

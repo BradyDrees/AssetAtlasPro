@@ -8,14 +8,17 @@ import { DashboardUpcomingJobs } from "@/components/vendor/dashboard-upcoming-jo
 import { DashboardRevenueBalance } from "@/components/vendor/dashboard-revenue-balance";
 import { DashboardExpensesWidget } from "@/components/vendor/dashboard-expenses-widget";
 import { DashboardTechScoreboard } from "@/components/vendor/dashboard-tech-scoreboard";
+import { DashboardReviewsWidget } from "@/components/vendor/dashboard-reviews-widget";
+import { getReviewAnalytics } from "@/app/actions/vendor-reviews";
 import Link from "next/link";
 
 export default async function VendorDashboardPage() {
   const dt = await getTranslations("vendor.dashboard");
 
-  const [dashData, credSummary] = await Promise.all([
+  const [dashData, credSummary, reviewAnalytics] = await Promise.all([
     getDashboardData("month"),
     getCredentialSummary(),
+    getReviewAnalytics(),
   ]);
 
   const { stats, incoming, upcomingJobs, revenueBalance, expensesSummary, techScoreboard } = dashData;
@@ -98,6 +101,11 @@ export default async function VendorDashboardPage() {
         <DashboardExpensesWidget data={expensesSummary} />
         <DashboardTechScoreboard scores={techScoreboard} />
       </div>
+
+      {/* Reviews widget */}
+      {reviewAnalytics.data && (
+        <DashboardReviewsWidget analytics={reviewAnalytics.data} />
+      )}
 
       {/* Bottom section links */}
       <div className="grid lg:grid-cols-2 gap-6">

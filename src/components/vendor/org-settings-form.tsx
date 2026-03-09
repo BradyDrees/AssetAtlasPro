@@ -66,6 +66,23 @@ export function OrgSettingsForm({ initialSettings }: OrgSettingsFormProps) {
   // Auto Follow-Ups
   const [autoFollowups, setAutoFollowups] = useState(initialSettings.auto_followups_enabled ?? true);
 
+  // Google Review URL
+  const [googleReviewUrl, setGoogleReviewUrl] = useState(initialSettings.google_review_url || "");
+  const [googleUrlError, setGoogleUrlError] = useState("");
+
+  function validateGoogleUrl(url: string): boolean {
+    if (!url.trim()) return true; // empty = valid (clears it)
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== "https:") return false;
+      if (!/^(.*\.)?google\.(com|[a-z]{2}|co\.[a-z]{2})$/.test(parsed.hostname)) return false;
+      if (url.length > 500) return false;
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   // Feedback
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -147,6 +164,7 @@ export function OrgSettingsForm({ initialSettings }: OrgSettingsFormProps) {
           custom_field_schemas: initialSettings.custom_field_schemas ?? { work_orders: [], estimates: [], invoices: [] },
           sms_notification_statuses: smsStatuses,
           auto_followups_enabled: autoFollowups,
+          google_review_url: googleReviewUrl.trim() || undefined,
         };
         const result = await updateOrgSettings(settings);
         if (result?.error) {
@@ -517,6 +535,33 @@ export function OrgSettingsForm({ initialSettings }: OrgSettingsFormProps) {
             />
           </button>
         </div>
+      </div>
+
+      {/* Google Review Link */}
+      <div className="rounded-xl border border-edge-primary bg-surface-primary p-5">
+        <h3 className="mb-1 text-sm font-semibold text-content-primary">
+          {t("settings.googleReviewUrl")}
+        </h3>
+        <p className="mb-3 text-xs text-content-secondary">
+          {t("settings.googleReviewUrlDesc")}
+        </p>
+        <input
+          type="url"
+          className={inputClass}
+          value={googleReviewUrl}
+          onChange={(e) => {
+            setGoogleReviewUrl(e.target.value);
+            if (e.target.value && !validateGoogleUrl(e.target.value)) {
+              setGoogleUrlError(t("settings.googleReviewUrlInvalid"));
+            } else {
+              setGoogleUrlError("");
+            }
+          }}
+          placeholder="https://g.page/r/..."
+        />
+        {googleUrlError && (
+          <p className="mt-1 text-xs text-red-500">{googleUrlError}</p>
+        )}
       </div>
 
       {/* Save */}

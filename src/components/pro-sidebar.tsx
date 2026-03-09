@@ -105,6 +105,39 @@ function ChatBubbleIcon() {
   );
 }
 
+function PricebookIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+    </svg>
+  );
+}
+
+function TemplatesIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 15h6m-6-3h6" />
+    </svg>
+  );
+}
+
+function AgreementsIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
+    </svg>
+  );
+}
+
+function PhoneIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+    </svg>
+  );
+}
+
 // Team icon for nav
 function TeamIcon() {
   return (
@@ -156,13 +189,18 @@ export function ProSidebar({ user, hasPmRole = false, hasOwnerRole = false, vend
           { href: "/pro", label: vt("home"), icon: <HomeIcon />, matchExact: true },
           { href: "/pro/jobs", label: vt("jobs"), icon: <BriefcaseIcon />, matchExact: false },
           { href: "/pro/schedule", label: vt("schedule"), icon: <CalendarIcon />, matchExact: false },
-          { href: "/pro/estimates", label: vt("estimates"), icon: <CalculatorIcon />, matchExact: false },
-          { href: "/pro/invoices", label: vt("invoices"), icon: <ReceiptIcon />, matchExact: false },
+          { href: "/pro/estimates", label: vt("estimates"), icon: <CalculatorIcon />, matchExact: true },
+          { href: "/pro/estimates/pricebook", label: vt("pricebook"), icon: <PricebookIcon />, matchExact: false },
+          { href: "/pro/estimates/templates", label: vt("templates"), icon: <TemplatesIcon />, matchExact: false },
+          { href: "/pro/invoices", label: vt("invoices"), icon: <ReceiptIcon />, matchExact: true },
+          { href: "/pro/invoices/recurring", label: vt("recurring"), icon: <ReceiptIcon />, matchExact: false },
+          { href: "/pro/agreements", label: vt("agreements"), icon: <AgreementsIcon />, matchExact: false },
           { href: "/pro/clients", label: vt("clients"), icon: <UsersIcon />, matchExact: false },
           { href: "/pro/reports", label: vt("reports"), icon: <ChartBarIcon />, matchExact: false },
           { href: "/pro/expenses", label: vt("expenses"), icon: <BanknotesIcon />, matchExact: false },
           { href: "/pro/team", label: vt("team"), icon: <TeamIcon />, matchExact: false },
           { href: "/pro/inbox", label: vt("messages"), icon: <ChatBubbleIcon />, matchExact: false, showUnreadBadge: true },
+          { href: "/pro/messages", label: vt("sms"), icon: <PhoneIcon />, matchExact: false },
           { href: "/pro/profile", label: vt("profile"), icon: <UserCircleIcon />, matchExact: false },
         ];
 

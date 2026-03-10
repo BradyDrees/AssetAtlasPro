@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { ProjectStatusControls } from "@/components/project-status-controls";
 import { ExportButtons } from "@/components/export-buttons";
+import { OnboardButton } from "@/components/acquire/onboard-button";
 import type { ProjectStatus } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -349,11 +350,17 @@ export default async function ReviewPage({
       </div>
 
       {/* Status Controls */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 flex-wrap">
         <ProjectStatusControls
           projectId={projectId}
           currentStatus={project.status as ProjectStatus}
           warnings={warnings}
+        />
+        <OnboardButton
+          projectId={projectId}
+          projectName={project.name}
+          projectAddress={project.address ?? ""}
+          isComplete={project.status === "COMPLETE"}
         />
         <Link
           href={`/projects/${projectId}`}

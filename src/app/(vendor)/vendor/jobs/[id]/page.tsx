@@ -421,6 +421,8 @@ export default function JobDetailPage() {
             workOrderId={wo.id}
             timeEntries={timeEntries}
             readOnly={!isActiveJob}
+            propertyLat={wo.property_lat}
+            propertyLng={wo.property_lng}
           />
         </div>
       </div>

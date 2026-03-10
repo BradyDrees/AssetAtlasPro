@@ -110,7 +110,15 @@
     "duration": "Duración",
     "hourlyRate": "Tarifa por Hora",
     "noEntries": "Sin registros de tiempo",
-    "minutes": "min"
+    "minutes": "min",
+    "gps": {
+      "requesting": "Obteniendo ubicación...",
+      "unavailable": "Ubicación no disponible",
+      "onSite": "En sitio",
+      "offSite": "Fuera de sitio",
+      "noPropertyLocation": "Ubicación de propiedad no configurada",
+      "retry": "Reintentar ubicación"
+    }
   },
   "reschedule": {
     "title": "Reprogramar Trabajo",

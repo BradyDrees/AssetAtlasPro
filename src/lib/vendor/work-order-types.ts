@@ -48,6 +48,9 @@ export interface VendorWorkOrder {
   job_type?: string | null;
   custom_fields?: Record<string, unknown>;
   tracking_token?: string | null;
+  // GPS fields
+  property_lat?: number | null;
+  property_lng?: number | null;
   updated_by: string | null;
   created_at: string;
   updated_at: string;
@@ -81,6 +84,11 @@ export interface VendorWoTimeEntry {
   duration_minutes: number | null;
   hourly_rate: number | null;
   notes: string | null;
+  clock_in_lat: number | null;
+  clock_in_lng: number | null;
+  clock_out_lat: number | null;
+  clock_out_lng: number | null;
+  is_on_site: boolean | null;
   created_at: string;
 }
 
@@ -120,6 +128,8 @@ export interface ClockInInput {
   work_order_id: string;
   hourly_rate?: number;
   notes?: string;
+  lat?: number;
+  lng?: number;
 }
 
 // ============================================

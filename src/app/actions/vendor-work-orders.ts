@@ -674,6 +674,21 @@ export async function clockIn(
     return { error: "Already clocked in to this work order" };
   }
 
+  // Compute is_on_site if we have tech coords
+  let isOnSite: boolean | null = null;
+  if (input.lat != null && input.lng != null) {
+    // Fetch property coords from the work order
+    const { data: wo } = await supabase
+      .from("vendor_work_orders")
+      .select("property_lat, property_lng")
+      .eq("id", input.work_order_id)
+      .single();
+    if (wo?.property_lat != null && wo?.property_lng != null) {
+      const { computeOnSite } = await import("@/lib/vendor/geo-utils");
+      isOnSite = computeOnSite(input.lat, input.lng, wo.property_lat, wo.property_lng);
+    }
+  }
+
   const { data, error } = await supabase
     .from("vendor_wo_time_entries")
     .insert({
@@ -682,6 +697,9 @@ export async function clockIn(
       clock_in: new Date().toISOString(),
       hourly_rate: input.hourly_rate ?? null,
       notes: input.notes ?? null,
+      clock_in_lat: input.lat ?? null,
+      clock_in_lng: input.lng ?? null,
+      is_on_site: isOnSite,
     })
     .select()
     .single();
@@ -702,7 +720,9 @@ export async function clockIn(
 /** Clock out — closes the open time entry */
 export async function clockOut(
   woId: string,
-  notes?: string
+  notes?: string,
+  lat?: number,
+  lng?: number,
 ): Promise<{ data?: VendorWoTimeEntry; error?: string }> {
   const vendorAuth = await requireVendorRole();
   const supabase = await createClient();
@@ -733,6 +753,24 @@ export async function clockOut(
 
   if (notes) {
     updateData.notes = notes;
+  }
+
+  // Store clock-out GPS coords
+  if (lat != null && lng != null) {
+    updateData.clock_out_lat = lat;
+    updateData.clock_out_lng = lng;
+    // Recompute is_on_site with clock-out location if not already set
+    const { data: wo } = await supabase
+      .from("vendor_work_orders")
+      .select("property_lat, property_lng")
+      .eq("id", woId)
+      .single();
+    if (wo?.property_lat != null && wo?.property_lng != null) {
+      const { computeOnSite } = await import("@/lib/vendor/geo-utils");
+      const onSite = computeOnSite(lat, lng, wo.property_lat, wo.property_lng);
+      // Only update is_on_site if it wasn't set at clock-in, or override with clock-out
+      updateData.is_on_site = onSite;
+    }
   }
 
   const { data, error } = await supabase

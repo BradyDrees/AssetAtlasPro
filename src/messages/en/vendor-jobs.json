@@ -110,7 +110,15 @@
     "duration": "Duration",
     "hourlyRate": "Hourly Rate",
     "noEntries": "No time entries",
-    "minutes": "min"
+    "minutes": "min",
+    "gps": {
+      "requesting": "Getting location...",
+      "unavailable": "Location unavailable",
+      "onSite": "On-site",
+      "offSite": "Off-site",
+      "noPropertyLocation": "Property location not set",
+      "retry": "Retry location"
+    }
   },
   "reschedule": {
     "title": "Reschedule Job",

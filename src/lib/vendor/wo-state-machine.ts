@@ -260,6 +260,27 @@ export async function transitionWorkOrder(
     return { success: false, error: check.reason };
   }
 
+  // 3b. Checklist validation on completion transitions
+  if (
+    (targetStatus === "completed" || targetStatus === "done_pending_approval") &&
+    currentStatus !== "completed"
+  ) {
+    try {
+      const { validateChecklistCompletion } = await import(
+        "@/app/actions/vendor-checklists"
+      );
+      const checkResult = await validateChecklistCompletion(woId);
+      if (!checkResult.valid) {
+        return {
+          success: false,
+          error: checkResult.error ?? "Required checklist items incomplete",
+        };
+      }
+    } catch {
+      // If checklist module not available, skip validation
+    }
+  }
+
   // 4. Build update payload
   const updatePayload: Record<string, unknown> = {
     status: targetStatus,

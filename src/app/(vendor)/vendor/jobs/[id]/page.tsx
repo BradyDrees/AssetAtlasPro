@@ -23,6 +23,7 @@ import { JobProfitabilityCard } from "@/components/vendor/job-profitability-card
 import { PropertyContextCard } from "@/components/vendor/property-context-card";
 import { WoPhotoSection } from "@/components/vendor/wo-photo-section";
 import { SystemInfoForm } from "@/components/vendor/system-info-form";
+import { JobChecklist } from "@/components/vendor/job-checklist";
 import { createClient } from "@/lib/supabase/client";
 
 export default function JobDetailPage() {
@@ -221,6 +222,14 @@ export default function JobDetailPage() {
                 </Link>
               </div>
             </div>
+          )}
+
+          {/* Job Checklist */}
+          {isActiveJob && (
+            <JobChecklist woId={wo.id} trade={wo.trade ?? undefined} readOnly={false} />
+          )}
+          {["completed", "done_pending_approval", "invoiced", "paid"].includes(wo.status) && (
+            <JobChecklist woId={wo.id} trade={wo.trade ?? undefined} readOnly={true} />
           )}
 
           {/* Access Notes */}

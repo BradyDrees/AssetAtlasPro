@@ -122,7 +122,9 @@ export type VendorEntityType =
   | "client"
   | "expense"
   | "skill"
-  | "inventory";
+  | "inventory"
+  | "checklist_template"
+  | "checklist";
 
 // ============================================
 // Work Order Types (Phase 2, defined early for state-machine)

@@ -36,5 +36,11 @@
   "selectForWO": "Seleccionar para Orden",
   "assigning": "Asignando...",
   "cancel": "Cancelar",
-  "performance": "Rendimiento"
+  "performance": "Rendimiento",
+  "quoteProperty": "Propiedad",
+  "quoteNoProperty": "Necesita agregar una propiedad antes de solicitar una cotización",
+  "quoteVendor": "Proveedor",
+  "quoteEstimateNote": "Se solicitará un presupuesto a este proveedor",
+  "quoteSubmitted": "¡Solicitud de cotización enviada!",
+  "bookService": "Reservar Servicio"
 }

@@ -3,8 +3,10 @@
 import { useState, useTransition, useEffect } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { toggleSaveVendor, togglePreferredVendor } from "@/app/actions/home-vendors";
 import { getVendorScorecardPublic } from "@/app/actions/vendor-scorecard";
+import { RequestQuoteModal } from "@/components/home/request-quote-modal";
 import type { VendorScorecardData } from "@/lib/vendor/scorecard-types";
 
 interface VendorOrg {
@@ -54,6 +56,8 @@ export function VendorProfileContent({ vendor, ratings, initialSaved, initialPre
   const [isPending, startTransition] = useTransition();
   const [scorecard, setScorecard] = useState<VendorScorecardData | null>(null);
   const [showScorecard, setShowScorecard] = useState(false);
+  const [showQuoteModal, setShowQuoteModal] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     async function loadScorecard() {
@@ -121,29 +125,39 @@ export function VendorProfileContent({ vendor, ratings, initialSaved, initialPre
         </div>
 
         {/* Action buttons */}
-        <div className="flex gap-3 mt-4">
+        <div className="flex flex-col gap-3 mt-4">
+          {/* Primary: Request Quote */}
           <button
-            onClick={handlePreferred}
-            disabled={isPending}
-            className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-              preferred
-                ? "bg-rose-500/20 text-rose-400 border border-rose-500/30"
-                : "bg-rose-600 hover:bg-rose-700 text-white"
-            }`}
+            onClick={() => setShowQuoteModal(true)}
+            className="w-full px-4 py-3 rounded-lg text-sm font-semibold bg-rose-600 hover:bg-rose-700 text-white transition-colors"
           >
-            {preferred ? t("removePreferred") : t("setPreferred")}
+            {t("requestQuote")}
           </button>
-          <button
-            onClick={handleSave}
-            disabled={isPending}
-            className={`px-4 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
-              saved
-                ? "bg-amber-500/10 text-amber-400 border-amber-500/30"
-                : "bg-surface-secondary text-content-tertiary border-edge-secondary hover:text-content-primary"
-            }`}
-          >
-            {saved ? "★ " + t("unsaveVendor") : "☆ " + t("saveVendor")}
-          </button>
+          {/* Secondary actions */}
+          <div className="flex gap-3">
+            <button
+              onClick={handlePreferred}
+              disabled={isPending}
+              className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                preferred
+                  ? "bg-rose-500/20 text-rose-400 border border-rose-500/30"
+                  : "bg-surface-secondary text-content-tertiary border border-edge-secondary hover:text-content-primary"
+              }`}
+            >
+              {preferred ? t("removePreferred") : t("setPreferred")}
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={isPending}
+              className={`px-4 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
+                saved
+                  ? "bg-amber-500/10 text-amber-400 border-amber-500/30"
+                  : "bg-surface-secondary text-content-tertiary border-edge-secondary hover:text-content-primary"
+              }`}
+            >
+              {saved ? "★ " + t("unsaveVendor") : "☆ " + t("saveVendor")}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -243,6 +257,20 @@ export function VendorProfileContent({ vendor, ratings, initialSaved, initialPre
           </div>
         )}
       </div>
+
+      {/* Request Quote Modal */}
+      {showQuoteModal && (
+        <RequestQuoteModal
+          vendorOrgId={vendor.id}
+          vendorName={vendor.name}
+          vendorTrades={vendor.trades}
+          onClose={() => setShowQuoteModal(false)}
+          onSuccess={(woId) => {
+            setShowQuoteModal(false);
+            router.push(`/home/work-orders/${woId}`);
+          }}
+        />
+      )}
     </div>
   );
 }

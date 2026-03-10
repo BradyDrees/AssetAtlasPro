@@ -36,5 +36,11 @@
   "selectForWO": "Select for Work Order",
   "assigning": "Assigning...",
   "cancel": "Cancel",
-  "performance": "Performance"
+  "performance": "Performance",
+  "quoteProperty": "Property",
+  "quoteNoProperty": "You need to add a property before requesting a quote",
+  "quoteVendor": "Vendor",
+  "quoteEstimateNote": "An estimate will be requested from this vendor",
+  "quoteSubmitted": "Quote request submitted!",
+  "bookService": "Book Service"
 }

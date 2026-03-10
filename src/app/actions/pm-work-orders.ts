@@ -9,6 +9,12 @@ import { getEntityEvents } from "@/lib/platform/domain-events";
 import type { DomainEvent } from "@/lib/platform/domain-events";
 import { transitionWorkOrder } from "@/lib/vendor/wo-state-machine";
 import type { WoStatus } from "@/lib/vendor/types";
+import {
+  dispatchFromFinding,
+  bulkDispatchFindings,
+  type FindingSnapshot,
+  type DispatchResult,
+} from "@/lib/services/dispatch-service";
 
 // ============================================
 // PM creates a work order for a vendor
@@ -665,4 +671,53 @@ export async function pmTransitionWorkOrder(
   });
 
   return { success: result.success, error: result.error };
+}
+
+// ============================================
+// Dispatch: Finding → WO
+// ============================================
+
+/** PM dispatches a single finding as a work order */
+export async function dispatchFindingAsWo(params: {
+  findingId: string;
+  finding: FindingSnapshot;
+  vendorOrgId?: string;
+  propertyName?: string;
+  propertyAddress?: string;
+  unitNumber?: string;
+  force?: boolean;
+}): Promise<DispatchResult> {
+  await requirePmRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "Not authenticated" };
+
+  return dispatchFromFinding({
+    ...params,
+    pmUserId: user.id,
+    actorUserId: user.id,
+  });
+}
+
+/** PM bulk-dispatches multiple findings as work orders */
+export async function bulkDispatchFindingsAsWo(params: {
+  findings: Array<{ id: string; finding: FindingSnapshot }>;
+  vendorOrgId?: string;
+  propertyName?: string;
+  propertyAddress?: string;
+}): Promise<DispatchResult[]> {
+  await requirePmRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  return bulkDispatchFindings({
+    ...params,
+    pmUserId: user.id,
+    actorUserId: user.id,
+  });
 }

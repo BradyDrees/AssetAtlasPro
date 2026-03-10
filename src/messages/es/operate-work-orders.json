@@ -81,5 +81,26 @@
     "minutes": "Hace {count}m",
     "hours": "Hace {count}h",
     "days": "Hace {count}d"
+  },
+  "dispatch": {
+    "title": "Crear Orden de Trabajo",
+    "selectVendor": "Asignar a Proveedor (opcional)",
+    "noVendor": "Sin proveedor \u2014 crear como borrador",
+    "createWo": "Crear Orden de Trabajo",
+    "creating": "Creando...",
+    "duplicateExists": "Ya existe una orden de trabajo activa para este hallazgo.",
+    "createAnyway": "Crear de Todas Formas",
+    "viewExisting": "Ver OT Existente",
+    "failed": "Error al crear la orden de trabajo",
+    "success": "Orden de trabajo creada",
+    "bulkTitle": "Despachar Hallazgos",
+    "bulkDescription": "Crear \u00f3rdenes de trabajo a partir de hallazgos seleccionados",
+    "selectFindings": "Seleccionar hallazgos para despachar",
+    "dispatchSelected": "Despachar Seleccionados ({count})",
+    "dispatching": "Despachando...",
+    "resultsTitle": "Resultados del Despacho",
+    "created": "Creada",
+    "skipped": "Omitida (duplicada)",
+    "failedItem": "Fall\u00f3"
   }
 }

@@ -81,5 +81,26 @@
     "minutes": "{count}m ago",
     "hours": "{count}h ago",
     "days": "{count}d ago"
+  },
+  "dispatch": {
+    "title": "Create Work Order",
+    "selectVendor": "Assign to Vendor (optional)",
+    "noVendor": "No vendor — create as draft",
+    "createWo": "Create Work Order",
+    "creating": "Creating...",
+    "duplicateExists": "An active work order already exists for this finding.",
+    "createAnyway": "Create Anyway",
+    "viewExisting": "View Existing WO",
+    "failed": "Failed to create work order",
+    "success": "Work order created",
+    "bulkTitle": "Dispatch Findings",
+    "bulkDescription": "Create work orders from selected findings",
+    "selectFindings": "Select findings to dispatch",
+    "dispatchSelected": "Dispatch Selected ({count})",
+    "dispatching": "Dispatching...",
+    "resultsTitle": "Dispatch Results",
+    "created": "Created",
+    "skipped": "Skipped (duplicate)",
+    "failedItem": "Failed"
   }
 }

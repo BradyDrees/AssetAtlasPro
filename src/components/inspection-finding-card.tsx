@@ -64,6 +64,10 @@ export interface FindingCardProps {
   onDeleted?: (findingId: string) => void;
   /** Called when "Add Finding" is clicked — parent creates a sibling finding */
   onAddFinding?: () => void;
+  /** Called when "Create WO" is clicked — parent opens dispatch modal */
+  onDispatch?: (finding: InspectionFinding) => void;
+  /** Property context for dispatch */
+  propertyName?: string;
 }
 
 export function FindingCard({
@@ -79,6 +83,7 @@ export function FindingCard({
   onPriorityChange,
   onDeleted,
   onAddFinding,
+  onDispatch,
 }: FindingCardProps) {
   const t = useTranslations();
   const router = useFieldRouter();
@@ -553,18 +558,26 @@ export function FindingCard({
             </div>
           </div>
 
-          {/* Add Finding / Delete Finding */}
+          {/* Add Finding / Create WO / Delete Finding */}
           <div className="pt-2 border-t border-edge-tertiary flex items-center justify-between">
-            {onAddFinding ? (
-              <button
-                onClick={onAddFinding}
-                className="text-xs text-brand-600 hover:text-brand-800 font-medium transition-colors"
-              >
-                {t("inspection.addFinding")}
-              </button>
-            ) : (
-              <span />
-            )}
+            <div className="flex items-center gap-3">
+              {onAddFinding && (
+                <button
+                  onClick={onAddFinding}
+                  className="text-xs text-brand-600 hover:text-brand-800 font-medium transition-colors"
+                >
+                  {t("inspection.addFinding")}
+                </button>
+              )}
+              {onDispatch && (
+                <button
+                  onClick={() => onDispatch(finding)}
+                  className="text-xs text-green-600 hover:text-green-800 font-medium transition-colors"
+                >
+                  {t("inspection.createWo")}
+                </button>
+              )}
+            </div>
             {canDelete && (
               <button
                 onClick={handleDeleteFinding}

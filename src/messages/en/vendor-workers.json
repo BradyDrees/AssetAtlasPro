@@ -103,5 +103,29 @@
     "roleUpdated": "Role updated",
     "memberDeactivated": "Member deactivated",
     "memberReactivated": "Member reactivated"
+  },
+  "sub": {
+    "title": "Subcontractors",
+    "assign": "Assign Sub",
+    "assignTitle": "Assign Subcontractor",
+    "selectSub": "Select Subcontractor",
+    "noSubs": "No subcontractors available. Mark team members as subcontractors in Team settings.",
+    "rateType": "Rate Type",
+    "hourly": "Hourly Rate",
+    "flatRate": "Flat Rate",
+    "rate": "Rate",
+    "notes": "Notes",
+    "notesPlaceholder": "Special instructions for this job...",
+    "assigning": "Assigning...",
+    "noAssignments": "No subcontractors assigned",
+    "unnamed": "Unnamed Sub",
+    "markComplete": "Mark Complete",
+    "remove": "Remove",
+    "status": {
+      "assigned": "Assigned",
+      "accepted": "Accepted",
+      "declined": "Declined",
+      "completed": "Completed"
+    }
   }
 }

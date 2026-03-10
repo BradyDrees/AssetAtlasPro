@@ -24,6 +24,7 @@ import { PropertyContextCard } from "@/components/vendor/property-context-card";
 import { WoPhotoSection } from "@/components/vendor/wo-photo-section";
 import { SystemInfoForm } from "@/components/vendor/system-info-form";
 import { JobChecklist } from "@/components/vendor/job-checklist";
+import { JobSubAssignments } from "@/components/vendor/job-sub-assignments";
 import { createClient } from "@/lib/supabase/client";
 
 export default function JobDetailPage() {
@@ -44,6 +45,7 @@ export default function JobDetailPage() {
     title: string | null;
     total: number;
   } | null>(null);
+  const [isVendorAdmin, setIsVendorAdmin] = useState(false);
   const mt = useTranslations("vendor.messages");
 
   useEffect(() => {
@@ -51,7 +53,19 @@ export default function JobDetailPage() {
       setLoading(true);
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) setUserId(user.id);
+      if (user) {
+        setUserId(user.id);
+        // Check if user is admin/owner/manager for sub-assignment controls
+        const { data: vu } = await supabase
+          .from("vendor_users")
+          .select("role")
+          .eq("user_id", user.id)
+          .eq("is_active", true)
+          .maybeSingle();
+        if (vu && ["owner", "admin", "office_manager"].includes(vu.role)) {
+          setIsVendorAdmin(true);
+        }
+      }
       const [woRes, matRes, timeRes] = await Promise.all([
         getWorkOrder(woId),
         getWorkOrderMaterials(woId),
@@ -231,6 +245,9 @@ export default function JobDetailPage() {
           {["completed", "done_pending_approval", "invoiced", "paid"].includes(wo.status) && (
             <JobChecklist woId={wo.id} trade={wo.trade ?? undefined} readOnly={true} />
           )}
+
+          {/* Sub-Assignments */}
+          <JobSubAssignments woId={wo.id} isAdmin={isVendorAdmin} />
 
           {/* Access Notes */}
           {wo.access_notes && (

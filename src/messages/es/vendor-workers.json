@@ -103,5 +103,29 @@
     "roleUpdated": "Rol actualizado",
     "memberDeactivated": "Miembro desactivado",
     "memberReactivated": "Miembro reactivado"
+  },
+  "sub": {
+    "title": "Subcontratistas",
+    "assign": "Asignar Sub",
+    "assignTitle": "Asignar Subcontratista",
+    "selectSub": "Seleccionar Subcontratista",
+    "noSubs": "No hay subcontratistas disponibles. Marca miembros del equipo como subcontratistas en Configuración de Equipo.",
+    "rateType": "Tipo de Tarifa",
+    "hourly": "Tarifa por Hora",
+    "flatRate": "Tarifa Fija",
+    "rate": "Tarifa",
+    "notes": "Notas",
+    "notesPlaceholder": "Instrucciones especiales para este trabajo...",
+    "assigning": "Asignando...",
+    "noAssignments": "Sin subcontratistas asignados",
+    "unnamed": "Sub Sin Nombre",
+    "markComplete": "Marcar Completado",
+    "remove": "Eliminar",
+    "status": {
+      "assigned": "Asignado",
+      "accepted": "Aceptado",
+      "declined": "Rechazado",
+      "completed": "Completado"
+    }
   }
 }

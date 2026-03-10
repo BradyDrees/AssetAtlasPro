@@ -334,3 +334,38 @@ export async function getTodaysJobs(): Promise<TodayJob[]> {
     .order("scheduled_time_start", { ascending: true });
   return (data ?? []) as TodayJob[];
 }
+
+// ─── Lead Source Breakdown ───
+
+export interface LeadSourceBucket {
+  source: string;
+  count: number;
+}
+
+/**
+ * Get breakdown of work orders by lead_source for the vendor org.
+ * Returns counts grouped by lead_source, sorted descending.
+ */
+export async function getLeadSourceBreakdown(): Promise<LeadSourceBucket[]> {
+  const { vendor_org_id } = await requireVendorRole();
+  const supabase = await createClient();
+
+  // Fetch all WOs with their lead_source
+  const { data } = await supabase
+    .from("vendor_work_orders")
+    .select("lead_source")
+    .eq("vendor_org_id", vendor_org_id);
+
+  if (!data) return [];
+
+  // Group by lead_source in JS (Supabase doesn't support GROUP BY via client)
+  const counts = new Map<string, number>();
+  for (const row of data) {
+    const source = (row.lead_source as string) || "unknown";
+    counts.set(source, (counts.get(source) ?? 0) + 1);
+  }
+
+  return Array.from(counts.entries())
+    .map(([source, count]) => ({ source, count }))
+    .sort((a, b) => b.count - a.count);
+}

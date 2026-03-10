@@ -76,6 +76,8 @@ export async function submitProject(
       homeowner_id: user.id,
       homeowner_property_id: input.property_id,
       source_type: "project_trade" as const,
+      lead_source: "homeowner_project" as const,
+      origin_module: "home" as const,
       project_id: project.id,
       trade: t.trade,
       description: t.scope,

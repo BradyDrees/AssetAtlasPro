@@ -77,5 +77,18 @@
   "noTrendData": "Sin datos de calificación aún",
   "estAccuracy": "Precisión Est.",
   "disputes": "Disputas",
-  "callbacks": "Rellamadas"
+  "callbacks": "Rellamadas",
+  "leadSources": "Fuentes de Trabajo",
+  "noLeadData": "Sin datos de fuentes aún",
+  "totalJobs": "Total de Trabajos",
+  "leadSource": {
+    "pm_assignment": "Asignación PM",
+    "homeowner_request": "Solicitud del Propietario",
+    "homeowner_project": "Proyecto del Propietario",
+    "vendor_self_created": "Creado por el Proveedor",
+    "marketplace": "Mercado",
+    "inspection_finding": "Hallazgo de Inspección",
+    "unit_turn": "Rotación de Unidad",
+    "unknown": "Otro"
+  }
 }

@@ -77,5 +77,18 @@
   "noTrendData": "No rating data yet",
   "estAccuracy": "Est. Accuracy",
   "disputes": "Disputes",
-  "callbacks": "Callbacks"
+  "callbacks": "Callbacks",
+  "leadSources": "Lead Sources",
+  "noLeadData": "No lead source data yet",
+  "totalJobs": "Total Jobs",
+  "leadSource": {
+    "pm_assignment": "PM Assignment",
+    "homeowner_request": "Homeowner Request",
+    "homeowner_project": "Homeowner Project",
+    "vendor_self_created": "Self Created",
+    "marketplace": "Marketplace",
+    "inspection_finding": "Inspection Finding",
+    "unit_turn": "Unit Turn",
+    "unknown": "Other"
+  }
 }

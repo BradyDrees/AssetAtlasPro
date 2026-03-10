@@ -443,6 +443,8 @@ export async function createVendorJob(
       budget_type: input.budget_type || null,
       budget_amount: input.budget_amount || null,
       source_type: "vendor_direct",
+      lead_source: "vendor_self_created",
+      origin_module: "vendor",
       updated_by: user.id,
     })
     .select("id")

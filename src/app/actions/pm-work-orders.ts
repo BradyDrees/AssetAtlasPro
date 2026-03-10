@@ -67,6 +67,8 @@ export async function createWorkOrder(
       scheduled_time_start: input.scheduled_time_start || null,
       scheduled_time_end: input.scheduled_time_end || null,
       source_type: "pm_routed",
+      lead_source: "pm_assignment",
+      origin_module: "operate",
       status: "assigned",
       updated_by: user.id,
     })

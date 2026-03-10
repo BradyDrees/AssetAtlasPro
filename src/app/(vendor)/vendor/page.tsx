@@ -14,6 +14,7 @@ import { DashboardPerformanceWidget } from "@/components/vendor/dashboard-perfor
 import { getReviewAnalytics } from "@/app/actions/vendor-reviews";
 import { getLowStockAlerts } from "@/app/actions/vendor-inventory";
 import { DashboardInventoryWidget } from "@/components/vendor/dashboard-inventory-widget";
+import { DashboardLeadSources } from "@/components/vendor/dashboard-lead-sources";
 import Link from "next/link";
 
 export default async function VendorDashboardPage() {
@@ -107,6 +108,9 @@ export default async function VendorDashboardPage() {
         <DashboardExpensesWidget data={expensesSummary} />
         <DashboardTechScoreboard scores={techScoreboard} />
       </div>
+
+      {/* Lead Sources */}
+      <DashboardLeadSources />
 
       {/* Reviews widget */}
       {reviewAnalytics.data && (

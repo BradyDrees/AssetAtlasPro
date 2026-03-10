@@ -69,6 +69,8 @@ export async function createHomeWorkOrder(
         homeowner_id: user.id,
         homeowner_property_id: input.homeowner_property_id,
         source_type: "client_request",
+        lead_source: "homeowner_request",
+        origin_module: "home",
         trade: input.trade,
         description: input.description,
         urgency: dbUrgency,

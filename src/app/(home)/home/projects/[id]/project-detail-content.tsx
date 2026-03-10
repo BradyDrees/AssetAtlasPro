@@ -1,7 +1,13 @@
 "use client";
 
+import { useState, useCallback, useTransition } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { ProjectInviteVendors } from "@/components/home/project-invite-vendors";
+import { ProjectBidComparison } from "@/components/home/project-bid-comparison";
+import type { BidInvitation } from "@/app/actions/home-project-bids";
+import { getProjectBids } from "@/app/actions/home-project-bids";
 
 interface WorkOrder {
   id: string;
@@ -55,15 +61,33 @@ interface ProjectDetailContentProps {
   project: Project;
   workOrders: WorkOrder[];
   vendorOrgs: Record<string, string>;
+  initialBids: Record<string, BidInvitation[]>;
 }
 
 export function ProjectDetailContent({
   project,
   workOrders,
   vendorOrgs,
+  initialBids,
 }: ProjectDetailContentProps) {
   const t = useTranslations("home.projects");
   const wt = useTranslations("home.workOrders");
+  const router = useRouter();
+
+  const [bidsMap, setBidsMap] = useState<Record<string, BidInvitation[]>>(initialBids);
+  const [inviteModal, setInviteModal] = useState<{ woId: string; trade: string } | null>(null);
+  const [compareModal, setCompareModal] = useState<{ woId: string; trade: string } | null>(null);
+  const [, startTransition] = useTransition();
+
+  const refreshBids = useCallback(() => {
+    startTransition(async () => {
+      const result = await getProjectBids(project.id);
+      if (!result.error) {
+        setBidsMap(result.data);
+      }
+      router.refresh();
+    });
+  }, [project.id, router, startTransition]);
 
   const progress =
     project.total_trades > 0
@@ -201,6 +225,15 @@ export function ProjectDetailContent({
         {workOrders.map((wo, idx) => {
           const isCompleted = wo.status === "completed";
           const isActive = ["assigned", "accepted", "scheduled", "in_progress", "matching"].includes(wo.status);
+          const woBids = bidsMap[wo.id] ?? [];
+          const submittedBids = woBids.filter((b) => b.status === "bid_submitted");
+          const hasBids = woBids.length > 0;
+          const hasAccepted = woBids.some((b) => b.status === "accepted");
+          const canInvite =
+            project.status === "active" &&
+            !isCompleted &&
+            !hasAccepted &&
+            ["matching", "on_hold", "open"].includes(wo.status);
 
           return (
             <div
@@ -244,13 +277,26 @@ export function ProjectDetailContent({
                     <h3 className="font-medium text-content-primary">
                       {tradeLabel(wo.trade)}
                     </h3>
-                    <span
-                      className={`px-2 py-0.5 text-xs font-medium rounded-full ${
-                        WO_STATUS_COLORS[wo.status] ?? "bg-charcoal-100 text-charcoal-600"
-                      }`}
-                    >
-                      {woStatusLabel(wo.status)}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      {/* Bid count badge */}
+                      {hasBids && (
+                        <button
+                          onClick={() => setCompareModal({ woId: wo.id, trade: wo.trade })}
+                          className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500/20 transition-colors"
+                        >
+                          {submittedBids.length > 0
+                            ? t("bidsReceived", { count: submittedBids.length })
+                            : t("bidsInvited", { count: woBids.length })}
+                        </button>
+                      )}
+                      <span
+                        className={`px-2 py-0.5 text-xs font-medium rounded-full ${
+                          WO_STATUS_COLORS[wo.status] ?? "bg-charcoal-100 text-charcoal-600"
+                        }`}
+                      >
+                        {woStatusLabel(wo.status)}
+                      </span>
+                    </div>
                   </div>
 
                   {wo.description && (
@@ -272,19 +318,71 @@ export function ProjectDetailContent({
                     )}
                   </div>
 
-                  {/* View WO link */}
-                  <Link
-                    href={`/home/work-orders/${wo.id}`}
-                    className="inline-block mt-2 text-xs text-rose-600 hover:text-rose-700 font-medium"
-                  >
-                    {t("viewWorkOrder")} →
-                  </Link>
+                  {/* Action buttons */}
+                  <div className="flex items-center gap-3 mt-2">
+                    <Link
+                      href={`/home/work-orders/${wo.id}`}
+                      className="text-xs text-rose-600 hover:text-rose-700 font-medium"
+                    >
+                      {t("viewWorkOrder")} →
+                    </Link>
+
+                    {canInvite && (
+                      <button
+                        onClick={() => setInviteModal({ woId: wo.id, trade: wo.trade })}
+                        className="text-xs text-indigo-500 hover:text-indigo-400 font-medium flex items-center gap-1"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM3 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 019.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+                        </svg>
+                        {t("inviteVendors")}
+                      </button>
+                    )}
+
+                    {submittedBids.length > 0 && !hasAccepted && (
+                      <button
+                        onClick={() => setCompareModal({ woId: wo.id, trade: wo.trade })}
+                        className="text-xs text-emerald-500 hover:text-emerald-400 font-medium flex items-center gap-1"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                        </svg>
+                        {t("compareBids")}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           );
         })}
       </div>
+
+      {/* Modals */}
+      {inviteModal && (
+        <ProjectInviteVendors
+          workOrderId={inviteModal.woId}
+          projectId={project.id}
+          trade={inviteModal.trade}
+          onClose={() => setInviteModal(null)}
+          onInvited={() => {
+            setInviteModal(null);
+            refreshBids();
+          }}
+        />
+      )}
+
+      {compareModal && (
+        <ProjectBidComparison
+          bids={bidsMap[compareModal.woId] ?? []}
+          trade={compareModal.trade}
+          onClose={() => setCompareModal(null)}
+          onAction={() => {
+            setCompareModal(null);
+            refreshBids();
+          }}
+        />
+      )}
     </div>
   );
 }

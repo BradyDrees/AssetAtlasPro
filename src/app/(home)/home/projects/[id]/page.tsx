@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { ProjectDetailContent } from "./project-detail-content";
+import type { BidInvitation } from "@/app/actions/home-project-bids";
 
 export default async function ProjectDetailPage({
   params,
@@ -37,7 +38,7 @@ export default async function ProjectDetailPage({
     ...new Set(
       (workOrders ?? [])
         .map((wo) => wo.vendor_org_id)
-        .filter((id): id is string => id !== null)
+        .filter((vid): vid is string => vid !== null)
     ),
   ];
 
@@ -53,11 +54,59 @@ export default async function ProjectDetailPage({
     );
   }
 
+  // Fetch bid invitations for all WOs in this project
+  const { data: bids } = await supabase
+    .from("project_bid_invitations")
+    .select("*")
+    .eq("project_id", id)
+    .order("invited_at", { ascending: true });
+
+  // Enrich bids with vendor names and estimate totals
+  const bidsMap: Record<string, BidInvitation[]> = {};
+  if (bids && bids.length > 0) {
+    const bidOrgIds = [...new Set(bids.map((b) => b.vendor_org_id))];
+    const { data: bidOrgs } = await supabase
+      .from("vendor_organizations")
+      .select("id, name")
+      .in("id", bidOrgIds);
+
+    const bidOrgMap = Object.fromEntries(
+      (bidOrgs ?? []).map((o) => [o.id, o.name])
+    );
+
+    const estimateIds = bids
+      .map((b) => b.estimate_id)
+      .filter((eid): eid is string => eid !== null);
+
+    let estMap: Record<string, number> = {};
+    if (estimateIds.length > 0) {
+      const { data: ests } = await supabase
+        .from("vendor_estimates")
+        .select("id, total")
+        .in("id", estimateIds);
+
+      estMap = Object.fromEntries(
+        (ests ?? []).map((e) => [e.id, Number(e.total) || 0])
+      );
+    }
+
+    for (const b of bids) {
+      const woId = b.work_order_id;
+      if (!bidsMap[woId]) bidsMap[woId] = [];
+      bidsMap[woId].push({
+        ...b,
+        vendor_name: bidOrgMap[b.vendor_org_id] ?? "Unknown",
+        estimate_total: b.estimate_id ? (estMap[b.estimate_id] ?? null) : null,
+      });
+    }
+  }
+
   return (
     <ProjectDetailContent
       project={project}
       workOrders={workOrders ?? []}
       vendorOrgs={vendorOrgs}
+      initialBids={bidsMap}
     />
   );
 }

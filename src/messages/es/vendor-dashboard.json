@@ -90,5 +90,6 @@
     "inspection_finding": "Hallazgo de Inspección",
     "unit_turn": "Rotación de Unidad",
     "unknown": "Otro"
-  }
+  },
+  "bidRequest": "Solicitud de Cotización"
 }

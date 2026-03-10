@@ -68,5 +68,31 @@
   "custom": "Custom",
   "selectTrade": "Select trade type",
   "avgDuration": "~{days} days",
-  "avgCost": "${low} - ${high}"
+  "avgCost": "${low} - ${high}",
+  "inviteVendors": "Invite Vendors",
+  "inviteVendorsDesc": "Select vendors to invite for {trade} bids",
+  "noVendorsForTrade": "No vendors available for this trade",
+  "vendorsSelected": "{count} vendor(s) selected",
+  "sendInvitations": "Send Invitations",
+  "sending": "Sending...",
+  "responseTime": "{hours}h avg response",
+  "bidsReceived": "{count} bid(s) received",
+  "bidsInvited": "{count} invited",
+  "bidsCount": "{count} bid(s)",
+  "bidComparison": "Bid Comparison",
+  "compareBids": "Compare Bids",
+  "noBidsYet": "No bids submitted yet",
+  "acceptBid": "Accept Bid",
+  "declineBid": "Decline",
+  "lowestBid": "Lowest",
+  "estimateTotal": "Estimate Total",
+  "invited": "Invited",
+  "responded": "Responded",
+  "bidStatus": {
+    "invited": "Awaiting Bid",
+    "bid_submitted": "Bid Received",
+    "accepted": "Accepted",
+    "declined": "Declined",
+    "expired": "Expired"
+  }
 }

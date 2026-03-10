@@ -42,6 +42,11 @@ export function IncomingWorkOrders({ orders }: IncomingWorkOrdersProps) {
               className="flex-shrink-0 w-56 bg-surface-secondary rounded-lg border border-edge-secondary p-3 hover:border-edge-primary transition-colors"
             >
               <div className="flex items-center gap-2 mb-2">
+                {wo.vendor_selection_mode === "homeowner_choice" && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-indigo-500/20 text-indigo-400">
+                    {dt("bidRequest")}
+                  </span>
+                )}
                 <span
                   className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
                     priorityColors[wo.priority] ?? priorityColors.normal

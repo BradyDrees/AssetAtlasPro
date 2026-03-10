@@ -68,5 +68,31 @@
   "custom": "Personalizado",
   "selectTrade": "Seleccionar tipo de oficio",
   "avgDuration": "~{days} dias",
-  "avgCost": "${low} - ${high}"
+  "avgCost": "${low} - ${high}",
+  "inviteVendors": "Invitar Proveedores",
+  "inviteVendorsDesc": "Seleccione proveedores para invitar a cotizar {trade}",
+  "noVendorsForTrade": "No hay proveedores disponibles para este oficio",
+  "vendorsSelected": "{count} proveedor(es) seleccionado(s)",
+  "sendInvitations": "Enviar Invitaciones",
+  "sending": "Enviando...",
+  "responseTime": "{hours}h respuesta promedio",
+  "bidsReceived": "{count} cotizacion(es) recibida(s)",
+  "bidsInvited": "{count} invitado(s)",
+  "bidsCount": "{count} cotizacion(es)",
+  "bidComparison": "Comparar Cotizaciones",
+  "compareBids": "Comparar Cotizaciones",
+  "noBidsYet": "Aun no se han recibido cotizaciones",
+  "acceptBid": "Aceptar Cotizacion",
+  "declineBid": "Rechazar",
+  "lowestBid": "Mas Baja",
+  "estimateTotal": "Total Estimado",
+  "invited": "Invitado",
+  "responded": "Respondido",
+  "bidStatus": {
+    "invited": "Esperando Cotizacion",
+    "bid_submitted": "Cotizacion Recibida",
+    "accepted": "Aceptada",
+    "declined": "Rechazada",
+    "expired": "Expirada"
+  }
 }

@@ -90,5 +90,6 @@
     "inspection_finding": "Inspection Finding",
     "unit_turn": "Unit Turn",
     "unknown": "Other"
-  }
+  },
+  "bidRequest": "Bid Request"
 }

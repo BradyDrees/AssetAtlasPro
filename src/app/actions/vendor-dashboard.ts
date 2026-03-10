@@ -29,6 +29,7 @@ export interface IncomingWorkOrder {
   priority: string;
   pm_name: string | null;
   created_at: string;
+  vendor_selection_mode: string | null;
 }
 
 export interface TodayJob {
@@ -148,7 +149,7 @@ export async function getDashboardData(
       .eq("status", "completed").gte("completed_at", fromISO),
     // Incoming (unaccepted) work orders
     supabase.from("vendor_work_orders")
-      .select("id, property_name, description, trade, priority, pm_user_id, created_at")
+      .select("id, property_name, description, trade, priority, pm_user_id, created_at, vendor_selection_mode")
       .eq("vendor_org_id", vendor_org_id).eq("status", "assigned")
       .order("created_at", { ascending: false }).limit(5),
     // Upcoming jobs (next 5 days)
@@ -289,6 +290,7 @@ export async function getDashboardData(
     priority: wo.priority as string,
     pm_name: null, // Skip N+1 query for now
     created_at: wo.created_at as string,
+    vendor_selection_mode: (wo.vendor_selection_mode as string | null) ?? null,
   }));
 
   return {

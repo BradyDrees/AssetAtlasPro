@@ -224,5 +224,7 @@
   "converting": "Creating job...",
   "convertError": "Failed to create job",
   "viewJob": "View Job",
-  "alreadyLinked": "This estimate is already linked to a job"
+  "alreadyLinked": "This estimate is already linked to a job",
+  "financingAvailable": "Financing Available",
+  "financingDesc": "Your customer can apply for monthly payment plans"
 }

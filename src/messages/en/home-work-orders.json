@@ -123,5 +123,7 @@
   "en_route": "On the Way",
   "on_site": "Technician On Site",
   "in_progress": "Work In Progress",
-  "done_pending_approval": "Pending Approval"
+  "done_pending_approval": "Pending Approval",
+  "financingAvailable": "Financing Available",
+  "financingDesc": "Split this into monthly payments with 0% APR options available"
 }

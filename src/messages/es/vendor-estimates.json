@@ -224,5 +224,7 @@
   "converting": "Creando trabajo...",
   "convertError": "Error al crear trabajo",
   "viewJob": "Ver Trabajo",
-  "alreadyLinked": "Este presupuesto ya está vinculado a un trabajo"
+  "alreadyLinked": "Este presupuesto ya está vinculado a un trabajo",
+  "financingAvailable": "Financiamiento Disponible",
+  "financingDesc": "Su cliente puede solicitar planes de pago mensual"
 }

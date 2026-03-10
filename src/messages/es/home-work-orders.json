@@ -123,5 +123,7 @@
   "en_route": "En Camino",
   "on_site": "Técnico en Sitio",
   "in_progress": "Trabajo en Progreso",
-  "done_pending_approval": "Pendiente de Aprobación"
+  "done_pending_approval": "Pendiente de Aprobación",
+  "financingAvailable": "Financiamiento Disponible",
+  "financingDesc": "Divida esto en pagos mensuales con opciones de 0% APR disponibles"
 }

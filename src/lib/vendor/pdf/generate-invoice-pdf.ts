@@ -5,6 +5,7 @@ import "jspdf-autotable";
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireVendorRole } from "@/lib/vendor/role-helpers";
+import { fetchBranding, renderBrandingHeader } from "./pdf-branding";
 
 /**
  * Generate a branded invoice PDF.
@@ -36,12 +37,8 @@ export async function generateInvoicePdf(
     .eq("invoice_id", invoiceId)
     .order("created_at", { ascending: true });
 
-  // Fetch vendor org for branding
-  const { data: org } = await supabase
-    .from("vendor_organizations")
-    .select("name, phone, email, address, city, state, zip")
-    .eq("id", auth.vendor_org_id)
-    .single();
+  // Fetch branding (logo + colors + company info)
+  const branding = await fetchBranding(auth.vendor_org_id);
 
   // Fetch PM info (bill-to)
   let pmName: string | null = null;
@@ -59,24 +56,13 @@ export async function generateInvoicePdf(
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  // ─── Header: company branding ───
-  doc.setFontSize(20);
-  doc.setTextColor(34, 139, 34); // Brand green
-  doc.text(org?.name ?? "Invoice", 14, 25);
-
-  doc.setFontSize(9);
-  doc.setTextColor(100, 100, 100);
-  let headerY = 32;
-  if (org?.phone) { doc.text(org.phone, 14, headerY); headerY += 5; }
-  if (org?.email) { doc.text(org.email, 14, headerY); headerY += 5; }
-  if (org?.address) {
-    doc.text(`${org.address}, ${org.city ?? ""} ${org.state ?? ""} ${org.zip ?? ""}`, 14, headerY);
-  }
+  // ─── Header: company branding (logo + name + contact) ───
+  renderBrandingHeader(doc, branding);
 
   // ─── Invoice badge (right side) ───
   const rightX = pageWidth - 14;
   doc.setFontSize(22);
-  doc.setTextColor(34, 139, 34);
+  doc.setTextColor(...branding.brandColor);
   doc.text("INVOICE", rightX, 25, { align: "right" });
   doc.setFontSize(9);
   doc.setTextColor(80, 80, 80);
@@ -89,7 +75,13 @@ export async function generateInvoicePdf(
   }
   const statusLabel = t(`status.${invoice.status}`);
   doc.setFontSize(10);
-  doc.setTextColor(invoice.status === "paid" ? 34 : invoice.status === "disputed" ? 200 : 50, invoice.status === "paid" ? 139 : invoice.status === "disputed" ? 50 : 50, invoice.status === "paid" ? 34 : invoice.status === "disputed" ? 50 : 50);
+  if (invoice.status === "paid") {
+    doc.setTextColor(...branding.brandColor);
+  } else if (invoice.status === "disputed") {
+    doc.setTextColor(200, 50, 50);
+  } else {
+    doc.setTextColor(50, 50, 50);
+  }
   doc.text(statusLabel.toUpperCase(), rightX, 52, { align: "right" });
 
   // ─── Divider ───
@@ -131,7 +123,7 @@ export async function generateInvoicePdf(
         `$${Number(item.total).toFixed(2)}`,
       ]),
       styles: { fontSize: 8, cellPadding: 3 },
-      headStyles: { fillColor: [34, 139, 34], textColor: [255, 255, 255] },
+      headStyles: { fillColor: branding.brandColor, textColor: [255, 255, 255] },
       columnStyles: {
         0: { cellWidth: "auto" },
         3: { halign: "right" as const },
@@ -208,7 +200,7 @@ export async function generateInvoicePdf(
   if (invoice.payment_url && invoice.status !== "paid") {
     y += 12;
     doc.setFontSize(9);
-    doc.setTextColor(34, 139, 34);
+    doc.setTextColor(...branding.brandColor);
     doc.text("Pay Online:", 14, y);
     doc.setTextColor(50, 100, 200);
     doc.textWithLink(invoice.payment_url, 42, y, { url: invoice.payment_url });
@@ -217,7 +209,7 @@ export async function generateInvoicePdf(
   // ─── Paid stamp ───
   if (invoice.status === "paid") {
     doc.setFontSize(48);
-    doc.setTextColor(34, 139, 34);
+    doc.setTextColor(...branding.brandColor);
     doc.saveGraphicsState();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (doc as any).setGState(new (doc as any).GState({ opacity: 0.15 }));

@@ -5,6 +5,7 @@ import "jspdf-autotable";
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireVendorRole } from "@/lib/vendor/role-helpers";
+import { fetchBranding, renderBrandingHeader } from "./pdf-branding";
 
 interface EstimateForPdf {
   id: string;
@@ -68,49 +69,35 @@ export async function generateEstimatePdf(
     .eq("estimate_id", estimateId)
     .order("sort_order", { ascending: true });
 
-  // Fetch vendor org for branding
-  const { data: org } = await supabase
-    .from("vendor_organizations")
-    .select("name, phone, email, address, city, state, zip")
-    .eq("id", auth.vendor_org_id)
-    .single();
+  // Fetch vendor org branding (with logo + brand color)
+  const branding = await fetchBranding(auth.vendor_org_id);
 
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  // Header
-  doc.setFontSize(20);
-  doc.setTextColor(34, 139, 34); // Brand green
-  doc.text(org?.name ?? "Estimate", 14, 25);
-
-  doc.setFontSize(9);
-  doc.setTextColor(100, 100, 100);
-  if (org?.phone) doc.text(org.phone, 14, 32);
-  if (org?.email) doc.text(org.email, 14, 37);
-  if (org?.address) {
-    doc.text(`${org.address}, ${org.city ?? ""} ${org.state ?? ""} ${org.zip ?? ""}`, 14, 42);
-  }
+  // Branded header with logo
+  const headerEndY = renderBrandingHeader(doc, branding);
 
   // Estimate info (right side)
   doc.setFontSize(10);
   doc.setTextColor(50, 50, 50);
   const rightX = pageWidth - 14;
-  doc.text(t("estimateDetails"), rightX, 25, { align: "right" });
+  doc.text(t("estimateDetails"), rightX, 20, { align: "right" });
   doc.setFontSize(9);
   if (estimate.estimate_number) {
-    doc.text(`#${estimate.estimate_number}`, rightX, 32, { align: "right" });
+    doc.text(`#${estimate.estimate_number}`, rightX, 27, { align: "right" });
   }
-  doc.text(new Date(estimate.created_at).toLocaleDateString(), rightX, 37, { align: "right" });
+  doc.text(new Date(estimate.created_at).toLocaleDateString(), rightX, 32, { align: "right" });
   if (estimate.valid_until) {
-    doc.text(`${t("validUntil")}: ${estimate.valid_until}`, rightX, 42, { align: "right" });
+    doc.text(`${t("validUntil")}: ${estimate.valid_until}`, rightX, 37, { align: "right" });
   }
 
   // Divider
   doc.setDrawColor(200, 200, 200);
-  doc.line(14, 48, pageWidth - 14, 48);
+  doc.line(14, headerEndY, pageWidth - 14, headerEndY);
 
   // Property info
-  let y = 55;
+  let y = headerEndY + 7;
   doc.setFontSize(11);
   doc.setTextColor(30, 30, 30);
   if (estimate.title) {
@@ -147,7 +134,7 @@ export async function generateEstimatePdf(
         `$${Number(item.total).toFixed(2)}`,
       ]),
       styles: { fontSize: 8, cellPadding: 2 },
-      headStyles: { fillColor: [34, 139, 34], textColor: [255, 255, 255] },
+      headStyles: { fillColor: branding.brandColor, textColor: [255, 255, 255] },
       margin: { left: 14, right: 14 },
     });
 
@@ -180,6 +167,40 @@ export async function generateEstimatePdf(
     doc.setFontSize(8);
     const splitTerms = doc.splitTextToSize(estimate.terms, pageWidth - 28);
     doc.text(splitTerms, 14, y);
+  }
+
+  // Signature (if estimate was signed)
+  if (estimate.signature_url && estimate.signed_by) {
+    y = (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y;
+    y += 20;
+
+    // Check if we need a new page
+    const pageHeight = doc.internal.pageSize.getHeight();
+    if (y + 40 > pageHeight - 20) {
+      doc.addPage();
+      y = 20;
+    }
+
+    doc.setDrawColor(150, 150, 150);
+    doc.line(14, y + 15, 80, y + 15); // Signature line
+    doc.setFontSize(8);
+    doc.setTextColor(100, 100, 100);
+    doc.text(estimate.signed_by, 14, y + 20);
+    if (estimate.signed_at) {
+      doc.text(new Date(estimate.signed_at).toLocaleDateString(), 14, y + 25);
+    }
+
+    // Try to embed the signature image
+    try {
+      const sigResponse = await fetch(estimate.signature_url, { signal: AbortSignal.timeout(5000) });
+      if (sigResponse.ok) {
+        const sigBuffer = Buffer.from(await sigResponse.arrayBuffer());
+        const sigBase64 = `data:image/png;base64,${sigBuffer.toString("base64")}`;
+        doc.addImage(sigBase64, "PNG", 14, y - 5, 60, 18);
+      }
+    } catch {
+      // Signature image fetch failed — line only
+    }
   }
 
   const pdfOutput = doc.output("datauristring");

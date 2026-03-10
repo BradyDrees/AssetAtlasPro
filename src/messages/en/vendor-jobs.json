@@ -227,6 +227,12 @@
     "saved": "System info saved!",
     "addAnother": "Log Another System"
   },
+  "reminders": {
+    "appointmentSent": "Appointment reminder sent",
+    "appointmentFailed": "Failed to send reminder",
+    "reminderScheduled": "Reminder will be sent the day before",
+    "noTenantPhone": "No tenant phone for reminder"
+  },
   "property": {
     "title": "Property Intel",
     "type": "Type",

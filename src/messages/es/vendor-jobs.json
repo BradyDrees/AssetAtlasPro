@@ -227,6 +227,12 @@
     "saved": "¡Info del sistema guardada!",
     "addAnother": "Registrar Otro Sistema"
   },
+  "reminders": {
+    "appointmentSent": "Recordatorio de cita enviado",
+    "appointmentFailed": "Error al enviar el recordatorio",
+    "reminderScheduled": "El recordatorio se enviará el día anterior",
+    "noTenantPhone": "Sin teléfono del inquilino para recordatorio"
+  },
   "property": {
     "title": "Info de Propiedad",
     "type": "Tipo",

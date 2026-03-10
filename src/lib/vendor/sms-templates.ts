@@ -30,6 +30,10 @@ const TEMPLATES: Record<string, Record<SmsLocale, string>> = {
     en: "Your service at {property} has been completed. Thank you! — {vendor_name}",
     es: "Su servicio en {property} ha sido completado. ¡Gracias! — {vendor_name}",
   },
+  appointment_reminder: {
+    en: "Reminder: You have a service appointment at {property} tomorrow, {date} at {time}. — {vendor_name}",
+    es: "Recordatorio: Tiene una cita de servicio en {property} mañana, {date} a las {time}. — {vendor_name}",
+  },
 };
 
 export function getSmsTemplate(

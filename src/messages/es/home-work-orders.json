@@ -112,5 +112,12 @@
   "signatureRequired": "Firme abajo para aprobar este presupuesto",
   "signatureCaptured": "Firma capturada",
   "resignButton": "Volver a firmar",
-  "signAndApprove": "Firmar y Aprobar"
+  "signAndApprove": "Firmar y Aprobar",
+  "statusUpdated": "Estado actualizado",
+  "assigned": "Proveedor Asignado",
+  "accepted": "Aceptada",
+  "en_route": "En Camino",
+  "on_site": "Técnico en Sitio",
+  "in_progress": "Trabajo en Progreso",
+  "done_pending_approval": "Pendiente de Aprobación"
 }

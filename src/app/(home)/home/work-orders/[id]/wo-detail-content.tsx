@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { createBrowserClient } from "@supabase/ssr";
 import { rateWorkOrder } from "@/app/actions/home-work-orders";
 import { EstimateApproval } from "@/components/home/estimate-approval";
 import { TierComparison } from "@/components/vendor/tier-comparison";
@@ -82,8 +83,88 @@ export function WorkOrderDetailContent({ workOrder, photos, vendorOrg, googleRev
   const [showGooglePrompt, setShowGooglePrompt] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const currentIdx = TIMELINE_STATUSES.indexOf(workOrder.status);
-  const isCompleted = ["completed", "invoiced", "paid"].includes(workOrder.status);
+  // ─── Realtime status tracking ───
+  const [liveStatus, setLiveStatus] = useState(workOrder.status);
+  const [statusToast, setStatusToast] = useState<string | null>(null);
+  const lastSeenRef = useRef(workOrder.status);
+  const updatedAtRef = useRef<string | null>(null);
+
+  const showStatusToast = useCallback((newStatus: string) => {
+    setStatusToast(newStatus);
+    const timeout = setTimeout(() => setStatusToast(null), 5000);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  useEffect(() => {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
+    );
+
+    // Subscribe to WO changes
+    const channel = supabase
+      .channel(`home-wo:${workOrder.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "vendor_work_orders",
+          filter: `id=eq.${workOrder.id}`,
+        },
+        (payload) => {
+          const newRow = payload.new as { status?: string; updated_at?: string };
+          if (!newRow.status) return;
+
+          // Stale race protection: only apply if newer
+          if (newRow.updated_at && updatedAtRef.current && newRow.updated_at <= updatedAtRef.current) {
+            return;
+          }
+          updatedAtRef.current = newRow.updated_at ?? null;
+
+          // Dedup toast: only show if status actually changed
+          if (newRow.status !== lastSeenRef.current) {
+            lastSeenRef.current = newRow.status;
+            setLiveStatus(newRow.status);
+            showStatusToast(newRow.status);
+          }
+        }
+      )
+      .subscribe((status) => {
+        if (status === "CHANNEL_ERROR") {
+          console.warn("[home-wo-realtime] Channel error, using polling fallback");
+        }
+      });
+
+    // Polling fallback: 30s interval
+    const pollInterval = setInterval(async () => {
+      const { data } = await supabase
+        .from("vendor_work_orders")
+        .select("status, updated_at")
+        .eq("id", workOrder.id)
+        .single();
+
+      if (data?.status && data.status !== lastSeenRef.current) {
+        lastSeenRef.current = data.status;
+        updatedAtRef.current = data.updated_at ?? null;
+        setLiveStatus(data.status);
+        showStatusToast(data.status);
+      }
+
+      // Stop polling if terminal
+      if (data?.status && ["completed", "cancelled", "paid"].includes(data.status)) {
+        clearInterval(pollInterval);
+      }
+    }, 30000);
+
+    return () => {
+      supabase.removeChannel(channel);
+      clearInterval(pollInterval);
+    };
+  }, [workOrder.id, showStatusToast]);
+
+  const currentIdx = TIMELINE_STATUSES.indexOf(liveStatus);
+  const isCompleted = ["completed", "invoiced", "paid"].includes(liveStatus);
 
   const handleRating = () => {
     if (rating === 0 || !workOrder.vendor_org_id) return;
@@ -105,6 +186,17 @@ export function WorkOrderDetailContent({ workOrder, photos, vendorOrg, googleRev
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
+      {/* Realtime status toast */}
+      {statusToast && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className={`px-4 py-2.5 rounded-lg shadow-lg border ${STATUS_COLORS[statusToast] ?? "bg-surface-primary text-content-primary border-edge-primary"}`}>
+            <p className="text-sm font-medium">
+              {t("statusUpdated")}: {t(statusToast) || statusToast.replace(/_/g, " ")}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Back + Header */}
       <div>
         <Link href="/home/work-orders" className="text-sm text-content-quaternary hover:text-content-primary transition-colors">
@@ -112,8 +204,8 @@ export function WorkOrderDetailContent({ workOrder, photos, vendorOrg, googleRev
         </Link>
         <div className="flex items-center justify-between mt-2">
           <h1 className="text-2xl font-bold text-content-primary capitalize">{workOrder.trade ?? t("detail")}</h1>
-          <span className={`text-xs font-medium px-3 py-1 rounded-full border ${STATUS_COLORS[workOrder.status] ?? "bg-charcoal-500/20 text-charcoal-400"}`}>
-            {workOrder.status.replace(/_/g, " ")}
+          <span className={`text-xs font-medium px-3 py-1 rounded-full border transition-all ${STATUS_COLORS[liveStatus] ?? "bg-charcoal-500/20 text-charcoal-400"}`}>
+            {t(liveStatus) || liveStatus.replace(/_/g, " ")}
           </span>
         </div>
       </div>
@@ -176,7 +268,7 @@ export function WorkOrderDetailContent({ workOrder, photos, vendorOrg, googleRev
             </Link>
           </div>
         </div>
-      ) : ["open", "no_match"].includes(workOrder.status) ? (
+      ) : ["open", "no_match"].includes(liveStatus) ? (
         <div className="bg-surface-primary rounded-xl border border-edge-primary p-6 text-center">
           <p className="text-sm text-content-tertiary mb-3">{t("noVendorYet")}</p>
           <Link

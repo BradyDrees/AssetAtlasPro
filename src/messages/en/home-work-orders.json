@@ -112,5 +112,12 @@
   "signatureRequired": "Please sign below to approve this estimate",
   "signatureCaptured": "Signature captured",
   "resignButton": "Re-sign",
-  "signAndApprove": "Sign & Approve"
+  "signAndApprove": "Sign & Approve",
+  "statusUpdated": "Status updated",
+  "assigned": "Vendor Assigned",
+  "accepted": "Accepted",
+  "en_route": "On the Way",
+  "on_site": "Technician On Site",
+  "in_progress": "Work In Progress",
+  "done_pending_approval": "Pending Approval"
 }

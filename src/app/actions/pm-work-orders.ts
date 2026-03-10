@@ -5,6 +5,10 @@ import { requirePmRole, logActivity } from "@/lib/vendor/role-helpers";
 import type { CreateWorkOrderInput } from "@/lib/vendor/work-order-types";
 import type { VendorWorkOrder } from "@/lib/vendor/work-order-types";
 import { createContextualThread, syncContactsFromWorkOrder } from "@/app/actions/messaging";
+import { getEntityEvents } from "@/lib/platform/domain-events";
+import type { DomainEvent } from "@/lib/platform/domain-events";
+import { transitionWorkOrder } from "@/lib/vendor/wo-state-machine";
+import type { WoStatus } from "@/lib/vendor/types";
 
 // ============================================
 // PM creates a work order for a vendor
@@ -325,4 +329,340 @@ export async function rescheduleJobAsPm(
   });
 
   return { ok: true };
+}
+
+// ============================================
+// Split Fetchers for WO Detail Page
+// ============================================
+
+/** WO summary with vendor org name + assigned user */
+export async function getPmWorkOrderSummary(woId: string): Promise<{
+  data?: VendorWorkOrder & {
+    vendor_name: string;
+    assigned_user_name: string | null;
+  };
+  error?: string;
+}> {
+  await requirePmRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { data: wo, error } = await supabase
+    .from("vendor_work_orders")
+    .select("*")
+    .eq("id", woId)
+    .eq("pm_user_id", user.id)
+    .single();
+
+  if (error || !wo) return { error: error?.message ?? "Work order not found" };
+
+  // Fetch vendor org name
+  const { data: vendorOrg } = await supabase
+    .from("vendor_organizations")
+    .select("name")
+    .eq("id", wo.vendor_org_id)
+    .single();
+
+  // Fetch assigned user name if set
+  let assignedUserName: string | null = null;
+  if (wo.assigned_to) {
+    const { data: vendorUser } = await supabase
+      .from("vendor_users")
+      .select("user_id")
+      .eq("id", wo.assigned_to)
+      .single();
+    if (vendorUser?.user_id) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", vendorUser.user_id)
+        .single();
+      assignedUserName = profile?.full_name ?? null;
+    }
+  }
+
+  return {
+    data: {
+      ...(wo as VendorWorkOrder),
+      vendor_name: vendorOrg?.name ?? "Unknown Vendor",
+      assigned_user_name: assignedUserName,
+    },
+  };
+}
+
+/** Paginated photos for a WO (PM view, capped at 50) */
+export async function getPmWorkOrderPhotos(woId: string): Promise<{
+  data: Array<{
+    id: string;
+    storage_path: string;
+    caption: string | null;
+    photo_type: string;
+    created_at: string;
+    url: string;
+  }>;
+  error?: string;
+}> {
+  await requirePmRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { data: [], error: "Not authenticated" };
+
+  // Verify PM owns this WO
+  const { data: wo } = await supabase
+    .from("vendor_work_orders")
+    .select("id")
+    .eq("id", woId)
+    .eq("pm_user_id", user.id)
+    .single();
+  if (!wo) return { data: [], error: "Not authorized" };
+
+  const { data: photos, error } = await supabase
+    .from("work_order_photos")
+    .select("id, storage_path, caption, photo_type, created_at")
+    .eq("work_order_id", woId)
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  if (error) return { data: [], error: error.message };
+
+  // Generate signed URLs
+  const withUrls = await Promise.all(
+    (photos ?? []).map(async (p) => {
+      const { data: signed } = await supabase.storage
+        .from("dd-captures")
+        .createSignedUrl(p.storage_path, 3600);
+      return { ...p, url: signed?.signedUrl ?? "" };
+    })
+  );
+
+  return { data: withUrls };
+}
+
+/** Time entries for a WO */
+export async function getPmWorkOrderTimeLog(woId: string): Promise<{
+  data: Array<{
+    id: string;
+    vendor_user_id: string | null;
+    worker_name: string | null;
+    clock_in: string;
+    clock_out: string | null;
+    duration_minutes: number | null;
+    hourly_rate: number | null;
+    notes: string | null;
+    is_on_site: boolean | null;
+  }>;
+  error?: string;
+}> {
+  await requirePmRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { data: [], error: "Not authenticated" };
+
+  // Verify PM owns this WO
+  const { data: wo } = await supabase
+    .from("vendor_work_orders")
+    .select("id")
+    .eq("id", woId)
+    .eq("pm_user_id", user.id)
+    .single();
+  if (!wo) return { data: [], error: "Not authorized" };
+
+  const { data: entries, error } = await supabase
+    .from("vendor_wo_time_entries")
+    .select("id, vendor_user_id, clock_in, clock_out, duration_minutes, hourly_rate, notes, is_on_site")
+    .eq("work_order_id", woId)
+    .order("clock_in", { ascending: false });
+
+  if (error) return { data: [], error: error.message };
+
+  // Resolve worker names
+  const withNames = await Promise.all(
+    (entries ?? []).map(async (e) => {
+      let workerName: string | null = null;
+      if (e.vendor_user_id) {
+        const { data: vu } = await supabase
+          .from("vendor_users")
+          .select("user_id")
+          .eq("id", e.vendor_user_id)
+          .single();
+        if (vu?.user_id) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("full_name")
+            .eq("id", vu.user_id)
+            .single();
+          workerName = profile?.full_name ?? null;
+        }
+      }
+      return { ...e, worker_name: workerName };
+    })
+  );
+
+  return { data: withNames };
+}
+
+/** Linked estimate + invoice for a WO */
+export async function getPmWorkOrderFinancials(woId: string): Promise<{
+  data: {
+    estimate: {
+      id: string;
+      status: string;
+      total: number;
+      created_at: string;
+    } | null;
+    invoice: {
+      id: string;
+      status: string;
+      total: number;
+      created_at: string;
+    } | null;
+    materials_total: number;
+    labor_total: number;
+  };
+  error?: string;
+}> {
+  await requirePmRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user)
+    return {
+      data: { estimate: null, invoice: null, materials_total: 0, labor_total: 0 },
+      error: "Not authenticated",
+    };
+
+  // Verify PM owns this WO
+  const { data: wo } = await supabase
+    .from("vendor_work_orders")
+    .select("id")
+    .eq("id", woId)
+    .eq("pm_user_id", user.id)
+    .single();
+  if (!wo)
+    return {
+      data: { estimate: null, invoice: null, materials_total: 0, labor_total: 0 },
+      error: "Not authorized",
+    };
+
+  // Fetch estimate
+  const { data: estimate } = await supabase
+    .from("vendor_estimates")
+    .select("id, status, total, created_at")
+    .eq("work_order_id", woId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  // Fetch invoice
+  const { data: invoice } = await supabase
+    .from("vendor_invoices")
+    .select("id, status, total, created_at")
+    .eq("work_order_id", woId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  // Materials total
+  const { data: materials } = await supabase
+    .from("vendor_wo_materials")
+    .select("total")
+    .eq("work_order_id", woId);
+  const materialsTotal = (materials ?? []).reduce(
+    (sum, m) => sum + (Number(m.total) || 0),
+    0
+  );
+
+  // Labor total from time entries
+  const { data: timeEntries } = await supabase
+    .from("vendor_wo_time_entries")
+    .select("duration_minutes, hourly_rate")
+    .eq("work_order_id", woId);
+  const laborTotal = (timeEntries ?? []).reduce((sum, t) => {
+    const hours = (t.duration_minutes ?? 0) / 60;
+    return sum + hours * (t.hourly_rate ?? 0);
+  }, 0);
+
+  return {
+    data: {
+      estimate: estimate ?? null,
+      invoice: invoice ?? null,
+      materials_total: materialsTotal,
+      labor_total: laborTotal,
+    },
+  };
+}
+
+/** Activity timeline from domain events */
+export async function getPmWorkOrderActivity(woId: string): Promise<{
+  data: DomainEvent[];
+  error?: string;
+}> {
+  await requirePmRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { data: [], error: "Not authenticated" };
+
+  // Verify PM owns this WO
+  const { data: wo } = await supabase
+    .from("vendor_work_orders")
+    .select("id")
+    .eq("id", woId)
+    .eq("pm_user_id", user.id)
+    .single();
+  if (!wo) return { data: [], error: "Not authorized" };
+
+  const events = await getEntityEvents("work_order", woId, 20);
+  return { data: events };
+}
+
+// ============================================
+// PM Status Transitions (via canonical state machine)
+// ============================================
+
+export async function pmTransitionWorkOrder(
+  woId: string,
+  newStatus: WoStatus,
+  metadata?: {
+    scheduledDate?: string;
+    scheduledTimeStart?: string;
+    scheduledTimeEnd?: string;
+    extra?: Record<string, unknown>;
+  }
+): Promise<{ success: boolean; error?: string }> {
+  await requirePmRole();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "Not authenticated" };
+
+  // Verify PM owns this WO
+  const { data: wo } = await supabase
+    .from("vendor_work_orders")
+    .select("id, pm_user_id")
+    .eq("id", woId)
+    .eq("pm_user_id", user.id)
+    .single();
+  if (!wo) return { success: false, error: "Not authorized" };
+
+  const result = await transitionWorkOrder(woId, newStatus, "pm", {
+    actorUserId: user.id,
+    pmUserId: user.id,
+    scheduledDate: metadata?.scheduledDate,
+    scheduledTimeStart: metadata?.scheduledTimeStart,
+    scheduledTimeEnd: metadata?.scheduledTimeEnd,
+    extra: metadata?.extra,
+  });
+
+  return { success: result.success, error: result.error };
 }

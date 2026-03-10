@@ -41,6 +41,9 @@ export default getRequestConfig(async () => {
   // Shared messaging module (used across Pro, Vendor, Home, Operate)
   const messaging = (await import(`../messages/${locale}/messaging.json`)).default;
 
+  // Operate (PM) namespace files
+  const operateWorkOrders = (await import(`../messages/${locale}/operate-work-orders.json`)).default;
+
   // Home (homeowner) namespace files
   const homeNav = (await import(`../messages/${locale}/home-nav.json`)).default;
   const homeOnboarding = (await import(`../messages/${locale}/home-onboarding.json`)).default;
@@ -79,6 +82,9 @@ export default getRequestConfig(async () => {
       directory: vendorDirectory,
       reviews: vendorReviews,
       inventory: vendorInventory,
+    },
+    operate: {
+      workOrders: operateWorkOrders,
     },
     home: {
       nav: homeNav,

@@ -164,7 +164,29 @@
   },
   "tabs": {
     "pm": "Clientes PM",
-    "direct": "Clientes Directos"
+    "direct": "Clientes Directos",
+    "pipeline": "Pipeline"
+  },
+  "pipeline": {
+    "backToClients": "Volver a Clientes",
+    "lifetimeRevenue": "Ingresos Totales",
+    "lastJob": "Último Trabajo",
+    "source": "Fuente",
+    "changeStatus": "Cambiar Estado",
+    "followup": "Seguimiento",
+    "setFollowup": "Fijar",
+    "notes": "Notas",
+    "addNote": "Agregar",
+    "addNotePlaceholder": "Agregar una nota...",
+    "noNotes": "Sin notas aún",
+    "status": {
+      "new": "Nuevo",
+      "contacted": "Contactado",
+      "quoted": "Cotizado",
+      "won": "Ganado",
+      "lost": "Perdido",
+      "active": "Activo"
+    }
   },
   "direct": {
     "title": "Clientes Directos",

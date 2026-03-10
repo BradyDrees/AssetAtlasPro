@@ -164,7 +164,29 @@
   },
   "tabs": {
     "pm": "PM Clients",
-    "direct": "Direct Clients"
+    "direct": "Direct Clients",
+    "pipeline": "Pipeline"
+  },
+  "pipeline": {
+    "backToClients": "Back to Clients",
+    "lifetimeRevenue": "Lifetime Revenue",
+    "lastJob": "Last Job",
+    "source": "Source",
+    "changeStatus": "Change Status",
+    "followup": "Follow-up",
+    "setFollowup": "Set",
+    "notes": "Notes",
+    "addNote": "Add",
+    "addNotePlaceholder": "Add a note...",
+    "noNotes": "No notes yet",
+    "status": {
+      "new": "New",
+      "contacted": "Contacted",
+      "quoted": "Quoted",
+      "won": "Won",
+      "lost": "Lost",
+      "active": "Active"
+    }
   },
   "direct": {
     "title": "Direct Clients",

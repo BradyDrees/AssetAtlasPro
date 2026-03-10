@@ -5,19 +5,23 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ClientCard } from "./client-card";
 import { ClientImport } from "./client-import";
+import { PipelineBoard } from "./pipeline-board";
 import { VendorInvitePmModal } from "./vendor-invite-pm-modal";
 import { ClientInviteModal } from "./client-invite-modal";
 import {
   getDirectClients,
   createDirectClient,
   deleteDirectClient,
+  getDirectClientsWithPipeline,
 } from "@/app/actions/vendor-clients-direct";
 import type { ClientWithStats } from "@/app/actions/vendor-clients";
 import type { VendorClient, CreateClientInput } from "@/lib/vendor/expense-types";
+import type { ClientWithPipeline } from "@/app/actions/vendor-clients-direct";
 
 interface VendorClientsTabbedProps {
   pmClients: ClientWithStats[];
   directClients: VendorClient[];
+  pipelineClients?: ClientWithPipeline[];
 }
 
 const CLIENT_TYPES = ["direct", "homeowner", "business", "other"] as const;
@@ -25,11 +29,13 @@ const CLIENT_TYPES = ["direct", "homeowner", "business", "other"] as const;
 export function VendorClientsTabbed({
   pmClients,
   directClients: initialDirectClients,
+  pipelineClients: initialPipelineClients,
 }: VendorClientsTabbedProps) {
   const t = useTranslations("vendor.clients");
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"pm" | "direct">("pm");
+  const [activeTab, setActiveTab] = useState<"pm" | "direct" | "pipeline">("pm");
   const [directClients, setDirectClients] = useState(initialDirectClients);
+  const [pipelineClients, setPipelineClients] = useState<ClientWithPipeline[]>(initialPipelineClients ?? []);
   const [search, setSearch] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -57,6 +63,13 @@ export function VendorClientsTabbed({
     startTransition(async () => {
       const { data } = await getDirectClients();
       setDirectClients(data);
+    });
+  };
+
+  const refreshPipeline = () => {
+    startTransition(async () => {
+      const { data } = await getDirectClientsWithPipeline();
+      setPipelineClients(data);
     });
   };
 
@@ -142,10 +155,22 @@ export function VendorClientsTabbed({
               </span>
             )}
           </button>
+          <button
+            onClick={() => setActiveTab("pipeline")}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === "pipeline"
+                ? "bg-surface-primary text-content-primary shadow-sm"
+                : "text-content-tertiary hover:text-content-primary"
+            }`}
+          >
+            {t("tabs.pipeline")}
+          </button>
         </div>
 
         {/* Action buttons — different per tab */}
-        {activeTab === "pm" ? (
+        {activeTab === "pipeline" ? (
+          <div />
+        ) : activeTab === "pm" ? (
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowInviteClient(true)}
@@ -558,6 +583,11 @@ export function VendorClientsTabbed({
             </div>
           )}
         </>
+      )}
+
+      {/* Pipeline tab content */}
+      {activeTab === "pipeline" && (
+        <PipelineBoard clients={pipelineClients} onUpdate={refreshPipeline} />
       )}
 
       {/* PM tab modals — always in DOM so state isn't lost */}

@@ -137,6 +137,162 @@ export async function deleteDirectClient(clientId: string): Promise<{ error?: st
   return {};
 }
 
+// ─── Pipeline / CRM Actions ──────────────────────────────
+
+export interface ClientNote {
+  id: string;
+  client_id: string;
+  note: string;
+  is_system: boolean;
+  created_by: string | null;
+  created_at: string;
+}
+
+export interface ClientWithPipeline extends VendorClient {
+  lead_status: string;
+  lead_source: string | null;
+  next_followup_at: string | null;
+  tags: string[];
+  lifetime_revenue: number;
+  last_job_at: string | null;
+}
+
+/** Update lead status + auto-insert system note */
+export async function updateLeadStatus(
+  clientId: string,
+  newStatus: string,
+  oldStatus: string
+): Promise<{ error?: string }> {
+  const { vendor_org_id } = await requireVendorRole();
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const validStatuses = ["new", "contacted", "quoted", "won", "lost", "active"];
+  if (!validStatuses.includes(newStatus)) return { error: "Invalid status" };
+
+  // Update the client
+  const { error } = await supabase
+    .from("vendor_clients")
+    .update({ lead_status: newStatus })
+    .eq("id", clientId)
+    .eq("vendor_org_id", vendor_org_id);
+
+  if (error) return { error: error.message };
+
+  // Auto-insert system note
+  await supabase.from("vendor_client_notes").insert({
+    vendor_org_id,
+    client_id: clientId,
+    note: `Lead moved from ${oldStatus} to ${newStatus}`,
+    is_system: true,
+    created_by: user.id,
+  });
+
+  await logActivity({
+    entityType: "client",
+    entityId: clientId,
+    action: "status_changed",
+    metadata: { from: oldStatus, to: newStatus },
+  });
+
+  return {};
+}
+
+/** Add a manual note to a client */
+export async function addClientNote(
+  clientId: string,
+  note: string
+): Promise<{ data?: ClientNote; error?: string }> {
+  const { vendor_org_id } = await requireVendorRole();
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { data, error } = await supabase
+    .from("vendor_client_notes")
+    .insert({
+      vendor_org_id,
+      client_id: clientId,
+      note: note.trim(),
+      is_system: false,
+      created_by: user.id,
+    })
+    .select()
+    .single();
+
+  if (error) return { error: error.message };
+  return { data: data as ClientNote };
+}
+
+/** Get client with notes timeline */
+export async function getClientWithHistory(
+  clientId: string
+): Promise<{
+  client: ClientWithPipeline | null;
+  notes: ClientNote[];
+  error?: string;
+}> {
+  await requireVendorRole();
+  const supabase = await createClient();
+
+  const [clientRes, notesRes] = await Promise.all([
+    supabase
+      .from("vendor_clients")
+      .select("*")
+      .eq("id", clientId)
+      .single(),
+    supabase
+      .from("vendor_client_notes")
+      .select("*")
+      .eq("client_id", clientId)
+      .order("created_at", { ascending: false })
+      .limit(50),
+  ]);
+
+  if (clientRes.error) return { client: null, notes: [], error: clientRes.error.message };
+
+  return {
+    client: clientRes.data as ClientWithPipeline,
+    notes: (notesRes.data ?? []) as ClientNote[],
+  };
+}
+
+/** Set follow-up reminder */
+export async function setFollowup(
+  clientId: string,
+  followupAt: string | null
+): Promise<{ error?: string }> {
+  await requireVendorRole();
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("vendor_clients")
+    .update({ next_followup_at: followupAt })
+    .eq("id", clientId);
+
+  if (error) return { error: error.message };
+  return {};
+}
+
+/** Get all direct clients with pipeline fields */
+export async function getDirectClientsWithPipeline(): Promise<{
+  data: ClientWithPipeline[];
+  error?: string;
+}> {
+  const { vendor_org_id } = await requireVendorRole();
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("vendor_clients")
+    .select("*")
+    .eq("vendor_org_id", vendor_org_id)
+    .order("updated_at", { ascending: false });
+
+  if (error) return { data: [], error: error.message };
+  return { data: (data ?? []) as ClientWithPipeline[] };
+}
+
 /** Import clients from CSV data — row cap 500 */
 export async function importClientsFromCsv(
   rows: CreateClientInput[]

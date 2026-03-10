@@ -30,22 +30,22 @@
     "redirecting": "Redirigiendo a tus clientes…",
     "failed": "Invitación Fallida",
     "unknownError": "Ocurrió un error desconocido",
-    "goToDashboard": "Ir al Panel"
+    "goToDashboard": "Ir a Inicio"
   },
   "pmVendors": {
-    "title": "Clientes Conectados",
-    "inviteVendor": "Invitar Vendedor",
-    "vendorEmail": "Correo del Vendedor",
-    "emailPlaceholder": "Correo empresarial del vendedor...",
+    "title": "Contratistas Conectados",
+    "inviteVendor": "Invitar Contratista",
+    "vendorEmail": "Correo del Contratista",
+    "emailPlaceholder": "Correo del contratista...",
     "invite": "Enviar Invitación",
     "sending": "Enviando...",
     "inviteSent": "¡Invitación enviada!",
     "inviteResent": "¡Invitación reenviada!",
     "inviteError": "Error al enviar invitación",
-    "noVendors": "Sin vendedores conectados aún",
-    "noResults": "Ningún vendedor coincide con tu búsqueda",
+    "noVendors": "Sin contratistas conectados aún",
+    "noResults": "Ningún contratista coincide con tu búsqueda",
     "searchPlaceholder": "Buscar por nombre, correo o oficio...",
-    "copyLink": "Comparte este enlace de invitación con tu vendedor:",
+    "copyLink": "Comparte este enlace de invitación con tu contratista:",
     "copy": "Copiar",
     "linkExpiry": "Este enlace expira en 7 días.",
     "done": "Listo",
@@ -66,7 +66,7 @@
     "recentJobs": "Trabajos Recientes",
     "settings": "Configuración de Relación",
     "notes": "Notas",
-    "notesPlaceholder": "Notas internas sobre este vendedor...",
+    "notesPlaceholder": "Notas internas sobre este contratista...",
     "saveNotes": "Guardar Notas",
     "saving": "Guardando...",
     "loading": "Cargando...",
@@ -81,8 +81,8 @@
     },
     "confirm": {
       "suspend": {
-        "title": "Suspender Vendedor",
-        "body": "¿Estás seguro de querer suspender a {name}? Las nuevas asignaciones de órdenes de trabajo serán pausadas.",
+        "title": "Suspender Contratista",
+        "body": "¿Estás seguro de querer suspender a {name}? Los nuevos trabajos serán pausados.",
         "confirm": "Suspender"
       },
       "terminate": {
@@ -91,8 +91,8 @@
         "confirm": "Terminar"
       },
       "reactivate": {
-        "title": "Reactivar Vendedor",
-        "body": "¿Reactivar tu relación con {name}? Las asignaciones de órdenes de trabajo pueden reanudarse.",
+        "title": "Reactivar Contratista",
+        "body": "¿Reactivar tu relación con {name}? Los trabajos pueden reanudarse.",
         "confirm": "Reactivar"
       },
       "resend": {
@@ -197,7 +197,7 @@
     "namePlaceholder": "Nombre del negocio o cliente...",
     "contactName": "Nombre de Contacto",
     "contactPlaceholder": "Persona de contacto...",
-    "phone": "Teléfono",
+    "phone": "Celular",
     "email": "Correo",
     "address": "Dirección",
     "city": "Ciudad",

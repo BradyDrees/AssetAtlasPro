@@ -5,7 +5,6 @@
   "createFirst": "Crea tu primer acuerdo",
   "filterAll": "Todos",
   "monthlyRevenue": "Ingresos Mensuales",
-
   "serviceType": "Tipo de Servicio",
   "serviceTypePlaceholder": "ej. Mantenimiento HVAC",
   "trade": "Oficio",
@@ -23,7 +22,6 @@
   "nextDue": "Próxima Fecha",
   "lastGenerated": "Última Generación",
   "notFound": "Acuerdo no encontrado",
-
   "status": {
     "active": "Activo",
     "paused": "Pausado",
@@ -38,12 +36,10 @@
     "semi_annual": "Semestral",
     "annual": "Anual"
   },
-
-  "generateWo": "Generar Orden de Trabajo",
+  "generateWo": "Generar Trabajo",
   "pause": "Pausar",
   "resume": "Reanudar",
   "cancelAgreement": "Cancelar Acuerdo",
-
   "cancel": "Cancelar",
   "save": "Crear Acuerdo",
   "saving": "Creando..."

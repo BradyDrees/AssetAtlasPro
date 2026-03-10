@@ -6,7 +6,7 @@
   "all": "Todos los Trabajos",
   "unscheduled": "Sin Programar",
   "noJobs": "Sin trabajos aún",
-  "noIncoming": "Sin órdenes de trabajo entrantes",
+  "noIncoming": "Sin trabajos entrantes",
   "noUnscheduled": "Sin trabajos sin programar",
   "export": "Exportar CSV",
   "exporting": "Exportando...",
@@ -15,7 +15,7 @@
     "all": "Todos",
     "byStatus": "Por Estado",
     "byPriority": "Por Prioridad",
-    "byTrade": "Por Oficio",
+    "byTrade": "Por Servicio",
     "byClient": "Por Cliente",
     "byJobType": "Por Tipo de Trabajo",
     "byTech": "Por Técnico",
@@ -63,7 +63,7 @@
     "pmNotes": "Notas del PM",
     "accessNotes": "Notas de Acceso",
     "budget": "Presupuesto",
-    "trade": "Oficio",
+    "trade": "Servicio",
     "scheduled": "Programado",
     "materials": "Materiales",
     "timeLog": "Registro de Tiempo",
@@ -133,13 +133,13 @@
     "noHistory": "Sin trabajos previos en esta propiedad",
     "pastJobs": "Trabajos Previos",
     "totalInvoiced": "Total Facturado",
-    "previousWork": "Órdenes de Trabajo Anteriores"
+    "previousWork": "Trabajos Anteriores"
   },
   "chat": {
     "title": "Chat con PM",
     "noMessages": "Sin mensajes aún. ¡Inicia la conversación!",
     "placeholder": "Escribe un mensaje...",
-    "vendor": "Proveedor"
+    "vendor": "Contratista"
   },
   "linkedEstimate": {
     "title": "Presupuesto Vinculado",
@@ -148,7 +148,7 @@
   "assignment": {
     "assignWorker": "Asignar Trabajador",
     "unassigned": "Sin Asignar",
-    "assignSuccess": "Trabajador asignado exitosamente",
+    "assignSuccess": "Trabajador asignado",
     "assignError": "Error al asignar trabajador",
     "noMembers": "Sin miembros del equipo"
   },
@@ -169,7 +169,7 @@
     "address": "Dirección",
     "addressPlaceholder": "123 Calle Principal, Ciudad, Estado",
     "descriptionPlaceholder": "Describe el trabajo a realizar...",
-    "selectTrade": "Seleccionar oficio...",
+    "selectTrade": "Seleccionar servicio...",
     "priority": "Prioridad",
     "schedule": "Programar (opcional)",
     "tenantPlaceholder": "Nombre del inquilino...",
@@ -195,21 +195,21 @@
     "sendLink": "Enviar Enlace de Seguimiento",
     "linkCopied": "¡Enlace copiado!",
     "linkSent": "¡Enlace enviado!",
-    "noPhone": "Sin número de teléfono del inquilino",
+    "noPhone": "Sin celular del inquilino",
     "sendError": "Error al enviar enlace de seguimiento",
     "statusTimeline": "Línea de Tiempo del Estado",
     "eta": "Llegada Estimada",
     "completedAt": "Completado",
     "poweredBy": "Impulsado por Asset Atlas Pro",
     "notFound": "Enlace de seguimiento no encontrado",
-    "notFoundDesc": "Este enlace de seguimiento es inválido o ha expirado.",
-    "vendorInfo": "Tu Proveedor de Servicio",
+    "notFoundDesc": "Este enlace es inválido o ha expirado.",
+    "vendorInfo": "Tu Contratista",
     "scheduledFor": "Programado Para",
     "jobStatus": "Estado del Trabajo"
   },
   "systemInfo": {
     "title": "Registrar Info del Sistema",
-    "description": "Registre los detalles del sistema de este trabajo para los archivos del propietario",
+    "description": "Registra los detalles del sistema de este trabajo para los archivos del propietario",
     "systemType": "Tipo de Sistema",
     "make": "Marca",
     "makePlaceholder": "ej. Carrier, Rheem",
@@ -231,7 +231,7 @@
     "appointmentSent": "Recordatorio de cita enviado",
     "appointmentFailed": "Error al enviar el recordatorio",
     "reminderScheduled": "El recordatorio se enviará el día anterior",
-    "noTenantPhone": "Sin teléfono del inquilino para recordatorio"
+    "noTenantPhone": "Sin celular del inquilino para recordatorio"
   },
   "property": {
     "title": "Info de Propiedad",

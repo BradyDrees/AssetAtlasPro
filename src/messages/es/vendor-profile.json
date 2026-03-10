@@ -2,28 +2,24 @@
   "title": "Perfil Empresarial",
   "editProfile": "Editar Perfil",
   "saveChanges": "Guardar Cambios",
-  "loadError": "Error al cargar datos del perfil. Inténtelo de nuevo.",
+  "loadError": "Error al cargar datos del perfil. Inténtalo de nuevo.",
   "savedSuccess": "Cambios guardados exitosamente",
-  "saveError": "Error al guardar cambios. Inténtelo de nuevo.",
+  "saveError": "Error al guardar cambios. Inténtalo de nuevo.",
   "saving": "Guardando…",
-
   "companyInfo": "Información de la Empresa",
   "companyName": "Nombre de la Empresa",
   "orgEmail": "Correo Empresarial",
   "orgPhone": "Teléfono Empresarial",
   "description": "Descripción",
   "contactInfo": "Información de Contacto",
-
   "address": "Dirección",
   "streetAddress": "Calle",
   "city": "Ciudad",
   "state": "Estado",
   "zip": "Código Postal",
-
   "changeLogo": "Cambiar Logo",
   "uploading": "Subiendo…",
   "logoUploaded": "Logo subido exitosamente",
-
   "serviceSettings": "Configuración de Servicio",
   "serviceArea": "Área de Servicio",
   "serviceRadius": "Radio de Servicio",
@@ -31,7 +27,6 @@
   "maxConcurrentJobs": "Trabajos Simultáneos Máx.",
   "saveCompany": "Guardar Info de Empresa",
   "saveSettings": "Guardar Configuración",
-
   "tradesOffered": "Oficios Ofrecidos",
   "trades": {
     "plumbing": "Plomería",
@@ -55,7 +50,6 @@
     "windows_doors": "Ventanas y Puertas",
     "fire_safety": "Seguridad Contra Incendios"
   },
-
   "personalInfo": "Información Personal",
   "firstName": "Nombre",
   "lastName": "Apellido",
@@ -63,7 +57,6 @@
   "userEmail": "Correo Electrónico",
   "roleLabel": "Rol",
   "savePersonal": "Guardar Info Personal",
-
   "credentials": {
     "title": "Credenciales y Seguros",
     "upload": "Subir Credencial",
@@ -117,7 +110,6 @@
       "other": "Otro"
     }
   },
-
   "settings": {
     "title": "Configuración de Organización",
     "numbering": "Numeración",
@@ -149,7 +141,7 @@
     "autoShowEstimate": "Mostrar Estimación al Propietario",
     "autoShowEstimateDesc": "Reenviar automáticamente estimaciones aprobadas al propietario.",
     "smsNotifications": "Notificaciones SMS",
-    "smsNotificationsDesc": "Enviar SMS automáticamente a los inquilinos cuando cambie el estado de la orden de trabajo.",
+    "smsNotificationsDesc": "Enviar SMS automáticamente a los inquilinos cuando cambie el estado del trabajo.",
     "smsStatus_scheduled": "Trabajo Programado",
     "smsStatus_en_route": "Técnico en Camino",
     "smsStatus_on_site": "Técnico Llegó",
@@ -168,7 +160,6 @@
     "jobTypePlaceholder": "Agregar tipo de trabajo…",
     "subStatusPlaceholder": "Agregar sub-estado…"
   },
-
   "skills": {
     "title": "Habilidades y Certificaciones",
     "namePlaceholder": "Nombre de habilidad...",
@@ -183,7 +174,6 @@
     "assigned": "Habilidad asignada",
     "assignError": "Error al asignar habilidad"
   },
-
   "team": {
     "title": "Gestión de Equipo",
     "members": "Miembros del Equipo",

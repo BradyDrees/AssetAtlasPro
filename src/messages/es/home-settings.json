@@ -1,9 +1,9 @@
 {
-  "settings": "Configuraci\u00f3n",
-  "settingsDesc": "Administra tus preferencias de cuenta",
+  "settings": "Configuración",
+  "settingsDesc": "Controla tus preferencias de cuenta",
   "language": "Idioma",
-  "english": "Ingl\u00e9s",
-  "spanish": "Espa\u00f1ol",
+  "english": "Inglés",
+  "spanish": "Español",
   "theme": "Tema",
   "light": "Claro",
   "dark": "Oscuro",
@@ -11,7 +11,7 @@
   "emailNotifications": "Notificaciones por correo",
   "smsNotifications": "Notificaciones SMS",
   "subscription": "Suscripción y Fondo",
-  "subscriptionLink": "Administra planes y fondo de mantenimiento",
-  "matching": "Emparejamiento de Proveedores",
-  "matchingLink": "Configura preferencias de emparejamiento"
+  "subscriptionLink": "Controla tus planes y fondo para tu hogar",
+  "matching": "Tus Preferencias de Contratistas",
+  "matchingLink": "Configura cómo elegimos tus contratistas"
 }

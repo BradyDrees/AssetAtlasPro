@@ -1,5 +1,5 @@
 {
-  "title": "Configura tu Cuenta de Proveedor",
+  "title": "Configura tu Cuenta de Contratista",
   "subtitle": "Cuéntanos sobre tu negocio para comenzar",
   "companyName": "Nombre de la Empresa",
   "companyNamePlaceholder": "ej. Smith Plomería LLC",
@@ -31,10 +31,10 @@
   "maxConcurrentJobs": "Máximo de Trabajos Simultáneos",
   "description": "Acerca de tu Negocio",
   "descriptionPlaceholder": "Breve descripción de tu empresa y servicios",
-  "createAccount": "Crear Cuenta de Proveedor",
+  "createAccount": "Crear Cuenta",
   "creating": "Creando...",
-  "success": "¡Cuenta de proveedor creada exitosamente!",
-  "error": "Error al crear la cuenta de proveedor. Inténtalo de nuevo.",
-  "alreadyHaveAccount": "Ya tienes una cuenta de proveedor.",
-  "goToDashboard": "Ir al Panel"
+  "success": "¡Cuenta creada exitosamente!",
+  "error": "Error al crear tu cuenta. Inténtalo de nuevo.",
+  "alreadyHaveAccount": "Ya tienes una cuenta.",
+  "goToDashboard": "Ir a Inicio"
 }

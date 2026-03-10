@@ -1,12 +1,12 @@
 {
-  "pageTitle": "Preferencias de Emparejamiento",
-  "pageDesc": "Controla cómo seleccionamos proveedores para tus órdenes de trabajo",
+  "pageTitle": "Tus Preferencias de Contratistas",
+  "pageDesc": "Controla cómo elegimos contratistas para tus solicitudes",
   "backToSettings": "Volver a Configuración",
-  "title": "Preferencias de Emparejamiento",
-  "description": "Ajusta la importancia de cada factor al emparejarte con proveedores. Los pesos deben sumar 100%.",
+  "title": "Tus Preferencias de Contratistas",
+  "description": "Ajusta la importancia de cada factor al buscar contratistas. Los pesos deben sumar 100%.",
   "balanced": "Equilibrado",
   "best_price": "Mejor Precio",
-  "best_vendor": "Mejor Proveedor",
+  "best_vendor": "Mejor Contratista",
   "fastest": "Más Rápido",
   "custom": "Personalizado",
   "proximity": "Proximidad",
@@ -20,9 +20,9 @@
   "saved": "¡Guardado!",
   "savePreferences": "Guardar Preferencias",
   "howItWorks": "Cómo Funciona",
-  "proximityExplain": "Proximidad: Mayor peso favorece proveedores más cercanos a tu propiedad",
-  "ratingExplain": "Calificación: Mayor peso favorece proveedores con mejores reseñas y calificaciones",
-  "availabilityExplain": "Disponibilidad: Mayor peso favorece proveedores con horarios abiertos",
-  "responseExplain": "Tiempo de Respuesta: Mayor peso favorece proveedores que responden rápido",
-  "priceExplain": "Precio: Mayor peso favorece proveedores con precios competitivos"
+  "proximityExplain": "Proximidad: Mayor peso favorece contratistas más cercanos a tu hogar",
+  "ratingExplain": "Calificación: Mayor peso favorece contratistas con mejores reseñas",
+  "availabilityExplain": "Disponibilidad: Mayor peso favorece contratistas con horarios abiertos",
+  "responseExplain": "Tiempo de Respuesta: Mayor peso favorece contratistas que responden rápido",
+  "priceExplain": "Precio: Mayor peso favorece contratistas con precios competitivos"
 }

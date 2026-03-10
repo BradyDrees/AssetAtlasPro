@@ -7,21 +7,21 @@
     "financials": "Finanzas",
     "activity": "Actividad"
   },
-  "vendorLabel": "Proveedor",
+  "vendorLabel": "Contratista",
   "assignedTo": "Asignado a",
   "unassigned": "Sin asignar",
-  "address": "Direcci\u00f3n",
+  "address": "Dirección",
   "trade": "Oficio",
   "priority": "Prioridad",
   "scheduledDate": "Programado",
   "budget": "Presupuesto",
-  "description": "Descripci\u00f3n",
+  "description": "Descripción",
   "pmNotes": "Notas del PM",
   "accessNotes": "Notas de Acceso",
   "tenantName": "Inquilino",
-  "tenantPhone": "Tel\u00e9fono del Inquilino",
-  "completionNotes": "Notas de Finalizaci\u00f3n",
-  "declineReason": "Raz\u00f3n del Rechazo",
+  "tenantPhone": "Teléfono del Inquilino",
+  "completionNotes": "Notas de Finalización",
+  "declineReason": "Razón del Rechazo",
   "estimate": "Presupuesto",
   "invoice": "Factura",
   "noEstimate": "Sin presupuesto vinculado",
@@ -34,17 +34,17 @@
     "materials": "Materiales",
     "labor": "Mano de Obra"
   },
-  "noPhotos": "A\u00fan no se han subido fotos",
+  "noPhotos": "Aún no se han subido fotos",
   "noPreview": "Sin vista previa",
   "noTimeEntries": "Sin registros de tiempo",
-  "noActivity": "Sin actividad a\u00fan",
+  "noActivity": "Sin actividad aún",
   "unknownWorker": "Trabajador Desconocido",
   "onSite": "En Sitio",
   "photoFilters": {
     "all": "Todas",
     "before": "Antes",
     "during": "Durante",
-    "after": "Despu\u00e9s"
+    "after": "Después"
   },
   "actions": {
     "assigned": "Reasignar",
@@ -52,7 +52,7 @@
     "scheduled": "Programar",
     "on_hold": "Pausar",
     "cancelled": "Cancelar",
-    "completed": "Aprobar Finalizaci\u00f3n",
+    "completed": "Aprobar Finalización",
     "in_progress": "Devolver",
     "paid": "Marcar Pagado",
     "reschedule": "Reprogramar",
@@ -62,7 +62,7 @@
   "scheduleDate": "Fecha",
   "scheduleStart": "Hora de Inicio",
   "scheduleEnd": "Hora de Fin",
-  "eventStatusChanged": "Estado cambi\u00f3 de {from} a {to}",
+  "eventStatusChanged": "Estado cambió de {from} a {to}",
   "events": {
     "work_order_created": "Orden de trabajo creada",
     "work_order_status_changed": "Estado actualizado",
@@ -84,8 +84,8 @@
   },
   "dispatch": {
     "title": "Crear Orden de Trabajo",
-    "selectVendor": "Asignar a Proveedor (opcional)",
-    "noVendor": "Sin proveedor \u2014 crear como borrador",
+    "selectVendor": "Asignar a Contratista (opcional)",
+    "noVendor": "Sin contratista — crear como borrador",
     "createWo": "Crear Orden de Trabajo",
     "creating": "Creando...",
     "duplicateExists": "Ya existe una orden de trabajo activa para este hallazgo.",
@@ -94,13 +94,13 @@
     "failed": "Error al crear la orden de trabajo",
     "success": "Orden de trabajo creada",
     "bulkTitle": "Despachar Hallazgos",
-    "bulkDescription": "Crear \u00f3rdenes de trabajo a partir de hallazgos seleccionados",
+    "bulkDescription": "Crear órdenes de trabajo a partir de hallazgos seleccionados",
     "selectFindings": "Seleccionar hallazgos para despachar",
     "dispatchSelected": "Despachar Seleccionados ({count})",
     "dispatching": "Despachando...",
     "resultsTitle": "Resultados del Despacho",
     "created": "Creada",
     "skipped": "Omitida (duplicada)",
-    "failedItem": "Fall\u00f3"
+    "failedItem": "Falló"
   }
 }

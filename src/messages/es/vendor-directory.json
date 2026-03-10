@@ -5,7 +5,7 @@
   "filterCity": "Ciudad",
   "allTrades": "Todos los Servicios",
   "allCities": "Todas las Ciudades",
-  "noResults": "No se encontraron proveedores con esos filtros.",
+  "noResults": "No encontramos contratistas con esos filtros. Intenta con otros criterios.",
   "rating": "calificación",
   "ratings": "calificaciones",
   "noRatings": "Nuevo",
@@ -17,7 +17,7 @@
   "emergency": "Emergencia 24/7",
   "bookNow": "Reservar",
   "viewProfile": "Ver Perfil",
-  "searchPlaceholder": "Buscar proveedores...",
+  "searchPlaceholder": "Buscar contratistas...",
   "profile": {
     "services": "Servicios Ofrecidos",
     "reviews": "Reseñas de Clientes",
@@ -35,8 +35,8 @@
     "title": "{trade} en {city}, {state}",
     "subtitle": "Encuentra profesionales de {trade} confiables cerca de ti",
     "description": "Explora {count} contratistas de {trade} verificados en {city}, {state}. Compara calificaciones, lee reseñas y reserva servicio en línea.",
-    "noVendors": "No hay proveedores de {trade} en {city}, {state} aún.",
-    "browseAll": "Ver Todos los Proveedores",
+    "noVendors": "Aún no hay contratistas de {trade} en {city}, {state}.",
+    "browseAll": "Ver Todos los Contratistas",
     "otherTrades": "Otros Servicios en {city}",
     "otherCities": "Encontrar {trade} en Otras Ciudades"
   }

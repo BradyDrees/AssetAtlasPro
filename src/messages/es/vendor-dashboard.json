@@ -1,6 +1,6 @@
 {
   "welcome": "Bienvenido de nuevo, {name}",
-  "welcomeDefault": "Bienvenido a tu Panel de Proveedor",
+  "welcomeDefault": "Bienvenido a tu Inicio",
   "setupPrompt": "Completa tu perfil para comenzar",
   "stats": {
     "activeJobs": "Trabajos Activos",
@@ -13,14 +13,14 @@
     "hours": "hrs"
   },
   "sections": {
-    "incomingWork": "Órdenes de Trabajo Entrantes",
+    "incomingWork": "Trabajos Entrantes",
     "todaysSchedule": "Horario de Hoy",
     "pendingEstimates": "Presupuestos Pendientes",
     "recentActivity": "Actividad Reciente",
     "pmClients": "Clientes PM"
   },
   "empty": {
-    "noIncoming": "Sin órdenes de trabajo entrantes",
+    "noIncoming": "Sin trabajos entrantes",
     "noSchedule": "Nada programado para hoy",
     "noEstimates": "Sin presupuestos pendientes",
     "noActivity": "Sin actividad reciente",
@@ -85,8 +85,8 @@
     "pm_assignment": "Asignación PM",
     "homeowner_request": "Solicitud del Propietario",
     "homeowner_project": "Proyecto del Propietario",
-    "vendor_self_created": "Creado por el Proveedor",
-    "marketplace": "Mercado",
+    "vendor_self_created": "Creado por ti",
+    "marketplace": "Directorio",
     "inspection_finding": "Hallazgo de Inspección",
     "unit_turn": "Rotación de Unidad",
     "unknown": "Otro"

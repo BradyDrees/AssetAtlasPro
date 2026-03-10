@@ -1,7 +1,7 @@
 {
   "title": "Reservas en Línea",
   "enableBooking": "Habilitar Página de Reservas",
-  "enableBookingDesc": "Permitir que los clientes soliciten servicios directamente desde tu página de reservas pública.",
+  "enableBookingDesc": "Permite que los clientes soliciten servicios directamente desde tu página de reservas pública.",
   "slug": "URL de Reservas",
   "slugPlaceholder": "ej. plomeria-jose",
   "slugPreview": "Tu URL de reservas",
@@ -30,7 +30,7 @@
   "apiDocsDesc": "POST a /api/public/book con encabezado x-api-key. Cuerpo: { name, phone, description, email?, address?, trade?, preferred_date? }",
   "publicForm": {
     "name": "Nombre",
-    "phone": "Teléfono",
+    "phone": "Celular",
     "email": "Correo Electrónico",
     "address": "Dirección del Servicio",
     "service": "Servicio Necesitado",
@@ -40,7 +40,7 @@
     "submitting": "Enviando...",
     "success": "¡Solicitud Enviada!",
     "successMessage": "Nos comunicaremos contigo pronto.",
-    "trackJob": "Rastrear Tu Servicio",
+    "trackJob": "Seguir Tu Servicio",
     "notAvailable": "Reservas no disponibles.",
     "notFound": "Página No Encontrada"
   }

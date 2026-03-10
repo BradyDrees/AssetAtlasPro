@@ -107,6 +107,10 @@
   "tier_good": "Bueno",
   "tier_better": "Mejor",
   "tier_best": "Óptimo",
-  "noEstimateYet": "Aún no se ha recibido presupuesto",
-  "estimateNumber": "Presupuesto"
+  "noEstimateYet": "A\u00fan no se ha recibido presupuesto",
+  "estimateNumber": "Presupuesto",
+  "signatureRequired": "Firme abajo para aprobar este presupuesto",
+  "signatureCaptured": "Firma capturada",
+  "resignButton": "Volver a firmar",
+  "signAndApprove": "Firmar y Aprobar"
 }

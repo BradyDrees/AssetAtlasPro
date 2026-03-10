@@ -108,5 +108,9 @@
   "tier_better": "Better",
   "tier_best": "Best",
   "noEstimateYet": "No estimate received yet",
-  "estimateNumber": "Estimate"
+  "estimateNumber": "Estimate",
+  "signatureRequired": "Please sign below to approve this estimate",
+  "signatureCaptured": "Signature captured",
+  "resignButton": "Re-sign",
+  "signAndApprove": "Sign & Approve"
 }

@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { approveEstimate } from "@/app/actions/home-work-orders";
+import { SignaturePad } from "@/components/vendor/signature-pad";
 
 type EstimateTier = "good" | "better" | "best";
 
@@ -52,6 +53,8 @@ export function EstimateApproval({
   const [selectedTier, setSelectedTier] = useState<EstimateTier | null>(
     (estimate.selected_tier as EstimateTier) ?? null
   );
+  const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
+  const [showSignature, setShowSignature] = useState(false);
 
   const isTiered = Boolean(estimate.tier_mode && estimate.tier_mode !== "none");
 
@@ -78,11 +81,17 @@ export function EstimateApproval({
       setError(wt("selectTierRequired"));
       return;
     }
+    if (!signatureDataUrl) {
+      setShowSignature(true);
+      return;
+    }
     startTransition(async () => {
       const result = await approveEstimate({
         woId,
         estimateId: estimate.id,
         ...(selectedTier ? { selectedTier } : {}),
+        signatureDataUrl: signatureDataUrl ?? undefined,
+        signedBy: "Homeowner",
       });
       if (result.success) {
         setApproved(true);
@@ -90,6 +99,11 @@ export function EstimateApproval({
         setError(result.error ?? "Failed to approve estimate");
       }
     });
+  };
+
+  const handleSignatureSave = (dataUrl: string) => {
+    setSignatureDataUrl(dataUrl);
+    setShowSignature(false);
   };
 
   if (approved) {
@@ -222,6 +236,40 @@ export function EstimateApproval({
         </div>
       </div>
 
+      {/* Signature section */}
+      {showSignature && !signatureDataUrl && (
+        <div className="mb-4">
+          <p className="text-sm font-medium text-content-secondary mb-2">
+            {wt("signatureRequired")}
+          </p>
+          <SignaturePad
+            onSave={handleSignatureSave}
+            onCancel={() => setShowSignature(false)}
+            width={400}
+            height={160}
+          />
+        </div>
+      )}
+
+      {signatureDataUrl && (
+        <div className="mb-4 bg-surface-secondary rounded-lg p-3">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs font-medium text-green-500">{wt("signatureCaptured")}</span>
+            <button
+              onClick={() => { setSignatureDataUrl(null); setShowSignature(true); }}
+              className="text-xs text-content-quaternary hover:text-content-primary"
+            >
+              {wt("resignButton")}
+            </button>
+          </div>
+          <img
+            src={signatureDataUrl}
+            alt="Signature"
+            className="h-12 object-contain"
+          />
+        </div>
+      )}
+
       {error && (
         <p className="text-sm text-red-400 mb-3">{error}</p>
       )}
@@ -231,7 +279,11 @@ export function EstimateApproval({
         disabled={isPending || (isTiered && !selectedTier)}
         className="w-full py-2.5 rounded-lg text-sm font-medium bg-rose-500 text-white hover:bg-rose-600 disabled:opacity-50 transition-colors"
       >
-        {isPending ? t("approving") : t("approveEstimate")}
+        {isPending
+          ? t("approving")
+          : signatureDataUrl
+            ? t("approveEstimate")
+            : wt("signAndApprove")}
       </button>
     </div>
   );

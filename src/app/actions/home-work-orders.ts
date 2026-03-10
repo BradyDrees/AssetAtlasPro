@@ -543,6 +543,8 @@ export async function approveEstimate(input: {
   woId: string;
   estimateId: string;
   selectedTier?: "good" | "better" | "best";
+  signatureDataUrl?: string;
+  signedBy?: string;
 }): Promise<{
   success: boolean;
   clientSecret?: string | null;
@@ -675,12 +677,43 @@ export async function approveEstimate(input: {
       }
     }
 
-    // Approve the estimate (with selected tier if tiered)
+    // Upload signature if provided
+    let signatureUrl: string | null = null;
+    if (input.signatureDataUrl) {
+      try {
+        // Convert base64 data URL to buffer
+        const base64Data = input.signatureDataUrl.split(",")[1];
+        if (base64Data) {
+          const buffer = Buffer.from(base64Data, "base64");
+          // Validate size (<500KB)
+          if (buffer.length > 500 * 1024) {
+            return { success: false, error: "Signature image too large (max 500KB)" };
+          }
+          const storagePath = `signatures/${input.estimateId}/${Date.now()}.png`;
+          const { error: uploadError } = await supabase.storage
+            .from("dd-captures")
+            .upload(storagePath, buffer, { contentType: "image/png", upsert: true });
+          if (!uploadError) {
+            const { data: publicUrl } = supabase.storage
+              .from("dd-captures")
+              .getPublicUrl(storagePath);
+            signatureUrl = publicUrl.publicUrl;
+          }
+        }
+      } catch (sigErr) {
+        console.error("Signature upload failed:", sigErr);
+        // Non-fatal — proceed without signature URL
+      }
+    }
+
+    // Approve the estimate (with selected tier + signature if provided)
     await supabase
       .from("vendor_estimates")
       .update({
         status: "approved",
         ...(input.selectedTier ? { selected_tier: input.selectedTier } : {}),
+        ...(signatureUrl ? { signature_url: signatureUrl } : {}),
+        ...(input.signedBy ? { signed_by: input.signedBy, signed_at: new Date().toISOString() } : {}),
         updated_at: new Date().toISOString(),
       })
       .eq("id", input.estimateId);

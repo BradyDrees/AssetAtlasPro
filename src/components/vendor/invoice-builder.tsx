@@ -45,6 +45,7 @@ export function InvoiceBuilder({
   const [newType, setNewType] = useState<InvoiceItemType>("labor");
   const [addingItem, setAddingItem] = useState(false);
   const [generatingPdf, setGeneratingPdf] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const isEditable = invoice.status === "draft" || invoice.status === "disputed";
 
@@ -288,13 +289,42 @@ export function InvoiceBuilder({
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-end gap-3 pb-6">
+      <div className="flex items-center justify-end gap-3 pb-6 flex-wrap">
         <button
           onClick={() => router.push(`${basePath}/invoices`)}
           className="px-4 py-2 text-sm text-content-secondary hover:text-content-primary transition-colors"
         >
           {t("backToList")}
         </button>
+        {/* Copy Payment Link — visible once invoice has a token and is submitted/approved */}
+        {invoice.payment_token && ["submitted", "pm_approved", "approved"].includes(invoice.status) && (
+          <button
+            onClick={() => {
+              const url = `${window.location.origin}/pay/${invoice.payment_token}`;
+              navigator.clipboard.writeText(url).then(() => {
+                setLinkCopied(true);
+                setTimeout(() => setLinkCopied(false), 2000);
+              });
+            }}
+            className="px-4 py-2 text-sm border border-edge-primary text-content-primary rounded-lg hover:bg-surface-secondary transition-colors flex items-center gap-2"
+          >
+            {linkCopied ? (
+              <>
+                <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                {t("linkCopied")}
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.02a4.5 4.5 0 00-1.242-7.244l-4.5-4.5a4.5 4.5 0 00-6.364 6.364L4.34 8.374" />
+                </svg>
+                {t("copyPaymentLink")}
+              </>
+            )}
+          </button>
+        )}
         <button
           onClick={handleDownloadPdf}
           disabled={generatingPdf || items.length === 0}

@@ -58,6 +58,9 @@ export default getRequestConfig(async () => {
   const homeSubscription = (await import(`../messages/${locale}/home-subscription.json`)).default;
   const homeMatching = (await import(`../messages/${locale}/home-matching.json`)).default;
 
+  // Public namespace files
+  const publicInvoice = (await import(`../messages/${locale}/public-invoice.json`)).default;
+
   const messages = {
     ...base,
     messaging,
@@ -99,6 +102,9 @@ export default getRequestConfig(async () => {
       settings: homeSettings,
       subscription: homeSubscription,
       matching: homeMatching,
+    },
+    public: {
+      invoice: publicInvoice,
     },
   };
 

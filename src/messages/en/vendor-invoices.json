@@ -107,5 +107,7 @@
   "disputeTitle": "Dispute Invoice",
   "disputeReasonPlaceholder": "Describe the issue with this invoice...",
   "sendDispute": "Send Dispute",
-  "processing": "Processing..."
+  "processing": "Processing...",
+  "copyPaymentLink": "Copy Payment Link",
+  "linkCopied": "Link Copied!"
 }

@@ -107,5 +107,7 @@
   "disputeTitle": "Disputar Factura",
   "disputeReasonPlaceholder": "Describa el problema con esta factura...",
   "sendDispute": "Enviar Disputa",
-  "processing": "Procesando..."
+  "processing": "Procesando...",
+  "copyPaymentLink": "Copiar Enlace de Pago",
+  "linkCopied": "¡Enlace Copiado!"
 }

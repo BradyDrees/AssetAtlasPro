@@ -27,6 +27,10 @@ interface TransitionRule {
  * Key = current status, value = { to: allowed next statuses, allowedBy: which role can trigger }
  */
 export const WO_TRANSITIONS: Record<WoStatus, TransitionRule[]> = {
+  draft: [
+    { to: ["assigned"], allowedBy: ["pm", "vendor"] },
+    { to: ["cancelled"], allowedBy: ["pm", "vendor"] },
+  ],
   assigned: [
     { to: ["accepted"], allowedBy: ["vendor"] },
     { to: ["declined"], allowedBy: ["vendor"] },
@@ -70,6 +74,7 @@ export const WO_TRANSITIONS: Record<WoStatus, TransitionRule[]> = {
     { to: ["scheduled"], allowedBy: ["vendor", "pm"] },
     { to: ["in_progress"], allowedBy: ["vendor"] },
   ],
+  cancelled: [],
 };
 
 /**

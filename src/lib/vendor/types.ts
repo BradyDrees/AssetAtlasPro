@@ -129,6 +129,7 @@ export type VendorEntityType =
 // ============================================
 
 export type WoStatus =
+  | "draft"
   | "assigned"
   | "accepted"
   | "scheduled"
@@ -140,7 +141,8 @@ export type WoStatus =
   | "invoiced"
   | "paid"
   | "declined"
-  | "on_hold";
+  | "on_hold"
+  | "cancelled";
 
 export type WoPriority = "normal" | "urgent" | "emergency";
 

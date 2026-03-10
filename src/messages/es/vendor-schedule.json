@@ -63,6 +63,14 @@
     "status": "Estado",
     "trade": "Oficio"
   },
+  "map": {
+    "mapView": "Mapa",
+    "optimizeRoute": "Optimizar Ruta",
+    "miles": "mi",
+    "minDrive": "min conducción",
+    "noLocations": "Sin trabajos geocodificados para este día",
+    "noLocationsHint": "Los trabajos necesitan coordenadas para aparecer en el mapa"
+  },
   "smartScheduler": {
     "title": "Programar Inteligente",
     "description": "Programar trabajos agrupados por codigo postal para minimizar viaje",

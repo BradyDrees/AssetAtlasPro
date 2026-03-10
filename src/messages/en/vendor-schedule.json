@@ -63,6 +63,14 @@
     "status": "Status",
     "trade": "Trade"
   },
+  "map": {
+    "mapView": "Map",
+    "optimizeRoute": "Optimize Route",
+    "miles": "mi",
+    "minDrive": "min drive",
+    "noLocations": "No geocoded jobs for this day",
+    "noLocationsHint": "Jobs need property coordinates to appear on the map"
+  },
   "smartScheduler": {
     "title": "Smart Schedule",
     "description": "Auto-schedule jobs grouped by zip code to minimize travel",

@@ -518,6 +518,8 @@ export type ScheduleJob = {
   pm_org_id?: string | null;
   property_zip?: string | null;
   property_address?: string | null;
+  property_lat?: number | null;
+  property_lng?: number | null;
 };
 
 /** Statuses that qualify for the unscheduled jobs panel */
@@ -549,6 +551,8 @@ export function toScheduleJob(wo: {
   property_name?: string | null;
   property_address?: string | null;
   property_zip?: string | null;
+  property_lat?: number | null;
+  property_lng?: number | null;
   description?: string | null;
   trade?: string | null;
   priority: string;
@@ -575,5 +579,7 @@ export function toScheduleJob(wo: {
     pm_org_id: wo.pm_user_id ?? null,
     property_zip: wo.property_zip ?? null,
     property_address: wo.property_address ?? null,
+    property_lat: wo.property_lat ?? null,
+    property_lng: wo.property_lng ?? null,
   };
 }

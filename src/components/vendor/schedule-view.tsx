@@ -10,6 +10,8 @@ import { CalendarMonthView } from "./calendar-month-view";
 import { UnscheduledJobsPanel } from "./unscheduled-jobs-panel";
 import { ScheduleQuickModal } from "./schedule-quick-modal";
 import { SmartSchedulerModal } from "./smart-scheduler-modal";
+import { ScheduleMap } from "./schedule-map";
+import { RouteOptimizer } from "./route-optimizer";
 
 interface ScheduleViewProps {
   jobs: ScheduleJob[];
@@ -64,6 +66,8 @@ export function ScheduleView({
     jobId: "",
   });
   const [smartOpen, setSmartOpen] = useState(false);
+  const [showMap, setShowMap] = useState(false);
+  const [optimizedOrder, setOptimizedOrder] = useState<string[]>([]);
 
   const weekStart = useMemo(
     () => getWeekStart(selectedDate),
@@ -237,6 +241,23 @@ export function ScheduleView({
             </select>
           </div>
 
+          {/* Map toggle — day view only */}
+          {view === "day" && (
+            <button
+              onClick={() => setShowMap(!showMap)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                showMap
+                  ? "bg-green-600/10 text-green-400 border-green-500/20"
+                  : "bg-surface-secondary text-content-tertiary border-edge-primary hover:bg-surface-tertiary"
+              }`}
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" />
+              </svg>
+              {t("map.mapView")}
+            </button>
+          )}
+
           {/* Smart Schedule — always visible */}
           <button
             onClick={() => setSmartOpen(true)}
@@ -295,6 +316,23 @@ export function ScheduleView({
         onJobClick={onUnscheduledJobClick}
         onSmartSchedule={() => setSmartOpen(true)}
       />
+
+      {/* Map view — day only */}
+      {view === "day" && showMap && (
+        <div className="space-y-3">
+          <RouteOptimizer
+            jobs={jobs}
+            date={toDateStr(selectedDate)}
+            onOptimized={setOptimizedOrder}
+          />
+          <ScheduleMap
+            jobs={jobs}
+            date={toDateStr(selectedDate)}
+            onJobClick={onJobClick}
+            optimizedOrder={optimizedOrder.length > 0 ? optimizedOrder : undefined}
+          />
+        </div>
+      )}
 
       {/* Calendar */}
       {view === "day" ? (

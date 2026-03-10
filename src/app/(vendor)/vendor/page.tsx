@@ -12,16 +12,19 @@ import { DashboardTechScoreboard } from "@/components/vendor/dashboard-tech-scor
 import { DashboardReviewsWidget } from "@/components/vendor/dashboard-reviews-widget";
 import { DashboardPerformanceWidget } from "@/components/vendor/dashboard-performance-widget";
 import { getReviewAnalytics } from "@/app/actions/vendor-reviews";
+import { getLowStockAlerts } from "@/app/actions/vendor-inventory";
+import { DashboardInventoryWidget } from "@/components/vendor/dashboard-inventory-widget";
 import Link from "next/link";
 
 export default async function VendorDashboardPage() {
   const dt = await getTranslations("vendor.dashboard");
 
-  const [dashData, credSummary, reviewAnalytics, scorecardResult] = await Promise.all([
+  const [dashData, credSummary, reviewAnalytics, scorecardResult, lowStockResult] = await Promise.all([
     getDashboardData("month"),
     getCredentialSummary(),
     getReviewAnalytics(),
     getVendorScorecardSelf(),
+    getLowStockAlerts(),
   ]);
 
   const { stats, incoming, upcomingJobs, revenueBalance, expensesSummary, techScoreboard } = dashData;
@@ -114,6 +117,9 @@ export default async function VendorDashboardPage() {
       {scorecardResult.data && (
         <DashboardPerformanceWidget data={scorecardResult.data} />
       )}
+
+      {/* Low Stock Alerts */}
+      <DashboardInventoryWidget alerts={lowStockResult.data} />
 
       {/* Bottom section links */}
       <div className="grid lg:grid-cols-2 gap-6">

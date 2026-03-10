@@ -122,6 +122,7 @@ export interface AddMaterialInput {
   description: string;
   quantity: number;
   unit_cost: number;
+  catalog_item_id?: string;
 }
 
 export interface ClockInInput {

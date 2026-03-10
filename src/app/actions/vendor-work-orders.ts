@@ -576,6 +576,19 @@ export async function addMaterial(
 
   const total = input.quantity * input.unit_cost;
 
+  // Compute cost variance if linked to catalog item
+  let costVariance: number | null = null;
+  if (input.catalog_item_id) {
+    const { data: catalogItem } = await supabase
+      .from("vendor_parts_catalog")
+      .select("unit_cost")
+      .eq("id", input.catalog_item_id)
+      .single();
+    if (catalogItem?.unit_cost != null) {
+      costVariance = input.unit_cost - Number(catalogItem.unit_cost);
+    }
+  }
+
   const { data, error } = await supabase
     .from("vendor_wo_materials")
     .insert({
@@ -585,6 +598,8 @@ export async function addMaterial(
       unit_cost: input.unit_cost,
       total,
       created_by: user.id,
+      catalog_item_id: input.catalog_item_id || null,
+      cost_variance: costVariance,
     })
     .select()
     .single();

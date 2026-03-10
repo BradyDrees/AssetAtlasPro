@@ -121,7 +121,8 @@ export type VendorEntityType =
   | "vendor_user"
   | "client"
   | "expense"
-  | "skill";
+  | "skill"
+  | "inventory";
 
 // ============================================
 // Work Order Types (Phase 2, defined early for state-machine)

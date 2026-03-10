@@ -130,6 +130,14 @@ function TemplatesIcon() {
   );
 }
 
+function InventoryIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+    </svg>
+  );
+}
+
 function StarIcon() {
   return (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -220,6 +228,7 @@ export function VendorSidebar({ user, hasPmRole = false, vendorRole = "owner" }:
           { href: "/vendor/reviews", label: vt("reviews"), icon: <StarIcon />, matchExact: false },
           { href: "/vendor/reports", label: vt("reports"), icon: <ChartBarIcon />, matchExact: false },
           { href: "/vendor/expenses", label: vt("expenses"), icon: <BanknotesIcon />, matchExact: false },
+          { href: "/vendor/inventory", label: vt("inventory"), icon: <InventoryIcon />, matchExact: false },
           { href: "/vendor/team", label: vt("team"), icon: <TeamIcon />, matchExact: false },
           { href: "/vendor/inbox", label: vt("messages"), icon: <ChatBubbleIcon />, matchExact: false, showUnreadBadge: true },
           { href: "/vendor/messages", label: vt("sms"), icon: <PhoneIcon />, matchExact: false },

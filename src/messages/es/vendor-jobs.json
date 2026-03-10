@@ -199,6 +199,26 @@
     "scheduledFor": "Programado Para",
     "jobStatus": "Estado del Trabajo"
   },
+  "systemInfo": {
+    "title": "Registrar Info del Sistema",
+    "description": "Registre los detalles del sistema de este trabajo para los archivos del propietario",
+    "systemType": "Tipo de Sistema",
+    "make": "Marca",
+    "makePlaceholder": "ej. Carrier, Rheem",
+    "model": "Modelo",
+    "modelPlaceholder": "ej. 24ACC636",
+    "serial": "Número de Serie",
+    "serialPlaceholder": "ej. 1234567890",
+    "age": "Antigüedad",
+    "years": "años",
+    "ageWarning": "Excede la vida útil típica de {lifespan} años",
+    "photos": "Fotos",
+    "addPhoto": "Agregar Foto",
+    "save": "Guardar Info del Sistema",
+    "saving": "Guardando...",
+    "saved": "¡Info del sistema guardada!",
+    "addAnother": "Registrar Otro Sistema"
+  },
   "property": {
     "title": "Info de Propiedad",
     "type": "Tipo",

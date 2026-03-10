@@ -58,5 +58,7 @@
   "compressingPhoto": "Comprimiendo...",
   "uploading": "Subiendo...",
   "systemPhoto": "Foto del sistema",
-  "noSystemPhotos": "Aún no hay fotos — tome una foto de este sistema para ayudar a su proveedor"
+  "noSystemPhotos": "Aún no hay fotos — tome una foto de este sistema para ayudar a su proveedor",
+  "vendorPhoto": "Proveedor",
+  "vendorPhotoDate": "Actualizado por proveedor el {date}"
 }

@@ -22,6 +22,7 @@ import { WorkerAssignDropdown } from "@/components/vendor/worker-assign-dropdown
 import { JobProfitabilityCard } from "@/components/vendor/job-profitability-card";
 import { PropertyContextCard } from "@/components/vendor/property-context-card";
 import { WoPhotoSection } from "@/components/vendor/wo-photo-section";
+import { SystemInfoForm } from "@/components/vendor/system-info-form";
 import { createClient } from "@/lib/supabase/client";
 
 export default function JobDetailPage() {
@@ -392,6 +393,21 @@ export default function JobDetailPage() {
             </h3>
             <PropertyIntelPanel workOrderId={wo.id} />
           </div>
+
+          {/* Log System Info — show on completed/invoiced/paid jobs */}
+          {["completed", "done_pending_approval", "invoiced", "paid"].includes(wo.status) && wo.homeowner_property_id && (
+            <div className="bg-surface-primary rounded-xl border border-edge-primary p-4">
+              <h3 className="text-sm font-semibold text-content-primary mb-3 flex items-center gap-2">
+                <svg className="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.59-3.23a.75.75 0 00-.96.27l-2.12 3.18a.75.75 0 00.66 1.11h13.18a.75.75 0 00.66-1.11l-2.12-3.18a.75.75 0 00-.96-.27l-5.59 3.23z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9.75v-6M9.75 3.75h4.5" />
+                </svg>
+                {t("systemInfo.title")}
+              </h3>
+              <p className="text-xs text-content-quaternary mb-3">{t("systemInfo.description")}</p>
+              <SystemInfoForm woId={wo.id} />
+            </div>
+          )}
 
           {/* Job Photos */}
           <WoPhotoSection woId={wo.id} readOnly={!isActiveJob} />

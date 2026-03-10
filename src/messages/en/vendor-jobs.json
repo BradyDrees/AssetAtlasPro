@@ -199,6 +199,26 @@
     "scheduledFor": "Scheduled For",
     "jobStatus": "Job Status"
   },
+  "systemInfo": {
+    "title": "Log System Info",
+    "description": "Record system details from this job for the homeowner's records",
+    "systemType": "System Type",
+    "make": "Make",
+    "makePlaceholder": "e.g. Carrier, Rheem",
+    "model": "Model",
+    "modelPlaceholder": "e.g. 24ACC636",
+    "serial": "Serial Number",
+    "serialPlaceholder": "e.g. 1234567890",
+    "age": "Age",
+    "years": "yrs",
+    "ageWarning": "Exceeds typical {lifespan}-year lifespan",
+    "photos": "Photos",
+    "addPhoto": "Add Photo",
+    "save": "Save System Info",
+    "saving": "Saving...",
+    "saved": "System info saved!",
+    "addAnother": "Log Another System"
+  },
   "property": {
     "title": "Property Intel",
     "type": "Type",

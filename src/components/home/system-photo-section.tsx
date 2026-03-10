@@ -178,6 +178,14 @@ export function SystemPhotoSection({
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
+              {/* Vendor attribution badge */}
+              {p.source === "vendor" && (
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-1.5 py-1">
+                  <span className="text-[9px] text-blue-300 font-medium">
+                    {t("vendorPhoto")}
+                  </span>
+                </div>
+              )}
               <button
                 type="button"
                 disabled={busy}

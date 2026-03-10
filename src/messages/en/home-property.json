@@ -58,5 +58,7 @@
   "compressingPhoto": "Compressing...",
   "uploading": "Uploading...",
   "systemPhoto": "System photo",
-  "noSystemPhotos": "No photos yet — snap a photo of this system to help your vendor"
+  "noSystemPhotos": "No photos yet — snap a photo of this system to help your vendor",
+  "vendorPhoto": "Vendor",
+  "vendorPhotoDate": "Updated by vendor on {date}"
 }

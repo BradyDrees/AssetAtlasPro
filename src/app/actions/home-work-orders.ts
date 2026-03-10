@@ -801,3 +801,98 @@ export async function rateWorkOrder(input: {
     };
   }
 }
+
+// ─── Invoice Payment with Pool Split ───
+
+/**
+ * Process an invoice payment using maintenance pool + optional Stripe.
+ * Delegates to invoice-service for atomic orchestration.
+ */
+export async function payInvoiceWithPool(invoiceId: string): Promise<{
+  success: boolean;
+  error?: string;
+  poolDeduction?: number;
+  cardCharge?: number;
+  stripeSessionUrl?: string;
+}> {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: "Not authenticated" };
+
+    const { processInvoicePayment } = await import("@/lib/services/invoice-service");
+    const result = await processInvoicePayment(invoiceId, user.id);
+
+    if (result.error) {
+      return { success: false, error: result.error };
+    }
+
+    return {
+      success: true,
+      poolDeduction: result.breakdown?.poolDeduction ?? 0,
+      cardCharge: result.breakdown?.cardCharge ?? 0,
+      stripeSessionUrl: result.stripeSessionUrl ?? undefined,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Payment failed",
+    };
+  }
+}
+
+/**
+ * Get pool + invoice payment breakdown for preview before paying.
+ */
+export async function getInvoicePoolBreakdown(invoiceId: string): Promise<{
+  invoiceTotal: number;
+  poolBalance: number;
+  poolDeduction: number;
+  cardCharge: number;
+} | null> {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+
+    // Fetch invoice total
+    const { data: invoice } = await supabase
+      .from("vendor_invoices")
+      .select("total, work_order_id")
+      .eq("id", invoiceId)
+      .single();
+
+    if (!invoice) return null;
+
+    const invoiceTotal = Number(invoice.total);
+
+    // Fetch property via WO for pool balance
+    let poolBalance = 0;
+    if (invoice.work_order_id) {
+      const { data: wo } = await supabase
+        .from("vendor_work_orders")
+        .select("homeowner_property_id")
+        .eq("id", invoice.work_order_id)
+        .single();
+
+      if (wo?.homeowner_property_id) {
+        const { data: sub } = await supabase
+          .from("homeowner_subscriptions")
+          .select("maintenance_pool_balance")
+          .eq("property_id", wo.homeowner_property_id)
+          .eq("status", "active")
+          .limit(1)
+          .single();
+
+        poolBalance = Number(sub?.maintenance_pool_balance ?? 0);
+      }
+    }
+
+    const poolDeduction = Math.min(poolBalance, invoiceTotal);
+    const cardCharge = invoiceTotal - poolDeduction;
+
+    return { invoiceTotal, poolBalance, poolDeduction, cardCharge };
+  } catch {
+    return null;
+  }
+}

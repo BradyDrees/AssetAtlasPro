@@ -156,7 +156,11 @@
     "noData": "No data",
     "emergency": "Emergency",
     "onTime": "On Time",
-    "accuracy": "Estimate Accuracy"
+    "accuracy": "Estimate Accuracy",
+    "disputeRate": "Disputes",
+    "callbackRate": "Callbacks",
+    "monthlyTrend": "Rating Trend (6 Months)",
+    "noTrendData": "No rating data yet"
   },
   "tabs": {
     "pm": "PM Clients",

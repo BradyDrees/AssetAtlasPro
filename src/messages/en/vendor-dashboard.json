@@ -67,5 +67,15 @@
     "name": "Name",
     "completed": "Completed",
     "rating": "Rating"
-  }
+  },
+  "yourPerformance": "Your Performance",
+  "rating": "Rating",
+  "confidence": "Confidence",
+  "onTimeShort": "On Time",
+  "jobs": "Jobs",
+  "ratingTrend": "Rating Trend (6 Months)",
+  "noTrendData": "No rating data yet",
+  "estAccuracy": "Est. Accuracy",
+  "disputes": "Disputes",
+  "callbacks": "Callbacks"
 }

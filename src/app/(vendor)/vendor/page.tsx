@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { getDashboardData } from "@/app/actions/vendor-dashboard";
 import { getCredentialSummary } from "@/app/actions/vendor-profile";
+import { getVendorScorecardSelf } from "@/app/actions/vendor-scorecard";
 import { DashboardStatsGrid } from "@/components/vendor/dashboard-stats";
 import { IncomingWorkOrders } from "@/components/vendor/incoming-work-orders";
 import { TodaysSchedule } from "@/components/vendor/todays-schedule";
@@ -9,16 +10,18 @@ import { DashboardRevenueBalance } from "@/components/vendor/dashboard-revenue-b
 import { DashboardExpensesWidget } from "@/components/vendor/dashboard-expenses-widget";
 import { DashboardTechScoreboard } from "@/components/vendor/dashboard-tech-scoreboard";
 import { DashboardReviewsWidget } from "@/components/vendor/dashboard-reviews-widget";
+import { DashboardPerformanceWidget } from "@/components/vendor/dashboard-performance-widget";
 import { getReviewAnalytics } from "@/app/actions/vendor-reviews";
 import Link from "next/link";
 
 export default async function VendorDashboardPage() {
   const dt = await getTranslations("vendor.dashboard");
 
-  const [dashData, credSummary, reviewAnalytics] = await Promise.all([
+  const [dashData, credSummary, reviewAnalytics, scorecardResult] = await Promise.all([
     getDashboardData("month"),
     getCredentialSummary(),
     getReviewAnalytics(),
+    getVendorScorecardSelf(),
   ]);
 
   const { stats, incoming, upcomingJobs, revenueBalance, expensesSummary, techScoreboard } = dashData;
@@ -105,6 +108,11 @@ export default async function VendorDashboardPage() {
       {/* Reviews widget */}
       {reviewAnalytics.data && (
         <DashboardReviewsWidget analytics={reviewAnalytics.data} />
+      )}
+
+      {/* Your Performance widget */}
+      {scorecardResult.data && (
+        <DashboardPerformanceWidget data={scorecardResult.data} />
       )}
 
       {/* Bottom section links */}

@@ -67,5 +67,15 @@
     "name": "Nombre",
     "completed": "Completados",
     "rating": "Calificación"
-  }
+  },
+  "yourPerformance": "Tu Rendimiento",
+  "rating": "Calificación",
+  "confidence": "Confianza",
+  "onTimeShort": "A Tiempo",
+  "jobs": "Trabajos",
+  "ratingTrend": "Tendencia de Calificación (6 Meses)",
+  "noTrendData": "Sin datos de calificación aún",
+  "estAccuracy": "Precisión Est.",
+  "disputes": "Disputas",
+  "callbacks": "Rellamadas"
 }

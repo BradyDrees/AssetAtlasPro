@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { getVendorScorecard } from "@/app/actions/vendor-scorecard";
-import type { VendorScorecardData } from "@/lib/vendor/scorecard-types";
+import type { VendorScorecardData, MonthlyTrendBucket } from "@/lib/vendor/scorecard-types";
 
 interface VendorScorecardProps {
   vendorOrgId: string;
+  /** If provided, skips the fetch and uses this data directly */
+  initialData?: VendorScorecardData | null;
 }
 
 function StarRating({ rating }: { rating: number }) {
@@ -44,19 +46,78 @@ function ConfidenceBar({ score }: { score: number }) {
   );
 }
 
-export function VendorScorecard({ vendorOrgId }: VendorScorecardProps) {
+/** Mini sparkline chart for monthly trend */
+function TrendSparkline({ trend }: { trend: MonthlyTrendBucket[] }) {
   const t = useTranslations("vendor.clients.scorecard");
-  const [data, setData] = useState<VendorScorecardData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const maxRating = 5;
+  const barHeight = 48;
+  const hasAnyData = trend.some((b) => b.review_count > 0);
+
+  if (!hasAnyData) {
+    return (
+      <p className="text-xs text-content-quaternary text-center py-2">
+        {t("noTrendData")}
+      </p>
+    );
+  }
+
+  return (
+    <div>
+      <p className="text-xs text-content-tertiary mb-2">{t("monthlyTrend")}</p>
+      <div className="flex items-end gap-1.5">
+        {trend.map((bucket) => {
+          const pct = bucket.avg_rating != null ? (bucket.avg_rating / maxRating) * 100 : 0;
+          const height = bucket.avg_rating != null ? Math.max(4, (pct / 100) * barHeight) : 4;
+          const color =
+            bucket.avg_rating == null
+              ? "bg-surface-tertiary"
+              : bucket.avg_rating >= 4
+                ? "bg-green-500"
+                : bucket.avg_rating >= 3
+                  ? "bg-yellow-500"
+                  : "bg-red-500";
+
+          return (
+            <div key={bucket.month} className="flex-1 flex flex-col items-center gap-1">
+              <div className="relative w-full flex justify-center" style={{ height: barHeight }}>
+                <div
+                  className={`w-full max-w-[20px] rounded-sm transition-all ${color}`}
+                  style={{ height, position: "absolute", bottom: 0 }}
+                  title={
+                    bucket.avg_rating != null
+                      ? `${bucket.label}: ${bucket.avg_rating} avg (${bucket.review_count} ${t("reviews")})`
+                      : `${bucket.label}: ${t("noData")}`
+                  }
+                />
+              </div>
+              <span className="text-[10px] text-content-quaternary">{bucket.label}</span>
+              {bucket.avg_rating != null && (
+                <span className="text-[10px] font-medium text-content-tertiary">
+                  {bucket.avg_rating.toFixed(1)}
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export function VendorScorecard({ vendorOrgId, initialData }: VendorScorecardProps) {
+  const t = useTranslations("vendor.clients.scorecard");
+  const [data, setData] = useState<VendorScorecardData | null>(initialData ?? null);
+  const [loading, setLoading] = useState(!initialData);
 
   useEffect(() => {
+    if (initialData) return;
     async function load() {
       const res = await getVendorScorecard(vendorOrgId);
       if (res.data) setData(res.data);
       setLoading(false);
     }
     load();
-  }, [vendorOrgId]);
+  }, [vendorOrgId, initialData]);
 
   if (loading) {
     return (
@@ -119,6 +180,13 @@ export function VendorScorecard({ vendorOrgId }: VendorScorecardProps) {
         </div>
       </div>
 
+      {/* Monthly trend sparkline */}
+      {data.monthly_trend && data.monthly_trend.length > 0 && (
+        <div className="bg-surface-secondary rounded-lg p-3">
+          <TrendSparkline trend={data.monthly_trend} />
+        </div>
+      )}
+
       {/* Badges */}
       <div className="flex flex-wrap gap-2">
         {/* Response time */}
@@ -158,6 +226,38 @@ export function VendorScorecard({ vendorOrgId }: VendorScorecardProps) {
               : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
           }`}>
             {data.estimate_accuracy_pct}% {t("accuracy")}
+          </span>
+        )}
+
+        {/* Dispute rate */}
+        {data.dispute_rate != null && (
+          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+            data.dispute_rate <= 5
+              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+              : data.dispute_rate <= 15
+                ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+          }`}>
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+            {data.dispute_rate}% {t("disputeRate")}
+          </span>
+        )}
+
+        {/* Callback rate */}
+        {data.callback_rate != null && (
+          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+            data.callback_rate <= 5
+              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+              : data.callback_rate <= 15
+                ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+          }`}>
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+            </svg>
+            {data.callback_rate}% {t("callbackRate")}
           </span>
         )}
       </div>

@@ -156,7 +156,11 @@
     "noData": "Sin datos",
     "emergency": "Emergencia",
     "onTime": "A Tiempo",
-    "accuracy": "Precisión de Estimación"
+    "accuracy": "Precisión de Estimación",
+    "disputeRate": "Disputas",
+    "callbackRate": "Rellamadas",
+    "monthlyTrend": "Tendencia de Calificación (6 Meses)",
+    "noTrendData": "Sin datos de calificación aún"
   },
   "tabs": {
     "pm": "Clientes PM",

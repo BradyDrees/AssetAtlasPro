@@ -1,15 +1,70 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { TRADE_LABELS } from "@/lib/vendor/directory-utils";
 import type { DirectoryVendor, VendorReview } from "../vendor-queries";
+import { getVendorScorecardPublic } from "@/app/actions/vendor-scorecard";
+import type { VendorScorecardData, MonthlyTrendBucket } from "@/lib/vendor/scorecard-types";
 
 interface VendorProfilePageProps {
   vendor: DirectoryVendor;
   reviews: VendorReview[];
 }
 
+/** Mini sparkline for public profile */
+function PublicTrendChart({ trend }: { trend: MonthlyTrendBucket[] }) {
+  const barHeight = 36;
+  const maxRating = 5;
+  const hasData = trend.some((b) => b.review_count > 0);
+  if (!hasData) return null;
+
+  return (
+    <div className="flex items-end gap-1">
+      {trend.map((bucket) => {
+        const height = bucket.avg_rating != null ? Math.max(3, (bucket.avg_rating / maxRating) * barHeight) : 3;
+        const color =
+          bucket.avg_rating == null
+            ? "bg-gray-200"
+            : bucket.avg_rating >= 4
+              ? "bg-green-500"
+              : bucket.avg_rating >= 3
+                ? "bg-yellow-400"
+                : "bg-red-400";
+
+        return (
+          <div key={bucket.month} className="flex-1 flex flex-col items-center gap-0.5">
+            <div className="relative w-full flex justify-center" style={{ height: barHeight }}>
+              <div
+                className={`w-full max-w-[16px] rounded-sm ${color}`}
+                style={{ height, position: "absolute", bottom: 0 }}
+                title={
+                  bucket.avg_rating != null
+                    ? `${bucket.label}: ${bucket.avg_rating} avg (${bucket.review_count} reviews)`
+                    : `${bucket.label}: No reviews`
+                }
+              />
+            </div>
+            <span className="text-[9px] text-gray-400">{bucket.label}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function VendorProfilePage({ vendor, reviews }: VendorProfilePageProps) {
+  const [scorecard, setScorecard] = useState<VendorScorecardData | null>(null);
+  const [showStats, setShowStats] = useState(false);
+
+  useEffect(() => {
+    async function load() {
+      const res = await getVendorScorecardPublic(vendor.id);
+      if (res.data) setScorecard(res.data);
+    }
+    load();
+  }, [vendor.id]);
+
   return (
     <>
       {/* Hero */}
@@ -120,6 +175,79 @@ export function VendorProfilePage({ vendor, reviews }: VendorProfilePageProps) {
             <p className="text-gray-600">
               {vendor.service_radius_miles} mile radius from {vendor.city}, {vendor.state}
             </p>
+          </section>
+        )}
+
+        {/* Performance Stats */}
+        {scorecard && (
+          <section className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <button
+              onClick={() => setShowStats((v) => !v)}
+              className="w-full flex items-center justify-between p-6 text-left"
+            >
+              <h2 className="text-lg font-semibold text-gray-900">Performance</h2>
+              <svg
+                className={`w-5 h-5 text-gray-400 transition-transform ${showStats ? "rotate-180" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {showStats && (
+              <div className="border-t border-gray-200 p-6 space-y-4">
+                {/* Stats row */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="text-center p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xl font-bold text-gray-900">{scorecard.total_jobs}</p>
+                    <p className="text-xs text-gray-500">Completed Jobs</p>
+                  </div>
+                  <div className="text-center p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xl font-bold text-gray-900">{scorecard.wilson_score}%</p>
+                    <p className="text-xs text-gray-500">Confidence</p>
+                  </div>
+                  <div className="text-center p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xl font-bold text-gray-900">
+                      {scorecard.on_time_pct != null ? `${scorecard.on_time_pct}%` : "—"}
+                    </p>
+                    <p className="text-xs text-gray-500">On Time</p>
+                  </div>
+                </div>
+
+                {/* Trend */}
+                {scorecard.monthly_trend && scorecard.monthly_trend.some((b) => b.review_count > 0) && (
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <p className="text-xs font-medium text-gray-500 mb-2">Rating Trend (Last 6 Months)</p>
+                    <PublicTrendChart trend={scorecard.monthly_trend} />
+                  </div>
+                )}
+
+                {/* Quality badges */}
+                <div className="flex flex-wrap gap-2">
+                  {scorecard.estimate_accuracy_pct != null && (
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                      scorecard.estimate_accuracy_pct >= 85
+                        ? "bg-green-50 text-green-700 border border-green-200"
+                        : "bg-yellow-50 text-yellow-700 border border-yellow-200"
+                    }`}>
+                      {scorecard.estimate_accuracy_pct}% Estimate Accuracy
+                    </span>
+                  )}
+                  {scorecard.dispute_rate != null && scorecard.dispute_rate <= 5 && (
+                    <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
+                      Low Dispute Rate
+                    </span>
+                  )}
+                  {scorecard.callback_rate != null && scorecard.callback_rate <= 5 && (
+                    <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
+                      Low Callback Rate
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
           </section>
         )}
 

@@ -35,5 +35,6 @@
   "selectVendorForWO": "Select a vendor for your work order",
   "selectForWO": "Select for Work Order",
   "assigning": "Assigning...",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "performance": "Performance"
 }

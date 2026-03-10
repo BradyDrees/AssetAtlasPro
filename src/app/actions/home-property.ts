@@ -236,3 +236,89 @@ export async function getSystemPhotoCount(
   if (error) throw error;
   return count ?? 0;
 }
+
+// ─── Maintenance Alerts ────────────────────────────────
+
+/**
+ * Fetch active maintenance alerts for the current user's property.
+ */
+export async function getMaintenanceAlerts(): Promise<
+  Array<{
+    id: string;
+    system_type: string;
+    threshold_percent: number;
+    source_snapshot: Record<string, unknown> | null;
+  }>
+> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  // Get user's property
+  const { data: prop } = await supabase
+    .from("homeowner_properties")
+    .select("id")
+    .eq("user_id", user.id)
+    .limit(1)
+    .maybeSingle();
+
+  if (!prop) return [];
+
+  const { data: alerts } = await supabase
+    .from("property_maintenance_alerts")
+    .select("id, system_type, threshold_percent, source_snapshot")
+    .eq("property_id", prop.id)
+    .eq("status", "active")
+    .order("threshold_percent", { ascending: false });
+
+  return (alerts ?? []) as Array<{
+    id: string;
+    system_type: string;
+    threshold_percent: number;
+    source_snapshot: Record<string, unknown> | null;
+  }>;
+}
+
+/**
+ * Dismiss a maintenance alert (90-day cooldown before re-alerting).
+ */
+export async function dismissMaintenanceAlert(
+  alertId: string
+): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  // Verify ownership through property
+  const { data: alert } = await supabase
+    .from("property_maintenance_alerts")
+    .select("id, property_id")
+    .eq("id", alertId)
+    .single();
+
+  if (!alert) return { error: "Alert not found" };
+
+  const { data: prop } = await supabase
+    .from("homeowner_properties")
+    .select("user_id")
+    .eq("id", alert.property_id)
+    .single();
+
+  if (prop?.user_id !== user.id) return { error: "Unauthorized" };
+
+  const { error } = await supabase
+    .from("property_maintenance_alerts")
+    .update({
+      status: "dismissed",
+      dismissed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", alertId);
+
+  if (error) return { error: error.message };
+  return {};
+}

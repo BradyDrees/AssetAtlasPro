@@ -60,5 +60,15 @@
   "systemPhoto": "System photo",
   "noSystemPhotos": "No photos yet — snap a photo of this system to help your vendor",
   "vendorPhoto": "Vendor",
-  "vendorPhotoDate": "Updated by vendor on {date}"
+  "vendorPhotoDate": "Updated by vendor on {date}",
+  "maintenanceAlerts": "Maintenance Alerts",
+  "alertSystem": {
+    "hvac": "HVAC System",
+    "water_heater": "Water Heater",
+    "roof": "Roof"
+  },
+  "alertLifeUsed": "life used",
+  "alertAgeMessage": "Your system is {age} years old with an expected lifespan of {lifespan} years. Consider scheduling maintenance.",
+  "alertRequestService": "Request Service",
+  "alertDismiss": "Dismiss"
 }

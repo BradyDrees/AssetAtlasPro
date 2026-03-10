@@ -60,5 +60,15 @@
   "systemPhoto": "Foto del sistema",
   "noSystemPhotos": "Aún no hay fotos — tome una foto de este sistema para ayudar a su proveedor",
   "vendorPhoto": "Proveedor",
-  "vendorPhotoDate": "Actualizado por proveedor el {date}"
+  "vendorPhotoDate": "Actualizado por proveedor el {date}",
+  "maintenanceAlerts": "Alertas de Mantenimiento",
+  "alertSystem": {
+    "hvac": "Sistema HVAC",
+    "water_heater": "Calentador de Agua",
+    "roof": "Techo"
+  },
+  "alertLifeUsed": "vida útil usada",
+  "alertAgeMessage": "Su sistema tiene {age} años con una vida útil esperada de {lifespan} años. Considere programar mantenimiento.",
+  "alertRequestService": "Solicitar Servicio",
+  "alertDismiss": "Descartar"
 }

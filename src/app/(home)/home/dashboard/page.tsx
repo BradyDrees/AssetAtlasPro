@@ -5,6 +5,7 @@ import { DashboardActiveWoList } from "@/components/home/dashboard-active-wo";
 import { DashboardPropertyCard } from "@/components/home/dashboard-property-card";
 import { DashboardUpcomingVisits } from "@/components/home/dashboard-upcoming";
 import { DashboardActivity } from "@/components/home/dashboard-activity";
+import { DashboardMaintenanceAlerts } from "@/components/home/dashboard-maintenance-alerts";
 
 export default async function HomeDashboardPage() {
   const t = await getTranslations("home.dashboard");
@@ -37,6 +38,9 @@ export default async function HomeDashboardPage() {
           <p className="text-[10px] text-content-quaternary mt-0.5">{t("poolBalance")}</p>
         </div>
       </div>
+
+      {/* Maintenance Alerts (client component — self-loading) */}
+      <DashboardMaintenanceAlerts />
 
       {/* Quick Actions + Property */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

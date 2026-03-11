@@ -130,5 +130,6 @@
   "aiAnalyze": "AI Assist",
   "aiAnalyzing": "Analyzing...",
   "aiSuggested": "AI suggested",
-  "aiUnavailable": "AI analysis unavailable — continue manually"
+  "aiUnavailable": "AI analysis unavailable — continue manually",
+  "searchPlaceholder": "Search work orders..."
 }

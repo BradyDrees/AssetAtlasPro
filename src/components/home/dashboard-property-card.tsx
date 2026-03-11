@@ -72,7 +72,7 @@ export function DashboardPropertyCard({ property }: Props) {
       </div>
 
       {/* System age chips */}
-      <div className="flex flex-wrap gap-1.5 mb-3">
+      <div className="flex flex-wrap gap-1.5">
         <AgeChip label={t("systemHvac")} age={property.hvac_age} lifespan={LIFESPAN.hvac} />
         <AgeChip label={t("systemWater")} age={property.water_heater_age} lifespan={LIFESPAN.water_heater} />
         <AgeChip label={t("systemRoof")} age={property.roof_age} lifespan={LIFESPAN.roof} />
@@ -83,13 +83,6 @@ export function DashboardPropertyCard({ property }: Props) {
           </div>
         )}
       </div>
-
-      <Link
-        href="/home/property"
-        className="text-xs text-rose-500 hover:text-rose-400 font-medium"
-      >
-        {t("editProperty")} →
-      </Link>
     </div>
   );
 }

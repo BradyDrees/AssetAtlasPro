@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 export function AcquireDashboardContent({
@@ -52,20 +51,26 @@ export function AcquireDashboardContent({
 
   return (
     <div>
-      <div className="mb-8 bg-gradient-to-r from-blue-900 via-charcoal-950 to-blue-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-6 md:px-6 rounded-b-xl flex flex-col items-center justify-center overflow-visible">
-        <Image
-          src="/logo-dark.png"
-          alt="Asset Atlas"
-          width={1200}
-          height={530}
-          className="h-36 md:h-48 w-auto logo-fade -my-6"
-        />
-        <p className="text-blue-300 text-sm font-semibold mt-2">
-          {t("tiers.acquireTagline")}
-        </p>
-        <p className="text-charcoal-300 text-sm mt-1 text-center">
-          {t("dashboard.selectModule")}
-        </p>
+      {/* Collapsed branded header bar instead of full hero */}
+      <div className="mb-6 bg-gradient-to-r from-blue-900 via-charcoal-950 to-blue-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-4 md:px-6 rounded-b-xl flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-white">
+            Atlas <span className="text-blue-300">Acquire</span>
+          </h1>
+          <p className="text-blue-300/80 text-sm">
+            {t("tiers.acquireTagline")}
+          </p>
+        </div>
+        <div className="flex items-center gap-4 text-sm">
+          <div className="text-center">
+            <p className="text-xl font-bold text-white">{ddCount}</p>
+            <p className="text-[10px] text-blue-300/70 uppercase tracking-wide">{t("dashboard.projects")}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-xl font-bold text-white">{daCount}</p>
+            <p className="text-[10px] text-blue-300/70 uppercase tracking-wide">{t("dealAnalysis.deals")}</p>
+          </div>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 max-w-2xl mx-auto">
@@ -73,7 +78,7 @@ export function AcquireDashboardContent({
           <Link
             key={m.title}
             href={m.href}
-            className="group block bg-surface-primary rounded-xl border border-edge-primary shadow-sm hover:shadow-md hover:border-blue-300 transition-all overflow-hidden"
+            className="group block bg-surface-primary rounded-xl border border-edge-primary shadow-sm hover:shadow-md hover:border-blue-400/50 transition-all overflow-hidden"
           >
             <div
               className={`bg-gradient-to-r ${m.gradient} px-5 py-4 flex items-center gap-3`}
@@ -101,7 +106,7 @@ export function AcquireDashboardContent({
                 <span className="text-2xl font-bold text-content-primary">
                   {m.count}
                 </span>
-                <span className="text-xs text-content-muted uppercase tracking-wide">
+                <span className="text-sm text-content-tertiary">
                   {m.countLabel}
                 </span>
               </div>

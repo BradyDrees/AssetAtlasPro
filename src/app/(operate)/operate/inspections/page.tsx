@@ -47,7 +47,7 @@ export default async function InspectionsPage() {
           <h1 className="text-2xl font-bold text-white">
             {t("dashboard.propertyInspections")}
           </h1>
-          <p className="text-gold-300 text-sm mt-0.5">{t("dashboard.pcaProjects")}</p>
+          <p className="text-charcoal-300 text-sm mt-0.5">{t("dashboard.pcaProjects")}</p>
         </div>
         <CreateInspectionButton />
       </div>
@@ -57,7 +57,7 @@ export default async function InspectionsPage() {
           {/* My Inspections */}
           {ownedProjects && ownedProjects.length > 0 && (
             <div>
-              <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">
+              <h2 className="text-xs font-semibold text-content-tertiary uppercase tracking-wider mb-3 border-b border-edge-secondary pb-2">
                 {t("dashboard.myInspections")}
               </h2>
               <div className="space-y-3">
@@ -71,7 +71,7 @@ export default async function InspectionsPage() {
           {/* Shared with Me */}
           {sharedProjects && sharedProjects.length > 0 && (
             <div>
-              <h2 className="text-sm font-bold text-content-quaternary uppercase tracking-wider mb-3">
+              <h2 className="text-xs font-semibold text-content-tertiary uppercase tracking-wider mb-3 border-b border-edge-secondary pb-2">
                 {t("dashboard.sharedWithMe")}
               </h2>
               <div className="space-y-3">
@@ -88,8 +88,8 @@ export default async function InspectionsPage() {
         </div>
       ) : (
         <div className="bg-surface-primary rounded-xl border border-edge-primary p-12 text-center shadow-sm">
-          <div className="w-16 h-16 bg-green-50 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-            <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 bg-green-500/10 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
             </svg>
           </div>

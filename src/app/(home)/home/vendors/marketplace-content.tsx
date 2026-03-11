@@ -82,8 +82,11 @@ export function VendorMarketplaceContent({ vendors, badgeMap = {} }: { vendors: 
         </div>
         <Link
           href="/home/vendors/saved"
-          className="text-sm text-rose-500 hover:text-rose-400 font-medium"
+          className="text-sm text-rose-500 hover:text-rose-400 font-medium flex items-center gap-1.5"
         >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
+          </svg>
           {t("savedVendors")}
         </Link>
       </div>
@@ -163,21 +166,25 @@ export function VendorMarketplaceContent({ vendors, badgeMap = {} }: { vendors: 
           {filtered.map((vendor) => {
             const cardContent = (
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-lg bg-rose-500/10 flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 rounded-lg bg-rose-600/20 flex items-center justify-center flex-shrink-0">
                   {vendor.logo_url ? (
                     <img src={vendor.logo_url} alt="" className="w-full h-full object-cover rounded-lg" />
                   ) : (
-                    <span className="text-lg font-bold text-rose-400">{vendor.name.charAt(0)}</span>
+                    <span className="text-lg font-bold text-rose-300">{vendor.name.charAt(0)}</span>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-semibold text-content-primary truncate">{vendor.name}</h3>
                   <div className="flex items-center gap-2 mt-1">
-                    <div className="flex items-center gap-1">
-                      <span className="text-amber-400 text-xs">★</span>
-                      <span className="text-xs text-content-primary font-medium">{vendor.avg_rating > 0 ? vendor.avg_rating.toFixed(1) : "—"}</span>
-                      <span className="text-xs text-content-quaternary">({vendor.total_ratings})</span>
-                    </div>
+                    {vendor.total_ratings > 0 ? (
+                      <div className="flex items-center gap-1">
+                        <span className="text-amber-400 text-xs">★</span>
+                        <span className="text-xs text-content-primary font-medium">{vendor.avg_rating.toFixed(1)}</span>
+                        <span className="text-xs text-content-quaternary">({vendor.total_ratings})</span>
+                      </div>
+                    ) : (
+                      <span className="text-xs text-content-quaternary">{t("noReviews")}</span>
+                    )}
                     {vendor.response_time_label && (
                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400">
                         {RESPONSE_TIME_LABELS[vendor.response_time_label] ?? vendor.response_time_label}
@@ -192,12 +199,17 @@ export function VendorMarketplaceContent({ vendors, badgeMap = {} }: { vendors: 
                   {vendor.trades.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-2">
                       {vendor.trades.slice(0, 3).map((trade) => (
-                        <span key={trade} className="text-[10px] px-2 py-0.5 rounded-full bg-surface-secondary text-content-tertiary capitalize">
+                        <span key={trade} className="text-[10px] px-2 py-0.5 rounded-full bg-surface-tertiary border border-edge-secondary text-content-tertiary capitalize">
                           {trade}
                         </span>
                       ))}
                       {vendor.trades.length > 3 && (
-                        <span className="text-[10px] text-content-quaternary">+{vendor.trades.length - 3}</span>
+                        <span
+                          className="text-[10px] px-2 py-0.5 rounded-full bg-surface-tertiary border border-edge-secondary text-content-quaternary cursor-default"
+                          title={vendor.trades.slice(3).join(", ")}
+                        >
+                          +{vendor.trades.length - 3}
+                        </span>
                       )}
                     </div>
                   )}

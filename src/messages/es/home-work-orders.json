@@ -130,5 +130,6 @@
   "aiAnalyze": "Asistente IA",
   "aiAnalyzing": "Analizando...",
   "aiSuggested": "IA sugiere",
-  "aiUnavailable": "Análisis de IA no disponible — continúa manualmente"
+  "aiUnavailable": "Análisis de IA no disponible — continúa manualmente",
+  "searchPlaceholder": "Buscar solicitudes..."
 }

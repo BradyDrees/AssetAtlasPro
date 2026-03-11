@@ -12,6 +12,7 @@
   "noRecentActivity": "No recent activity",
   "upcomingVisits": "Upcoming Visits",
   "noUpcomingVisits": "No upcoming visits",
+  "upcomingVisitsHint": "Scheduled vendor visits will appear here",
   "scheduledVisit": "Scheduled Visit",
   "maintenancePool": "Maintenance Pool",
   "poolBalance": "Pool",

@@ -114,18 +114,24 @@ export default function HomeSettingsPage() {
       {/* Notification Preferences (placeholder) */}
       <div className="bg-surface-primary rounded-xl border border-edge-primary p-6">
         <h2 className="text-lg font-semibold text-content-primary mb-4">{t("notifications")}</h2>
-        <div className="space-y-3">
+        <div className="space-y-4">
           <label className="flex items-center justify-between cursor-pointer">
-            <span className="text-sm text-content-secondary">{t("emailNotifications")}</span>
-            <div className="relative">
+            <div>
+              <span className="text-sm text-content-secondary block">{t("emailNotifications")}</span>
+              <span className="text-xs text-content-quaternary">{t("emailNotificationsDesc")}</span>
+            </div>
+            <div className="relative flex-shrink-0 ml-4">
               <input type="checkbox" className="sr-only peer" defaultChecked />
               <div className="w-10 h-5 bg-charcoal-600 rounded-full peer-checked:bg-rose-500 transition-colors" />
               <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full peer-checked:translate-x-5 transition-transform" />
             </div>
           </label>
           <label className="flex items-center justify-between cursor-pointer">
-            <span className="text-sm text-content-secondary">{t("smsNotifications")}</span>
-            <div className="relative">
+            <div>
+              <span className="text-sm text-content-secondary block">{t("smsNotifications")}</span>
+              <span className="text-xs text-content-quaternary">{t("smsNotificationsDesc")}</span>
+            </div>
+            <div className="relative flex-shrink-0 ml-4">
               <input type="checkbox" className="sr-only peer" defaultChecked />
               <div className="w-10 h-5 bg-charcoal-600 rounded-full peer-checked:bg-rose-500 transition-colors" />
               <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full peer-checked:translate-x-5 transition-transform" />

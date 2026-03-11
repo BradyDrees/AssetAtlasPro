@@ -119,17 +119,36 @@ export function HomeSidebar({ user, hasVendorRole = false, hasPmRole = false }: 
   const [isOpen, setIsOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
-  const navItems = [
-    { href: "/home/dashboard", label: ht("dashboard"), icon: <DashboardIcon />, matchExact: true },
-    { href: "/home/work-orders", label: ht("workOrders"), icon: <WrenchIcon />, matchExact: false },
-    { href: "/home/vendors", label: ht("vendors"), icon: <StarIcon />, matchExact: false },
-    { href: "/home/projects", label: ht("projects"), icon: <FolderIcon />, matchExact: false },
-    { href: "/home/documents", label: ht("documents"), icon: <DocumentIcon />, matchExact: false },
-    { href: "/home/cost-guide", label: ht("costGuide"), icon: <DollarIcon />, matchExact: false },
-    { href: "/home/inbox", label: ht("messages"), icon: <ChatBubbleIcon />, matchExact: false, showUnreadBadge: true },
-    { href: "/home/property", label: ht("property"), icon: <BuildingIcon />, matchExact: false },
-    { href: "/home/emergency", label: ht("emergency"), icon: <EmergencyIcon />, matchExact: false, isEmergency: true },
-    { href: "/home/settings", label: ht("settings"), icon: <CogIcon />, matchExact: false },
+  // Nav grouped by section
+  const navSections = [
+    {
+      items: [
+        { href: "/home/dashboard", label: ht("dashboard"), icon: <DashboardIcon />, matchExact: true },
+      ],
+    },
+    {
+      label: ht("sectionMaintenance"),
+      items: [
+        { href: "/home/work-orders", label: ht("workOrders"), icon: <WrenchIcon />, matchExact: false },
+        { href: "/home/vendors", label: ht("vendors"), icon: <StarIcon />, matchExact: false },
+        { href: "/home/projects", label: ht("projects"), icon: <FolderIcon />, matchExact: false },
+        { href: "/home/emergency", label: ht("emergency"), icon: <EmergencyIcon />, matchExact: false, isEmergency: true },
+      ],
+    },
+    {
+      label: ht("sectionProperty"),
+      items: [
+        { href: "/home/property", label: ht("property"), icon: <BuildingIcon />, matchExact: false },
+        { href: "/home/documents", label: ht("documents"), icon: <DocumentIcon />, matchExact: false },
+        { href: "/home/cost-guide", label: ht("costGuide"), icon: <DollarIcon />, matchExact: false },
+      ],
+    },
+    {
+      label: ht("sectionCommunication"),
+      items: [
+        { href: "/home/inbox", label: ht("messages"), icon: <ChatBubbleIcon />, matchExact: false, showUnreadBadge: true },
+      ],
+    },
   ];
 
   // Close mobile drawer on navigation
@@ -172,16 +191,16 @@ export function HomeSidebar({ user, hasVendorRole = false, hasPmRole = false }: 
       <aside
         className={`bg-surface-primary border-r border-edge-primary flex flex-col flex-shrink-0 transition-all duration-200 fixed inset-y-0 left-0 z-50 ${isOpen ? "translate-x-0" : "-translate-x-full"} w-64 md:relative md:translate-x-0 ${collapsed ? "md:w-16" : "md:w-64"}`}
       >
-        {/* Header — rose gradient for Home tier */}
+        {/* Header — rose gradient for Home tier (lightened for contrast) */}
         <div
-          className="p-4 flex items-center justify-between bg-[radial-gradient(ellipse_at_top_left,_var(--color-rose-900)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--color-rose-900)_0%,_var(--charcoal-950)_60%)] bg-charcoal-900"
+          className="p-4 flex items-center justify-between bg-[radial-gradient(ellipse_at_top_left,_var(--color-rose-800)_0%,_transparent_50%),radial-gradient(ellipse_at_bottom_right,_var(--color-rose-900)_0%,_var(--charcoal-900)_60%)] bg-charcoal-800"
           style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 16px)" }}
         >
           {!collapsed && (
             <Link href="/home/dashboard" className="flex-shrink-0">
               <div>
-                <h1 className="text-xl font-bold text-white leading-tight">Atlas <span className="text-rose-400">Home</span></h1>
-                <p className="text-sm text-rose-300">{ht("homePortal")}</p>
+                <h1 className="text-xl font-bold text-white leading-tight">Atlas <span className="text-rose-300">Home</span></h1>
+                <p className="text-sm text-rose-200/80">{ht("homePortal")}</p>
               </div>
             </Link>
           )}
@@ -218,38 +237,67 @@ export function HomeSidebar({ user, hasVendorRole = false, hasPmRole = false }: 
 
         {/* Scrollable content area — prevents clipping on short viewports / PWA */}
         <div className="flex-1 flex flex-col overflow-y-auto overscroll-contain">
-        {/* Navigation */}
-        <nav className="flex-1 p-3 space-y-1">
-          {navItems.map((item) => {
-            const isActive = item.matchExact
-              ? pathname === item.href
-              : pathname === item.href || pathname.startsWith(item.href + "/");
+        {/* Navigation — grouped by section */}
+        <nav className="flex-1 p-3 space-y-3">
+          {navSections.map((section, sIdx) => (
+            <div key={sIdx}>
+              {section.label && !collapsed && (
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-content-quaternary px-3 mb-1.5">
+                  {section.label}
+                </p>
+              )}
+              {section.label && collapsed && (
+                <div className="border-t border-edge-secondary my-2" />
+              )}
+              <div className="space-y-0.5">
+                {section.items.map((item) => {
+                  const isActive = item.matchExact
+                    ? pathname === item.href
+                    : pathname === item.href || pathname.startsWith(item.href + "/");
 
-            const isEmergency = "isEmergency" in item && item.isEmergency;
+                  const isEmergency = "isEmergency" in item && item.isEmergency;
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  isEmergency
-                    ? isActive
-                      ? "bg-red-600 text-white shadow-sm border border-red-500"
-                      : "text-red-500 hover:bg-red-500/10 hover:text-red-600"
-                    : isActive
-                      ? "bg-rose-50 text-rose-700 shadow-sm border border-rose-100"
-                      : "text-content-tertiary hover:bg-surface-secondary hover:text-content-primary"
-                } ${collapsed ? "md:justify-center md:px-0" : ""}`}
-                title={collapsed ? item.label : undefined}
-              >
-                <span className="relative">
-                  {item.icon}
-                  {item.showUnreadBadge && <UnreadBadge className="bg-rose-500" />}
-                </span>
-                {!collapsed && <span>{item.label}</span>}
-              </Link>
-            );
-          })}
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                        isEmergency
+                          ? isActive
+                            ? "bg-red-600 text-white shadow-sm"
+                            : "text-red-500 hover:bg-red-500/10 hover:text-red-600"
+                          : isActive
+                            ? "bg-rose-500/10 text-rose-500 border-l-2 border-rose-500 rounded-l-none"
+                            : "text-content-tertiary hover:bg-surface-secondary hover:text-content-primary"
+                      } ${collapsed ? "md:justify-center md:px-0" : ""}`}
+                      title={collapsed ? item.label : undefined}
+                    >
+                      <span className="relative">
+                        {item.icon}
+                        {"showUnreadBadge" in item && item.showUnreadBadge && <UnreadBadge className="bg-rose-500" />}
+                      </span>
+                      {!collapsed && <span>{item.label}</span>}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+
+          {/* Settings (bottom of nav, separated) */}
+          {!collapsed && <div className="border-t border-edge-secondary my-2" />}
+          <Link
+            href="/home/settings"
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              pathname.startsWith("/home/settings")
+                ? "bg-rose-500/10 text-rose-500 border-l-2 border-rose-500 rounded-l-none"
+                : "text-content-tertiary hover:bg-surface-secondary hover:text-content-primary"
+            } ${collapsed ? "md:justify-center md:px-0" : ""}`}
+            title={collapsed ? ht("settings") : undefined}
+          >
+            <CogIcon />
+            {!collapsed && <span>{ht("settings")}</span>}
+          </Link>
         </nav>
 
         {/* Bottom section */}

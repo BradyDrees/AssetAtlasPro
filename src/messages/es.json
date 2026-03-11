@@ -81,7 +81,8 @@
     "acquireTagline": "Adquisiciones y Suscripcion",
     "operateTagline": "Gestion de Propiedades y Operaciones",
     "proTagline": "Suite de Contratistas y Proveedores",
-    "homeTagline": "Plataforma de Mantenimiento para Propietarios"
+    "homeTagline": "Plataforma de Mantenimiento para Propietarios",
+    "modules": "Módulos"
   },
   "sidebar": {
     "fieldMode": "Modo Campo",

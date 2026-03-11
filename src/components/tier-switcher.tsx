@@ -14,36 +14,44 @@ interface TierSwitcherProps {
   collapsed?: boolean;
 }
 
-const TIER_CONFIG: Record<Tier, { label: string; color: string; hoverColor: string; bgColor: string; href: string; role: AppRole }> = {
+const TIER_CONFIG: Record<Tier, { label: string; short: string; color: string; bgActive: string; bgHover: string; dotColor: string; href: string; role: AppRole }> = {
   acquire: {
     label: "Acquire",
+    short: "A",
     color: "text-blue-400",
-    hoverColor: "hover:text-blue-300",
-    bgColor: "hover:bg-blue-500/10",
+    bgActive: "bg-blue-500/20 border-blue-500/30",
+    bgHover: "hover:bg-blue-500/10",
+    dotColor: "bg-blue-400",
     href: "/acquire/dashboard",
     role: "pm",
   },
   operate: {
     label: "Operate",
+    short: "O",
     color: "text-green-400",
-    hoverColor: "hover:text-green-300",
-    bgColor: "hover:bg-green-500/10",
+    bgActive: "bg-green-500/20 border-green-500/30",
+    bgHover: "hover:bg-green-500/10",
+    dotColor: "bg-green-400",
     href: "/operate/dashboard",
     role: "pm",
   },
   pro: {
     label: "Pro",
+    short: "P",
     color: "text-amber-400",
-    hoverColor: "hover:text-amber-300",
-    bgColor: "hover:bg-amber-500/10",
+    bgActive: "bg-amber-500/20 border-amber-500/30",
+    bgHover: "hover:bg-amber-500/10",
+    dotColor: "bg-amber-400",
     href: "/pro",
     role: "vendor",
   },
   home: {
     label: "Home",
+    short: "H",
     color: "text-rose-400",
-    hoverColor: "hover:text-rose-300",
-    bgColor: "hover:bg-rose-500/10",
+    bgActive: "bg-rose-500/20 border-rose-500/30",
+    bgHover: "hover:bg-rose-500/10",
+    dotColor: "bg-rose-400",
     href: "/home/dashboard",
     role: "owner",
   },
@@ -52,17 +60,16 @@ const TIER_CONFIG: Record<Tier, { label: string; color: string; hoverColor: stri
 export function TierSwitcher({ currentTier, hasPmRole, hasVendorRole, hasOwnerRole = false, collapsed = false }: TierSwitcherProps) {
   const t = useTranslations();
 
-  // Build list of available tiers (excluding current)
-  const availableTiers: Tier[] = [];
+  // Build full tier list (including current for visual context)
+  const allTiers: Tier[] = [];
+  if (hasPmRole) { allTiers.push("acquire"); allTiers.push("operate"); }
+  if (hasVendorRole) allTiers.push("pro");
+  allTiers.push("home");
 
-  if (currentTier !== "acquire" && hasPmRole) availableTiers.push("acquire");
-  if (currentTier !== "operate" && hasPmRole) availableTiers.push("operate");
-  if (currentTier !== "pro" && hasVendorRole) availableTiers.push("pro");
-  if (currentTier !== "home") availableTiers.push("home");
-
-  if (availableTiers.length === 0) return null;
+  if (allTiers.length <= 1) return null;
 
   const handleSwitch = async (tier: Tier) => {
+    if (tier === currentTier) return;
     const config = TIER_CONFIG[tier];
     await switchRole(config.role);
     document.cookie = `active_role=${config.role}; path=/; max-age=31536000; samesite=lax`;
@@ -71,17 +78,23 @@ export function TierSwitcher({ currentTier, hasPmRole, hasVendorRole, hasOwnerRo
 
   if (collapsed) {
     return (
-      <div className="space-y-1">
-        {availableTiers.map((tier) => {
+      <div className="flex flex-col gap-1 mb-2">
+        {allTiers.map((tier) => {
           const config = TIER_CONFIG[tier];
+          const isCurrent = tier === currentTier;
           return (
             <button
               key={tier}
               onClick={() => handleSwitch(tier)}
-              className={`w-full text-center py-1.5 text-xs font-bold ${config.color} ${config.hoverColor} ${config.bgColor} rounded transition-colors`}
-              title={t("tiers.switchTo", { tier: config.label })}
+              disabled={isCurrent}
+              className={`w-full text-center py-1.5 text-xs font-bold rounded transition-colors ${
+                isCurrent
+                  ? `${config.bgActive} ${config.color} border`
+                  : `${config.color} ${config.bgHover}`
+              }`}
+              title={isCurrent ? config.label : t("tiers.switchTo", { tier: config.label })}
             >
-              {config.label.charAt(0)}
+              {config.short}
             </button>
           );
         })}
@@ -90,22 +103,31 @@ export function TierSwitcher({ currentTier, hasPmRole, hasVendorRole, hasOwnerRo
   }
 
   return (
-    <div className="space-y-1">
-      {availableTiers.map((tier) => {
-        const config = TIER_CONFIG[tier];
-        return (
-          <button
-            key={tier}
-            onClick={() => handleSwitch(tier)}
-            className={`flex items-center gap-2 w-full px-1 py-1.5 text-sm ${config.color} ${config.hoverColor} ${config.bgColor} rounded transition-colors`}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-            </svg>
-            {t("tiers.switchTo", { tier: config.label })}
-          </button>
-        );
-      })}
+    <div className="mb-3">
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-content-quaternary mb-1.5 px-1">
+        {t("tiers.modules")}
+      </p>
+      <div className="flex flex-wrap gap-1">
+        {allTiers.map((tier) => {
+          const config = TIER_CONFIG[tier];
+          const isCurrent = tier === currentTier;
+          return (
+            <button
+              key={tier}
+              onClick={() => handleSwitch(tier)}
+              disabled={isCurrent}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                isCurrent
+                  ? `${config.bgActive} ${config.color} border cursor-default`
+                  : `${config.color} ${config.bgHover} border border-transparent`
+              }`}
+            >
+              <span className={`w-2 h-2 rounded-full ${config.dotColor} ${isCurrent ? "" : "opacity-50"}`} />
+              {config.label}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
@@ -19,6 +19,8 @@ interface WorkOrdersContentProps {
 }
 
 const STATUS_COLORS: Record<string, string> = {
+  open: "bg-charcoal-500/20 text-charcoal-400",
+  matching: "bg-purple-500/20 text-purple-400",
   assigned: "bg-blue-500/20 text-blue-400",
   accepted: "bg-cyan-500/20 text-cyan-400",
   scheduled: "bg-purple-500/20 text-purple-400",
@@ -33,22 +35,52 @@ const STATUS_COLORS: Record<string, string> = {
   on_hold: "bg-charcoal-500/20 text-charcoal-400",
 };
 
-const URGENCY_COLORS: Record<string, string> = {
-  emergency: "bg-red-500/20 text-red-400",
-  urgent: "bg-amber-500/20 text-amber-400",
+const URGENCY_STYLES: Record<string, string> = {
+  emergency: "bg-red-600/20 text-red-400 border border-red-500/30 font-semibold",
+  urgent: "bg-red-500/20 text-red-400",
   routine: "bg-blue-500/20 text-blue-400",
   whenever: "bg-charcoal-500/20 text-charcoal-400",
 };
 
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 export function WorkOrdersContent({ workOrders }: WorkOrdersContentProps) {
   const t = useTranslations("home.workOrders");
   const [tab, setTab] = useState<"active" | "history">("active");
+  const [search, setSearch] = useState("");
+  const [tradeFilter, setTradeFilter] = useState("");
 
   const COMPLETED_STATUSES = ["completed", "paid", "declined"];
 
   const activeOrders = workOrders.filter((wo) => !COMPLETED_STATUSES.includes(wo.status));
   const historyOrders = workOrders.filter((wo) => COMPLETED_STATUSES.includes(wo.status));
-  const displayedOrders = tab === "active" ? activeOrders : historyOrders;
+  const baseOrders = tab === "active" ? activeOrders : historyOrders;
+
+  // Collect unique trades for filter
+  const allTrades = useMemo(() => {
+    const trades = new Set(workOrders.map((wo) => wo.trade).filter(Boolean) as string[]);
+    return Array.from(trades).sort();
+  }, [workOrders]);
+
+  // Apply search + trade filter
+  const displayedOrders = useMemo(() => {
+    return baseOrders.filter((wo) => {
+      if (search) {
+        const q = search.toLowerCase();
+        const matchTrade = wo.trade?.toLowerCase().includes(q);
+        const matchDesc = wo.description?.toLowerCase().includes(q);
+        if (!matchTrade && !matchDesc) return false;
+      }
+      if (tradeFilter && wo.trade !== tradeFilter) return false;
+      return true;
+    });
+  }, [baseOrders, search, tradeFilter]);
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -66,6 +98,34 @@ export function WorkOrdersContent({ workOrders }: WorkOrdersContentProps) {
           </svg>
           {t("newWorkOrder")}
         </Link>
+      </div>
+
+      {/* Search + Filter */}
+      <div className="flex gap-3">
+        <div className="flex-1 relative">
+          <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-content-quaternary" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={t("searchPlaceholder")}
+            className="w-full pl-10 pr-4 py-2 bg-surface-primary border border-edge-primary rounded-lg text-content-primary text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50"
+          />
+        </div>
+        {allTrades.length > 1 && (
+          <select
+            value={tradeFilter}
+            onChange={(e) => setTradeFilter(e.target.value)}
+            className="px-3 py-2 bg-surface-primary border border-edge-primary rounded-lg text-content-primary text-sm"
+          >
+            <option value="">{t("allTrades")}</option>
+            {allTrades.map((trade) => (
+              <option key={trade} value={trade}>{trade}</option>
+            ))}
+          </select>
+        )}
       </div>
 
       {/* Tabs */}
@@ -97,6 +157,11 @@ export function WorkOrdersContent({ workOrders }: WorkOrdersContentProps) {
           <p className="text-sm text-content-quaternary">
             {tab === "active" ? t("noActiveOrders") : t("noHistory")}
           </p>
+          {tab === "active" && (
+            <Link href="/home/work-orders/new" className="inline-block mt-3 text-sm text-rose-500 hover:text-rose-400 font-medium">
+              {t("newWorkOrder")} →
+            </Link>
+          )}
         </div>
       ) : (
         <div className="space-y-3">
@@ -108,24 +173,25 @@ export function WorkOrdersContent({ workOrders }: WorkOrdersContentProps) {
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
                     <span className="text-sm font-semibold text-content-primary capitalize">
                       {wo.trade ?? t("other")}
                     </span>
                     {wo.urgency && (
-                      <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${URGENCY_COLORS[wo.urgency] ?? ""}`}>
+                      <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${URGENCY_STYLES[wo.urgency] ?? ""}`}>
+                        {wo.urgency === "urgent" || wo.urgency === "emergency" ? "● " : ""}
                         {t(wo.urgency as "emergency" | "urgent" | "routine" | "whenever")}
                       </span>
                     )}
+                    <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${STATUS_COLORS[wo.status] ?? "bg-charcoal-500/20 text-charcoal-400"}`}>
+                      {wo.status.replace(/_/g, " ")}
+                    </span>
                   </div>
                   <p className="text-sm text-content-tertiary line-clamp-2">{wo.description}</p>
                   <p className="text-xs text-content-quaternary mt-2">
-                    {new Date(wo.created_at).toLocaleDateString()}
+                    {formatDate(wo.created_at)}
                   </p>
                 </div>
-                <span className={`text-[10px] font-medium px-2 py-1 rounded-full whitespace-nowrap ${STATUS_COLORS[wo.status] ?? "bg-charcoal-500/20 text-charcoal-400"}`}>
-                  {wo.status.replace(/_/g, " ")}
-                </span>
               </div>
             </Link>
           ))}

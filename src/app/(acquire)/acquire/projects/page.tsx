@@ -20,7 +20,7 @@ export default async function ProjectsPage() {
           <h1 className="text-2xl font-bold text-white">
             {t("nav.dueDiligence")}
           </h1>
-          <p className="text-gold-300 text-sm mt-0.5 capitalize">{t("dashboard.manageDDProjects")}</p>
+          <p className="text-charcoal-300 text-sm mt-0.5 capitalize">{t("dashboard.manageDDProjects")}</p>
         </div>
         <CreateDDProjectButton />
       </div>
@@ -33,8 +33,8 @@ export default async function ProjectsPage() {
         </div>
       ) : (
         <div className="bg-surface-primary rounded-xl border border-edge-primary p-12 text-center shadow-sm">
-          <div className="w-16 h-16 bg-brand-50 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-            <svg className="w-8 h-8 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 bg-blue-500/10 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <svg className="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
           </div>

@@ -11,34 +11,46 @@ interface BatchCardProps {
   unitCount: number;
 }
 
+// Detect raw UUIDs or internal prefixes in batch names
+function cleanBatchName(name: string): string {
+  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const INTERNAL_PREFIX = /^__\w+__/;
+  if (!name || UUID_REGEX.test(name) || INTERNAL_PREFIX.test(name)) {
+    return "Untitled Batch";
+  }
+  return name;
+}
+
 export function BatchCard({ batch, unitCount }: BatchCardProps) {
   const t = useTranslations();
   const { locale } = useAppLocale();
   const statusInfo = BATCH_STATUS_LABELS[batch.status] ?? BATCH_STATUS_LABELS.OPEN;
+  const displayName = cleanBatchName(batch.name);
 
   const monthLabel = batch.month
     ? new Date(batch.month + "T00:00:00").toLocaleDateString(locale === "es" ? "es" : "en-US", { month: "long", day: "numeric", year: "numeric" })
     : null;
 
+  // Always show date even without month — use created_at fallback
+  const dateLabel = monthLabel ?? new Date(batch.created_at ?? Date.now()).toLocaleDateString(locale === "es" ? "es" : "en-US", { month: "short", day: "numeric", year: "numeric" });
+
   return (
     <Link
       href={`/unit-turns/${batch.id}`}
-      className="block bg-surface-primary rounded-xl border border-edge-primary p-4 hover:shadow-md hover:border-brand-300 transition-all"
+      className="block bg-surface-primary rounded-xl border border-edge-primary p-4 hover:shadow-md hover:border-green-400/50 transition-all cursor-pointer"
     >
       <div className="flex items-center justify-between">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <h3 className="text-base font-semibold text-content-primary truncate">
-              {batch.name}
+              {displayName}
             </h3>
             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusInfo.color}`}>
               {t(`unitTurn.batchStatus.${batch.status}`)}
             </span>
           </div>
           <div className="flex items-center gap-3 mt-1">
-            {monthLabel && (
-              <span className="text-sm text-content-quaternary">{monthLabel}</span>
-            )}
+            <span className="text-sm text-content-quaternary">{dateLabel}</span>
             <span className="text-sm text-content-muted">
               {unitCount} {t("pdf.tableHeaders.unit")}
             </span>

@@ -18,5 +18,8 @@
   "projects": "Proyectos",
   "documents": "Documentos",
   "costGuide": "Guía de Costos",
-  "emergency": "SOS Emergencia"
+  "emergency": "SOS Emergencia",
+  "sectionMaintenance": "Mantenimiento",
+  "sectionProperty": "Mi Hogar",
+  "sectionCommunication": "Comunicación"
 }

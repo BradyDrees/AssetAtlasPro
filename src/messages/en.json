@@ -81,7 +81,8 @@
     "acquireTagline": "Acquisitions & Underwriting",
     "operateTagline": "Property Management & Operations",
     "proTagline": "Vendor & Contractor Suite",
-    "homeTagline": "Homeowner Maintenance Platform"
+    "homeTagline": "Homeowner Maintenance Platform",
+    "modules": "Modules"
   },
   "sidebar": {
     "fieldMode": "Field Mode",

@@ -38,14 +38,29 @@ export default async function HomeDashboardPage() {
       {/* Stats bar */}
       <div className="grid grid-cols-4 gap-3">
         <div className="bg-surface-primary rounded-xl border border-edge-primary p-4 text-center">
+          <div className="flex justify-center mb-1.5">
+            <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085" />
+            </svg>
+          </div>
           <p className="text-2xl font-bold text-content-primary">{data.stats.totalActive}</p>
           <p className="text-[10px] text-content-quaternary mt-0.5">{t("statsActive")}</p>
         </div>
         <div className="bg-surface-primary rounded-xl border border-edge-primary p-4 text-center">
+          <div className="flex justify-center mb-1.5">
+            <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
           <p className="text-2xl font-bold text-content-primary">{data.stats.totalCompleted}</p>
           <p className="text-[10px] text-content-quaternary mt-0.5">{t("statsCompleted")}</p>
         </div>
         <div className="bg-surface-primary rounded-xl border border-edge-primary p-4 text-center">
+          <div className="flex justify-center mb-1.5">
+            <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+            </svg>
+          </div>
           <p className="text-2xl font-bold text-content-primary">{data.stats.upcomingCount}</p>
           <p className="text-[10px] text-content-quaternary mt-0.5">{t("statsUpcoming")}</p>
         </div>
@@ -136,7 +151,7 @@ export default async function HomeDashboardPage() {
           <div className="space-y-2">
             <Link
               href="/home/work-orders/new"
-              className="w-full flex items-center gap-3 px-4 py-3 bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors text-sm font-medium"
+              className="w-full flex items-center gap-3 px-4 py-3 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors text-sm font-semibold shadow-sm"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -145,7 +160,7 @@ export default async function HomeDashboardPage() {
             </Link>
             <Link
               href="/home/vendors"
-              className="w-full flex items-center gap-3 px-4 py-3 bg-surface-secondary text-content-secondary rounded-lg hover:bg-surface-tertiary transition-colors text-sm font-medium"
+              className="w-full flex items-center gap-3 px-4 py-3 border border-edge-primary text-content-secondary rounded-lg hover:bg-surface-secondary transition-colors text-sm font-medium"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />

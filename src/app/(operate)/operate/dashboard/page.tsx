@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { getTranslations } from "next-intl/server";
 
@@ -54,8 +53,8 @@ export default async function OperateDashboardPage() {
       title: t("nav.workOrders"),
       description: t("dashboard.woDescription"),
       href: "/operate/work-orders",
-      count: null,
-      countLabel: "",
+      count: 0,
+      countLabel: t("dashboard.projects"),
       gradient: "from-charcoal-900 to-green-900",
       iconColor: "text-green-400",
       icon: (
@@ -71,7 +70,7 @@ export default async function OperateDashboardPage() {
       title: t("nav.vendors"),
       description: t("dashboard.vendorsDescription"),
       href: "/operate/vendors",
-      count: null,
+      count: 0,
       countLabel: "",
       gradient: "from-green-900 to-charcoal-900",
       iconColor: "text-green-300",
@@ -88,7 +87,7 @@ export default async function OperateDashboardPage() {
       title: t("nav.estimates"),
       description: t("dashboard.estimatesDescription"),
       href: "/operate/estimates",
-      count: null,
+      count: 0,
       countLabel: "",
       gradient: "from-charcoal-900 to-green-800",
       iconColor: "text-green-400",
@@ -105,7 +104,7 @@ export default async function OperateDashboardPage() {
       title: t("nav.invoices"),
       description: t("dashboard.invoicesDescription"),
       href: "/operate/invoices",
-      count: null,
+      count: 0,
       countLabel: "",
       gradient: "from-green-800 to-charcoal-900",
       iconColor: "text-green-300",
@@ -122,20 +121,26 @@ export default async function OperateDashboardPage() {
 
   return (
     <div>
-      <div className="mb-8 bg-gradient-to-r from-green-900 via-charcoal-950 to-green-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-6 md:px-6 rounded-b-xl flex flex-col items-center justify-center overflow-visible">
-        <Image
-          src="/logo-dark.png"
-          alt="Asset Atlas"
-          width={1200}
-          height={530}
-          className="h-36 md:h-48 w-auto logo-fade -my-6"
-        />
-        <p className="text-green-300 text-sm font-semibold mt-2">
-          {t("tiers.operateTagline")}
-        </p>
-        <p className="text-charcoal-300 text-sm mt-1 text-center">
-          {t("dashboard.selectModule")}
-        </p>
+      {/* Collapsed branded header bar */}
+      <div className="mb-6 bg-gradient-to-r from-green-900 via-charcoal-950 to-green-900 -mx-4 -mt-4 md:-mx-6 md:-mt-6 px-4 py-4 md:px-6 rounded-b-xl flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-white">
+            Atlas <span className="text-green-300">Operate</span>
+          </h1>
+          <p className="text-green-300/80 text-sm">
+            {t("tiers.operateTagline")}
+          </p>
+        </div>
+        <div className="flex items-center gap-4 text-sm">
+          <div className="text-center">
+            <p className="text-xl font-bold text-white">{inspCount}</p>
+            <p className="text-[10px] text-green-300/70 uppercase tracking-wide">{t("nav.inspections")}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-xl font-bold text-white">{utCount}</p>
+            <p className="text-[10px] text-green-300/70 uppercase tracking-wide">{t("nav.unitTurns")}</p>
+          </div>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -143,7 +148,7 @@ export default async function OperateDashboardPage() {
           <Link
             key={m.title}
             href={m.href}
-            className="group block bg-surface-primary rounded-xl border border-edge-primary shadow-sm hover:shadow-md hover:border-green-300 transition-all overflow-hidden"
+            className="group block bg-surface-primary rounded-xl border border-edge-primary shadow-sm hover:shadow-md hover:border-green-400/50 transition-all overflow-hidden"
           >
             <div className={`bg-gradient-to-r ${m.gradient} px-5 py-4 flex items-center gap-3`}>
               <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
@@ -158,12 +163,12 @@ export default async function OperateDashboardPage() {
 
             <div className="px-5 py-4">
               <p className="text-sm text-content-quaternary mb-3 line-clamp-2">{m.description}</p>
-              {m.count !== null && (
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-content-primary">{m.count}</span>
-                  <span className="text-xs text-content-muted uppercase tracking-wide">{m.countLabel}</span>
-                </div>
-              )}
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-bold text-content-primary">{m.count}</span>
+                {m.countLabel && (
+                  <span className="text-sm text-content-tertiary">{m.countLabel}</span>
+                )}
+              </div>
             </div>
 
             <div className="px-5 py-3 border-t border-edge-tertiary bg-surface-secondary/50">

@@ -1,9 +1,7 @@
 import type { MetadataRoute } from "next";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/server";
 import { buildCitySlug } from "@/lib/vendor/directory-utils";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const baseUrl = "https://www.assetatlaspro.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -16,9 +14,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/vendors`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
   ];
 
-  if (!serviceRoleKey) return staticPages;
-
-  const supabase = createClient(supabaseUrl, serviceRoleKey);
+  let supabase;
+  try {
+    supabase = createServiceClient();
+  } catch {
+    // Service key not available (build time) — return static pages only
+    return staticPages;
+  }
 
   // Qualified vendors
   const { data: vendors } = await supabase

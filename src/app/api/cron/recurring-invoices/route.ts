@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/server";
 import { advanceNextDue } from "@/lib/vendor/recurring-invoice-types";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 /**
  * Recurring Invoices Cron — runs daily at 8 AM
@@ -18,11 +15,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!serviceRoleKey) {
-    return NextResponse.json({ error: "Service role key not configured" }, { status: 500 });
-  }
-
-  const supabase = createClient(supabaseUrl, serviceRoleKey);
+  const supabase = createServiceClient();
   const today = new Date().toISOString().split("T")[0];
   const results = { generated: 0, errors: [] as string[] };
 

@@ -1,9 +1,6 @@
 "use server";
 
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+import { createServiceClient } from "@/lib/supabase/server";
 
 export interface TrackingData {
   id: string;
@@ -30,11 +27,12 @@ export async function getTrackingData(
   token: string
 ): Promise<{ data: TrackingData | null; error?: string }> {
   try {
-    if (!serviceRoleKey) {
-      return { data: null, error: "Service not configured" };
+    let supabase;
+    try {
+      supabase = createServiceClient();
+    } catch {
+      return { data: null }; // Service key unavailable at build time
     }
-
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     // Find WO by tracking token
     const { data: wo, error: woError } = await supabase
@@ -123,11 +121,7 @@ export async function sendTrackingLinkSms(
     const config = isTwilioConfigured();
     if (!config) return { success: false, error: "Twilio not configured" };
 
-    if (!serviceRoleKey) {
-      return { success: false, error: "Service not configured" };
-    }
-
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    const supabase = createServiceClient();
 
     const { data: wo } = await supabase
       .from("vendor_work_orders")

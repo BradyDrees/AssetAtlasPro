@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/server";
 import type { CallStatus } from "@/lib/messaging/types";
 
 /**
@@ -39,18 +39,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create admin Supabase client (bypasses RLS)
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !supabaseServiceKey) {
-      console.error("[twilio-webhook] Missing Supabase env vars");
-      return NextResponse.json(
-        { error: "Server configuration error" },
-        { status: 500 }
-      );
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const supabase = createServiceClient();
 
     // Build update payload
     const update: Record<string, unknown> = {};

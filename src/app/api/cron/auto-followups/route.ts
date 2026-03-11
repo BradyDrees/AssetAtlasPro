@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/server";
 import { sendEmail } from "@/lib/email/resend-client";
 import {
   invoiceOverdueEmail,
@@ -7,9 +7,6 @@ import {
   reviewRequestEmail,
   reviewReminderEmail,
 } from "@/lib/email/templates";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 /**
  * Auto Follow-Ups Cron — runs daily at 9 AM
@@ -25,11 +22,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!serviceRoleKey) {
-    return NextResponse.json({ error: "Service role key not configured" }, { status: 500 });
-  }
-
-  const supabase = createClient(supabaseUrl, serviceRoleKey);
+  const supabase = createServiceClient();
   const now = new Date();
   const results = { invoiceReminders: 0, estimateReminders: 0, reviewRequests: 0, errors: [] as string[] };
 

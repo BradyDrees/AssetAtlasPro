@@ -1,21 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-// Use service-role client for webhook (no user session)
-function getServiceClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-  return createClient(url, key);
-}
+import { createServiceClient } from "@/lib/supabase/server";
+import { requireEnv } from "@/lib/env";
 
 export async function POST(req: NextRequest) {
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-  if (!webhookSecret) {
-    return NextResponse.json(
-      { error: "Webhook secret not configured" },
-      { status: 500 }
-    );
-  }
+  const webhookSecret = requireEnv("STRIPE_WEBHOOK_SECRET");
 
   const body = await req.text();
   const sig = req.headers.get("stripe-signature");
@@ -26,14 +14,14 @@ export async function POST(req: NextRequest) {
   let event;
   try {
     const Stripe = (await import("stripe")).default;
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+    const stripe = new Stripe(requireEnv("STRIPE_SECRET_KEY"));
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err) {
     console.error("Webhook signature verification failed:", err);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  const supabase = getServiceClient();
+  const supabase = createServiceClient();
 
   try {
     switch (event.type) {

@@ -1,10 +1,7 @@
 "use server";
 
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/server";
 import { headers } from "next/headers";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 // ============================================
 // Public Booking Page Data
@@ -27,9 +24,7 @@ export async function getBookingPageData(
   slug: string
 ): Promise<{ data: BookingPageData | null; error?: string }> {
   try {
-    if (!serviceRoleKey) return { data: null, error: "Service not configured" };
-
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    const supabase = createServiceClient();
 
     const { data: org, error } = await supabase
       .from("vendor_organizations")
@@ -82,14 +77,12 @@ export async function submitBookingRequest(
   input: BookingInput
 ): Promise<{ success: boolean; tracking_url?: string; error?: string }> {
   try {
-    if (!serviceRoleKey) return { success: false, error: "Service not configured" };
-
     // Validate required fields
     if (!input.name?.trim()) return { success: false, error: "Name is required" };
     if (!input.phone?.trim()) return { success: false, error: "Phone is required" };
     if (!input.description?.trim()) return { success: false, error: "Description is required" };
 
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    const supabase = createServiceClient();
 
     // Look up vendor org
     const { data: org } = await supabase
@@ -180,12 +173,11 @@ export async function submitBookingViaApiKey(
   input: BookingInput
 ): Promise<{ success: boolean; work_order_id?: string; tracking_url?: string; error?: string }> {
   try {
-    if (!serviceRoleKey) return { success: false, error: "Service not configured" };
     if (!input.name?.trim()) return { success: false, error: "Name is required" };
     if (!input.phone?.trim()) return { success: false, error: "Phone is required" };
     if (!input.description?.trim()) return { success: false, error: "Description is required" };
 
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    const supabase = createServiceClient();
 
     // Look up vendor org by API key
     const { data: org } = await supabase

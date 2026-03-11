@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/server";
 import { isQboConfigured } from "@/lib/integrations/qbo-client";
 import { fullSync } from "@/lib/integrations/qbo-sync";
 import type { VendorIntegration } from "@/lib/integrations/qbo-types";
@@ -22,10 +22,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: "QBO not configured, skipping" });
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const supabase = createServiceClient();
 
   // Fetch all active QBO integrations
   const { data: integrations, error } = await supabase

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/server";
 
 /**
  * Cron job: Detect stalled project trades (assigned > 48 hours).
@@ -9,19 +9,13 @@ import { createClient } from "@supabase/supabase-js";
  * { "crons": [{ "path": "/api/cron/project-delays", "schedule": "0 8 * * *" }] }
  */
 
-function getServiceClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-  return createClient(url, key);
-}
-
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const supabase = getServiceClient();
+  const supabase = createServiceClient();
   const cutoff = new Date(Date.now() - 48 * 3600000).toISOString();
 
   // Find active project WOs that have been assigned for > 48 hours

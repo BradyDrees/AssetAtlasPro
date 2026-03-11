@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/server";
 import { advanceDate } from "@/lib/vendor/agreement-types";
 import type { AgreementFrequency } from "@/lib/vendor/agreement-types";
 
@@ -19,10 +19,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const supabase = createServiceClient();
 
   const today = new Date().toISOString().split("T")[0];
 

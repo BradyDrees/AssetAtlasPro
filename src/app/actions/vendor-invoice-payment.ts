@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createServiceClient } from "@/lib/supabase/server";
 import { requireVendorRole } from "@/lib/vendor/role-helpers";
 import { isStripeConfigured, getStripe } from "@/lib/stripe/stripe-client";
 
@@ -109,12 +109,8 @@ export async function markInvoicePaidViaStripe(
   paymentIntentId: string,
   amountPaidCents: number
 ): Promise<void> {
-  // Service-role client for webhook context
-  const { createClient: createServiceClient } = await import("@supabase/supabase-js");
-  const supabase = createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  // Service-role client for webhook context (bypasses RLS)
+  const supabase = createServiceClient();
 
   // Fetch current invoice state
   const { data: invoice } = await supabase

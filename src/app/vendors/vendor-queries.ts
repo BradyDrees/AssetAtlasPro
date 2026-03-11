@@ -4,10 +4,7 @@
 // Single qualification filter used everywhere.
 // ============================================
 
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+import { createServiceClient } from "@/lib/supabase/server";
 
 export interface DirectoryVendor {
   id: string;
@@ -42,7 +39,11 @@ const DIRECTORY_SELECT =
   "id, name, slug, logo_url, description, phone, trades, city, state, avg_rating, total_ratings, response_time_label, emergency_available, service_radius_miles, booking_enabled, booking_headline, updated_at";
 
 function getSupabase() {
-  return createClient(supabaseUrl, serviceRoleKey);
+  try {
+    return createServiceClient();
+  } catch {
+    return null; // Service key unavailable at build time
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -58,8 +59,8 @@ function applyQualificationFilters(query: any) {
 
 /** Get all qualified vendors for directory listing. */
 export async function getDirectoryVendors(): Promise<DirectoryVendor[]> {
-  if (!serviceRoleKey) return [];
   const supabase = getSupabase();
+  if (!supabase) return [];
 
   const baseQuery = supabase
     .from("vendor_organizations")
@@ -74,8 +75,8 @@ export async function getDirectoryVendors(): Promise<DirectoryVendor[]> {
 
 /** Get a single qualified vendor by slug. */
 export async function getVendorBySlug(slug: string): Promise<DirectoryVendor | null> {
-  if (!serviceRoleKey) return null;
   const supabase = getSupabase();
+  if (!supabase) return null;
 
   const { data } = await supabase
     .from("vendor_organizations")
@@ -93,8 +94,8 @@ export async function getVendorBySlug(slug: string): Promise<DirectoryVendor | n
 
 /** Get reviews for a vendor (anonymized — no reviewer info). */
 export async function getVendorReviews(vendorOrgId: string, limit = 20): Promise<VendorReview[]> {
-  if (!serviceRoleKey) return [];
   const supabase = getSupabase();
+  if (!supabase) return [];
 
   const { data } = await supabase
     .from("vendor_ratings")
@@ -112,8 +113,8 @@ export async function getVendorsByTradeAndCity(
   city: string,
   state: string
 ): Promise<DirectoryVendor[]> {
-  if (!serviceRoleKey) return [];
   const supabase = getSupabase();
+  if (!supabase) return [];
 
   const baseQuery = supabase
     .from("vendor_organizations")
@@ -132,8 +133,6 @@ export async function getVendorsByTradeAndCity(
 export async function getCityTradeCombos(minVendors = 3): Promise<
   { trade: string; city: string; state: string; count: number }[]
 > {
-  if (!serviceRoleKey) return [];
-
   const vendors = await getDirectoryVendors();
 
   // Build combo map

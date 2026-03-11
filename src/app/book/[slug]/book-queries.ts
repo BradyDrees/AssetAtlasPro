@@ -4,10 +4,7 @@
 // Used by server components for data fetching.
 // ============================================
 
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+import { createServiceClient } from "@/lib/supabase/server";
 
 export interface BookingPageDataSSR {
   org_id: string;
@@ -28,9 +25,12 @@ export interface BookingPageDataSSR {
 export async function getBookingPageDataSSR(
   slug: string
 ): Promise<BookingPageDataSSR | null> {
-  if (!serviceRoleKey) return null;
-
-  const supabase = createClient(supabaseUrl, serviceRoleKey);
+  let supabase;
+  try {
+    supabase = createServiceClient();
+  } catch {
+    return null; // Service key unavailable at build time
+  }
 
   const { data: org, error } = await supabase
     .from("vendor_organizations")

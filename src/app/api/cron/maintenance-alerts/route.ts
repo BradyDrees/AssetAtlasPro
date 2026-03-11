@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/server";
 
 /**
  * Weekly cron: scan homeowner properties for aging systems
@@ -35,14 +35,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!url || !serviceKey) {
-    return NextResponse.json({ error: "Missing env vars" }, { status: 500 });
-  }
-
-  const supabase = createClient(url, serviceKey);
+  const supabase = createServiceClient();
   let alertsCreated = 0;
   let propertiesScanned = 0;
 

@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
 
     for (const template of templates ?? []) {
       try {
-        // Get org settings for invoice numbering
+        // Atomic invoice number allocation via DB sequence
         const { data: org } = await supabase
           .from("vendor_organizations")
           .select("settings")
@@ -43,7 +43,12 @@ export async function GET(req: NextRequest) {
         const settings = (org?.settings ?? {}) as Record<string, unknown>;
         const numbering = (settings.numbering ?? {}) as Record<string, unknown>;
         const prefix = (numbering.invoice_prefix as string) ?? "INV";
-        const nextNum = (numbering.next_invoice as number) ?? 1;
+
+        // Atomic increment — no race condition
+        const { data: seqResult } = await supabase
+          .rpc("increment_invoice_seq", { org_id: template.vendor_org_id });
+
+        const nextNum = seqResult?.[0]?.new_seq ?? 1;
         const invoiceNumber = `${prefix}-${String(nextNum).padStart(4, "0")}`;
 
         // Create the invoice
@@ -96,14 +101,6 @@ export async function GET(req: NextRequest) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", template.id);
-
-        // Increment the next invoice number in org settings
-        const updatedNumbering = { ...numbering, next_invoice: nextNum + 1 };
-        const updatedSettings = { ...settings, numbering: updatedNumbering };
-        await supabase
-          .from("vendor_organizations")
-          .update({ settings: updatedSettings })
-          .eq("id", template.vendor_org_id);
 
         // Notify vendor owner(s) about auto-generated invoice
         const { data: owners } = await supabase

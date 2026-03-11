@@ -263,7 +263,7 @@ export async function generateInvoiceFromTemplate(
     return { error: "Template not found" };
   }
 
-  // Get next invoice number from org settings
+  // Get invoice prefix from org settings
   const { data: org } = await supabase
     .from("vendor_organizations")
     .select("settings")
@@ -273,7 +273,12 @@ export async function generateInvoiceFromTemplate(
   const settings = (org?.settings ?? {}) as Record<string, unknown>;
   const numbering = (settings.numbering ?? {}) as Record<string, unknown>;
   const prefix = (numbering.invoice_prefix as string) ?? "INV";
-  const nextNum = (numbering.next_invoice as number) ?? 1;
+
+  // Atomic increment — no race condition
+  const { data: seqResult } = await supabase
+    .rpc("increment_invoice_seq", { org_id: vendorAuth.vendor_org_id });
+
+  const nextNum = seqResult?.[0]?.new_seq ?? 1;
   const invoiceNumber = `${prefix}-${String(nextNum).padStart(4, "0")}`;
 
   // Create the invoice
@@ -325,14 +330,6 @@ export async function generateInvoiceFromTemplate(
       updated_at: new Date().toISOString(),
     })
     .eq("id", templateId);
-
-  // Increment the next invoice number in org settings
-  const updatedNumbering = { ...numbering, next_invoice: nextNum + 1 };
-  const updatedSettings = { ...settings, numbering: updatedNumbering };
-  await supabase
-    .from("vendor_organizations")
-    .update({ settings: updatedSettings })
-    .eq("id", vendorAuth.vendor_org_id);
 
   await logActivity({
     entityType: "invoice",

@@ -48,14 +48,14 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_vendor_invoices_org_number
   ON vendor_invoices(vendor_org_id, invoice_number)
   WHERE invoice_number IS NOT NULL;
 
--- Atomic increment function
+-- Atomic increment function (SECURITY DEFINER so RLS users can call it)
 CREATE OR REPLACE FUNCTION increment_invoice_seq(org_id UUID)
 RETURNS TABLE(new_seq INT) AS $$
   UPDATE vendor_organizations
   SET invoice_number_seq = invoice_number_seq + 1
   WHERE id = org_id
   RETURNING invoice_number_seq AS new_seq;
-$$ LANGUAGE SQL;
+$$ LANGUAGE SQL SECURITY DEFINER;
 
 -- Backfill: set invoice_number_seq to max existing invoice count per org
 -- (safe: only updates if current seq is 0/default)

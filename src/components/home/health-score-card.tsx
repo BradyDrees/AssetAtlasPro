@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import type { HealthGrade, HealthConfidence } from "@/lib/home/health-score";
 
@@ -89,6 +90,14 @@ export function HealthScoreCard({ score, grade, confidence }: Props) {
               {t(`confidence_${confidence}`)}
             </span>
           </div>
+          {confidence === "low" && (
+            <Link
+              href="/home/property"
+              className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-rose-500 hover:text-rose-400 transition-colors"
+            >
+              {t("completeProfile")} →
+            </Link>
+          )}
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@
   "describeIssue": "Briefly describe the issue",
   "descriptionPlaceholder": "e.g. Water is flooding from under the kitchen sink...",
   "safetyWarning": "If you smell gas or see fire, call 911 or emergency services first",
+  "call911": "Call 911",
   "safetyAcknowledge": "I understand — proceed with contractor dispatch",
   "confirmTitle": "Confirm Emergency Request",
   "confirmMessage": "This will immediately contact emergency contractors in your area. Are you sure?",

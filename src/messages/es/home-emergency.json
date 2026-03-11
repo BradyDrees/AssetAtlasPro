@@ -5,6 +5,7 @@
   "describeIssue": "Describe brevemente el problema",
   "descriptionPlaceholder": "ej. El agua está inundando debajo del fregadero de la cocina...",
   "safetyWarning": "Si hueles gas o ves fuego, llama al 911 o servicios de emergencia primero",
+  "call911": "Llamar al 911",
   "safetyAcknowledge": "Entiendo — continuar con el envío de contratistas",
   "confirmTitle": "Confirmar Solicitud de Emergencia",
   "confirmMessage": "Esto contactará inmediatamente a contratistas de emergencia en tu área. ¿Estás seguro?",

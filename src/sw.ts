@@ -55,6 +55,16 @@ const serwist = new Serwist({
   clientsClaim: true,
   navigationPreload: true,
   runtimeCaching: [...supabaseCache, ...defaultCache],
+  fallbacks: {
+    entries: [
+      {
+        url: "/offline",
+        matcher({ request }) {
+          return request.destination === "document";
+        },
+      },
+    ],
+  },
 });
 
 // Clear PostgREST cache on sign-out to prevent cross-user data leakage

@@ -87,7 +87,7 @@ export function TierSwitcher({ currentTier, hasPmRole, hasVendorRole, hasOwnerRo
               key={tier}
               onClick={() => handleSwitch(tier)}
               disabled={isCurrent}
-              className={`w-full text-center py-1.5 text-xs font-bold rounded transition-colors ${
+              className={`w-full text-center py-2.5 text-xs font-bold rounded transition-colors min-h-[44px] ${
                 isCurrent
                   ? `${config.bgActive} ${config.color} border`
                   : `${config.color} ${config.bgHover}`
@@ -104,7 +104,7 @@ export function TierSwitcher({ currentTier, hasPmRole, hasVendorRole, hasOwnerRo
 
   return (
     <div className="mb-3">
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-content-quaternary mb-1.5 px-1">
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-content-quaternary mb-1.5 px-1">
         {t("tiers.modules")}
       </p>
       <div className="flex flex-wrap gap-1">
@@ -116,7 +116,7 @@ export function TierSwitcher({ currentTier, hasPmRole, hasVendorRole, hasOwnerRo
               key={tier}
               onClick={() => handleSwitch(tier)}
               disabled={isCurrent}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              className={`flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-xs font-medium transition-colors min-h-[44px] ${
                 isCurrent
                   ? `${config.bgActive} ${config.color} border cursor-default`
                   : `${config.color} ${config.bgHover} border border-transparent`

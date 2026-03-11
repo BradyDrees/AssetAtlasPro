@@ -210,7 +210,7 @@ export function HomeSidebar({ user, hasVendorRole = false, hasPmRole = false }: 
             {!collapsed && <NotificationBell namespace="home.nav" />}
             <button
               onClick={() => setCollapsed(!collapsed)}
-              className="hidden md:flex p-1.5 text-charcoal-400 hover:text-white hover:bg-charcoal-700 rounded transition-colors"
+              className="hidden md:flex p-2.5 min-w-[44px] min-h-[44px] items-center justify-center text-charcoal-400 hover:text-white hover:bg-charcoal-700 rounded transition-colors"
               aria-label={collapsed ? t("sidebar.expandSidebar") : t("sidebar.collapseSidebar")}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -242,7 +242,7 @@ export function HomeSidebar({ user, hasVendorRole = false, hasPmRole = false }: 
           {navSections.map((section, sIdx) => (
             <div key={sIdx}>
               {section.label && !collapsed && (
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-content-quaternary px-3 mb-1.5">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-content-quaternary px-3 mb-1.5">
                   {section.label}
                 </p>
               )}
@@ -261,7 +261,7 @@ export function HomeSidebar({ user, hasVendorRole = false, hasPmRole = false }: 
                     <Link
                       key={item.href}
                       href={item.href}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                      className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all min-h-[44px] ${
                         isEmergency
                           ? isActive
                             ? "bg-red-600 text-white shadow-sm"
@@ -288,7 +288,7 @@ export function HomeSidebar({ user, hasVendorRole = false, hasPmRole = false }: 
           {!collapsed && <div className="border-t border-edge-secondary my-2" />}
           <Link
             href="/home/settings"
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+            className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all min-h-[44px] ${
               pathname.startsWith("/home/settings")
                 ? "bg-rose-500/10 text-rose-500 border-l-2 border-rose-500 rounded-l-none"
                 : "text-content-tertiary hover:bg-surface-secondary hover:text-content-primary"
@@ -349,8 +349,8 @@ export function HomeSidebar({ user, hasVendorRole = false, hasPmRole = false }: 
           <form action={signOut}>
             <button
               type="submit"
-              className={`text-sm text-red-500 hover:text-red-700 font-medium transition-colors ${
-                collapsed ? "w-full text-center" : "w-full text-left"
+              className={`text-sm text-red-500 hover:text-red-700 font-medium transition-colors min-h-[44px] flex items-center ${
+                collapsed ? "w-full justify-center" : "w-full text-left"
               }`}
               title={collapsed ? ht("signOut") : undefined}
             >

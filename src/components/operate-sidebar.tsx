@@ -108,12 +108,12 @@ export function OperateSidebar({ user, hasVendorRole = false, hasOwnerRole = fal
               </div>
             </Link>
           )}
-          <button onClick={() => setCollapsed(!collapsed)} className="hidden md:flex p-1.5 text-charcoal-400 hover:text-white hover:bg-charcoal-700 rounded transition-colors" aria-label={collapsed ? t("sidebar.expandSidebar") : t("sidebar.collapseSidebar")}>
+          <button onClick={() => setCollapsed(!collapsed)} className="hidden md:flex items-center justify-center p-2.5 min-w-[44px] min-h-[44px] text-charcoal-400 hover:text-white hover:bg-charcoal-700 rounded transition-colors" aria-label={collapsed ? t("sidebar.expandSidebar") : t("sidebar.collapseSidebar")}>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {collapsed ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7M19 19l-7-7 7-7" />}
             </svg>
           </button>
-          <button onClick={() => setIsOpen(false)} className="md:hidden p-1.5 text-charcoal-400 hover:text-white" aria-label={t("sidebar.closeMenu")}>
+          <button onClick={() => setIsOpen(false)} className="md:hidden p-2.5 min-w-[44px] min-h-[44px] text-charcoal-400 hover:text-white flex items-center justify-center" aria-label={t("sidebar.closeMenu")}>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
@@ -129,7 +129,7 @@ export function OperateSidebar({ user, hasVendorRole = false, hasOwnerRole = fal
             const isActive = item.matchPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
             return (
               <Link key={item.href} href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive ? "bg-green-50 text-green-700 shadow-sm border border-green-100" : "text-content-tertiary hover:bg-surface-secondary hover:text-content-primary"} ${collapsed ? "md:justify-center md:px-0" : ""}`}
+                className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all min-h-[44px] ${isActive ? "bg-green-50 text-green-700 shadow-sm border border-green-100" : "text-content-tertiary hover:bg-surface-secondary hover:text-content-primary"} ${collapsed ? "md:justify-center md:px-0" : ""}`}
                 title={collapsed ? item.label : undefined}
               >
                 {item.icon && <span className="relative text-current">{item.icon}{item.showUnreadBadge && <UnreadBadge className="bg-green-600" />}</span>}
@@ -202,7 +202,7 @@ export function OperateSidebar({ user, hasVendorRole = false, hasOwnerRole = fal
               navigator.serviceWorker.controller.postMessage({ type: "CLEAR_AUTH_CACHE" });
             }
           }}>
-            <button type="submit" className={`text-sm text-red-500 hover:text-red-700 font-medium transition-colors ${collapsed ? "w-full text-center" : "w-full text-left"}`} title={collapsed ? t("sidebar.signOut") : undefined}>
+            <button type="submit" className={`text-sm text-red-500 hover:text-red-700 font-medium transition-colors min-h-[44px] flex items-center ${collapsed ? "w-full justify-center" : "w-full text-left"}`} title={collapsed ? t("sidebar.signOut") : undefined}>
               {collapsed ? <span className="text-xs">Out</span> : t("sidebar.signOut")}
             </button>
           </form>

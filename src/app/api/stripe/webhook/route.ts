@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing signature" }, { status: 400 });
   }
 
+  // 1. Verify Stripe signature
   let event;
   try {
     const Stripe = (await import("stripe")).default;
@@ -23,17 +24,35 @@ export async function POST(req: NextRequest) {
 
   const supabase = createServiceClient();
 
+  // 2. Idempotency check — insert event, skip if already processed
+  const { data: inserted } = await supabase
+    .from("stripe_webhook_events")
+    .upsert(
+      {
+        stripe_event_id: event.id,
+        event_type: event.type,
+        status: "processing",
+      },
+      { onConflict: "stripe_event_id", ignoreDuplicates: true }
+    )
+    .select("id")
+    .single();
+
+  if (!inserted) {
+    // Already processed — safe to return 200
+    return NextResponse.json({ received: true, deduplicated: true });
+  }
+
+  // 3. Execute mutations
   try {
     switch (event.type) {
       case "invoice.paid": {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const invoice = event.data.object as any;
-        // Extract subscription ID — may be string or object depending on expand
         const sub_ = invoice.subscription ?? invoice.parent?.subscription_details?.subscription;
         const subId = typeof sub_ === "string" ? sub_ : sub_?.id ?? null;
         if (!subId) break;
 
-        // Find the subscription in our DB
         const { data: sub } = await supabase
           .from("subscriptions")
           .select("id, user_id, property_id, pool_deposit_amount")
@@ -42,7 +61,7 @@ export async function POST(req: NextRequest) {
 
         if (!sub) break;
 
-        // Update period
+        // Update subscription period
         await supabase
           .from("subscriptions")
           .update({
@@ -75,7 +94,8 @@ export async function POST(req: NextRequest) {
             })
             .eq("id", pool.id);
 
-          // Log transaction
+          // Defense in depth: stripe_event_id unique index prevents
+          // duplicate pool deposits even if webhook dedup table fails
           await supabase.from("pool_transactions").insert({
             pool_id: pool.id,
             type: "deposit",
@@ -83,6 +103,7 @@ export async function POST(req: NextRequest) {
             description: "Monthly subscription deposit",
             reference_type: "subscription",
             reference_id: sub.id,
+            stripe_event_id: event.id,
           });
         }
         break;
@@ -92,7 +113,6 @@ export async function POST(req: NextRequest) {
         const subscription = event.data.object;
         const status = subscription.status;
 
-        // Map Stripe status to our status
         let dbStatus: string;
         switch (status) {
           case "active":
@@ -135,7 +155,6 @@ export async function POST(req: NextRequest) {
         const session = event.data.object as any;
         const invoiceId = session.metadata?.invoice_id;
         if (invoiceId) {
-          // This is a vendor invoice payment
           const { markInvoicePaidViaStripe } = await import(
             "@/app/actions/vendor-invoice-payment"
           );
@@ -148,8 +167,24 @@ export async function POST(req: NextRequest) {
         break;
       }
     }
+
+    // 4. Mark event as completed
+    await supabase
+      .from("stripe_webhook_events")
+      .update({ status: "completed", completed_at: new Date().toISOString() })
+      .eq("stripe_event_id", event.id);
   } catch (err) {
     console.error("Webhook handler error:", err);
+
+    // Mark event as failed so retries can re-process
+    await supabase
+      .from("stripe_webhook_events")
+      .update({
+        status: "failed",
+        error_message: err instanceof Error ? err.message : String(err),
+      })
+      .eq("stripe_event_id", event.id);
+
     return NextResponse.json(
       { error: "Webhook handler error" },
       { status: 500 }

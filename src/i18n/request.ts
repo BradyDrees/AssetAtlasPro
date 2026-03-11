@@ -58,6 +58,12 @@ export default getRequestConfig(async () => {
   const homeSettings = (await import(`../messages/${locale}/home-settings.json`)).default;
   const homeSubscription = (await import(`../messages/${locale}/home-subscription.json`)).default;
   const homeMatching = (await import(`../messages/${locale}/home-matching.json`)).default;
+  const homeSetup = (await import(`../messages/${locale}/home-setup.json`)).default;
+  const homeDocuments = (await import(`../messages/${locale}/home-documents.json`)).default;
+  const homeSeasonal = (await import(`../messages/${locale}/home-seasonal.json`)).default;
+  const homeCostGuide = (await import(`../messages/${locale}/home-cost-guide.json`)).default;
+  const homePassport = (await import(`../messages/${locale}/home-passport.json`)).default;
+  const homeEmergency = (await import(`../messages/${locale}/home-emergency.json`)).default;
 
   // Public namespace files
   const publicInvoice = (await import(`../messages/${locale}/public-invoice.json`)).default;
@@ -104,6 +110,12 @@ export default getRequestConfig(async () => {
       settings: homeSettings,
       subscription: homeSubscription,
       matching: homeMatching,
+      setup: homeSetup,
+      documents: homeDocuments,
+      seasonal: homeSeasonal,
+      costGuide: homeCostGuide,
+      passport: homePassport,
+      emergency: homeEmergency,
     },
     public: {
       invoice: publicInvoice,

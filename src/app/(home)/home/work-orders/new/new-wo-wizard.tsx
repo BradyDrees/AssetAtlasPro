@@ -5,7 +5,11 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { createHomeWorkOrder, uploadWorkOrderPhotos } from "@/app/actions/home-work-orders";
+import { updatePropertyAccessDetails } from "@/app/actions/home-property";
 import { WoPhotoUpload } from "@/components/home/wo-photo-upload";
+import { CostGuideCard } from "@/components/home/cost-guide-card";
+import { getCostGuidesForTrade } from "@/lib/home/cost-guide-data";
+import { AiIntakeAssist } from "@/components/home/ai-intake-assist";
 
 type Trade = "plumbing" | "electrical" | "hvac" | "appliance" | "general" | "structural" | "pest" | "cleaning" | "landscaping" | "other";
 type Urgency = "emergency" | "urgent" | "routine" | "whenever";
@@ -171,8 +175,13 @@ export function NewWorkOrderWizard({
     { value: "whenever", color: "border-charcoal-600 bg-charcoal-800/50 hover:bg-charcoal-800" },
   ];
 
-  // ── Blocking modal: access required ──
-  if (blockAccess) {
+  // ── Inline access form (replaces old blocking modal) ──
+  const ts = useTranslations("home.setup");
+  const tp = useTranslations("home.property");
+  const [accessGateVisible, setAccessGateVisible] = useState(blockAccess);
+  const [accessSaving, setAccessSaving] = useState(false);
+
+  if (accessGateVisible) {
     return (
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
@@ -180,22 +189,96 @@ export function NewWorkOrderWizard({
           <p className="text-sm text-content-tertiary mt-1">{propertyAddress}</p>
         </div>
 
-        <div className="bg-surface-primary rounded-xl border border-edge-primary p-8 text-center space-y-4">
-          <div className="w-16 h-16 mx-auto rounded-full bg-amber-500/10 flex items-center justify-center">
-            <svg className="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-            </svg>
+        <div className="bg-surface-primary rounded-xl border border-edge-primary p-6 space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+              <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-base font-semibold text-content-primary">{ts("accessFormTitle")}</h2>
+              <p className="text-xs text-content-quaternary">{ts("accessFormSubtitle")}</p>
+            </div>
           </div>
-          <h2 className="text-lg font-semibold text-content-primary">{t("accessRequiredTitle")}</h2>
-          <p className="text-sm text-content-tertiary max-w-md mx-auto">
-            {t("accessRequiredBody")}
-          </p>
-          <Link
-            href="/home/property"
-            className="inline-block px-6 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-sm font-medium rounded-lg transition-colors"
+
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (!propertyId) return;
+              setAccessSaving(true);
+              const form = new FormData(e.currentTarget);
+              const result = await updatePropertyAccessDetails({
+                propertyId,
+                parking_instructions: (form.get("parking_instructions") as string) || null,
+                gate_code: (form.get("gate_code") as string) || null,
+                lockbox_code: (form.get("lockbox_code") as string) || null,
+                alarm_code: (form.get("alarm_code") as string) || null,
+              });
+              setAccessSaving(false);
+              if (result.success) {
+                setAccessGateVisible(false);
+              }
+            }}
+            className="space-y-3"
           >
-            {t("goToProperty")}
-          </Link>
+            <div>
+              <label className="block text-xs font-medium text-content-tertiary mb-1">
+                {tp("parkingInstructions")}
+              </label>
+              <textarea
+                name="parking_instructions"
+                rows={2}
+                className="w-full px-3 py-2 bg-surface-secondary border border-edge-secondary rounded-lg text-content-primary text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 resize-none"
+                placeholder="Park in driveway, street parking available..."
+              />
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-content-tertiary mb-1">
+                  {tp("gateCode")}
+                </label>
+                <input
+                  name="gate_code"
+                  className="w-full px-3 py-2 bg-surface-secondary border border-edge-secondary rounded-lg text-content-primary text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-content-tertiary mb-1">
+                  {tp("lockboxCode")}
+                </label>
+                <input
+                  name="lockbox_code"
+                  className="w-full px-3 py-2 bg-surface-secondary border border-edge-secondary rounded-lg text-content-primary text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-content-tertiary mb-1">
+                  {tp("alarmCode")}
+                </label>
+                <input
+                  name="alarm_code"
+                  className="w-full px-3 py-2 bg-surface-secondary border border-edge-secondary rounded-lg text-content-primary text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-2">
+              <Link
+                href="/home/property"
+                className="text-xs text-content-quaternary hover:text-content-tertiary"
+              >
+                {ts("accessGoToProperty")}
+              </Link>
+              <button
+                type="submit"
+                disabled={accessSaving}
+                className="px-6 py-2.5 bg-rose-600 hover:bg-rose-700 disabled:bg-charcoal-700 disabled:text-charcoal-500 text-white text-sm font-medium rounded-lg transition-colors"
+              >
+                {accessSaving ? ts("accessSaving") : ts("accessSaveAndContinue")}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     );
@@ -274,6 +357,31 @@ export function NewWorkOrderWizard({
           <div>
             <h2 className="text-lg font-semibold text-content-primary mb-1">{t("describeIssue")}</h2>
             <p className="text-sm text-content-tertiary mb-4">{t("describeIssueDesc")}</p>
+
+            {/* AI Intake Assist */}
+            <div className="mb-4">
+              <AiIntakeAssist
+                currentDescription={description}
+                onSuggestion={(suggestion) => {
+                  // Auto-fill description if AI provides one and user hasn't typed much
+                  if (suggestion.issueDescription && description.trim().length < 10) {
+                    setDescription(suggestion.issueDescription);
+                  }
+                  // Auto-select trade if confidence is high enough (>= 60%)
+                  if (suggestion.suggestedTrade && suggestion.confidence >= 60) {
+                    const suggestedTrade = suggestion.suggestedTrade as Trade;
+                    if (TRADES.includes(suggestedTrade)) {
+                      setTrade(suggestedTrade);
+                    }
+                  }
+                  // Auto-select urgency if suggestion provided and user hasn't selected yet
+                  if (suggestion.urgencyEstimate && !urgency) {
+                    setUrgency(suggestion.urgencyEstimate as Urgency);
+                  }
+                }}
+              />
+            </div>
+
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -287,6 +395,13 @@ export function NewWorkOrderWizard({
               </span>
             </div>
             <WoPhotoUpload photos={photos} onPhotosChange={setPhotos} />
+
+            {/* Cost Guide — collapsible "What to Expect" */}
+            {trade && getCostGuidesForTrade(trade).length > 0 && (
+              <div className="mt-4 border border-edge-secondary rounded-lg p-3">
+                <CostGuideCard guides={getCostGuidesForTrade(trade)} collapsible />
+              </div>
+            )}
           </div>
         )}
 

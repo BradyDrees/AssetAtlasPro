@@ -125,5 +125,10 @@
   "in_progress": "Trabajo en Progreso",
   "done_pending_approval": "Pendiente de Aprobación",
   "financingAvailable": "Financiamiento Disponible",
-  "financingDesc": "Divide esto en pagos mensuales con opciones de 0% APR disponibles"
+  "financingDesc": "Divide esto en pagos mensuales con opciones de 0% APR disponibles",
+  "aiSnapPhoto": "Toma una Foto",
+  "aiAnalyze": "Asistente IA",
+  "aiAnalyzing": "Analizando...",
+  "aiSuggested": "IA sugiere",
+  "aiUnavailable": "Análisis de IA no disponible — continúa manualmente"
 }

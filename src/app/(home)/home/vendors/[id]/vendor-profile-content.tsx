@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { toggleSaveVendor, togglePreferredVendor } from "@/app/actions/home-vendors";
 import { getVendorScorecardPublic } from "@/app/actions/vendor-scorecard";
 import { RequestQuoteModal } from "@/components/home/request-quote-modal";
+import { VendorTrustBadges } from "@/components/home/vendor-trust-badges";
+import type { VendorBadges } from "@/components/home/vendor-trust-badges";
 import type { VendorScorecardData } from "@/lib/vendor/scorecard-types";
 
 interface VendorOrg {
@@ -40,6 +42,7 @@ interface VendorProfileContentProps {
   ratings: Rating[];
   initialSaved: boolean;
   initialPreferred: boolean;
+  badges: VendorBadges | null;
 }
 
 const RESPONSE_LABELS: Record<string, string> = {
@@ -48,7 +51,7 @@ const RESPONSE_LABELS: Record<string, string> = {
   within_48hrs: "Within 48 Hours",
 };
 
-export function VendorProfileContent({ vendor, ratings, initialSaved, initialPreferred }: VendorProfileContentProps) {
+export function VendorProfileContent({ vendor, ratings, initialSaved, initialPreferred, badges }: VendorProfileContentProps) {
   const t = useTranslations("home.vendors");
   const st = useTranslations("vendor.clients.scorecard");
   const [saved, setSaved] = useState(initialSaved);
@@ -160,6 +163,14 @@ export function VendorProfileContent({ vendor, ratings, initialSaved, initialPre
           </div>
         </div>
       </div>
+
+      {/* Trust Badges */}
+      {badges && (
+        <div className="bg-surface-primary rounded-xl border border-edge-primary p-6">
+          <h2 className="text-lg font-semibold text-content-primary mb-3">{t("trustBadges")}</h2>
+          <VendorTrustBadges badges={badges} size="md" />
+        </div>
+      )}
 
       {/* About */}
       {vendor.description && (

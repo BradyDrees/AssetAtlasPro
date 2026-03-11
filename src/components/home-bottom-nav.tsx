@@ -82,6 +82,24 @@ export function HomeBottomNav() {
       ),
     },
     {
+      href: "/home/documents",
+      label: ht("documents"),
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+        </svg>
+      ),
+    },
+    {
+      href: "/home/cost-guide",
+      label: ht("costGuide"),
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+    },
+    {
       href: "/home/settings",
       label: ht("settings"),
       icon: (
@@ -98,6 +116,18 @@ export function HomeBottomNav() {
   );
 
   return (
+    <>
+    {/* Floating SOS button — always visible */}
+    <Link
+      href="/home/emergency"
+      className="md:hidden fixed right-4 z-50 w-12 h-12 bg-red-600 hover:bg-red-700 rounded-full flex items-center justify-center shadow-lg shadow-red-500/30 transition-colors"
+      style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 68px)" }}
+      aria-label={ht("emergency")}
+    >
+      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+      </svg>
+    </Link>
     <nav
       className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-surface-primary border-t border-edge-primary"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
@@ -163,5 +193,6 @@ export function HomeBottomNav() {
         </button>
       </div>
     </nav>
+    </>
   );
 }

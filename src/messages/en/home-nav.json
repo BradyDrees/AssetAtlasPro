@@ -15,5 +15,8 @@
   "notifications": "Notifications",
   "markAllRead": "Mark all read",
   "noNotifications": "No notifications yet",
-  "projects": "Projects"
+  "projects": "Projects",
+  "documents": "Documents",
+  "costGuide": "Cost Guide",
+  "emergency": "Emergency SOS"
 }

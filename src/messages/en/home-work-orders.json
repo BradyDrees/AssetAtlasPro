@@ -125,5 +125,10 @@
   "in_progress": "Work In Progress",
   "done_pending_approval": "Pending Approval",
   "financingAvailable": "Financing Available",
-  "financingDesc": "Split this into monthly payments with 0% APR options available"
+  "financingDesc": "Split this into monthly payments with 0% APR options available",
+  "aiSnapPhoto": "Snap a Photo",
+  "aiAnalyze": "AI Assist",
+  "aiAnalyzing": "Analyzing...",
+  "aiSuggested": "AI suggested",
+  "aiUnavailable": "AI analysis unavailable — continue manually"
 }

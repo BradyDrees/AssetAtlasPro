@@ -181,3 +181,85 @@ export async function getSavedVendors() {
 
   return data ?? [];
 }
+
+// ─── Vendor Trust Badges ──────────────────────────────────
+
+import type { VendorBadgeData } from "@/lib/home/vendor-badge-types";
+
+/**
+ * Get trust badge data for one or more vendor orgs.
+ * Queries vendor_credentials directly — no service-role needed.
+ * Checks: GL+WC = insured, license, bond, background check.
+ * All expiration-aware.
+ */
+export async function getVendorBadges(
+  vendorOrgIds: string[]
+): Promise<Record<string, VendorBadgeData>> {
+  if (vendorOrgIds.length === 0) return {};
+
+  const supabase = await createClient();
+  const today = new Date().toISOString().split("T")[0];
+
+  const { data: creds } = await supabase
+    .from("vendor_credentials")
+    .select("vendor_org_id, type, status, expiration_date, name")
+    .in("vendor_org_id", vendorOrgIds)
+    .eq("status", "active");
+
+  const result: Record<string, VendorBadgeData> = {};
+
+  // Initialize all vendor orgs
+  for (const id of vendorOrgIds) {
+    result[id] = {
+      vendor_org_id: id,
+      insured: false,
+      licensed: false,
+      bonded: false,
+      backgroundCheck: false,
+    };
+  }
+
+  if (!creds) return result;
+
+  // Aggregate per vendor
+  const perVendor: Record<string, typeof creds> = {};
+  for (const c of creds) {
+    (perVendor[c.vendor_org_id] ||= []).push(c);
+  }
+
+  for (const [vendorId, vendorCreds] of Object.entries(perVendor)) {
+    if (!result[vendorId]) continue;
+
+    const isValid = (c: (typeof creds)[number]) =>
+      c.expiration_date === null || c.expiration_date >= today;
+
+    const hasGL = vendorCreds.some(
+      (c) => c.type === "insurance_gl" && isValid(c)
+    );
+    const hasWC = vendorCreds.some(
+      (c) => c.type === "insurance_wc" && isValid(c)
+    );
+    const hasLicense = vendorCreds.some(
+      (c) => c.type === "license" && isValid(c)
+    );
+    const hasBond = vendorCreds.some(
+      (c) => c.type === "bond" && isValid(c)
+    );
+    const hasBackground = vendorCreds.some(
+      (c) =>
+        c.type === "certification" &&
+        isValid(c) &&
+        c.name?.toLowerCase().includes("background")
+    );
+
+    result[vendorId] = {
+      vendor_org_id: vendorId,
+      insured: hasGL && hasWC,
+      licensed: hasLicense,
+      bonded: hasBond,
+      backgroundCheck: hasBackground,
+    };
+  }
+
+  return result;
+}

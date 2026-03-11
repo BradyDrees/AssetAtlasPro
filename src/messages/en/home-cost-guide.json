@@ -1,0 +1,53 @@
+{
+  "title": "Cost Guide",
+  "subtitle": "Typical repair costs to help you plan",
+  "disclaimer": "Prices are national averages and vary by market, scope, and contractor",
+  "duration": "Duration",
+  "priceRange": "{low}–{high}",
+  "whatToExpect": "What to Expect",
+  "allTrades": "All Services",
+  "noGuides": "No cost data available for this trade yet",
+
+  "plumbingFaucet": "Faucet Repair / Replace",
+  "plumbingDrain": "Drain Clearing",
+  "plumbingWaterHeater": "Water Heater Replacement",
+  "plumbingToilet": "Toilet Repair",
+  "plumbingPipe": "Pipe Repair",
+  "plumbingDisposal": "Garbage Disposal",
+
+  "electricalOutlet": "Outlet Install / Repair",
+  "electricalPanel": "Electrical Panel Upgrade",
+  "electricalFan": "Ceiling Fan Install",
+  "electricalLight": "Light Fixture Install",
+  "electricalWiring": "Wiring Repair",
+
+  "hvacTuneUp": "HVAC Tune-Up",
+  "hvacCompressor": "Compressor Replacement",
+  "hvacDuct": "Duct Cleaning",
+  "hvacThermostat": "Thermostat Install",
+  "hvacRefrigerant": "Refrigerant Recharge",
+
+  "roofingLeak": "Roof Leak Repair",
+  "roofingShingle": "Shingle Replacement",
+  "roofingGutter": "Gutter Install",
+  "roofingFull": "Full Roof Replacement",
+
+  "generalDrywall": "Drywall Patch / Repair",
+  "generalDoor": "Door Repair",
+  "generalWindow": "Window Repair",
+  "generalFence": "Fence Repair",
+
+  "paintingRoom": "Interior Room Painting",
+  "paintingExterior": "Exterior Painting",
+  "paintingCabinet": "Cabinet Refinishing",
+
+  "applianceWasher": "Washer / Dryer Repair",
+  "applianceDishwasher": "Dishwasher Repair",
+  "applianceFridge": "Refrigerator Repair",
+
+  "landscapingSprinkler": "Sprinkler Repair",
+  "landscapingTree": "Tree Removal",
+
+  "pestGeneral": "General Pest Treatment",
+  "pestTermite": "Termite Treatment"
+}

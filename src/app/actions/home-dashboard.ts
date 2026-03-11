@@ -1,6 +1,12 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { hasAccessDetails } from "@/lib/home/access-details";
+import {
+  computeHealthScore,
+  type HealthScoreResult,
+  type SystemExtras,
+} from "@/lib/home/health-score";
 
 // ─── Types ────────────────────────────────────────────────
 export interface DashboardActiveWo {
@@ -68,6 +74,14 @@ export interface DashboardData {
     upcomingCount: number;
     poolBalance: number;
   };
+  hasSubscription: boolean;
+}
+
+export interface SetupProgress {
+  propertyAdded: boolean;
+  accessDetailsAdded: boolean;
+  systemsConfigured: boolean;
+  firstWorkOrderCreated: boolean;
 }
 
 // ─── Main aggregator ──────────────────────────────────────
@@ -84,6 +98,7 @@ export async function getDashboardData(): Promise<DashboardData> {
       property: null,
       activity: [],
       stats: { totalActive: 0, totalCompleted: 0, upcomingCount: 0, poolBalance: 0 },
+      hasSubscription: false,
     };
   }
 
@@ -96,6 +111,7 @@ export async function getDashboardData(): Promise<DashboardData> {
     poolRes,
     estimateRes,
     ratingRes,
+    subscriptionRes,
   ] = await Promise.all([
     // All homeowner WOs
     supabase
@@ -135,6 +151,13 @@ export async function getDashboardData(): Promise<DashboardData> {
       .eq("homeowner_id", user.id)
       .order("created_at", { ascending: false })
       .limit(10),
+
+    // Subscription check (for pool explainer)
+    supabase
+      .from("homeowner_subscriptions")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("status", "active"),
   ]);
 
   const wos = woRes.data ?? [];
@@ -319,5 +342,182 @@ export async function getDashboardData(): Promise<DashboardData> {
       upcomingCount: upcoming.length,
       poolBalance: poolRes.data?.balance ?? 0,
     },
+    hasSubscription: (subscriptionRes.count ?? 0) > 0,
   };
+}
+
+// ─── Setup progress (dashboard checklist) ─────────────────
+/**
+ * Get the setup progress for the dashboard checklist.
+ * Single round-trip: one parallel batch of queries.
+ */
+export async function getSetupProgress(): Promise<SetupProgress> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return {
+      propertyAdded: false,
+      accessDetailsAdded: false,
+      systemsConfigured: false,
+      firstWorkOrderCreated: false,
+    };
+  }
+
+  const [propertyRes, woCountRes] = await Promise.all([
+    supabase
+      .from("homeowner_properties")
+      .select(
+        "id, gate_code, lockbox_code, alarm_code, parking_instructions, hvac_model, hvac_age, water_heater_type, water_heater_age, electrical_panel, roof_material, roof_age"
+      )
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+
+    supabase
+      .from("vendor_work_orders")
+      .select("id", { count: "exact", head: true })
+      .eq("homeowner_id", user.id),
+  ]);
+
+  const prop = propertyRes.data;
+  const propertyAdded = prop !== null;
+
+  // Access details check using shared helper
+  const accessDetailsAdded = hasAccessDetails(prop);
+
+  // Systems configured: ≥2 of 7 system fields filled
+  let systemsFilled = 0;
+  if (prop) {
+    const fields = [
+      prop.hvac_model,
+      prop.hvac_age,
+      prop.water_heater_type,
+      prop.water_heater_age,
+      prop.electrical_panel,
+      prop.roof_material,
+      prop.roof_age,
+    ];
+    systemsFilled = fields.filter((v) => v !== null && v !== undefined && v !== "").length;
+  }
+  const systemsConfigured = systemsFilled >= 2;
+
+  const firstWorkOrderCreated = (woCountRes.count ?? 0) > 0;
+
+  return {
+    propertyAdded,
+    accessDetailsAdded,
+    systemsConfigured,
+    firstWorkOrderCreated,
+  };
+}
+
+// ─── Health Score ──────────────────────────────────────────
+/**
+ * Compute the Home Health Score for the current user's property.
+ * Returns null if no property exists.
+ */
+export async function getHealthScore(): Promise<HealthScoreResult | null> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  // Get property with system ages
+  const { data: prop } = await supabase
+    .from("homeowner_properties")
+    .select("id, hvac_age, water_heater_age, roof_age")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (!prop) return null;
+
+  const today = new Date();
+  const sixMonthsAgo = new Date(today.getTime() - 180 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0];
+
+  // Parallel queries for extras
+  const [photosRes, docsRes, recentWoRes, alertsRes] = await Promise.all([
+    // System photos — which system_types have photos
+    supabase
+      .from("property_system_photos")
+      .select("system_type")
+      .eq("property_id", prop.id),
+
+    // Documents — which system_types have docs
+    supabase
+      .from("homeowner_documents")
+      .select("system_type")
+      .eq("property_id", prop.id)
+      .not("system_type", "is", null),
+
+    // Recent completed WOs (within 180 days) — which trades
+    supabase
+      .from("vendor_work_orders")
+      .select("trade")
+      .eq("homeowner_id", user.id)
+      .in("status", ["completed", "done_pending_approval", "invoiced", "paid"])
+      .gte("completed_at", sixMonthsAgo),
+
+    // Active maintenance alerts
+    supabase
+      .from("homeowner_maintenance_alerts")
+      .select("system_type")
+      .eq("property_id", prop.id)
+      .eq("is_resolved", false),
+  ]);
+
+  // Build extras
+  const systemsWithPhotos = [
+    ...new Set((photosRes.data ?? []).map((r) => r.system_type)),
+  ];
+  const systemsWithDocs = [
+    ...new Set(
+      (docsRes.data ?? [])
+        .map((r) => r.system_type)
+        .filter(Boolean) as string[]
+    ),
+  ];
+
+  // Map WO trades to system types
+  const tradeToSystem: Record<string, string> = {
+    hvac: "hvac",
+    plumbing: "water_heater",
+    roofing: "roof",
+    electrical: "electrical_panel",
+  };
+  const systemsWithRecentWo = [
+    ...new Set(
+      (recentWoRes.data ?? [])
+        .map((r) => tradeToSystem[r.trade ?? ""] ?? "")
+        .filter(Boolean)
+    ),
+  ];
+
+  const extras: SystemExtras = {
+    systemsWithPhotos,
+    systemsWithDocs,
+    systemsWithRecentWo,
+  };
+
+  const activeAlerts = (alertsRes.data ?? []).map((a) => ({
+    system_type: a.system_type,
+  }));
+
+  return computeHealthScore(
+    {
+      hvac_age: prop.hvac_age,
+      water_heater_age: prop.water_heater_age,
+      roof_age: prop.roof_age,
+    },
+    extras,
+    activeAlerts
+  );
 }

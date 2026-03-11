@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
+import { getVendorBadges } from "@/app/actions/home-vendors";
 import { VendorProfileContent } from "./vendor-profile-content";
 
 export default async function VendorProfilePage({ params }: { params: Promise<{ id: string }> }) {
@@ -44,12 +45,17 @@ export default async function VendorProfilePage({ params }: { params: Promise<{ 
     isPreferred = (prefs ?? []).some((p) => p.preference_type === "preferred");
   }
 
+  // Fetch trust badges
+  const badgeMap = await getVendorBadges([id]);
+  const badges = badgeMap[id] ?? null;
+
   return (
     <VendorProfileContent
       vendor={vendor}
       ratings={ratings ?? []}
       initialSaved={isSaved}
       initialPreferred={isPreferred}
+      badges={badges}
     />
   );
 }

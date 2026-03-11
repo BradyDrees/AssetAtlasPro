@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getVendorBadges } from "@/app/actions/home-vendors";
 import { VendorMarketplaceContent } from "./marketplace-content";
 
 export default async function VendorMarketplacePage() {
@@ -11,5 +12,12 @@ export default async function VendorMarketplacePage() {
     .eq("status", "active")
     .order("avg_rating", { ascending: false });
 
-  return <VendorMarketplaceContent vendors={vendors ?? []} />;
+  const vendorList = vendors ?? [];
+
+  // Fetch trust badges for all vendors in one batch
+  const badgeMap = vendorList.length > 0
+    ? await getVendorBadges(vendorList.map((v) => v.id))
+    : {};
+
+  return <VendorMarketplaceContent vendors={vendorList} badgeMap={badgeMap} />;
 }

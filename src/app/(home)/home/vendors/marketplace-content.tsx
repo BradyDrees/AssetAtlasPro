@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useSearchParams, useRouter } from "next/navigation";
 import { assignVendorToWo } from "@/app/actions/home-work-orders";
+import { VendorTrustBadges } from "@/components/home/vendor-trust-badges";
+import type { VendorBadgeData } from "@/lib/home/vendor-badge-types";
 
 interface VendorOrg {
   id: string;
@@ -27,7 +29,7 @@ const RESPONSE_TIME_LABELS: Record<string, string> = {
   within_48hrs: "48hrs",
 };
 
-export function VendorMarketplaceContent({ vendors }: { vendors: VendorOrg[] }) {
+export function VendorMarketplaceContent({ vendors, badgeMap = {} }: { vendors: VendorOrg[]; badgeMap?: Record<string, VendorBadgeData> }) {
   const t = useTranslations("home.vendors");
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -201,6 +203,11 @@ export function VendorMarketplaceContent({ vendors }: { vendors: VendorOrg[] }) 
                   )}
                   {vendor.city && (
                     <p className="text-xs text-content-quaternary mt-1">{vendor.city}, {vendor.state}</p>
+                  )}
+                  {badgeMap[vendor.id] && (
+                    <div className="mt-2">
+                      <VendorTrustBadges badges={badgeMap[vendor.id]} />
+                    </div>
                   )}
                   {woId && (
                     <button

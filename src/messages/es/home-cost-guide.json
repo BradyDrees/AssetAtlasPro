@@ -1,0 +1,53 @@
+{
+  "title": "Guía de Costos",
+  "subtitle": "Costos típicos de reparación para planificar",
+  "disclaimer": "Los precios son promedios nacionales y varían según el mercado, el alcance y el contratista",
+  "duration": "Duración",
+  "priceRange": "{low}–{high}",
+  "whatToExpect": "Qué Esperar",
+  "allTrades": "Todos los Servicios",
+  "noGuides": "Aún no hay datos de costos para este servicio",
+
+  "plumbingFaucet": "Reparación / Cambio de Grifo",
+  "plumbingDrain": "Limpieza de Drenaje",
+  "plumbingWaterHeater": "Reemplazo de Calentador de Agua",
+  "plumbingToilet": "Reparación de Inodoro",
+  "plumbingPipe": "Reparación de Tubería",
+  "plumbingDisposal": "Triturador de Basura",
+
+  "electricalOutlet": "Instalación / Reparación de Contacto",
+  "electricalPanel": "Actualización de Panel Eléctrico",
+  "electricalFan": "Instalación de Ventilador de Techo",
+  "electricalLight": "Instalación de Lámpara",
+  "electricalWiring": "Reparación de Cableado",
+
+  "hvacTuneUp": "Mantenimiento de HVAC",
+  "hvacCompressor": "Reemplazo de Compresor",
+  "hvacDuct": "Limpieza de Ductos",
+  "hvacThermostat": "Instalación de Termostato",
+  "hvacRefrigerant": "Recarga de Refrigerante",
+
+  "roofingLeak": "Reparación de Filtración",
+  "roofingShingle": "Reemplazo de Tejas",
+  "roofingGutter": "Instalación de Canaletas",
+  "roofingFull": "Reemplazo Total de Techo",
+
+  "generalDrywall": "Reparación de Pared",
+  "generalDoor": "Reparación de Puerta",
+  "generalWindow": "Reparación de Ventana",
+  "generalFence": "Reparación de Cerca",
+
+  "paintingRoom": "Pintura Interior de Cuarto",
+  "paintingExterior": "Pintura Exterior",
+  "paintingCabinet": "Renovación de Gabinetes",
+
+  "applianceWasher": "Reparación de Lavadora / Secadora",
+  "applianceDishwasher": "Reparación de Lavavajillas",
+  "applianceFridge": "Reparación de Refrigerador",
+
+  "landscapingSprinkler": "Reparación de Aspersores",
+  "landscapingTree": "Remoción de Árbol",
+
+  "pestGeneral": "Tratamiento General de Plagas",
+  "pestTermite": "Tratamiento de Termitas"
+}

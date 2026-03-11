@@ -42,5 +42,10 @@
   "quoteVendor": "Vendor",
   "quoteEstimateNote": "An estimate will be requested from this vendor",
   "quoteSubmitted": "Quote request submitted!",
-  "bookService": "Book Service"
+  "bookService": "Book Service",
+  "badgeInsured": "Insured",
+  "badgeLicensed": "Licensed",
+  "badgeBonded": "Bonded",
+  "badgeBackground": "Background Check",
+  "trustBadges": "Trust & Credentials"
 }

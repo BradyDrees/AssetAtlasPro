@@ -42,5 +42,10 @@
   "quoteVendor": "Contratista",
   "quoteEstimateNote": "Se le pedirá un presupuesto a este contratista",
   "quoteSubmitted": "¡Cotización solicitada!",
-  "bookService": "Reservar Servicio"
+  "bookService": "Reservar Servicio",
+  "badgeInsured": "Asegurado",
+  "badgeLicensed": "Con Licencia",
+  "badgeBonded": "Con Fianza",
+  "badgeBackground": "Verificación de Antecedentes",
+  "trustBadges": "Confianza y Credenciales"
 }

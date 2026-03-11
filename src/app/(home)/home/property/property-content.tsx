@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { updateProperty } from "@/app/actions/home-property";
+import { updateProperty, createPropertyForUser } from "@/app/actions/home-property";
 import type { PropertySystemPhotoRow, SystemType } from "@/lib/home/system-types";
 import { SystemPhotoSection } from "@/components/home/system-photo-section";
 
@@ -83,6 +83,139 @@ const SYSTEM_CARDS: SystemCardDef[] = [
   },
 ];
 
+/** Inline form shown when user has no property yet */
+function InlinePropertyCreation() {
+  const t = useTranslations("home.setup");
+  const tp = useTranslations("home.property");
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  const inputClass =
+    "w-full px-3 py-2 bg-surface-secondary border border-edge-secondary rounded-lg text-content-primary text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50";
+  const labelClass = "block text-xs font-medium text-content-tertiary mb-1";
+
+  const handleCreate = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    const address = (form.get("address") as string)?.trim();
+
+    if (!address) {
+      setError(t("addressRequired"));
+      return;
+    }
+
+    startTransition(async () => {
+      const result = await createPropertyForUser({
+        address,
+        city: (form.get("city") as string) || null,
+        state: (form.get("state") as string) || null,
+        zip: (form.get("zip") as string) || null,
+        property_type: (form.get("property_type") as string) || null,
+      });
+
+      if (result.success) {
+        router.refresh();
+      } else {
+        setError(result.error ?? "Something went wrong");
+      }
+    });
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-content-primary">{tp("title")}</h1>
+        <p className="text-sm text-content-tertiary mt-1">{tp("subtitle")}</p>
+      </div>
+
+      <div className="bg-surface-primary rounded-xl border border-edge-primary p-6">
+        {/* Header with house icon */}
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-12 h-12 rounded-full bg-rose-500/10 flex items-center justify-center flex-shrink-0">
+            <svg
+              className="w-6 h-6 text-rose-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1m1.5.5l-1.5-.5M6.75 7.364V3h-3v18m3-13.636l10.5-3.819"
+              />
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-content-primary">
+              {t("createPropertyTitle")}
+            </h2>
+            <p className="text-xs text-content-quaternary">
+              {t("createPropertySubtitle")}
+            </p>
+          </div>
+        </div>
+
+        <form onSubmit={handleCreate} className="space-y-4">
+          {/* Address — required */}
+          <div>
+            <label className={labelClass}>
+              {tp("address")} <span className="text-rose-500">*</span>
+            </label>
+            <input
+              name="address"
+              className={inputClass}
+              placeholder="123 Main St"
+              required
+            />
+          </div>
+
+          {/* City / State / ZIP — optional */}
+          <div className="grid grid-cols-3 gap-3">
+            <div>
+              <label className={labelClass}>{tp("city")}</label>
+              <input name="city" className={inputClass} />
+            </div>
+            <div>
+              <label className={labelClass}>{tp("state")}</label>
+              <input name="state" className={inputClass} />
+            </div>
+            <div>
+              <label className={labelClass}>{tp("zip")}</label>
+              <input name="zip" className={inputClass} />
+            </div>
+          </div>
+
+          {/* Property type — optional */}
+          <div>
+            <label className={labelClass}>{tp("propertyType")}</label>
+            <select name="property_type" className={inputClass}>
+              <option value="">—</option>
+              <option value="sfr">{tp("sfr")}</option>
+              <option value="condo">{tp("condo")}</option>
+              <option value="townhouse">{tp("townhouse")}</option>
+              <option value="duplex">{tp("duplex")}</option>
+            </select>
+          </div>
+
+          {error && (
+            <p className="text-sm text-red-400">{error}</p>
+          )}
+
+          <button
+            type="submit"
+            disabled={isPending}
+            className="w-full py-2.5 bg-rose-600 hover:bg-rose-700 disabled:bg-charcoal-700 disabled:text-charcoal-500 text-white text-sm font-medium rounded-lg transition-colors"
+          >
+            {isPending ? t("creating") : t("createProperty")}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 export function PropertyContent({ property, photosBySystem }: PropertyContentProps) {
   const t = useTranslations("home.property");
   const router = useRouter();
@@ -91,13 +224,7 @@ export function PropertyContent({ property, photosBySystem }: PropertyContentPro
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
   if (!property) {
-    return (
-      <div className="max-w-3xl mx-auto">
-        <div className="bg-surface-primary rounded-xl border border-edge-primary p-8 text-center">
-          <p className="text-content-tertiary">{t("noProperty")}</p>
-        </div>
-      </div>
-    );
+    return <InlinePropertyCreation />;
   }
 
   const handleSave = (section: string, formData: FormData) => {

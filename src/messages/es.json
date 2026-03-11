@@ -183,9 +183,27 @@
     "heroBadge": "PLATAFORMA DE OPERACIONES INMOBILIARIAS",
     "heroTitle": "Adquiere. Opera.",
     "heroTitleAccent": "Construye Tu Imperio.",
-    "heroSubtitle": "Tres productos. Un ecosistema. Desde la primera visita a la propiedad hasta la ultima factura — Asset Atlas reemplaza tu portapapeles, tus hojas de calculo y tus herramientas fragmentadas.",
+    "heroSubtitle": "Cuatro productos. Un ecosistema. Desde la primera visita a la propiedad hasta la ultima factura — Asset Atlas reemplaza tu portapapeles, tus hojas de calculo y tus herramientas fragmentadas.",
     "exploreProducts": "Explorar Productos",
+    "pricing": "Precios",
+    "seeItInAction": "Verlo en Accion",
     "watchDemo": "Ver Demo",
+    "socialProofLine": "Creado para profesionales inmobiliarios que necesitan herramientas que funcionen offline, en sitio y entre equipos.",
+    "statMarkets": "Mercados",
+    "statWorkOrders": "Solicitudes",
+    "statInspections": "Inspecciones",
+    "whoIsThisFor": "¿Para Quien Es Esto?",
+    "whoIsThisForSubtitle": "Encuentra el producto que se adapta a tu rol. Comienza ahi. Expande cuando estes listo.",
+    "roleInvestors": "Inversionistas",
+    "roleInvestorsDesc": "Recorre propiedades, modela negocios, cierra con confianza",
+    "roleManagers": "Gestores de Propiedades",
+    "roleManagersDesc": "Inspecciona unidades, despacha contratistas, gestiona preparaciones",
+    "roleContractors": "Contratistas",
+    "roleContractorsDesc": "Recibe trabajos, presupuesta, factura, programa",
+    "roleHomeowners": "Propietarios",
+    "roleHomeownersDesc": "Envia solicitudes, encuentra contratistas, protege tu hogar",
+    "fourProducts": "Cuatro Productos. Una Plataforma.",
+    "fourProductsSubtitle": "Cada uno funciona solo. Juntos son imparables.",
     "threeProducts": "Tres Productos. Una Plataforma.",
     "threeProductsSubtitle": "Cada uno funciona solo. Juntos son imparables.",
     "mostPopular": "MAS POPULAR",
@@ -206,7 +224,8 @@
       "feat8": "Los datos DD fluyen a Atlas Operate cuando se cierra el negocio",
       "feat9": "Motor de inspecciones (modo visita DD)",
       "feat10": "Modo de Campo — sincronizacion offline",
-      "cta": "Comenzar a Adquirir"
+      "cta": "Comenzar a Adquirir",
+      "price": "Desde $149/mes"
     },
     "operate": {
       "desc": "Gestiona el activo dia a dia. Las inspecciones generan ordenes de trabajo. Los turnos de unidades se auto-priorizan. Los proveedores ejecutan. Tu mantienes el control.",
@@ -225,7 +244,8 @@
       "feat9": "Presupuestos de proveedores: revisar, aprobar, solicitar revision",
       "feat10": "Facturas de proveedores: revisar, aprobar, pagar",
       "feat11": "Red de proveedores, scorecards, terminos de pago",
-      "cta": "Comenzar a Operar"
+      "cta": "Comenzar a Operar",
+      "price": "Desde $199/mes"
     },
     "pro": {
       "desc": "Administra tu negocio de contratista desde una plataforma. Recibe trabajos, presupuesta, factura, programa — y ofrece inspecciones como servicio.",
@@ -248,7 +268,8 @@
       "feat12": "Gestion de clientes externos (clientes fuera de la plataforma)",
       "feat13": "Perfil de marketplace — ser descubierto por propietarios",
       "feat14": "Mensajeria — hilos contextuales en cada trabajo",
-      "cta": "Comenzar a Construir"
+      "cta": "Comenzar a Construir",
+      "price": "Desde $49/mes"
     },
     "home": {
       "title": "Atlas Home",
@@ -284,7 +305,17 @@
       "standardBadge": "Mejor Valor",
       "premium": "Premium",
       "premiumPrice": "$179/mes",
-      "premiumPool": "$140/mes al fondo"
+      "premiumPool": "$140/mes al fondo",
+      "startingAt": "Desde $49/mes",
+      "essentialFeat1": "Solicitudes ilimitadas",
+      "essentialFeat2": "Contratistas asignados automaticamente",
+      "essentialFeat3": "$35/mes al fondo de mantenimiento",
+      "standardFeat1": "Todo en Essential, mas:",
+      "standardFeat2": "Inspeccion semestral de la propiedad",
+      "standardFeat3": "Asignacion prioritaria de contratistas",
+      "premiumFeat1": "Todo en Standard, mas:",
+      "premiumFeat2": "Inspecciones anuales + semestrales",
+      "premiumFeat3": "Respuesta de emergencia 24hrs"
     },
     "howItConnects": "Como Se Conecta Todo",
     "howItConnectsSubtitle": "Los datos fluyen entre productos automaticamente. Sin re-ingreso. Sin exportar/importar. Solo traspasos fluidos.",
@@ -294,12 +325,21 @@
     "homeFlow": "Propietarios envian OTs → rastrear → pagar",
     "acquireToOperate": "Acquire → Operate",
     "acquireToOperateDesc": "Se cierra el negocio. Los datos DD, fotos, banderas CAPEX y calificacion de unidades se convierten automaticamente en la linea base de la propiedad en Operate. Cero re-ingreso.",
+    "acquireToOperateBenefit": "Sin re-ingreso de datos. Cuando se cierra un negocio, la propiedad aparece en Operate lista para gestionar.",
     "operateToPro": "Operate → Pro",
     "operateToProDesc": "Los hallazgos de inspeccion del PM auto-crean ordenes de trabajo y las despachan a proveedores en Pro. El proveedor completa el trabajo, envia factura, el PM aprueba.",
+    "operateToProBenefit": "Los PMs nunca persiguen contratistas. Las solicitudes fluyen directamente al contratista correcto.",
     "proToOperate": "Pro → Operate",
     "proToOperateDesc": "El proveedor realiza inspecciones en nombre del PM. Envia hallazgos. El PM revisa y crea OTs de seguimiento.",
+    "proToOperateBenefit": "Los contratistas entregan resultados de inspeccion directo al panel del PM.",
     "homeToPro": "Home → Pro",
     "homeToProDesc": "El propietario envia una orden de trabajo. El sistema sugiere proveedores del marketplace. El proveedor recibe el trabajo, presupuesta, completa, factura.",
+    "homeToProBenefit": "Los propietarios obtienen trabajo de calidad profesional sin buscar en Craigslist o Nextdoor.",
+    "whatsLive": "¿Que Esta Activo y Que Viene?",
+    "whatsLiveSubtitle": "Mira lo que puedes usar hoy y lo que esta en el plan.",
+    "statusLive": "Activo",
+    "statusComing": "Proximamente",
+    "statusPlanned": "Planificado",
     "builtToExpand": "Construido para Expandir",
     "builtToExpandSubtitle": "Cada modulo esta disenado para crecer. Esto es lo que esta activo, lo que viene y lo que esta en el plan.",
     "acquireRoadmap": "Atlas Acquire — Hoja de Ruta",
@@ -322,10 +362,17 @@
     "comingNext": "Proximo",
     "future": "Futuro",
     "planned": "Planificado",
+    "pickYourRole": "Elige Tu Rol. Comienza Hoy.",
+    "pickYourRoleSubtitle": "Una plataforma. Elige donde empezar. Todo se conecta.",
     "readyCta": "Listo para Atlas Tu Portafolio?",
     "readyCtaSubtitle": "Comienza con el producto que se adapta a tu rol. Expande cuando estes listo. Todo se conecta.",
     "atlasHomeFree": "Atlas Home (Gratis)",
     "footerTagline": "Operaciones inmobiliarias, reimaginadas.",
+    "footerProducts": "Productos",
+    "footerCompany": "Empresa",
+    "footerContact": "Contacto",
+    "footerEmail": "support@assetatlaspro.com",
+    "footerLinkedIn": "LinkedIn",
     "termsOfService": "Terminos de Servicio",
     "privacyPolicy": "Politica de Privacidad"
   },
@@ -566,11 +613,26 @@
     "systemHealthReport": "Informe de Salud del Sistema",
     "overallScore": "Puntuación General",
     "priorityLabels": {
-      "1": { "label": "Inmediato", "timeline": "Reparar ahora — seguridad/código" },
-      "2": { "label": "Urgente", "timeline": "0–3 meses" },
-      "3": { "label": "Corto plazo", "timeline": "3–6 meses" },
-      "4": { "label": "Planificado", "timeline": "6–12 meses" },
-      "5": { "label": "Monitorear", "timeline": "12+ meses" }
+      "1": {
+        "label": "Inmediato",
+        "timeline": "Reparar ahora — seguridad/código"
+      },
+      "2": {
+        "label": "Urgente",
+        "timeline": "0–3 meses"
+      },
+      "3": {
+        "label": "Corto plazo",
+        "timeline": "3–6 meses"
+      },
+      "4": {
+        "label": "Planificado",
+        "timeline": "6–12 meses"
+      },
+      "5": {
+        "label": "Monitorear",
+        "timeline": "12+ meses"
+      }
     }
   },
   "unit": {
@@ -641,11 +703,7 @@
       "yes": "Si",
       "no": "No"
     },
-    "appliances": {
-      "black": "Negro",
-      "white": "Blanco",
-      "stainlessSteel": "Acero inoxidable"
-    },
+    "appliances": "Electrodomésticos",
     "mold": "Moho",
     "deleteConfirm": "Eliminar E{building} - {unitNumber}? Se eliminaran todas las fotos.",
     "deleteUnit": "Eliminar unidad",
@@ -674,7 +732,6 @@
     "paint": "Pintura",
     "bdBa": "Rec/Ban",
     "selectBdBa": "Seleccionar Rec/Ban...",
-    "appliances": "Electrodomésticos",
     "grading": "Calificación",
     "enabled": "habilitadas",
     "unitCount": "{count, plural, one {# unidad} other {# unidades}}",

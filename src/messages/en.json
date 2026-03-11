@@ -183,9 +183,27 @@
     "heroBadge": "REAL ESTATE OPERATIONS PLATFORM",
     "heroTitle": "Acquire. Operate.",
     "heroTitleAccent": "Build Your Empire.",
-    "heroSubtitle": "Three products. One ecosystem. From the first property walk to the last invoice — Asset Atlas replaces your clipboard, your spreadsheets, and your fragmented tool stack.",
+    "heroSubtitle": "Four products. One ecosystem. From the first property walk to the last invoice — Asset Atlas replaces your clipboard, your spreadsheets, and your fragmented tool stack.",
     "exploreProducts": "Explore Products",
+    "pricing": "Pricing",
+    "seeItInAction": "See It In Action",
     "watchDemo": "Watch Demo",
+    "socialProofLine": "Built for real estate professionals who need tools that work offline, on-site, and across teams.",
+    "statMarkets": "Markets",
+    "statWorkOrders": "Work Orders",
+    "statInspections": "Inspections",
+    "whoIsThisFor": "Who Is This For?",
+    "whoIsThisForSubtitle": "Find the product that fits your role. Start there. Expand when ready.",
+    "roleInvestors": "Investors",
+    "roleInvestorsDesc": "Walk properties, model deals, close with confidence",
+    "roleManagers": "Property Managers",
+    "roleManagersDesc": "Inspect units, dispatch vendors, manage turns",
+    "roleContractors": "Contractors",
+    "roleContractorsDesc": "Receive jobs, estimate, invoice, schedule",
+    "roleHomeowners": "Homeowners",
+    "roleHomeownersDesc": "Submit work orders, find vendors, protect your home",
+    "fourProducts": "Four Products. One Platform.",
+    "fourProductsSubtitle": "Each works standalone. Together they're unstoppable.",
     "threeProducts": "Three Products. One Platform.",
     "threeProductsSubtitle": "Each works standalone. Together they're unstoppable.",
     "mostPopular": "MOST POPULAR",
@@ -206,7 +224,8 @@
       "feat8": "DD data flows to Atlas Operate when deal closes",
       "feat9": "Inspection engine (DD walk mode)",
       "feat10": "Field Mode — offline sync",
-      "cta": "Start Acquiring"
+      "cta": "Start Acquiring",
+      "price": "From $149/mo"
     },
     "operate": {
       "desc": "Run the asset day-to-day. Inspections generate work orders. Unit turns auto-prioritize. Vendors execute. You stay in control.",
@@ -225,7 +244,8 @@
       "feat9": "Vendor estimates: review, approve, request revision",
       "feat10": "Vendor invoices: review, approve, pay",
       "feat11": "Vendor network, scorecards, payment terms",
-      "cta": "Start Operating"
+      "cta": "Start Operating",
+      "price": "From $199/mo"
     },
     "pro": {
       "desc": "Run your contracting business from one platform. Receive jobs, estimate, invoice, schedule — and offer inspections as a service.",
@@ -248,7 +268,8 @@
       "feat12": "External client management (non-platform clients)",
       "feat13": "Marketplace profile — get discovered by homeowners",
       "feat14": "Messaging — contextual threads on every job",
-      "cta": "Start Building"
+      "cta": "Start Building",
+      "price": "From $49/mo"
     },
     "home": {
       "title": "Atlas Home",
@@ -284,7 +305,17 @@
       "standardBadge": "Best Value",
       "premium": "Premium",
       "premiumPrice": "$179/mo",
-      "premiumPool": "$140/mo to pool"
+      "premiumPool": "$140/mo to pool",
+      "startingAt": "From $49/mo",
+      "essentialFeat1": "Unlimited work orders",
+      "essentialFeat2": "Auto-matched vendors",
+      "essentialFeat3": "$35/mo to maintenance pool",
+      "standardFeat1": "Everything in Essential, plus:",
+      "standardFeat2": "Semi-annual property inspection",
+      "standardFeat3": "Priority vendor matching",
+      "premiumFeat1": "Everything in Standard, plus:",
+      "premiumFeat2": "Annual + semi-annual inspections",
+      "premiumFeat3": "Emergency 24hr response"
     },
     "howItConnects": "How Everything Connects",
     "howItConnectsSubtitle": "Data flows between products automatically. No re-entry. No export/import. Just seamless handoffs.",
@@ -294,12 +325,21 @@
     "homeFlow": "Homeowners submit WOs → track → pay",
     "acquireToOperate": "Acquire → Operate",
     "acquireToOperateDesc": "Deal closes. DD walk data, photos, CAPEX flags, and unit grading automatically become the property's baseline in Operate. Zero re-entry.",
+    "acquireToOperateBenefit": "No re-keying. When a deal closes, the property appears in Operate ready to manage.",
     "operateToPro": "Operate → Pro",
     "operateToProDesc": "PM inspection findings auto-create work orders and dispatch to vendors in Pro. Vendor completes work, submits invoice, PM approves.",
+    "operateToProBenefit": "PMs never chase vendors. Work orders flow directly to the right contractor.",
     "proToOperate": "Pro → Operate",
     "proToOperateDesc": "Vendor conducts inspections on PM's behalf. Submits findings. PM reviews and creates follow-up WOs.",
+    "proToOperateBenefit": "Vendors deliver inspection results right back into the PM's dashboard.",
     "homeToPro": "Home → Pro",
     "homeToProDesc": "Homeowner submits work order. System suggests vendors from marketplace. Vendor receives job, estimates, completes, invoices.",
+    "homeToProBenefit": "Homeowners get pro-quality work without searching Craigslist or Nextdoor.",
+    "whatsLive": "What's Live & What's Coming",
+    "whatsLiveSubtitle": "See what you can use today and what's on the roadmap.",
+    "statusLive": "Live",
+    "statusComing": "Coming Soon",
+    "statusPlanned": "Planned",
     "builtToExpand": "Built to Expand",
     "builtToExpandSubtitle": "Every module is designed to grow. Here's what's live, what's coming, and what's on the roadmap.",
     "acquireRoadmap": "Atlas Acquire — Roadmap",
@@ -322,10 +362,17 @@
     "comingNext": "Coming next",
     "future": "Future",
     "planned": "Planned",
+    "pickYourRole": "Pick Your Role. Start Today.",
+    "pickYourRoleSubtitle": "One platform. Choose where you start. Everything connects.",
     "readyCta": "Ready to Atlas Your Portfolio?",
     "readyCtaSubtitle": "Start with the product that fits your role. Expand when you're ready. Everything connects.",
     "atlasHomeFree": "Atlas Home (Free)",
     "footerTagline": "Real estate operations, reimagined.",
+    "footerProducts": "Products",
+    "footerCompany": "Company",
+    "footerContact": "Contact Us",
+    "footerEmail": "support@assetatlaspro.com",
+    "footerLinkedIn": "LinkedIn",
     "termsOfService": "Terms of Service",
     "privacyPolicy": "Privacy Policy"
   },
@@ -566,11 +613,26 @@
     "systemHealthReport": "System Health Report",
     "overallScore": "Overall Score",
     "priorityLabels": {
-      "1": { "label": "Immediate", "timeline": "Fix now — safety/code" },
-      "2": { "label": "Urgent", "timeline": "0–3 months" },
-      "3": { "label": "Short-term", "timeline": "3–6 months" },
-      "4": { "label": "Planned", "timeline": "6–12 months" },
-      "5": { "label": "Monitor", "timeline": "12+ months" }
+      "1": {
+        "label": "Immediate",
+        "timeline": "Fix now — safety/code"
+      },
+      "2": {
+        "label": "Urgent",
+        "timeline": "0–3 months"
+      },
+      "3": {
+        "label": "Short-term",
+        "timeline": "3–6 months"
+      },
+      "4": {
+        "label": "Planned",
+        "timeline": "6–12 months"
+      },
+      "5": {
+        "label": "Monitor",
+        "timeline": "12+ months"
+      }
     }
   },
   "unit": {
@@ -641,11 +703,7 @@
       "yes": "Yes",
       "no": "No"
     },
-    "appliances": {
-      "black": "Black",
-      "white": "White",
-      "stainlessSteel": "Stainless Steel"
-    },
+    "appliances": "Appliances",
     "mold": "Mold",
     "deleteConfirm": "Delete B{building} - {unitNumber}? All photos will be removed.",
     "deleteUnit": "Delete unit",
@@ -674,7 +732,6 @@
     "paint": "Paint",
     "bdBa": "BD/BA",
     "selectBdBa": "Select BD/BA...",
-    "appliances": "Appliances",
     "grading": "Grading",
     "enabled": "enabled",
     "unitCount": "{count, plural, one {# unit} other {# units}}",

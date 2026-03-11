@@ -6,6 +6,8 @@ interface ExpandableSectionProps {
   title: string;
   color: string;
   icon: string;
+  statusLabel?: string;
+  statusColor?: string;
   children: React.ReactNode;
 }
 
@@ -13,6 +15,8 @@ export function ExpandableSection({
   title,
   color,
   icon,
+  statusLabel,
+  statusColor,
   children,
 }: ExpandableSectionProps) {
   const [open, setOpen] = useState(false);
@@ -26,6 +30,17 @@ export function ExpandableSection({
         <span className="font-bold text-[15px] flex items-center gap-2.5">
           <span>{icon}</span>
           <span style={{ color }}>{title}</span>
+          {statusLabel && (
+            <span
+              className="text-[10px] font-bold px-2 py-0.5 rounded-full ml-1"
+              style={{
+                background: `${statusColor}26`,
+                color: statusColor,
+              }}
+            >
+              {statusLabel}
+            </span>
+          )}
         </span>
         <span
           className={`text-slate-500 transition-transform duration-200 text-base ${

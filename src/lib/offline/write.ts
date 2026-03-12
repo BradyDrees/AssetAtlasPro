@@ -1,5 +1,6 @@
 "use client";
 
+import type { Table } from "dexie";
 import { offlineDB, type QueueAction, type SyncQueueItem } from "./db";
 
 export const MAX_RETRIES = 3;
@@ -117,7 +118,99 @@ export async function markFailed(
 
 /** Delete all synced items from the queue (cleanup). */
 export async function purgeSynced(): Promise<number> {
-  return offlineDB.syncQueue.where("status").equals("synced").delete();
+  const queueDeleted = await offlineDB.syncQueue
+    .where("status")
+    .equals("synced")
+    .delete();
+
+  const staleDeleted = await evictSyncedStaleData();
+
+  return queueDeleted + staleDeleted;
+}
+
+/**
+ * Evict synced offline data older than 30 days from blob-heavy tables
+ * (localCaptures, localNotePhotos, vendorPhotos) and lightweight tables
+ * (localFindings, localNotes, localUnits, vendor tables).
+ *
+ * Safety: never deletes a record whose localId is referenced by any
+ * unsynced (pending/failed) sync queue item.
+ */
+async function evictSyncedStaleData(): Promise<number> {
+  const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+  const cutoff = Date.now() - THIRTY_DAYS_MS;
+
+  // 1. Collect all localIds referenced by unsynced queue items so we
+  //    never delete data that still needs to sync.
+  const unsyncedItems = await offlineDB.syncQueue
+    .where("status")
+    .anyOf(["pending", "failed", "syncing"])
+    .toArray();
+
+  const referencedIds = new Set<string>();
+  for (const item of unsyncedItems) {
+    const p = item.payload;
+    // Capture references
+    if (typeof p.captureLocalId === "string") referencedIds.add(p.captureLocalId);
+    // Note photo references
+    if (typeof p.photoLocalId === "string") referencedIds.add(p.photoLocalId);
+    // Finding references
+    if (typeof p.findingLocalId === "string") referencedIds.add(p.findingLocalId);
+    // Note references
+    if (typeof p.noteLocalId === "string") referencedIds.add(p.noteLocalId);
+    // Unit references
+    if (typeof p.unitLocalId === "string") referencedIds.add(p.unitLocalId);
+    // Vendor photo references
+    if (typeof p.vendorPhotoLocalId === "string") referencedIds.add(p.vendorPhotoLocalId);
+    // Generic localId fallback (vendor WO/estimate/invoice actions)
+    if (typeof p.localId === "string") referencedIds.add(p.localId);
+  }
+
+  // 2. Helper: delete synced rows older than cutoff, skipping referenced IDs.
+  //    Uses a generic Dexie Table type — all offline tables share localId,
+  //    syncStatus, and createdAt fields.
+  async function evictTable(
+    table: Table<{ localId: string; syncStatus: string; createdAt: number }, string>
+  ): Promise<number> {
+    const stale = await table
+      .where("syncStatus")
+      .equals("synced")
+      .filter((row) => row.createdAt < cutoff && !referencedIds.has(row.localId))
+      .primaryKeys();
+
+    if (stale.length > 0) {
+      await table.bulkDelete(stale as string[]);
+    }
+    return stale.length;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- safe: all tables share localId/syncStatus/createdAt
+  type AnyOfflineTable = Table<{ localId: string; syncStatus: string; createdAt: number }, string>;
+
+  // 3. Evict blob-heavy tables first (biggest storage wins)
+  let total = 0;
+  total += await evictTable(offlineDB.localCaptures as unknown as AnyOfflineTable);
+  total += await evictTable(offlineDB.localNotePhotos as unknown as AnyOfflineTable);
+  total += await evictTable(offlineDB.vendorPhotos as unknown as AnyOfflineTable);
+
+  // 4. Evict lightweight synced data (findings, notes, units, vendor records)
+  total += await evictTable(offlineDB.localFindings as unknown as AnyOfflineTable);
+  total += await evictTable(offlineDB.localNotes as unknown as AnyOfflineTable);
+  total += await evictTable(offlineDB.localUnits as unknown as AnyOfflineTable);
+  total += await evictTable(offlineDB.vendorWorkOrders as unknown as AnyOfflineTable);
+  total += await evictTable(offlineDB.vendorWoMaterials as unknown as AnyOfflineTable);
+  total += await evictTable(offlineDB.vendorWoTimeEntries as unknown as AnyOfflineTable);
+  total += await evictTable(offlineDB.vendorEstimates as unknown as AnyOfflineTable);
+  total += await evictTable(offlineDB.vendorEstimateSections as unknown as AnyOfflineTable);
+  total += await evictTable(offlineDB.vendorEstimateItems as unknown as AnyOfflineTable);
+  total += await evictTable(offlineDB.vendorInvoices as unknown as AnyOfflineTable);
+  total += await evictTable(offlineDB.vendorInvoiceItems as unknown as AnyOfflineTable);
+
+  // TODO: pageSnapshots has no syncStatus — consider a separate TTL-based
+  // eviction (e.g. delete snapshots older than 90 days) once snapshot usage
+  // patterns are clearer.
+
+  return total;
 }
 
 /**

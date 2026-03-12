@@ -162,8 +162,14 @@ export async function createWorkOrder(
 }
 
 /** PM gets their work orders */
-export async function getPmWorkOrders(): Promise<{
+export async function getPmWorkOrders(
+  page = 1,
+  pageSize = 25
+): Promise<{
   data: VendorWorkOrder[];
+  total: number;
+  page: number;
+  pageSize: number;
   error?: string;
 }> {
   await requirePmRole();
@@ -172,19 +178,25 @@ export async function getPmWorkOrders(): Promise<{
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) return { data: [], error: "Not authenticated" };
+  if (!user) return { data: [], total: 0, page: 1, pageSize: 25, error: "Not authenticated" };
 
-  const { data, error } = await supabase
+  const safePage = Math.max(1, page);
+  const safeSize = Math.min(Math.max(1, pageSize), 100);
+  const from = (safePage - 1) * safeSize;
+  const to = from + safeSize - 1;
+
+  const { data, count, error } = await supabase
     .from("vendor_work_orders")
-    .select("*")
+    .select("*", { count: "exact" })
     .eq("pm_user_id", user.id)
+    .range(from, to)
     .order("created_at", { ascending: false });
 
   if (error) {
-    return { data: [], error: error.message };
+    return { data: [], total: 0, page: safePage, pageSize: safeSize, error: error.message };
   }
 
-  return { data: (data ?? []) as VendorWorkOrder[] };
+  return { data: (data ?? []) as VendorWorkOrder[], total: count ?? 0, page: safePage, pageSize: safeSize };
 }
 
 /** PM updates work order via SECURITY DEFINER RPC (Correction 3) */

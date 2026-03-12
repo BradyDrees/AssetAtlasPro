@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import { advanceNextDue } from "@/lib/vendor/recurring-invoice-types";
+import { withTimeout, CRON_TIMEOUT_MS } from "@/lib/server-utils";
 
 /**
  * Recurring Invoices Cron — runs daily at 8 AM
@@ -15,6 +16,18 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  try {
+    return await withTimeout(() => handleRecurringInvoices(), CRON_TIMEOUT_MS);
+  } catch (err) {
+    console.error("[recurring-invoices] Timeout or fatal error:", err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Unknown error" },
+      { status: 500 }
+    );
+  }
+}
+
+async function handleRecurringInvoices() {
   const supabase = createServiceClient();
   const today = new Date().toISOString().split("T")[0];
   const results = { generated: 0, errors: [] as string[] };

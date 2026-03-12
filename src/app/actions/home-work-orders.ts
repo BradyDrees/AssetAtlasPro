@@ -492,18 +492,28 @@ export async function deleteWorkOrderPhoto(
 /**
  * Get the homeowner's work orders.
  */
-export async function getHomeWorkOrders(status?: "active" | "history") {
+export async function getHomeWorkOrders(
+  status?: "active" | "history",
+  page = 1,
+  pageSize = 25
+): Promise<{ data: Record<string, unknown>[]; total: number; page: number; pageSize: number }> {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) return [];
+  if (!user) return { data: [], total: 0, page: 1, pageSize: 25 };
+
+  const safePage = Math.max(1, page);
+  const safeSize = Math.min(Math.max(1, pageSize), 100);
+  const from = (safePage - 1) * safeSize;
+  const to = from + safeSize - 1;
 
   let query = supabase
     .from("vendor_work_orders")
-    .select("*")
+    .select("*", { count: "exact" })
     .eq("homeowner_id", user.id)
+    .range(from, to)
     .order("created_at", { ascending: false });
 
   if (status === "active") {
@@ -512,8 +522,8 @@ export async function getHomeWorkOrders(status?: "active" | "history") {
     query = query.in("status", ["completed", "paid", "declined"]);
   }
 
-  const { data } = await query;
-  return data ?? [];
+  const { data, count } = await query;
+  return { data: data ?? [], total: count ?? 0, page: safePage, pageSize: safeSize };
 }
 
 /**

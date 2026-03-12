@@ -1,5 +1,8 @@
+import { notFound } from "next/navigation";
 import { getInvoiceByToken } from "@/app/actions/public-invoice";
 import { PublicInvoiceView } from "./public-invoice-view";
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export default async function PublicPaymentPage({
   params,
@@ -7,6 +10,11 @@ export default async function PublicPaymentPage({
   params: Promise<{ token: string }>;
 }) {
   const { token } = await params;
+
+  if (!UUID_RE.test(token)) {
+    notFound();
+  }
+
   const { data, error } = await getInvoiceByToken(token);
 
   if (error === "already_paid") {

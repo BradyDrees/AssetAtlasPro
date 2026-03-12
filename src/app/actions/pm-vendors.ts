@@ -67,76 +67,83 @@ export async function getPmVendors(): Promise<{
 
   if (error) return { data: [], error: error.message };
 
-  const enriched: EnrichedPmVendor[] = [];
-  for (const rel of rels ?? []) {
-    // Org info
-    const { data: org } = await supabase
+  const relsList = rels ?? [];
+  if (relsList.length === 0) return { data: [] };
+
+  // Batch: collect all vendor_org_ids
+  const orgIds = [...new Set(relsList.map((r) => r.vendor_org_id))];
+
+  // Batch fetch orgs, work orders, invoices, credentials in parallel
+  const [orgsResult, wosResult, invoicesResult, credsResult] = await Promise.all([
+    supabase
       .from("vendor_organizations")
-      .select("name, email, phone, logo_url, trades")
-      .eq("id", rel.vendor_org_id)
-      .single();
-
-    // Job stats
-    const { data: wos } = await supabase
+      .select("id, name, email, phone, logo_url, trades")
+      .in("id", orgIds),
+    supabase
       .from("vendor_work_orders")
-      .select("status")
-      .eq("vendor_org_id", rel.vendor_org_id)
-      .eq("pm_user_id", user.id);
-
-    const jobs = wos ?? [];
-    const activeStatuses = [
-      "assigned",
-      "accepted",
-      "scheduled",
-      "en_route",
-      "on_site",
-      "in_progress",
-    ];
-
-    // Revenue (paid invoices)
-    const { data: invoices } = await supabase
+      .select("vendor_org_id, status")
+      .in("vendor_org_id", orgIds)
+      .eq("pm_user_id", user.id),
+    supabase
       .from("vendor_invoices")
-      .select("total")
-      .eq("vendor_org_id", rel.vendor_org_id)
+      .select("vendor_org_id, total")
+      .in("vendor_org_id", orgIds)
       .eq("pm_user_id", user.id)
-      .eq("status", "paid");
-
-    const totalSpentCents = (invoices ?? []).reduce(
-      (sum, inv) => sum + Math.round(Number(inv.total || 0) * 100),
-      0
-    );
-
-    // Credential summary
-    const { data: creds } = await supabase
+      .eq("status", "paid"),
+    supabase
       .from("vendor_credentials")
-      .select("type, status, expiration_date")
-      .eq("vendor_org_id", rel.vendor_org_id);
+      .select("vendor_org_id, type, status, expiration_date")
+      .in("vendor_org_id", orgIds),
+  ]);
 
-    const credentials = creds ?? [];
-    const hasGL = credentials.some(
-      (c) => c.type === "insurance_gl" && c.status === "active"
-    );
-    const hasWC = credentials.some(
-      (c) => c.type === "insurance_wc" && c.status === "active"
-    );
-    const hasW9 = credentials.some(
-      (c) => c.type === "w9" && c.status === "active"
-    );
-    const expiringSoon = credentials.filter(
-      (c) => c.status === "expiring_soon"
-    );
+  // Build lookup maps
+  const orgMap = new Map<string, (typeof orgsResult.data extends (infer T)[] | null ? T : never)>();
+  for (const org of orgsResult.data ?? []) orgMap.set(org.id, org);
+
+  const wosByOrg = new Map<string, { status: string }[]>();
+  for (const wo of wosResult.data ?? []) {
+    const arr = wosByOrg.get(wo.vendor_org_id) ?? [];
+    arr.push(wo);
+    wosByOrg.set(wo.vendor_org_id, arr);
+  }
+
+  const invByOrg = new Map<string, number>();
+  for (const inv of invoicesResult.data ?? []) {
+    const prev = invByOrg.get(inv.vendor_org_id) ?? 0;
+    invByOrg.set(inv.vendor_org_id, prev + Math.round(Number(inv.total || 0) * 100));
+  }
+
+  const credsByOrg = new Map<string, { type: string; status: string; expiration_date: string | null }[]>();
+  for (const c of credsResult.data ?? []) {
+    const arr = credsByOrg.get(c.vendor_org_id) ?? [];
+    arr.push(c);
+    credsByOrg.set(c.vendor_org_id, arr);
+  }
+
+  const activeStatuses = [
+    "assigned", "accepted", "scheduled", "en_route", "on_site", "in_progress",
+  ];
+
+  const enriched: EnrichedPmVendor[] = relsList.map((rel) => {
+    const org = orgMap.get(rel.vendor_org_id);
+    const jobs = wosByOrg.get(rel.vendor_org_id) ?? [];
+    const totalSpentCents = invByOrg.get(rel.vendor_org_id) ?? 0;
+    const credentials = credsByOrg.get(rel.vendor_org_id) ?? [];
+
+    const hasGL = credentials.some((c) => c.type === "insurance_gl" && c.status === "active");
+    const hasWC = credentials.some((c) => c.type === "insurance_wc" && c.status === "active");
+    const hasW9 = credentials.some((c) => c.type === "w9" && c.status === "active");
+    const expiringSoon = credentials.filter((c) => c.status === "expiring_soon");
     const expired = credentials.filter((c) => c.status === "expired");
 
     const warnings: string[] = [];
     if (!hasGL) warnings.push("Missing GL insurance");
     if (!hasWC) warnings.push("Missing WC insurance");
     if (!hasW9) warnings.push("Missing W9");
-    if (expired.length > 0)
-      warnings.push(`${expired.length} expired credential(s)`);
-    if (expiringSoon.length > 0)
-      warnings.push(`${expiringSoon.length} expiring soon`);
+    if (expired.length > 0) warnings.push(`${expired.length} expired credential(s)`);
+    if (expiringSoon.length > 0) warnings.push(`${expiringSoon.length} expiring soon`);
 
-    enriched.push({
+    return {
       relationship_id: rel.id,
       status: rel.status as RelationshipStatus,
       vendor_org_id: rel.vendor_org_id,
@@ -151,9 +158,7 @@ export async function getPmVendors(): Promise<{
       notes: rel.notes ?? null,
       created_at: rel.created_at,
       stats: {
-        active_jobs: jobs.filter((j) =>
-          activeStatuses.includes(j.status)
-        ).length,
+        active_jobs: jobs.filter((j) => activeStatuses.includes(j.status)).length,
         total_jobs: jobs.length,
         total_spent_cents: totalSpentCents,
       },
@@ -162,8 +167,8 @@ export async function getPmVendors(): Promise<{
         missing_critical: !hasGL || !hasWC || !hasW9,
         warnings,
       },
-    });
-  }
+    };
+  });
 
   return { data: enriched };
 }

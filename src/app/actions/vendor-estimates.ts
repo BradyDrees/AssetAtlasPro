@@ -25,14 +25,22 @@ import type {
 /** Get all estimates for the current vendor org */
 export async function getVendorEstimates(filters?: {
   status?: EstimateStatus | EstimateStatus[];
-}): Promise<{ data: VendorEstimate[]; error?: string }> {
+  page?: number;
+  pageSize?: number;
+}): Promise<{ data: VendorEstimate[]; total: number; page: number; pageSize: number; error?: string }> {
   const { vendor_org_id } = await requireVendorRole();
   const supabase = await createClient();
 
+  const safePage = Math.max(1, filters?.page ?? 1);
+  const safeSize = Math.min(Math.max(1, filters?.pageSize ?? 25), 100);
+  const from = (safePage - 1) * safeSize;
+  const to = from + safeSize - 1;
+
   let query = supabase
     .from("vendor_estimates")
-    .select("*")
+    .select("*", { count: "exact" })
     .eq("vendor_org_id", vendor_org_id)
+    .range(from, to)
     .order("created_at", { ascending: false });
 
   if (filters?.status) {
@@ -43,9 +51,9 @@ export async function getVendorEstimates(filters?: {
     }
   }
 
-  const { data, error } = await query;
-  if (error) return { data: [], error: error.message };
-  return { data: (data ?? []) as VendorEstimate[] };
+  const { data, count, error } = await query;
+  if (error) return { data: [], total: 0, page: safePage, pageSize: safeSize, error: error.message };
+  return { data: (data ?? []) as VendorEstimate[], total: count ?? 0, page: safePage, pageSize: safeSize };
 }
 
 /** Get a single estimate with sections and items */
@@ -59,7 +67,9 @@ export async function getEstimateDetail(estimateId: string): Promise<{
 
   const { data: estimate, error: estError } = await supabase
     .from("vendor_estimates")
-    .select("*")
+    .select(
+      "id, vendor_org_id, created_by, pm_user_id, work_order_id, estimate_number, property_name, property_address, unit_info, title, description, tier_mode, subtotal, markup_pct, markup_amount, tax_pct, tax_amount, total, status, change_request_notes, sent_at, approved_at, valid_until, terms, internal_notes, deposit_required, deposit_amount, custom_fields, approval_required, approved_by, selected_tier, updated_by, created_at, updated_at"
+    )
     .eq("id", estimateId)
     .single();
 
@@ -69,24 +79,44 @@ export async function getEstimateDetail(estimateId: string): Promise<{
 
   const { data: sectionsData } = await supabase
     .from("vendor_estimate_sections")
-    .select("*")
+    .select("id, estimate_id, name, sort_order, tier, subtotal, created_at")
     .eq("estimate_id", estimateId)
     .order("sort_order", { ascending: true });
 
-  const sections: (VendorEstimateSection & { items: VendorEstimateItem[] })[] = [];
+  const typedSections = (sectionsData ?? []) as VendorEstimateSection[];
 
-  for (const section of (sectionsData ?? []) as VendorEstimateSection[]) {
-    const { data: items } = await supabase
+  // Batch-fetch all items for every section in one query instead of N+1
+  const sectionIds = typedSections.map((s) => s.id);
+  let allItems: VendorEstimateItem[] = [];
+
+  if (sectionIds.length > 0) {
+    const { data: itemsData } = await supabase
       .from("vendor_estimate_items")
-      .select("*")
-      .eq("section_id", section.id)
+      .select(
+        "id, section_id, description, item_type, quantity, unit, unit_price, markup_pct, total, sort_order, tier, notes, created_at"
+      )
+      .in("section_id", sectionIds)
       .order("sort_order", { ascending: true });
 
-    sections.push({
-      ...section,
-      items: (items ?? []) as VendorEstimateItem[],
-    });
+    allItems = (itemsData ?? []) as VendorEstimateItem[];
   }
+
+  // Group items by section_id
+  const itemsBySectionId = new Map<string, VendorEstimateItem[]>();
+  for (const item of allItems) {
+    const existing = itemsBySectionId.get(item.section_id);
+    if (existing) {
+      existing.push(item);
+    } else {
+      itemsBySectionId.set(item.section_id, [item]);
+    }
+  }
+
+  const sections: (VendorEstimateSection & { items: VendorEstimateItem[] })[] =
+    typedSections.map((section) => ({
+      ...section,
+      items: itemsBySectionId.get(section.id) ?? [],
+    }));
 
   return { estimate: estimate as VendorEstimate, sections };
 }

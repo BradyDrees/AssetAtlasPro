@@ -32,14 +32,22 @@ export async function getVendorWorkOrders(filters?: {
   status?: WoStatus | WoStatus[];
   priority?: string;
   trade?: string;
-}): Promise<{ data: VendorWorkOrder[]; error?: string }> {
+  page?: number;
+  pageSize?: number;
+}): Promise<{ data: VendorWorkOrder[]; total: number; page: number; pageSize: number; error?: string }> {
   const vendorAuth = await requireVendorRole();
   const supabase = await createClient();
 
+  const safePage = Math.max(1, filters?.page ?? 1);
+  const safeSize = Math.min(Math.max(1, filters?.pageSize ?? 25), 100);
+  const from = (safePage - 1) * safeSize;
+  const to = from + safeSize - 1;
+
   let query = supabase
     .from("vendor_work_orders")
-    .select("*")
+    .select("*", { count: "exact" })
     .eq("vendor_org_id", vendorAuth.vendor_org_id)
+    .range(from, to)
     .order("created_at", { ascending: false });
 
   // Tech role: only see assigned jobs
@@ -63,14 +71,14 @@ export async function getVendorWorkOrders(filters?: {
     query = query.eq("trade", filters.trade);
   }
 
-  const { data, error } = await query;
+  const { data, count, error } = await query;
 
   if (error) {
     console.error("Failed to fetch work orders:", error);
-    return { data: [], error: error.message };
+    return { data: [], total: 0, page: safePage, pageSize: safeSize, error: error.message };
   }
 
-  return { data: (data ?? []) as VendorWorkOrder[] };
+  return { data: (data ?? []) as VendorWorkOrder[], total: count ?? 0, page: safePage, pageSize: safeSize };
 }
 
 /** Get a single work order by ID.

@@ -152,7 +152,9 @@ export async function submitProject(
  * List homeowner projects.
  */
 export async function getHomeProjects(
-  status?: string
+  status?: string,
+  page = 1,
+  pageSize = 25
 ): Promise<{
   success: boolean;
   data?: Array<{
@@ -167,6 +169,9 @@ export async function getHomeProjects(
     estimated_cost_high: number | null;
     created_at: string;
   }>;
+  total: number;
+  page: number;
+  pageSize: number;
   error?: string;
 }> {
   try {
@@ -175,27 +180,37 @@ export async function getHomeProjects(
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) return { success: false, error: "Not authenticated" };
+    if (!user) return { success: false, total: 0, page: 1, pageSize: 25, error: "Not authenticated" };
+
+    const safePage = Math.max(1, page);
+    const safeSize = Math.min(Math.max(1, pageSize), 100);
+    const from = (safePage - 1) * safeSize;
+    const to = from + safeSize - 1;
 
     let query = supabase
       .from("projects")
       .select(
-        "id, title, description, status, template_name, total_trades, completed_trades, estimated_cost_low, estimated_cost_high, created_at"
+        "id, title, description, status, template_name, total_trades, completed_trades, estimated_cost_low, estimated_cost_high, created_at",
+        { count: "exact" }
       )
       .eq("homeowner_id", user.id)
+      .range(from, to)
       .order("created_at", { ascending: false });
 
     if (status) {
       query = query.eq("status", status);
     }
 
-    const { data, error } = await query;
+    const { data, count, error } = await query;
 
-    if (error) return { success: false, error: error.message };
-    return { success: true, data: data ?? [] };
+    if (error) return { success: false, total: 0, page: safePage, pageSize: safeSize, error: error.message };
+    return { success: true, data: data ?? [], total: count ?? 0, page: safePage, pageSize: safeSize };
   } catch (err) {
     return {
       success: false,
+      total: 0,
+      page: Math.max(1, page),
+      pageSize: Math.min(Math.max(1, pageSize), 100),
       error: err instanceof Error ? err.message : "Something went wrong",
     };
   }

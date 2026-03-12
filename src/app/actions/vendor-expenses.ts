@@ -23,15 +23,23 @@ export async function getVendorExpenses(filters?: {
   dateTo?: string;
   category?: string;
   work_order_id?: string;
-}): Promise<{ data: VendorExpense[]; error?: string }> {
+  page?: number;
+  pageSize?: number;
+}): Promise<{ data: VendorExpense[]; total: number; page: number; pageSize: number; error?: string }> {
   try {
     const { vendor_org_id } = await requireVendorRole();
     const supabase = await createClient();
 
+    const safePage = Math.max(1, filters?.page ?? 1);
+    const safeSize = Math.min(Math.max(1, filters?.pageSize ?? 25), 100);
+    const from = (safePage - 1) * safeSize;
+    const to = from + safeSize - 1;
+
     let query = supabase
       .from('vendor_expenses')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('vendor_org_id', vendor_org_id)
+      .range(from, to)
       .order('date', { ascending: false });
 
     if (filters?.dateFrom) {
@@ -47,19 +55,19 @@ export async function getVendorExpenses(filters?: {
       query = query.eq('work_order_id', filters.work_order_id);
     }
 
-    const { data, error } = await query;
+    const { data, count, error } = await query;
 
     if (error) {
       console.error('[getVendorExpenses] DB error:', error.message);
-      return { data: [], error: error.message };
+      return { data: [], total: 0, page: safePage, pageSize: safeSize, error: error.message };
     }
 
-    return { data: (data as VendorExpense[]) ?? [] };
+    return { data: (data as VendorExpense[]) ?? [], total: count ?? 0, page: safePage, pageSize: safeSize };
   } catch (err) {
     if (isNextRedirectError(err)) throw err;
     const message = err instanceof Error ? err.message : 'Failed to fetch expenses';
     console.error('[getVendorExpenses] Error:', message);
-    return { data: [], error: message };
+    return { data: [], total: 0, page: Math.max(1, filters?.page ?? 1), pageSize: Math.min(Math.max(1, filters?.pageSize ?? 25), 100), error: message };
   }
 }
 

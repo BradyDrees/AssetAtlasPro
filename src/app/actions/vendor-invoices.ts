@@ -21,14 +21,22 @@ import type {
 
 export async function getVendorInvoices(filters?: {
   status?: InvoiceStatus | InvoiceStatus[];
-}): Promise<{ data: VendorInvoice[]; error?: string }> {
+  page?: number;
+  pageSize?: number;
+}): Promise<{ data: VendorInvoice[]; total: number; page: number; pageSize: number; error?: string }> {
   const { vendor_org_id } = await requireVendorRole();
   const supabase = await createClient();
 
+  const safePage = Math.max(1, filters?.page ?? 1);
+  const safeSize = Math.min(Math.max(1, filters?.pageSize ?? 25), 100);
+  const from = (safePage - 1) * safeSize;
+  const to = from + safeSize - 1;
+
   let query = supabase
     .from("vendor_invoices")
-    .select("*")
+    .select("*", { count: "exact" })
     .eq("vendor_org_id", vendor_org_id)
+    .range(from, to)
     .order("created_at", { ascending: false });
 
   if (filters?.status) {
@@ -39,9 +47,9 @@ export async function getVendorInvoices(filters?: {
     }
   }
 
-  const { data, error } = await query;
-  if (error) return { data: [], error: error.message };
-  return { data: (data ?? []) as VendorInvoice[] };
+  const { data, count, error } = await query;
+  if (error) return { data: [], total: 0, page: safePage, pageSize: safeSize, error: error.message };
+  return { data: (data ?? []) as VendorInvoice[], total: count ?? 0, page: safePage, pageSize: safeSize };
 }
 
 export async function getInvoiceDetail(invoiceId: string): Promise<{

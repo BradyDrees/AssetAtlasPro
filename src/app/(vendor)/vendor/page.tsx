@@ -1,10 +1,11 @@
 import { getTranslations } from "next-intl/server";
 import { getDashboardData } from "@/app/actions/vendor-dashboard";
+import type { DateRangePreset } from "@/app/actions/vendor-dashboard";
 import { getCredentialSummary } from "@/app/actions/vendor-profile";
 import { getVendorScorecardSelf } from "@/app/actions/vendor-scorecard";
+import { DashboardShell } from "@/components/vendor/dashboard-shell";
 import { DashboardStatsGrid } from "@/components/vendor/dashboard-stats";
 import { IncomingWorkOrders } from "@/components/vendor/incoming-work-orders";
-import { TodaysSchedule } from "@/components/vendor/todays-schedule";
 import { DashboardUpcomingJobs } from "@/components/vendor/dashboard-upcoming-jobs";
 import { DashboardRevenueBalance } from "@/components/vendor/dashboard-revenue-balance";
 import { DashboardExpensesWidget } from "@/components/vendor/dashboard-expenses-widget";
@@ -17,11 +18,28 @@ import { DashboardInventoryWidget } from "@/components/vendor/dashboard-inventor
 import { DashboardLeadSources } from "@/components/vendor/dashboard-lead-sources";
 import Link from "next/link";
 
-export default async function VendorDashboardPage() {
+const VALID_RANGES = new Set<DateRangePreset>(["today", "week", "month", "quarter"]);
+
+function normalizeRange(value?: string): DateRangePreset {
+  if (value && VALID_RANGES.has(value as DateRangePreset)) {
+    return value as DateRangePreset;
+  }
+  return "month";
+}
+
+interface VendorDashboardPageProps {
+  searchParams?: Promise<{ range?: string }>;
+}
+
+export default async function VendorDashboardPage({
+  searchParams,
+}: VendorDashboardPageProps) {
+  const resolvedParams = await searchParams;
+  const range = normalizeRange(resolvedParams?.range);
   const dt = await getTranslations("vendor.dashboard");
 
   const [dashData, credSummary, reviewAnalytics, scorecardResult, lowStockResult] = await Promise.all([
-    getDashboardData("month"),
+    getDashboardData(range),
     getCredentialSummary(),
     getReviewAnalytics(),
     getVendorScorecardSelf(),
@@ -51,6 +69,7 @@ export default async function VendorDashboardPage() {
         )}
       </div>
 
+      <DashboardShell range={range}>
       {/* Stats */}
       <DashboardStatsGrid stats={stats} />
 
@@ -154,6 +173,7 @@ export default async function VendorDashboardPage() {
           <p className="text-xs text-content-tertiary mt-1">{dt("actions.connectWithPm")}</p>
         </Link>
       </div>
+      </DashboardShell>
     </div>
   );
 }

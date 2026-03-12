@@ -24,16 +24,16 @@ export function PushSubscriptionPrompt({
   const [subscribing, setSubscribing] = useState(false);
 
   useEffect(() => {
-    // Only show if Notification API exists and permission is "default" (not yet decided)
-    // Show after 30s delay to avoid interfering with initial inbox interactions
-    if (
-      typeof window !== "undefined" &&
-      "Notification" in window &&
-      Notification.permission === "default"
-    ) {
-      const timer = setTimeout(() => setVisible(true), 30000);
-      return () => clearTimeout(timer);
-    }
+    if (typeof window === "undefined" || !("Notification" in window)) return;
+
+    // Already granted or denied — nothing to show
+    if (Notification.permission !== "default") return;
+
+    // User already dismissed on this browser — don't ask again
+    if (localStorage.getItem("push-prompt-dismissed") === "1") return;
+
+    const timer = setTimeout(() => setVisible(true), 5000);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleEnable = async () => {
@@ -80,6 +80,7 @@ export function PushSubscriptionPrompt({
         }),
       });
 
+      localStorage.setItem("push-prompt-dismissed", "1");
       setVisible(false);
     } catch (err) {
       console.error("[push] Subscription error:", err);
@@ -89,6 +90,7 @@ export function PushSubscriptionPrompt({
   };
 
   const handleDismiss = () => {
+    localStorage.setItem("push-prompt-dismissed", "1");
     setVisible(false);
   };
 

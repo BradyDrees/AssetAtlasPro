@@ -131,6 +131,7 @@ export async function getDashboardData(
     pastDueResult,
     topSourcesResult,
     techJobsResult,
+    responseTimeResult,
   ] = await Promise.all([
     // Active jobs
     supabase.from("vendor_work_orders").select("id").eq("vendor_org_id", vendor_org_id)
@@ -184,6 +185,12 @@ export async function getDashboardData(
       .eq("vendor_org_id", vendor_org_id)
       .eq("status", "completed")
       .not("assigned_to", "is", null),
+    // Avg response time: WOs with responded_at in date range
+    supabase.from("vendor_work_orders").select("created_at, responded_at")
+      .eq("vendor_org_id", vendor_org_id)
+      .not("responded_at", "is", null)
+      .gte("created_at", fromISO)
+      .lte("created_at", toISO),
   ]);
 
   const monthlyRevenue = (paidInvResult.data ?? []).reduce((s, i) => s + Number(i.total || 0), 0);
@@ -301,7 +308,16 @@ export async function getDashboardData(
       monthlyRevenue,
       monthlyProfit,
       completedThisMonth: (completedResult.data ?? []).length,
-      avgResponseHours: 0,
+      avgResponseHours: (() => {
+        const rows = (responseTimeResult.data ?? []) as { created_at: string; responded_at: string }[];
+        if (rows.length === 0) return 0;
+        const totalHours = rows.reduce((sum, r) => {
+          const created = new Date(r.created_at).getTime();
+          const responded = new Date(r.responded_at).getTime();
+          return sum + (responded - created) / 3_600_000;
+        }, 0);
+        return Math.round((totalHours / rows.length) * 10) / 10;
+      })(),
     },
     topSources,
     techScoreboard,

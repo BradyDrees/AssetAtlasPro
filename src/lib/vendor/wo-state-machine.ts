@@ -303,7 +303,8 @@ export async function transitionWorkOrder(
     if (metadata.scheduledTimeEnd) updatePayload.scheduled_time_end = metadata.scheduledTimeEnd;
   }
 
-  if (targetStatus === "accepted" || targetStatus === "declined") {
+  // Set responded_at on first transition OUT of assigned (any target)
+  if (currentStatus === "assigned" && targetStatus !== "assigned") {
     updatePayload.responded_at = new Date().toISOString();
   }
 

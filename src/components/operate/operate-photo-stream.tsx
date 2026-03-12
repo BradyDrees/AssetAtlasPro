@@ -38,10 +38,12 @@ export function OperatePhotoStream({
   projectId,
   projectSectionId,
 }: OperatePhotoStreamProps) {
+  const PAGE_SIZE = 20;
   const t = useTranslations();
   const router = useRouter();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
@@ -103,6 +105,9 @@ export function OperatePhotoStream({
     );
   }
 
+  const visibleFindings = initialFindings.slice(0, visibleCount);
+  const hasMore = initialFindings.length > visibleCount;
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between mb-2">
@@ -112,7 +117,7 @@ export function OperatePhotoStream({
       </div>
 
       <div className="grid grid-cols-1 gap-3">
-        {initialFindings.map((finding) => {
+        {visibleFindings.map((finding) => {
           const findingCaptures = capturesByFinding[finding.id] ?? [];
           const isExpanded = expandedId === finding.id;
           const isDeleting = deletingId === finding.id;
@@ -269,6 +274,17 @@ export function OperatePhotoStream({
           );
         })}
       </div>
+
+      {/* Show more button */}
+      {hasMore && (
+        <button
+          type="button"
+          onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
+          className="w-full py-2.5 text-sm font-medium text-brand-600 hover:text-brand-700 bg-surface-secondary hover:bg-surface-tertiary border border-edge-secondary rounded-xl transition-colors"
+        >
+          {t("common.showMore")} ({initialFindings.length - visibleCount} {t("common.remaining")})
+        </button>
+      )}
     </div>
   );
 }

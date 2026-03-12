@@ -9,6 +9,7 @@ import { nameToKey } from "@/lib/translate-sections";
 import type {
   InspectionUnit,
   InspectionCapture,
+  InspectionFinding,
   InspectionProjectSectionWithDetails,
 } from "@/lib/inspection-types";
 import type {
@@ -38,6 +39,7 @@ export default async function InspectionUnitPage({
     { data: projectSection },
     { data: unit },
     { data: captures },
+    { data: findings },
     { data: allUnits },
   ] = await Promise.all([
     supabase.auth.getUser(),
@@ -59,6 +61,12 @@ export default async function InspectionUnitPage({
     supabase
       .from("inspection_captures")
       .select("*")
+      .eq("unit_id", unitId)
+      .order("sort_order"),
+    supabase
+      .from("inspection_findings")
+      .select("*")
+      .eq("project_section_id", projectSectionId)
       .eq("unit_id", unitId)
       .order("sort_order"),
     supabase
@@ -133,12 +141,13 @@ export default async function InspectionUnitPage({
       <SnapshotSync
         pageId={`unit:${projectId}:${projectSectionId}:${unitId}`}
         pageType="unit"
-        dataVersion={`${unitId}:${(captures ?? []).length}:${(allUnits ?? []).length}:${turnCategoryData.length}`}
+        dataVersion={`${unitId}:${(captures ?? []).length}:${(findings ?? []).length}:${(allUnits ?? []).length}:${turnCategoryData.length}`}
         data={{
           project,
           projectSection: ps,
           unit: unit as InspectionUnit,
           captures: (captures ?? []) as InspectionCapture[],
+          findings: (findings ?? []) as InspectionFinding[],
           allUnits: unitsList,
           turnCategoryData,
           supabaseUrl,
@@ -208,6 +217,7 @@ export default async function InspectionUnitPage({
       <InspectionUnitDetail
         unit={unit as InspectionUnit}
         captures={(captures ?? []) as InspectionCapture[]}
+        findings={(findings ?? []) as InspectionFinding[]}
         projectId={projectId}
         projectSectionId={projectSectionId}
         sectionSlug={ps.section.slug}

@@ -24,6 +24,8 @@ import {
   createInspectionUnitOffline,
 } from "@/lib/offline/actions";
 import { CategorySection } from "@/components/unit-turn/category-section";
+import { OperatePhotoStream } from "@/components/operate/operate-photo-stream";
+import { OperateCaptureFlow } from "@/components/operate/operate-capture-flow";
 import {
   OCCUPANCY_STATUS_LABELS,
   OCCUPANCY_OPTIONS,
@@ -31,6 +33,7 @@ import {
 import type {
   InspectionUnit,
   InspectionCapture,
+  InspectionFinding,
   OccupancyStatus,
 } from "@/lib/inspection-types";
 import type { UnitTurnCategoryData } from "@/lib/unit-turn-types";
@@ -38,6 +41,7 @@ import type { UnitTurnCategoryData } from "@/lib/unit-turn-types";
 interface InspectionUnitDetailProps {
   unit: InspectionUnit;
   captures: InspectionCapture[];
+  findings?: InspectionFinding[];
   projectId: string;
   projectSectionId: string;
   sectionSlug: string;
@@ -50,6 +54,7 @@ interface InspectionUnitDetailProps {
 export function InspectionUnitDetail({
   unit,
   captures,
+  findings = [],
   projectId,
   projectSectionId,
   sectionSlug,
@@ -75,6 +80,13 @@ export function InspectionUnitDetail({
     unit.occupancy_status
   );
   const [turnUnitId, setTurnUnitId] = useState<string | null>(unit.turn_unit_id);
+
+  const isOperate = inspectionType === "internal";
+  const lastFinding = findings.length > 0 ? findings[findings.length - 1] : null;
+
+  const handleCaptureSaved = useCallback(() => {
+    router.refresh();
+  }, [router]);
 
   const updateField = useCallback(
     async (field: string, value: any) => {
@@ -406,8 +418,8 @@ export function InspectionUnitDetail({
 
       </div>
 
-      {/* Rent Ready = Yes → Notes + Photos only */}
-      {rentReady === true && (
+      {/* Operate (internal): Camera-first photo stream + notes always visible */}
+      {isOperate && (
         <>
           {/* Notes */}
           <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
@@ -428,7 +440,50 @@ export function InspectionUnitDetail({
             />
           </div>
 
-          {/* Photos */}
+          {/* Camera-first photo stream */}
+          <OperatePhotoStream
+            findings={findings}
+            captures={captures}
+            projectId={projectId}
+            projectSectionId={projectSectionId}
+          />
+
+          {/* Camera FAB */}
+          <OperateCaptureFlow
+            projectId={projectId}
+            projectSectionId={projectSectionId}
+            sectionSlug={sectionSlug}
+            unitId={unit.id}
+            currentUserId={currentUserId ?? ""}
+            lastFinding={lastFinding}
+            onCaptureSaved={handleCaptureSaved}
+          />
+        </>
+      )}
+
+      {/* Acquire/Bank-Ready: Rent Ready = Yes → Notes + basic photo grid */}
+      {!isOperate && rentReady === true && (
+        <>
+          {/* Notes */}
+          <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
+            <label className="block text-sm font-medium text-content-secondary mb-1">
+              {t("unit.unitNotes")}
+            </label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              onBlur={() => {
+                if (notes !== unit.notes) {
+                  updateField("notes", notes);
+                }
+              }}
+              rows={3}
+              placeholder={t("notes.unitObservationsPlaceholder")}
+              className="w-full px-3 py-2 border border-edge-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+            />
+          </div>
+
+          {/* Photos (basic upload grid) */}
           <div className="bg-surface-primary rounded-lg border border-edge-primary p-4">
             <label className="block text-sm font-medium text-content-secondary mb-2">
               {t("unit.photosCount", { count: captures.length + localCaptures.length })}

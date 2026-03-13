@@ -590,6 +590,21 @@
       "notes": "Notas",
       "save": "Guardar"
     },
+    "captureMode": {
+      "start": "Iniciar Modo de Captura",
+      "startDesc": "La cámara se abre automáticamente — captura, etiqueta, repite",
+      "exit": "Salir del Modo de Captura",
+      "uploading": "Subiendo foto...",
+      "readyToTag": "Etiqueta esta foto mientras se sube",
+      "saveAndNext": "Guardar y Siguiente Foto",
+      "skip": "Omitir",
+      "cancel": "Cancelar",
+      "saving": "Guardando...",
+      "saved": "¡Guardado!",
+      "offlineSaved": "Error al subir — guardado sin conexión",
+      "saveError": "Error al guardar — intenta de nuevo",
+      "addToLast": "Agregar al hallazgo anterior"
+    },
     "autocomplete": {
       "placeholderCategory": "Escriba una categoría...",
       "placeholderLocation": "Escriba una ubicación...",

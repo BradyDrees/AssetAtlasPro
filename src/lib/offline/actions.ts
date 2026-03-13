@@ -97,6 +97,17 @@ export async function addCaptureOffline(params: {
   findingServerId?: string;
   unitId?: string | null;
   createdBy: string;
+  /** Optional metadata for creating a finding (capture mode offline fallback). */
+  metadata?: {
+    category: string;
+    location: string;
+    notes: string;
+    priority: number | null;
+    riskFlags: string[];
+    tags: string[];
+    /** Stable finding ID for "add to previous finding". */
+    targetFindingId?: string | null;
+  };
 }): Promise<string> {
   const localId = localUUID();
   const now = Date.now();
@@ -111,7 +122,7 @@ export async function addCaptureOffline(params: {
     projectId: params.projectId,
     projectSectionId: params.projectSectionId,
     findingLocalId: params.findingLocalId,
-    findingServerId: params.findingServerId,
+    findingServerId: params.findingServerId ?? params.metadata?.targetFindingId ?? undefined,
     unitId: params.unitId ?? null,
     mime,
     blob,
@@ -122,25 +133,47 @@ export async function addCaptureOffline(params: {
     syncStatus: "pending",
   });
 
-  // The queue item references the localCapture — the sync manager
-  // will read the blob from IndexedDB when it's time to upload.
-  await enqueue(
-    "CAPTURE_UPLOAD",
-    {
+  // Determine action type: if metadata present and no existing finding target,
+  // use CAPTURE_CREATE_FINDING so sync worker creates a finding with full metadata.
+  const hasMetadata = params.metadata && !params.metadata.targetFindingId;
+
+  if (hasMetadata) {
+    const m = params.metadata!;
+    await enqueue("CAPTURE_CREATE_FINDING", {
       captureLocalId: localId,
       projectId: params.projectId,
       projectSectionId: params.projectSectionId,
       sectionSlug: params.sectionSlug,
-      findingLocalId: params.findingLocalId ?? null,
-      findingServerId: params.findingServerId ?? null,
       unitId: params.unitId ?? null,
       createdBy: params.createdBy,
-    },
-    // If this capture belongs to a locally-created finding, it depends on that finding syncing first
-    params.findingLocalId && !params.findingServerId
-      ? [params.findingLocalId]
-      : undefined
-  );
+      category: m.category,
+      location: m.location,
+      notes: m.notes,
+      priority: m.priority,
+      riskFlags: m.riskFlags,
+      tags: m.tags,
+    });
+  } else {
+    // Existing behavior: basic upload or attach to existing finding
+    const findingServerId = params.findingServerId ?? params.metadata?.targetFindingId ?? null;
+    await enqueue(
+      "CAPTURE_UPLOAD",
+      {
+        captureLocalId: localId,
+        projectId: params.projectId,
+        projectSectionId: params.projectSectionId,
+        sectionSlug: params.sectionSlug,
+        findingLocalId: params.findingLocalId ?? null,
+        findingServerId,
+        unitId: params.unitId ?? null,
+        createdBy: params.createdBy,
+      },
+      // If this capture belongs to a locally-created finding, it depends on that finding syncing first
+      params.findingLocalId && !findingServerId
+        ? [params.findingLocalId]
+        : undefined
+    );
+  }
 
   return localId;
 }

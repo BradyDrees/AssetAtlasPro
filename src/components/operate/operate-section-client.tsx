@@ -2,8 +2,11 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { usePwaStandalone } from "@/hooks/use-pwa-standalone";
 import { OperatePhotoStream } from "./operate-photo-stream";
 import { OperateCaptureFlow } from "./operate-capture-flow";
+import { CaptureModeEntry } from "./capture-mode-entry";
+import { CaptureMode } from "./capture-mode";
 import type { InspectionFinding, InspectionCapture } from "@/lib/inspection-types";
 
 interface OperateSectionClientProps {
@@ -17,8 +20,9 @@ interface OperateSectionClientProps {
 }
 
 /**
- * Client wrapper that composes OperatePhotoStream + OperateCaptureFlow.
- * Manages the "last finding" state for the "Add to last" feature.
+ * Client wrapper that composes OperatePhotoStream + capture UI.
+ * PWA standalone → CaptureMode (entry button + capture loop).
+ * Desktop/browser → OperateCaptureFlow (FAB).
  */
 export function OperateSectionClient({
   findings,
@@ -30,8 +34,10 @@ export function OperateSectionClient({
   unitId,
 }: OperateSectionClientProps) {
   const router = useRouter();
+  const isPwa = usePwaStandalone();
+  const [captureActive, setCaptureActive] = useState(false);
 
-  // Track the most recent finding for "Add to last"
+  // Track the most recent finding for "Add to last" (desktop FAB flow)
   const lastFinding = findings.length > 0 ? findings[findings.length - 1] : null;
 
   const handleCaptureSaved = useCallback(() => {
@@ -40,6 +46,24 @@ export function OperateSectionClient({
 
   return (
     <>
+      {/* PWA capture mode */}
+      {isPwa && (
+        <div className="mb-4">
+          {!captureActive ? (
+            <CaptureModeEntry onStart={() => setCaptureActive(true)} />
+          ) : (
+            <CaptureMode
+              projectId={projectId}
+              projectSectionId={projectSectionId}
+              sectionSlug={sectionSlug}
+              unitId={unitId}
+              currentUserId={currentUserId}
+              onExit={() => setCaptureActive(false)}
+            />
+          )}
+        </div>
+      )}
+
       <OperatePhotoStream
         findings={findings}
         captures={captures}
@@ -47,15 +71,18 @@ export function OperateSectionClient({
         projectSectionId={projectSectionId}
       />
 
-      <OperateCaptureFlow
-        projectId={projectId}
-        projectSectionId={projectSectionId}
-        sectionSlug={sectionSlug}
-        unitId={unitId}
-        currentUserId={currentUserId}
-        lastFinding={lastFinding}
-        onCaptureSaved={handleCaptureSaved}
-      />
+      {/* Desktop: keep existing FAB */}
+      {!isPwa && (
+        <OperateCaptureFlow
+          projectId={projectId}
+          projectSectionId={projectSectionId}
+          sectionSlug={sectionSlug}
+          unitId={unitId}
+          currentUserId={currentUserId}
+          lastFinding={lastFinding}
+          onCaptureSaved={handleCaptureSaved}
+        />
+      )}
     </>
   );
 }

@@ -24,8 +24,11 @@ import {
   createInspectionUnitOffline,
 } from "@/lib/offline/actions";
 import { CategorySection } from "@/components/unit-turn/category-section";
+import { usePwaStandalone } from "@/hooks/use-pwa-standalone";
 import { OperatePhotoStream } from "@/components/operate/operate-photo-stream";
 import { OperateCaptureFlow } from "@/components/operate/operate-capture-flow";
+import { CaptureModeEntry } from "@/components/operate/capture-mode-entry";
+import { CaptureMode } from "@/components/operate/capture-mode";
 import {
   OCCUPANCY_STATUS_LABELS,
   OCCUPANCY_OPTIONS,
@@ -65,6 +68,7 @@ export function InspectionUnitDetail({
 }: InspectionUnitDetailProps) {
   const router = useFieldRouter();
   const t = useTranslations();
+  const isPwa = usePwaStandalone();
   const { isFieldMode, refreshPending, bumpRevision } = useOffline();
   const { captures: localCaptures, urlMap: localUrlMap } = useLocalUnitCaptures(unit.id);
   const [saving, setSaving] = useState(false);
@@ -72,6 +76,7 @@ export function InspectionUnitDetail({
   const [savedToast, setSavedToast] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [provisioning, setProvisioning] = useState(false);
+  const [captureActive, setCaptureActive] = useState(false);
 
   const [rentReady, setRentReady] = useState<boolean | null>(unit.rent_ready);
   const [daysVacant, setDaysVacant] = useState<number | null>(unit.days_vacant);
@@ -440,6 +445,24 @@ export function InspectionUnitDetail({
             />
           </div>
 
+          {/* PWA: Capture Mode (entry button + capture loop) */}
+          {isPwa && (
+            <div>
+              {!captureActive ? (
+                <CaptureModeEntry onStart={() => setCaptureActive(true)} />
+              ) : (
+                <CaptureMode
+                  projectId={projectId}
+                  projectSectionId={projectSectionId}
+                  sectionSlug={sectionSlug}
+                  unitId={unit.id}
+                  currentUserId={currentUserId ?? ""}
+                  onExit={() => setCaptureActive(false)}
+                />
+              )}
+            </div>
+          )}
+
           {/* Camera-first photo stream */}
           <OperatePhotoStream
             findings={findings}
@@ -448,16 +471,18 @@ export function InspectionUnitDetail({
             projectSectionId={projectSectionId}
           />
 
-          {/* Camera FAB */}
-          <OperateCaptureFlow
-            projectId={projectId}
-            projectSectionId={projectSectionId}
-            sectionSlug={sectionSlug}
-            unitId={unit.id}
-            currentUserId={currentUserId ?? ""}
-            lastFinding={lastFinding}
-            onCaptureSaved={handleCaptureSaved}
-          />
+          {/* Desktop: keep existing FAB */}
+          {!isPwa && (
+            <OperateCaptureFlow
+              projectId={projectId}
+              projectSectionId={projectSectionId}
+              sectionSlug={sectionSlug}
+              unitId={unit.id}
+              currentUserId={currentUserId ?? ""}
+              lastFinding={lastFinding}
+              onCaptureSaved={handleCaptureSaved}
+            />
+          )}
         </>
       )}
 

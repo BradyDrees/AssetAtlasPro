@@ -109,6 +109,7 @@ async function syncItem(item: SyncQueueItem): Promise<void> {
     FINDING_UPDATE: syncFindingUpdate,
     FINDING_DELETE: syncFindingDelete,
     CAPTURE_UPLOAD: syncCaptureUpload,
+    CAPTURE_CREATE_FINDING: syncCaptureCreateFinding,
     CAPTURE_DELETE: syncCaptureDelete,
     UNIT_CHECK_SAVE: syncUnitCheckSave,
     UNIT_GRADE_SAVE: syncUnitGradeSave,
@@ -300,6 +301,51 @@ async function syncCaptureUpload(payload: Record<string, unknown>): Promise<void
   if (unitId) formData.append("unitId", unitId);
 
   await uploadInspectionCapture(formData);
+
+  // Mark local capture as synced
+  await offlineDB.localCaptures.update(captureLocalId, {
+    syncStatus: "synced",
+  });
+}
+
+async function syncCaptureCreateFinding(payload: Record<string, unknown>): Promise<void> {
+  const { createQuickFinding, addCaptureToFinding } = await import("@/app/actions/inspection-findings");
+
+  const captureLocalId = payload.captureLocalId as string;
+  const capture = await offlineDB.localCaptures.get(captureLocalId);
+  if (!capture) throw new Error("Local capture not found");
+
+  // Resolve unit ID from idMap
+  const unitId = payload.unitId ? resolveId(payload.unitId) : null;
+
+  // Upload blob to Supabase Storage
+  const { createClient } = await import("@supabase/supabase-js");
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  const storagePath = `inspections/${payload.projectId}/${payload.projectSectionId}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.jpg`;
+  const { error: uploadErr } = await supabase.storage
+    .from("dd-captures")
+    .upload(storagePath, capture.blob, {
+      contentType: "image/jpeg",
+      upsert: false,
+    });
+  if (uploadErr) throw uploadErr;
+
+  // Create finding + capture via server action
+  await createQuickFinding({
+    projectId: payload.projectId as string,
+    projectSectionId: payload.projectSectionId as string,
+    storagePath,
+    category: (payload.category as string) || "Uncategorized",
+    location: (payload.location as string) || "",
+    priority: (payload.priority as number | null) ?? null,
+    riskFlags: (payload.riskFlags as string[]) || [],
+    tags: (payload.tags as string[]) || [],
+    notes: (payload.notes as string) || "",
+    unitId,
+  });
 
   // Mark local capture as synced
   await offlineDB.localCaptures.update(captureLocalId, {

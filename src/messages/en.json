@@ -590,6 +590,21 @@
       "notes": "Notes",
       "save": "Save"
     },
+    "captureMode": {
+      "start": "Start Capture Mode",
+      "startDesc": "Camera opens automatically — snap, tag, repeat",
+      "exit": "Exit Capture Mode",
+      "uploading": "Uploading photo...",
+      "readyToTag": "Tag this photo while it uploads",
+      "saveAndNext": "Save & Next Photo",
+      "skip": "Skip",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "saved": "Saved!",
+      "offlineSaved": "Upload failed — saved offline",
+      "saveError": "Save failed — please try again",
+      "addToLast": "Add to previous finding"
+    },
     "autocomplete": {
       "placeholderCategory": "Type a category...",
       "placeholderLocation": "Type a location...",

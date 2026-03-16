@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { usePwaStandalone } from "@/hooks/use-pwa-standalone";
+import { useMobileCapture } from "@/hooks/use-mobile-capture";
 import { OperatePhotoStream } from "./operate-photo-stream";
 import { OperateCaptureFlow } from "./operate-capture-flow";
 import { CaptureModeEntry } from "./capture-mode-entry";
@@ -21,8 +21,8 @@ interface OperateSectionClientProps {
 
 /**
  * Client wrapper that composes OperatePhotoStream + capture UI.
- * PWA standalone → CaptureMode (entry button + capture loop).
- * Desktop/browser → OperateCaptureFlow (FAB).
+ * Mobile (pointer:coarse + <1024px) → CaptureMode (entry button + capture loop).
+ * Desktop → OperateCaptureFlow (FAB).
  */
 export function OperateSectionClient({
   findings,
@@ -34,7 +34,7 @@ export function OperateSectionClient({
   unitId,
 }: OperateSectionClientProps) {
   const router = useRouter();
-  const isPwa = usePwaStandalone();
+  const isMobile = useMobileCapture();
   const [captureActive, setCaptureActive] = useState(false);
 
   // Track the most recent finding for "Add to last" (desktop FAB flow)
@@ -47,7 +47,7 @@ export function OperateSectionClient({
   return (
     <>
       {/* PWA capture mode */}
-      {isPwa && (
+      {isMobile && (
         <div className="mb-4">
           {!captureActive ? (
             <CaptureModeEntry onStart={() => setCaptureActive(true)} />
@@ -72,7 +72,7 @@ export function OperateSectionClient({
       />
 
       {/* Desktop: keep existing FAB */}
-      {!isPwa && (
+      {!isMobile && (
         <OperateCaptureFlow
           projectId={projectId}
           projectSectionId={projectSectionId}

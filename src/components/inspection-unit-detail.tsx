@@ -24,7 +24,7 @@ import {
   createInspectionUnitOffline,
 } from "@/lib/offline/actions";
 import { CategorySection } from "@/components/unit-turn/category-section";
-import { usePwaStandalone } from "@/hooks/use-pwa-standalone";
+import { useMobileCapture } from "@/hooks/use-mobile-capture";
 import { OperatePhotoStream } from "@/components/operate/operate-photo-stream";
 import { OperateCaptureFlow } from "@/components/operate/operate-capture-flow";
 import { CaptureModeEntry } from "@/components/operate/capture-mode-entry";
@@ -68,7 +68,7 @@ export function InspectionUnitDetail({
 }: InspectionUnitDetailProps) {
   const router = useFieldRouter();
   const t = useTranslations();
-  const isPwa = usePwaStandalone();
+  const isMobile = useMobileCapture();
   const { isFieldMode, refreshPending, bumpRevision } = useOffline();
   const { captures: localCaptures, urlMap: localUrlMap } = useLocalUnitCaptures(unit.id);
   const [saving, setSaving] = useState(false);
@@ -446,7 +446,7 @@ export function InspectionUnitDetail({
           </div>
 
           {/* PWA: Capture Mode (entry button + capture loop) */}
-          {isPwa && (
+          {isMobile && (
             <div>
               {!captureActive ? (
                 <CaptureModeEntry onStart={() => setCaptureActive(true)} />
@@ -472,7 +472,7 @@ export function InspectionUnitDetail({
           />
 
           {/* Desktop: keep existing FAB */}
-          {!isPwa && (
+          {!isMobile && (
             <OperateCaptureFlow
               projectId={projectId}
               projectSectionId={projectSectionId}

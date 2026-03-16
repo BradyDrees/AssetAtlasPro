@@ -7,7 +7,7 @@ import {
   INSPECTION_GROUP_SLUGS,
   INSPECTION_GROUP_ORDER,
 } from "@/lib/inspection-sections";
-import { INSPECTION_TYPE_LABELS } from "@/lib/inspection-constants";
+import { INSPECTION_TYPE_LABELS, INSPECTION_TYPE_I18N_KEY } from "@/lib/inspection-constants";
 import { getTranslations } from "next-intl/server";
 import { INSPECTION_GROUP_KEYS } from "@/lib/translate-sections";
 import type {
@@ -172,7 +172,7 @@ export default async function InspectionGroupPage({
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-bold text-content-primary">{INSPECTION_GROUP_KEYS[groupName] ? t(`inspection.sectionGroups.${INSPECTION_GROUP_KEYS[groupName]}`) : groupName}</h1>
               <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gold-100 text-gold-800">
-                {t(`inspection.inspectionTypes.${project.inspection_type === "bank_ready" ? "bankReady" : "internal"}`)}
+                {t(`inspection.inspectionTypes.${INSPECTION_TYPE_I18N_KEY[project.inspection_type] ?? "internal"}`)}
               </span>
             </div>
             <p className="text-sm text-content-quaternary mt-0.5">

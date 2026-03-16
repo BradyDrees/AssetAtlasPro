@@ -9,7 +9,19 @@ export type { ProjectStatus, CaptureFileType };
 
 // ----- Inspection-specific enums -----
 
-export type InspectionType = "internal" | "bank_ready";
+export type InspectionType = "internal" | "pca_lite" | "pca";
+
+/** Returns true for both PCA-family types (pca_lite and pca). */
+export function isPcaType(t: string): boolean {
+  return t === "pca_lite" || t === "pca";
+}
+
+/** Normalize old 'bank_ready' values from offline cache or stale records. */
+export function normalizeInspectionType(t: string): InspectionType {
+  if (t === "bank_ready") return "pca_lite";
+  if (t === "internal" || t === "pca_lite" || t === "pca") return t;
+  return "internal"; // fallback
+}
 
 export type PriorityLevel = 1 | 2 | 3 | 4 | 5;
 

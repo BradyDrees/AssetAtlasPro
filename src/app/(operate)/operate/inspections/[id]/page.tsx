@@ -6,7 +6,7 @@ import { InspectionHeaderMenu } from "@/components/inspection-header-menu";
 import { InspectionGroupChecklist } from "@/components/inspection-group-checklist";
 import { InspectionProjectTabs } from "@/components/inspection-project-tabs";
 import { INSPECTION_GROUP_ORDER, INSPECTION_GROUP_SLUGS } from "@/lib/inspection-sections";
-import { INSPECTION_TYPE_LABELS } from "@/lib/inspection-constants";
+import { INSPECTION_TYPE_LABELS, INSPECTION_TYPE_I18N_KEY } from "@/lib/inspection-constants";
 import type {
   InspectionProjectSectionWithDetails,
   InspectionChecklistItem,
@@ -195,7 +195,7 @@ export default async function InspectionDetailPage({
                   {t(`review.statusLabels.${project.status}`)}
                 </span>
                 <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gold-500/30 text-gold-200">
-                  {t(`inspection.inspectionTypes.${project.inspection_type === "bank_ready" ? "bankReady" : "internal"}`)}
+                  {t(`inspection.inspectionTypes.${INSPECTION_TYPE_I18N_KEY[project.inspection_type] ?? "internal"}`)}
                 </span>
               </div>
               <p className="text-green-200 mt-1">{project.property_name}</p>

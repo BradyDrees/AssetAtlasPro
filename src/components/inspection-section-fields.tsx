@@ -12,10 +12,11 @@ import {
   RUL_OPTIONS,
   RUL_COLORS,
 } from "@/lib/inspection-constants";
-import type {
-  InspectionProjectSectionWithDetails,
-  InspectionType,
-  RulBucket,
+import {
+  isPcaType,
+  type InspectionProjectSectionWithDetails,
+  type InspectionType,
+  type RulBucket,
 } from "@/lib/inspection-types";
 
 interface InspectionSectionFieldsProps {
@@ -39,7 +40,7 @@ export function InspectionSectionFields({
   const [savingRul, setSavingRul] = useState(false);
   const [savingNotes, setSavingNotes] = useState(false);
 
-  const isBankReady = inspectionType === "bank_ready";
+  const isPca = isPcaType(inspectionType);
 
   const handleRating = useCallback(
     async (val: number) => {
@@ -97,7 +98,7 @@ export function InspectionSectionFields({
       <div>
         <label className="block text-sm font-medium text-content-secondary mb-2">
           {t("inspection.conditionRating")}
-          {isBankReady && (
+          {isPca && (
             <span className="text-red-500 ml-1">*</span>
           )}
         </label>
@@ -123,7 +124,7 @@ export function InspectionSectionFields({
       <div>
         <label className="block text-sm font-medium text-content-secondary mb-2">
           {t("inspection.remainingUsefulLife")}
-          {isBankReady && (
+          {isPca && (
             <span className="text-red-500 ml-1">*</span>
           )}
         </label>

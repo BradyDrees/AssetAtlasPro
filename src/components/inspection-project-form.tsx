@@ -10,29 +10,40 @@ import {
 import {
   INSPECTION_TYPE_LABELS,
   ASSET_ARCHETYPE_LABELS,
+  INSPECTION_TYPES_BY_TIER,
+  DEFAULT_INSPECTION_TYPE_BY_TIER,
+  INSPECTION_BASE_PATH_BY_TIER,
+  type InspectionTier,
 } from "@/lib/inspection-constants";
-import type {
-  InspectionProject,
-  InspectionType,
-  AssetArchetype,
+import {
+  isPcaType,
+  type InspectionProject,
+  type InspectionType,
+  type AssetArchetype,
 } from "@/lib/inspection-types";
 
 interface InspectionProjectFormProps {
   project?: InspectionProject;
   onClose: () => void;
+  /** Controls which inspection types are available and where to redirect. */
+  tier?: InspectionTier;
 }
 
 export function InspectionProjectForm({
   project,
   onClose,
+  tier = "operate",
 }: InspectionProjectFormProps) {
+  const allowedTypes = INSPECTION_TYPES_BY_TIER[tier];
+  const defaultType = DEFAULT_INSPECTION_TYPE_BY_TIER[tier];
+
   const [name, setName] = useState(project?.name ?? "");
   const [propertyName, setPropertyName] = useState(
     project?.property_name ?? ""
   );
   const [address, setAddress] = useState(project?.address ?? "");
   const [inspectionType, setInspectionType] = useState<InspectionType>(
-    project?.inspection_type ?? "internal"
+    project?.inspection_type ?? defaultType
   );
   const [assetArchetype, setAssetArchetype] = useState<AssetArchetype>(
     project?.asset_archetype ?? "garden"
@@ -73,7 +84,7 @@ export function InspectionProjectForm({
           return;
         }
         onClose();
-        router.push(`/inspections/${result.id}`);
+        router.push(`${INSPECTION_BASE_PATH_BY_TIER[tier]}/${result.id}`);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : t("common.somethingWentWrong"));
@@ -90,14 +101,14 @@ export function InspectionProjectForm({
         </div>
       )}
 
-      {/* Inspection Type Toggle */}
-      <div>
-        <label className="block text-sm font-medium text-content-secondary mb-2">
-          {t("forms.inspectionType")}
-        </label>
-        <div className="flex gap-2">
-          {(Object.entries(INSPECTION_TYPE_LABELS) as [InspectionType, string][]).map(
-            ([value, label]) => (
+      {/* Inspection Type Toggle — only shown if tier has more than one option */}
+      {allowedTypes.length > 1 && (
+        <div>
+          <label className="block text-sm font-medium text-content-secondary mb-2">
+            {t("forms.inspectionType")}
+          </label>
+          <div className="flex gap-2">
+            {allowedTypes.map((value) => (
               <button
                 key={value}
                 type="button"
@@ -108,17 +119,17 @@ export function InspectionProjectForm({
                     : "bg-surface-primary text-content-secondary border-edge-secondary hover:bg-surface-secondary"
                 }`}
               >
-                {label}
+                {INSPECTION_TYPE_LABELS[value] ?? value}
               </button>
-            )
+            ))}
+          </div>
+          {isPcaType(inspectionType) && (
+            <p className="text-xs text-amber-600 mt-1">
+              {t("inspection.pcaMode.description")}
+            </p>
           )}
         </div>
-        {inspectionType === "bank_ready" && (
-          <p className="text-xs text-amber-600 mt-1">
-            {t("inspection.bankReadyMode.description")}
-          </p>
-        )}
-      </div>
+      )}
 
       {/* Asset Archetype Toggle */}
       <div>
@@ -145,7 +156,7 @@ export function InspectionProjectForm({
         </div>
         {assetArchetype === "sfr" && (
           <p className="text-xs text-brand-600 mt-1">
-            {t("inspection.bankReadyMode.sfrNote")}
+            {t("inspection.pcaMode.sfrNote")}
           </p>
         )}
       </div>

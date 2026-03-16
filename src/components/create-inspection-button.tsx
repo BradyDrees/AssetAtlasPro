@@ -4,8 +4,13 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Modal } from "@/components/modal";
 import { InspectionProjectForm } from "@/components/inspection-project-form";
+import type { InspectionTier } from "@/lib/inspection-constants";
 
-export function CreateInspectionButton() {
+interface CreateInspectionButtonProps {
+  tier?: InspectionTier;
+}
+
+export function CreateInspectionButton({ tier = "operate" }: CreateInspectionButtonProps) {
   const t = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -22,7 +27,7 @@ export function CreateInspectionButton() {
         onClose={() => setIsOpen(false)}
         title={t("inspection.newInspectionTitle")}
       >
-        <InspectionProjectForm onClose={() => setIsOpen(false)} />
+        <InspectionProjectForm onClose={() => setIsOpen(false)} tier={tier} />
       </Modal>
     </>
   );

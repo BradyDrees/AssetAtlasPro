@@ -440,7 +440,8 @@
     },
     "inspectionTypes": {
       "internal": "Internal",
-      "bankReady": "Customer (PCA Lite)"
+      "pcaLite": "PCA Lite",
+      "pca": "PCA Inspection"
     },
     "archetypes": {
       "garden": {
@@ -556,8 +557,8 @@
       "laundry": "Laundry",
       "unit_inspections": "Unit Inspections"
     },
-    "bankReadyMode": {
-      "description": "Bank-Ready mode requires priority, exposure, RUL, and condition ratings on all sections and findings.",
+    "pcaMode": {
+      "description": "PCA mode requires priority, exposure, RUL, and condition ratings on all sections and findings.",
       "sfrNote": "SFR mode labels unit sections as \"Homes\" instead of \"Units\"."
     },
     "projectStatus": "Project Status",
@@ -1200,7 +1201,7 @@
       "IN_PROGRESS": "In Progress",
       "COMPLETE": "Complete"
     },
-    "bankReadyValidation": "Bank-Ready Validation",
+    "pcaValidation": "PCA Validation",
     "allFindingsHavePriority": "All findings have priority assigned",
     "p1to3HaveExposure": "Priority 1-3 findings have exposure",
     "allSectionsHaveCondition": "All sections have condition rating",

@@ -11,15 +11,16 @@ import {
   INSPECTION_CONDITION_LABELS,
   RUL_COLORS,
 } from "@/lib/inspection-constants";
-import type {
-  InspectionProject,
-  InspectionSectionGroup,
-  InspectionFinding,
-  InspectionUnit,
-  InspectionCapture,
-  PriorityLevel,
-  RiskFlag,
-  ProjectStatus,
+import {
+  isPcaType,
+  type InspectionProject,
+  type InspectionSectionGroup,
+  type InspectionFinding,
+  type InspectionUnit,
+  type InspectionCapture,
+  type PriorityLevel,
+  type RiskFlag,
+  type ProjectStatus,
 } from "@/lib/inspection-types";
 
 const riskFlagKey = (flag: string) => {
@@ -69,7 +70,7 @@ export function InspectionReviewContent({
   const [expandedRiskFlags, setExpandedRiskFlags] = useState<Set<string>>(new Set());
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
 
-  const isBankReady = project.inspection_type === "bank_ready";
+  const isPca = isPcaType(project.inspection_type);
 
   const handleStatusChange = async (newStatus: string) => {
     setUpdatingStatus(true);
@@ -421,11 +422,11 @@ export function InspectionReviewContent({
         ))}
       </div>
 
-      {/* Bank-Ready Warnings */}
-      {isBankReady && (
+      {/* PCA Validation Warnings */}
+      {isPca && (
         <div className="bg-amber-50 rounded-lg border border-amber-200 p-4">
           <h3 className="text-sm font-semibold text-amber-800 mb-2">
-            {t("review.bankReadyValidation")}
+            {t("review.pcaValidation")}
           </h3>
           <BankReadyCheck
             label={t("review.allFindingsHavePriority")}
@@ -467,7 +468,7 @@ export function InspectionReviewContent({
       </div>
 
       {/* Disclaimer */}
-      {isBankReady && (
+      {isPca && (
         <div className="text-xs text-content-muted italic leading-relaxed">
           {t("pdf.disclaimer")}
         </div>

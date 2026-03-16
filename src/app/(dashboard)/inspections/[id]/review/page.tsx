@@ -4,7 +4,7 @@ import Link from "next/link";
 import { InspectionReviewContent } from "@/components/inspection-review-content";
 import { InspectionExportButtons } from "@/components/inspection-export-buttons";
 import { INSPECTION_GROUP_ORDER } from "@/lib/inspection-sections";
-import { INSPECTION_TYPE_LABELS } from "@/lib/inspection-constants";
+import { INSPECTION_TYPE_LABELS, INSPECTION_TYPE_I18N_KEY } from "@/lib/inspection-constants";
 import { getTranslations } from "next-intl/server";
 import type {
   InspectionProjectSectionWithDetails,
@@ -188,7 +188,7 @@ export default async function InspectionReviewPage({
                 {t(`review.statusLabels.${project.status}`)}
               </span>
               <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gold-500/30 text-gold-200">
-                {t(`inspection.inspectionTypes.${project.inspection_type === "bank_ready" ? "bankReady" : "internal"}`)}
+                {t(`inspection.inspectionTypes.${INSPECTION_TYPE_I18N_KEY[project.inspection_type] ?? "internal"}`)}
               </span>
             </div>
           </div>

@@ -222,7 +222,39 @@ export const INSPECTION_YES_NO = {
 // ----- Inspection Type Labels -----
 export const INSPECTION_TYPE_LABELS: Record<string, string> = {
   internal: "Internal",
-  bank_ready: "Customer (PCA Lite)",
+  pca_lite: "PCA Lite",
+  pca: "PCA Inspection",
+};
+
+// ----- Tier-Based Inspection Type Configuration -----
+import type { InspectionType } from "./inspection-types";
+
+export type InspectionTier = "acquire" | "operate" | "vendor";
+
+export const INSPECTION_TYPES_BY_TIER: Record<InspectionTier, readonly InspectionType[]> = {
+  acquire: ["pca", "pca_lite"],
+  operate: ["internal"],
+  vendor: ["pca_lite"],
+} as const;
+
+export const DEFAULT_INSPECTION_TYPE_BY_TIER: Record<InspectionTier, InspectionType> = {
+  acquire: "pca",
+  operate: "internal",
+  vendor: "pca_lite",
+};
+
+export const INSPECTION_BASE_PATH_BY_TIER: Record<InspectionTier, string> = {
+  acquire: "/inspections",
+  operate: "/operate/inspections",
+  vendor: "/vendor/inspections",
+};
+
+/** Maps DB inspection_type value to its i18n key under inspection.inspectionTypes.* */
+export const INSPECTION_TYPE_I18N_KEY: Record<string, string> = {
+  internal: "internal",
+  pca_lite: "pcaLite",
+  pca: "pca",
+  bank_ready: "pcaLite", // backward compat for stale data
 };
 
 // ----- Asset Archetype Labels -----

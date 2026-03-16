@@ -5,15 +5,16 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { INSPECTION_GROUP_ORDER } from "@/lib/inspection-sections";
-import type {
-  InspectionProject,
-  InspectionProjectSectionWithDetails,
-  InspectionFinding,
-  InspectionUnit,
-  InspectionCapture,
-  InspectionChecklistItem,
-  PriorityLevel,
-  RiskFlag,
+import {
+  isPcaType,
+  type InspectionProject,
+  type InspectionProjectSectionWithDetails,
+  type InspectionFinding,
+  type InspectionUnit,
+  type InspectionCapture,
+  type InspectionChecklistItem,
+  type PriorityLevel,
+  type RiskFlag,
 } from "@/lib/inspection-types";
 
 // ---- Exported types ----
@@ -283,8 +284,8 @@ export async function fetchInspectionData(
   // ---- Warnings ----
   const warnings: { label: string }[] = [];
 
-  // Bank-ready validation warnings
-  if (project.inspection_type === "bank_ready") {
+  // PCA validation warnings
+  if (isPcaType(project.inspection_type)) {
     const unratedFindings = findings.filter((f) => f.priority === null);
     if (unratedFindings.length > 0) {
       warnings.push({

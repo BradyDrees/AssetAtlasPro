@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useAppLocale } from "@/components/locale-provider";
 import type { InspectionProject } from "@/lib/inspection-types";
+import { INSPECTION_TYPE_I18N_KEY } from "@/lib/inspection-constants";
 
 interface InspectionProjectCardProps {
   project: InspectionProject;
@@ -47,7 +48,7 @@ export function InspectionProjectCard({ project, isShared }: InspectionProjectCa
               {t(`review.statusLabels.${project.status}`)}
             </span>
             <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gold-100 text-gold-800">
-              {t(`inspection.inspectionTypes.${project.inspection_type === "bank_ready" ? "bankReady" : "internal"}`)}
+              {t(`inspection.inspectionTypes.${INSPECTION_TYPE_I18N_KEY[project.inspection_type] ?? "internal"}`)}
             </span>
             {isShared && (
               <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-blue-100 text-blue-700">

@@ -49,7 +49,7 @@ export default async function InspectionsPage() {
           </h1>
           <p className="text-gold-300 text-sm mt-0.5">{t("dashboard.pcaProjects")}</p>
         </div>
-        <CreateInspectionButton />
+        <CreateInspectionButton tier="acquire" />
       </div>
 
       {hasAny ? (
@@ -99,7 +99,7 @@ export default async function InspectionsPage() {
           <p className="text-content-quaternary mb-6">
             {t("dashboard.createFirstInspection")}
           </p>
-          <CreateInspectionButton />
+          <CreateInspectionButton tier="acquire" />
         </div>
       )}
     </div>

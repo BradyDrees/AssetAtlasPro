@@ -27,13 +27,14 @@ import {
   RISK_FLAG_LABELS,
   RISK_FLAG_OPTIONS,
 } from "@/lib/inspection-constants";
-import type {
-  InspectionFinding,
-  InspectionCapture,
-  InspectionType,
-  PriorityLevel,
-  ExposureBucket,
-  ProjectRole,
+import {
+  isPcaType,
+  type InspectionFinding,
+  type InspectionCapture,
+  type InspectionType,
+  type PriorityLevel,
+  type ExposureBucket,
+  type ProjectRole,
 } from "@/lib/inspection-types";
 
 const riskFlagKey = (flag: string) => {
@@ -107,7 +108,7 @@ export function FindingCard({
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  const isBankReady = inspectionType === "bank_ready";
+  const isPca = isPcaType(inspectionType);
 
   // Permission checks: owner can do everything, collaborator only their own
   const isOwner = role === "owner";
@@ -294,7 +295,7 @@ export function FindingCard({
             >
               {t(`inspection.priorityLabels.${priority}.label`)}
             </span>
-          ) : isBankReady ? (
+          ) : isPca ? (
             <span
               className={`text-xs px-2 py-0.5 rounded-full font-medium ${GOOD_LABEL.bgColor}`}
             >
@@ -351,7 +352,7 @@ export function FindingCard({
           <div>
             <label className="block text-xs font-medium text-content-tertiary mb-1.5">
               {t("inspection.priority")}
-              {isBankReady && <span className="text-red-500 ml-0.5">*</span>}
+              {isPca && <span className="text-red-500 ml-0.5">*</span>}
             </label>
             <div className="flex flex-wrap gap-1.5">
               {[1, 2, 3, 4, 5].map((val) => {
@@ -372,7 +373,7 @@ export function FindingCard({
                 );
               })}
               {/* Good button — bank-ready only (internal inspections always have a risk priority) */}
-              {isBankReady && (
+              {isPca && (
                 <button
                   onClick={() => canEdit && handlePriority(null)}
                   disabled={!canEdit}
@@ -389,11 +390,11 @@ export function FindingCard({
           </div>
 
           {/* Exposure (bank-ready only) */}
-          {isBankReady ? (
+          {isPca ? (
             <div>
               <label className="block text-xs font-medium text-content-tertiary mb-1.5">
                 {t("inspection.exposureEstimate")}
-                {isBankReady && priority !== null && priority <= 3 && (
+                {isPca && priority !== null && priority <= 3 && (
                   <span className="text-red-500 ml-0.5">*</span>
                 )}
               </label>
@@ -437,7 +438,7 @@ export function FindingCard({
           <div>
             <label className="block text-xs font-medium text-content-tertiary mb-1.5">
               {t("inspection.riskFlags.label")}
-              {isBankReady && (
+              {isPca && (
                 <span className="text-xs text-content-muted ml-1">
                   {t("inspection.riskFlags.selectAllThatApply")}
                 </span>
@@ -485,7 +486,7 @@ export function FindingCard({
           <div>
             <label className="block text-xs font-medium text-content-tertiary mb-1.5">
               {t("captures.photoCapture")}
-              {isBankReady && priority !== null && priority <= 2 && (
+              {isPca && priority !== null && priority <= 2 && (
                 <span className="text-red-500 ml-0.5">*</span>
               )}
             </label>

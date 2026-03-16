@@ -440,7 +440,8 @@
     },
     "inspectionTypes": {
       "internal": "Interna",
-      "bankReady": "Cliente (PCA Lite)"
+      "pcaLite": "PCA Lite",
+      "pca": "Inspeccion PCA"
     },
     "archetypes": {
       "garden": {
@@ -556,8 +557,8 @@
       "laundry": "Lavanderia",
       "unit_inspections": "Inspecciones de Unidades"
     },
-    "bankReadyMode": {
-      "description": "El modo Listo para Banco requiere prioridad, exposicion, vida util y calificaciones de condicion en todas las secciones y hallazgos.",
+    "pcaMode": {
+      "description": "El modo PCA requiere prioridad, exposicion, vida util y calificaciones de condicion en todas las secciones y hallazgos.",
       "sfrNote": "El modo Vivienda Unifamiliar etiqueta las secciones de unidades como \"Viviendas\" en lugar de \"Unidades\"."
     },
     "projectStatus": "Estado del Proyecto",
@@ -1200,7 +1201,7 @@
     "shortTermMonths": "Corto plazo (0–6 meses)",
     "totalIdentified": "Total identificado",
     "riskFlags": "Banderas de riesgo",
-    "bankReadyValidation": "Validacion Listo para Banco",
+    "pcaValidation": "Validacion PCA",
     "allFindingsHavePriority": "Todos los hallazgos tienen prioridad asignada",
     "p1to3HaveExposure": "Hallazgos prioridad 1-3 tienen exposicion",
     "allSectionsHaveCondition": "Todas las secciones tienen calificacion de condicion",

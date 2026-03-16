@@ -8,12 +8,19 @@ import type {
   ProjectStatus,
 } from "@/lib/inspection-types";
 
+const VALID_INSPECTION_TYPES = new Set(["internal", "pca_lite", "pca"]);
+
 // ============================================
 // Project CRUD
 // ============================================
 
 export async function createInspectionProject(data: CreateInspectionProject): Promise<{ id?: string; error?: string }> {
   try {
+    // Runtime type validation (DB CHECK constraint is the backstop)
+    if (!VALID_INSPECTION_TYPES.has(data.inspection_type)) {
+      return { error: `Invalid inspection type: ${data.inspection_type}` };
+    }
+
     const supabase = await createClient();
     const {
       data: { user },
@@ -64,6 +71,8 @@ export async function createInspectionProject(data: CreateInspectionProject): Pr
     if (insertError) return { error: "Step 3: " + insertError.message };
 
     revalidatePath("/inspections");
+    revalidatePath("/operate/inspections");
+    revalidatePath("/vendor/inspections");
 
     return { id: project.id };
   } catch (err) {

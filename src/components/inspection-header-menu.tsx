@@ -7,15 +7,18 @@ import { InspectionProjectForm } from "@/components/inspection-project-form";
 import { DeleteInspectionModal } from "@/components/delete-inspection-modal";
 import { ShareInspectionModal } from "@/components/share-inspection-modal";
 import type { InspectionProject, ProjectRole } from "@/lib/inspection-types";
+import type { InspectionTier } from "@/lib/inspection-constants";
 
 interface InspectionHeaderMenuProps {
   project: InspectionProject;
   role?: ProjectRole;
+  tier?: InspectionTier;
 }
 
 export function InspectionHeaderMenu({
   project,
   role = "owner",
+  tier = "operate",
 }: InspectionHeaderMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -117,6 +120,7 @@ export function InspectionHeaderMenu({
           <InspectionProjectForm
             project={project}
             onClose={() => setShowEdit(false)}
+            tier={tier}
           />
         </Modal>
       )}

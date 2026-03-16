@@ -17,14 +17,15 @@ import {
   GOOD_LABEL,
   INSPECTION_CONDITION_LABELS,
 } from "@/lib/inspection-constants";
-import type {
-  InspectionProjectSectionWithDetails,
-  InspectionChecklistItem,
-  InspectionFinding,
-  InspectionCapture,
-  InspectionType,
-  PriorityLevel,
-  ProjectRole,
+import {
+  isPcaType,
+  type InspectionProjectSectionWithDetails,
+  type InspectionChecklistItem,
+  type InspectionFinding,
+  type InspectionCapture,
+  type InspectionType,
+  type PriorityLevel,
+  type ProjectRole,
 } from "@/lib/inspection-types";
 
 // ============================================
@@ -596,7 +597,7 @@ export function InspectionGroupChecklist({
                                 >
                                   {t(`inspection.priorityLabels.${worstPriority}.label`)}
                                 </span>
-                              ) : inspectionType === "bank_ready" ? (
+                              ) : isPcaType(inspectionType) ? (
                                 <span
                                   className={`text-xs px-2 py-0.5 rounded-full font-medium ${GOOD_LABEL.bgColor}`}
                                 >
@@ -706,7 +707,7 @@ export function InspectionGroupChecklist({
                             >
                               {t(`inspection.priorityLabels.${currentPriority}.label`)}
                             </span>
-                          ) : inspectionType === "bank_ready" ? (
+                          ) : isPcaType(inspectionType) ? (
                             <span
                               className={`text-xs px-2 py-0.5 rounded-full font-medium ${GOOD_LABEL.bgColor}`}
                             >

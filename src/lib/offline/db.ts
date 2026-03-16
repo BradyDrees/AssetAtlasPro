@@ -377,4 +377,27 @@ export class OfflineDB extends Dexie {
   }
 }
 
-export const offlineDB = new OfflineDB();
+// ---------------------------------------------------------------------------
+// Lazy singleton — defers Dexie construction from import-time to first
+// property access (inside useEffect / callbacks). Prevents app crash if
+// IndexedDB is cleared or corrupted (e.g. after PWA reinstall).
+// ---------------------------------------------------------------------------
+let _db: OfflineDB | null = null;
+
+export function getOfflineDB(): OfflineDB {
+  if (!_db) _db = new OfflineDB();
+  return _db;
+}
+
+/** Call after clearing IndexedDB to let the next access re-create the instance. */
+export function resetOfflineDBState(): void {
+  _db = null;
+}
+
+// Backward-compat: existing code imports `offlineDB.someTable`.
+// The Proxy defers construction until the first property access.
+export const offlineDB = new Proxy({} as OfflineDB, {
+  get(_target, prop, receiver) {
+    return Reflect.get(getOfflineDB(), prop, receiver);
+  },
+});

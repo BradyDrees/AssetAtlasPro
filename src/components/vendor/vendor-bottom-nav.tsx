@@ -102,11 +102,21 @@ export function VendorBottomNav() {
             ]),
       ];
 
-  const moreItems = isTech ? [] : isOfficeMgr ? [
+  const inspectionIcon = (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+    </svg>
+  );
+
+  const moreItems = isTech ? [
+    { href: "/vendor/inspections", label: vt("inspections"), icon: inspectionIcon },
+  ] : isOfficeMgr ? [
+    { href: "/vendor/inspections", label: vt("inspections"), icon: inspectionIcon },
     { href: "/vendor/team", label: vt("team"), icon: teamIcon },
     { href: "/vendor/inbox", label: vt("messages"), icon: chatIcon },
     { href: "/vendor/profile", label: vt("profile"), icon: profileIcon },
   ] : [
+    { href: "/vendor/inspections", label: vt("inspections"), icon: inspectionIcon },
     { href: "/vendor/schedule", label: vt("schedule"), icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />

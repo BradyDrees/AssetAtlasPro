@@ -163,6 +163,14 @@ function TeamIcon() {
   );
 }
 
+function ClipboardCheckIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+    </svg>
+  );
+}
+
 interface VendorSidebarProps {
   user: User;
   hasPmRole?: boolean;
@@ -201,6 +209,7 @@ export function VendorSidebar({ user, hasPmRole = false, vendorRole = "owner" }:
     ? [
         { href: "/vendor/schedule", label: vt("mySchedule"), icon: <CalendarIcon />, matchExact: false },
         { href: "/vendor/jobs", label: vt("myJobs"), icon: <BriefcaseIcon />, matchExact: false },
+        { href: "/vendor/inspections", label: vt("inspections"), icon: <ClipboardCheckIcon />, matchExact: false },
         { href: "/vendor/inbox", label: vt("messages"), icon: <ChatBubbleIcon />, matchExact: false, showUnreadBadge: true },
         { href: "/vendor/profile", label: vt("profile"), icon: <UserCircleIcon />, matchExact: false },
       ]
@@ -208,6 +217,7 @@ export function VendorSidebar({ user, hasPmRole = false, vendorRole = "owner" }:
       ? [
           { href: "/vendor", label: vt("home"), icon: <HomeIcon />, matchExact: true },
           { href: "/vendor/jobs", label: vt("jobs"), icon: <BriefcaseIcon />, matchExact: false },
+          { href: "/vendor/inspections", label: vt("inspections"), icon: <ClipboardCheckIcon />, matchExact: false },
           { href: "/vendor/schedule", label: vt("schedule"), icon: <CalendarIcon />, matchExact: false },
           { href: "/vendor/team", label: vt("team"), icon: <TeamIcon />, matchExact: false },
           { href: "/vendor/inbox", label: vt("messages"), icon: <ChatBubbleIcon />, matchExact: false, showUnreadBadge: true },
@@ -217,6 +227,7 @@ export function VendorSidebar({ user, hasPmRole = false, vendorRole = "owner" }:
           // Owner/Admin — full nav
           { href: "/vendor", label: vt("home"), icon: <HomeIcon />, matchExact: true },
           { href: "/vendor/jobs", label: vt("jobs"), icon: <BriefcaseIcon />, matchExact: false },
+          { href: "/vendor/inspections", label: vt("inspections"), icon: <ClipboardCheckIcon />, matchExact: false },
           { href: "/vendor/schedule", label: vt("schedule"), icon: <CalendarIcon />, matchExact: false },
           { href: "/vendor/estimates", label: vt("estimates"), icon: <CalculatorIcon />, matchExact: true },
           { href: "/vendor/estimates/pricebook", label: vt("pricebook"), icon: <PricebookIcon />, matchExact: false },

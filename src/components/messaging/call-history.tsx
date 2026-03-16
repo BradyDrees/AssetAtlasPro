@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { useFormatDate } from "@/hooks/use-format-date";
 import { createClient } from "@/lib/supabase/client";
 import { getCallHistory } from "@/app/actions/messaging";
 import type { CallLog } from "@/lib/messaging/types";
@@ -24,33 +25,6 @@ function formatDuration(seconds: number | null): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-function formatCallDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  const now = new Date();
-  const diffMs = now.getTime() - d.getTime();
-  const dayMs = 86400_000;
-
-  if (diffMs < dayMs && d.getDate() === now.getDate()) {
-    return d.toLocaleTimeString(undefined, {
-      hour: "numeric",
-      minute: "2-digit",
-    });
-  }
-  if (diffMs < dayMs * 7) {
-    return d.toLocaleDateString(undefined, {
-      weekday: "short",
-      hour: "numeric",
-      minute: "2-digit",
-    });
-  }
-  return d.toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
-}
-
 export function CallHistory({
   product,
   workOrderId,
@@ -59,6 +33,28 @@ export function CallHistory({
 }: CallHistoryProps) {
   const t = useTranslations("messaging");
   const theme = productTheme[product];
+  const { formatDateTime, formatDate: fmtDate } = useFormatDate();
+
+  const formatCallDate = useCallback(
+    (dateStr: string): string => {
+      const d = new Date(dateStr);
+      const now = new Date();
+      const diffMs = now.getTime() - d.getTime();
+      const dayMs = 86400_000;
+
+      if (diffMs < dayMs && d.getDate() === now.getDate()) {
+        const hh = d.getHours();
+        const mm = String(d.getMinutes()).padStart(2, "0");
+        const ampm = hh >= 12 ? "PM" : "AM";
+        return `${hh % 12 || 12}:${mm} ${ampm}`;
+      }
+      if (diffMs < dayMs * 7) {
+        return formatDateTime(d);
+      }
+      return formatDateTime(d);
+    },
+    [formatDateTime]
+  );
 
   const [userId, setUserId] = useState<string>();
   const [calls, setCalls] = useState<CallLog[]>([]);

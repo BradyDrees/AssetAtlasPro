@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useFormatDate } from "@/hooks/use-format-date";
 import type { ServiceAgreement } from "@/lib/vendor/agreement-types";
 import { AGREEMENT_STATUS_COLORS } from "@/lib/vendor/agreement-types";
 
@@ -12,13 +13,10 @@ interface AgreementCardProps {
 
 export function AgreementCard({ agreement, basePath = "/vendor" }: AgreementCardProps) {
   const t = useTranslations("vendor.agreements");
+  const { formatDate } = useFormatDate();
 
   const nextDueLabel = agreement.next_due
-    ? new Date(agreement.next_due + "T00:00:00").toLocaleDateString(undefined, {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
+    ? formatDate(agreement.next_due, { weekday: false })
     : "—";
 
   const statusColor = AGREEMENT_STATUS_COLORS[agreement.status] ?? "";

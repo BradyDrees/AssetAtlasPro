@@ -1,5 +1,6 @@
 import { getPmVendors } from "@/app/actions/pm-vendors";
 import { PmVendorsList } from "@/components/vendor/pm-vendors-list";
+import { PageHeader } from "@/components/ui/page-header";
 import { getTranslations } from "next-intl/server";
 
 export default async function PmVendorsPage() {
@@ -8,9 +9,7 @@ export default async function PmVendorsPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-5">
-      <h1 className="text-2xl font-bold text-content-primary">
-        {t("pmVendors.title")}
-      </h1>
+      <PageHeader title={t("pmVendors.title")} />
       <PmVendorsList initial={vendors} />
     </div>
   );

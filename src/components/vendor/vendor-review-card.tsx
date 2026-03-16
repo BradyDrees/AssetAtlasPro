@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { useFormatDate } from "@/hooks/use-format-date";
 import { respondToReview } from "@/app/actions/vendor-reviews";
 import type { OrgReview } from "@/app/actions/vendor-reviews";
 
@@ -11,6 +12,7 @@ interface Props {
 
 export function VendorReviewCard({ review }: Props) {
   const t = useTranslations("vendor.reviews");
+  const { formatDate } = useFormatDate();
   const [isEditing, setIsEditing] = useState(false);
   const [response, setResponse] = useState(review.vendor_response ?? "");
   const [error, setError] = useState<string | null>(null);
@@ -57,7 +59,7 @@ export function VendorReviewCard({ review }: Props) {
           )}
         </div>
         <span className="text-xs text-content-quaternary">
-          {new Date(review.created_at).toLocaleDateString()}
+          {formatDate(review.created_at, { weekday: false })}
         </span>
       </div>
 
@@ -93,7 +95,7 @@ export function VendorReviewCard({ review }: Props) {
           <p className="text-sm text-content-tertiary">{review.vendor_response}</p>
           {review.vendor_responded_at && (
             <p className="text-xs text-content-quaternary mt-1">
-              {new Date(review.vendor_responded_at).toLocaleDateString()}
+              {formatDate(review.vendor_responded_at, { weekday: false })}
             </p>
           )}
         </div>

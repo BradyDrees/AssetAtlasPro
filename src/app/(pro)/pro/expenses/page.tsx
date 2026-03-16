@@ -2,6 +2,8 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { getVendorExpenses, getExpenseSummary } from "@/app/actions/vendor-expenses";
 import ExpenseList from "@/components/vendor/expense-list";
+import { PageHeader } from "@/components/ui/page-header";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export default async function ExpensesPage() {
   const t = await getTranslations("vendor.expenses");
@@ -15,16 +17,18 @@ export default async function ExpensesPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-content-primary">{t("title")}</h1>
-        <Link
-          href="/pro/expenses/new"
-          className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 transition-colors"
-        >
-          {t("addExpense")}
-        </Link>
-      </div>
+      <PageHeader
+        title={t("title")}
+        subtitle={t("subtitle")}
+        action={
+          <Link
+            href="/pro/expenses/new"
+            className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 transition-colors"
+          >
+            {t("addExpense")}
+          </Link>
+        }
+      />
 
       {/* Summary */}
       {summary && summary.length > 0 && (
@@ -45,7 +49,7 @@ export default async function ExpensesPage() {
 
       {/* Expense List */}
       {expenses.length === 0 ? (
-        <p className="text-center text-sm text-content-muted py-12">{t("empty")}</p>
+        <EmptyState icon="receipt" title={t("empty")} subtitle={t("emptySubtitle")} action={{ label: t("addExpense"), href: "/pro/expenses/new" }} />
       ) : (
         <ExpenseList expenses={expenses} />
       )}

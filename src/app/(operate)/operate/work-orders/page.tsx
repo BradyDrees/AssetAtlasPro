@@ -3,38 +3,37 @@ import { getTranslations } from "next-intl/server";
 import { getPmWorkOrders } from "@/app/actions/pm-work-orders";
 import { StatusBadge } from "@/components/vendor/status-badge";
 import { PriorityDot } from "@/components/vendor/priority-dot";
+import { PageHeader } from "@/components/ui/page-header";
+import { EmptyState } from "@/components/ui/empty-state";
+import { formatDate } from "@/lib/format-date";
+import { getLocale } from "next-intl/server";
 
 export default async function OperateWorkOrdersPage() {
   const t = await getTranslations();
+  const locale = (await getLocale()) as "en" | "es";
   const { data: workOrders } = await getPmWorkOrders();
 
   return (
     <div className="max-w-4xl mx-auto space-y-5">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-content-primary">
-          {t("nav.workOrders")}
-        </h1>
-        <Link
-          href="/operate/work-orders/new"
-          className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 transition-colors"
-        >
-          + {t("common.create")}
-        </Link>
-      </div>
-
-      {workOrders.length === 0 ? (
-        <div className="bg-surface-primary rounded-xl border border-edge-primary p-12 text-center">
-          <svg className="w-12 h-12 mx-auto mb-3 text-content-quaternary opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.384 3.324a.75.75 0 01-1.15-.79l1.27-6.077-4.6-4.065a.75.75 0 01.416-1.28l6.24-.665L11.013.309a.75.75 0 01.064-.064M11.42 15.17l2.496-2.496" />
-          </svg>
-          <p className="text-sm text-content-tertiary">{t("dashboard.noWorkOrders")}</p>
+      <PageHeader
+        title={t("nav.workOrders")}
+        subtitle={t("dashboard.woDescription")}
+        action={
           <Link
             href="/operate/work-orders/new"
-            className="inline-block mt-3 text-sm font-medium text-green-500 hover:text-green-400"
+            className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 transition-colors"
           >
-            {t("dashboard.createFirstWo")}
+            + {t("common.create")}
           </Link>
-        </div>
+        }
+      />
+
+      {workOrders.length === 0 ? (
+        <EmptyState
+          icon="briefcase"
+          title={t("dashboard.noWorkOrders")}
+          action={{ label: t("dashboard.createFirstWo"), href: "/operate/work-orders/new" }}
+        />
       ) : (
         <div className="space-y-3">
           {workOrders.map((wo) => (
@@ -66,7 +65,7 @@ export default async function OperateWorkOrdersPage() {
                     </p>
                   )}
                   <p className="text-[10px] text-content-quaternary mt-1">
-                    {new Date(wo.created_at).toLocaleDateString()}
+                    {formatDate(wo.created_at, locale, { weekday: false })}
                   </p>
                 </div>
                 <StatusBadge status={wo.status} size="sm" />

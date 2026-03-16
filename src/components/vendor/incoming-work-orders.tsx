@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import type { IncomingWorkOrder } from "@/app/actions/vendor-dashboard";
+import { useFormatDate } from "@/hooks/use-format-date";
 
 interface IncomingWorkOrdersProps {
   orders: IncomingWorkOrder[];
@@ -16,6 +17,7 @@ const priorityColors: Record<string, string> = {
 
 export function IncomingWorkOrders({ orders }: IncomingWorkOrdersProps) {
   const dt = useTranslations("vendor.dashboard");
+  const { formatDate } = useFormatDate();
 
   return (
     <div className="bg-surface-primary rounded-xl border border-edge-primary p-5">
@@ -65,7 +67,7 @@ export function IncomingWorkOrders({ orders }: IncomingWorkOrdersProps) {
                 <p className="text-xs text-content-quaternary mt-1">{wo.pm_name}</p>
               )}
               <p className="text-[10px] text-content-quaternary mt-1">
-                {new Date(wo.created_at).toLocaleDateString()}
+                {formatDate(wo.created_at, { weekday: false })}
               </p>
             </Link>
           ))}

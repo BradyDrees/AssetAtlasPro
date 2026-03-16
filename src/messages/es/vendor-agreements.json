@@ -1,5 +1,7 @@
 {
   "title": "Acuerdos de Servicio",
+  "subtitle": "Administra contratos de servicio recurrentes y rastrea renovaciones",
+  "emptySubtitle": "Configura acuerdos de mantenimiento recurrente con tus clientes",
   "create": "Nuevo Acuerdo",
   "noAgreements": "Sin acuerdos de servicio aún",
   "createFirst": "Crea tu primer acuerdo",

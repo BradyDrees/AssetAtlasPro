@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import { PageHeader } from "@/components/ui/page-header";
 
 const REPORTS = [
   { slug: "jobs",       icon: "📋" },
@@ -15,8 +16,7 @@ export default async function ReportsPage() {
 
   return (
     <div className="space-y-6 p-4 sm:p-6">
-      <h1 className="text-2xl font-bold text-content-primary">{t("title")}</h1>
-      <p className="text-content-secondary">{t("subtitle")}</p>
+      <PageHeader title={t("title")} subtitle={t("subtitle")} />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {REPORTS.map((r) => (

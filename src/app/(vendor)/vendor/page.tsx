@@ -3,6 +3,7 @@ import { getDashboardData } from "@/app/actions/vendor-dashboard";
 import type { DateRangePreset } from "@/app/actions/vendor-dashboard";
 import { getCredentialSummary } from "@/app/actions/vendor-profile";
 import { getVendorScorecardSelf } from "@/app/actions/vendor-scorecard";
+import { PageHeader } from "@/components/ui/page-header";
 import { DashboardShell } from "@/components/vendor/dashboard-shell";
 import { DashboardStatsGrid } from "@/components/vendor/dashboard-stats";
 import { IncomingWorkOrders } from "@/components/vendor/incoming-work-orders";
@@ -59,15 +60,10 @@ export default async function VendorDashboardPage({
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      {/* Welcome header */}
-      <div>
-        <h1 className="text-2xl font-bold text-content-primary">
-          {dt("welcomeDefault")}
-        </h1>
-        {!allSetup && (
-          <p className="text-content-tertiary mt-1">{dt("setupPrompt")}</p>
-        )}
-      </div>
+      <PageHeader
+        title={dt("welcomeDefault")}
+        subtitle={!allSetup ? dt("setupPrompt") : dt("subtitle")}
+      />
 
       <DashboardShell range={range}>
       {/* Stats */}

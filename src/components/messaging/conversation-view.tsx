@@ -3,35 +3,12 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { useFormatDate } from "@/hooks/use-format-date";
 import type { InboxThread, ThreadMessage } from "@/lib/messaging/types";
 import type { Product } from "./inbox-page";
 import { productTheme } from "./inbox-page";
 import { TypingIndicator, useTypingBroadcast } from "./typing-indicator";
 import { AddParticipantModal } from "./add-participant-modal";
-
-// ── Time formatting ──
-function formatMessageTime(dateStr: string): string {
-  const d = new Date(dateStr);
-  return d.toLocaleTimeString(undefined, {
-    hour: "numeric",
-    minute: "2-digit",
-  });
-}
-
-function formatDateSeparator(dateStr: string): string {
-  const d = new Date(dateStr);
-  const now = new Date();
-  const diff = now.getTime() - d.getTime();
-  const dayMs = 86400_000;
-
-  if (diff < dayMs && d.getDate() === now.getDate()) return "Today";
-  if (diff < dayMs * 2) return "Yesterday";
-  return d.toLocaleDateString(undefined, {
-    weekday: "long",
-    month: "short",
-    day: "numeric",
-  });
-}
 
 function shouldShowDateSeparator(
   current: ThreadMessage,
@@ -96,6 +73,32 @@ export function ConversationView({
   onRefreshMessages,
 }: ConversationViewProps) {
   const t = useTranslations("messaging");
+  const { formatDate: fmtDate, formatRelativeDate } = useFormatDate();
+
+  const formatMessageTime = useCallback((dateStr: string): string => {
+    const d = new Date(dateStr);
+    const hh = d.getHours();
+    const mm = String(d.getMinutes()).padStart(2, "0");
+    const ampm = hh >= 12 ? "PM" : "AM";
+    const h12 = hh % 12 || 12;
+    return `${h12}:${mm} ${ampm}`;
+  }, []);
+
+  const formatDateSeparator = useCallback(
+    (dateStr: string): string => {
+      const d = new Date(dateStr);
+      const now = new Date();
+      const diff = now.getTime() - d.getTime();
+      const dayMs = 86400_000;
+
+      if (diff < dayMs && d.getDate() === now.getDate())
+        return formatRelativeDate(d);
+      if (diff < dayMs * 2) return formatRelativeDate(d);
+      return fmtDate(d);
+    },
+    [fmtDate, formatRelativeDate]
+  );
+
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);

@@ -1,5 +1,7 @@
 {
   "title": "Facturas",
+  "subtitle": "Genera facturas de estimaciones aprobadas o crea nuevas",
+  "emptySubtitle": "Rastrea pagos, administra tu pipeline de facturacion y cobra mas rapido",
   "pmTitle": "Facturas de Contratistas",
   "new": "Nueva Factura",
   "pipeline": "Pipeline",

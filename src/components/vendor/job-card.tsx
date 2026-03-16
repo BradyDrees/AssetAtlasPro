@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useFormatDate } from "@/hooks/use-format-date";
 import type { VendorWorkOrder } from "@/lib/vendor/work-order-types";
 import { StatusBadge } from "./status-badge";
 import { PriorityDot } from "./priority-dot";
@@ -12,12 +13,10 @@ interface JobCardProps {
 
 export function JobCard({ wo }: JobCardProps) {
   const t = useTranslations("vendor.jobs");
+  const { formatDate } = useFormatDate();
 
   const formattedDate = wo.scheduled_date
-    ? new Date(wo.scheduled_date + "T00:00:00").toLocaleDateString(undefined, {
-        month: "short",
-        day: "numeric",
-      })
+    ? formatDate(wo.scheduled_date, { weekday: false, year: false })
     : null;
 
   return (

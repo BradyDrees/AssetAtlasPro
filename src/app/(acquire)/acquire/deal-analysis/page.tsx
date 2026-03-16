@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getTranslations } from "next-intl/server";
 import type { DealAnalysis } from "@/lib/deal-analysis-types";
 import { DealAnalysisListClient } from "@/components/deal-analysis/deal-list-client";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default async function DealAnalysisPage() {
   const supabase = await createClient();
@@ -14,17 +15,7 @@ export default async function DealAnalysisPage() {
 
   return (
     <div>
-      {/* Page header */}
-      <div className="mb-6 flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-content-primary">
-            {t("dealAnalysis.title")}
-          </h1>
-          <p className="text-sm text-content-tertiary mt-1">
-            {t("dealAnalysis.subtitle")}
-          </p>
-        </div>
-      </div>
+      <PageHeader title={t("dealAnalysis.title")} subtitle={t("dealAnalysis.subtitle")} />
 
       <DealAnalysisListClient deals={(deals as DealAnalysis[]) ?? []} />
     </div>

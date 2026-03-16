@@ -1,5 +1,6 @@
 {
   "title": "Expenses",
+  "subtitle": "Track job costs, receipts, and reimbursable expenses",
   "addExpense": "Add Expense",
   "editExpense": "Edit Expense",
   "noExpenses": "No expenses yet",
@@ -51,5 +52,6 @@
   "edit": "Edit",
   "receipt": "Receipt attached",
   "reimbursable": "Reimbursable",
-  "empty": "No expenses yet"
+  "empty": "No expenses yet",
+  "emptySubtitle": "Log expenses to track costs and simplify tax time"
 }

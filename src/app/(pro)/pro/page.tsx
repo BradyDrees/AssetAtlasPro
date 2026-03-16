@@ -18,6 +18,7 @@ import { DashboardPerformanceWidget } from "@/components/vendor/dashboard-perfor
 import { DashboardInventoryWidget } from "@/components/vendor/dashboard-inventory-widget";
 import { DashboardLeadSources } from "@/components/vendor/dashboard-lead-sources";
 import { DashboardActionsWidget } from "@/components/vendor/dashboard-actions-widget";
+import { PageHeader } from "@/components/ui/page-header";
 import Link from "next/link";
 
 const VALID_RANGES = new Set<DateRangePreset>(["today", "week", "month", "quarter"]);
@@ -62,15 +63,10 @@ export default async function ProDashboardPage({
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      {/* Welcome header */}
-      <div>
-        <h1 className="text-2xl font-bold text-content-primary">
-          {dt("welcomeDefault")}
-        </h1>
-        {!allSetup && (
-          <p className="text-content-tertiary mt-1">{dt("setupPrompt")}</p>
-        )}
-      </div>
+      <PageHeader
+        title={dt("welcomeDefault")}
+        subtitle={!allSetup ? dt("setupPrompt") : dt("subtitle")}
+      />
 
       <DashboardShell range={range}>
         {/* Stats */}

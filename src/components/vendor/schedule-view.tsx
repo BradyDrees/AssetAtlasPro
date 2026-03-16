@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { useFormatDate } from "@/hooks/use-format-date";
 import type { ScheduleJob, WorkingHoursConfig } from "@/lib/vendor/types";
 import type { ColorBy } from "@/lib/vendor/schedule-colors";
 import { CalendarDayView } from "./calendar-day-view";
@@ -53,6 +54,7 @@ export function ScheduleView({
   rescheduleAction,
 }: ScheduleViewProps) {
   const t = useTranslations("vendor.schedule");
+  const { formatDate: fmtDate } = useFormatDate();
   const [view, setView] = useState<"day" | "week" | "month">("week");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [colorBy, setColorBy] = useState<ColorBy>("priority");
@@ -92,26 +94,12 @@ export function ScheduleView({
 
   const dateLabel =
     view === "day"
-      ? selectedDate.toLocaleDateString(undefined, {
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-        })
+      ? fmtDate(selectedDate)
       : view === "month"
-        ? selectedDate.toLocaleDateString(undefined, {
-            month: "long",
-            year: "numeric",
-          })
-        : `${weekStart.toLocaleDateString(undefined, {
-            month: "short",
-            day: "numeric",
-          })} – ${new Date(
-            weekStart.getTime() + 6 * 86400000
-          ).toLocaleDateString(undefined, {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}`;
+        ? fmtDate(selectedDate, { weekday: false })
+        : `${fmtDate(weekStart, { weekday: false, year: false })} – ${fmtDate(
+            new Date(weekStart.getTime() + 6 * 86400000)
+          )}`;
 
   // Callbacks for child views
   const onSlotClick = useCallback(

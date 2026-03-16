@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import type { TodayJob } from "@/app/actions/vendor-dashboard";
+import { useFormatDate } from "@/hooks/use-format-date";
 
 interface DashboardUpcomingJobsProps {
   jobs: TodayJob[];
@@ -17,6 +18,7 @@ const priorityColors: Record<string, string> = {
 
 export function DashboardUpcomingJobs({ jobs }: DashboardUpcomingJobsProps) {
   const t = useTranslations("vendor.dashboard");
+  const { formatDate, formatTime } = useFormatDate();
 
   return (
     <div className="bg-surface-primary rounded-xl border border-edge-primary p-5">
@@ -43,9 +45,9 @@ export function DashboardUpcomingJobs({ jobs }: DashboardUpcomingJobsProps) {
                 </span>
               </div>
               <div className="flex items-center gap-2 mt-1 text-xs text-content-secondary">
-                <span>{job.scheduled_date}</span>
-                {job.scheduled_time_start ? <span>{job.scheduled_time_start.slice(0, 5)}</span> : null}
-                <span>{job.trade}</span>
+                <span>{job.scheduled_date ? formatDate(job.scheduled_date) : ""}</span>
+                {job.scheduled_time_start ? <span>· {formatTime(job.scheduled_time_start)}</span> : null}
+                <span className="capitalize">· {job.trade}</span>
               </div>
             </Link>
           ))}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useFormatDate } from "@/hooks/use-format-date";
 import { VendorExpense, EXPENSE_CATEGORY_COLORS } from "@/lib/vendor/expense-types";
 
 interface ExpenseCardProps {
@@ -11,12 +12,13 @@ interface ExpenseCardProps {
 
 export default function ExpenseCard({ expense, onEdit, onDelete }: ExpenseCardProps) {
   const t = useTranslations("vendor.expenses");
+  const { formatDate } = useFormatDate();
   const color = EXPENSE_CATEGORY_COLORS[expense.category] || "#6b7280";
   const formattedAmount = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   }).format(expense.amount);
-  const formattedDate = new Date(expense.date).toLocaleDateString();
+  const formattedDate = formatDate(expense.date, { weekday: false });
 
   return (
     <div className="bg-surface-primary rounded-xl border border-edge-primary p-4">

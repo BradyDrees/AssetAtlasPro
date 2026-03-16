@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { updateLeadStatus } from "@/app/actions/vendor-clients-direct";
 import type { ClientWithPipeline } from "@/app/actions/vendor-clients-direct";
+import { useFormatDate } from "@/hooks/use-format-date";
 
 const PIPELINE_COLUMNS = ["new", "contacted", "quoted", "won", "lost"] as const;
 type PipelineStatus = (typeof PIPELINE_COLUMNS)[number];
@@ -32,6 +33,7 @@ interface PipelineBoardProps {
 
 export function PipelineBoard({ clients, onUpdate }: PipelineBoardProps) {
   const t = useTranslations("vendor.clients.pipeline");
+  const { formatDate } = useFormatDate();
   const [isPending, startTransition] = useTransition();
   const [draggedId, setDraggedId] = useState<string | null>(null);
 
@@ -126,7 +128,7 @@ export function PipelineBoard({ clients, onUpdate }: PipelineBoardProps) {
                           <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
-                          {new Date(client.next_followup_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                          {formatDate(client.next_followup_at, { weekday: false, year: false })}
                         </span>
                       )}
                     </div>

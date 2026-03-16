@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import { getAgreements, getAgreementSummary } from "@/app/actions/vendor-agreements";
 import type { ServiceAgreement } from "@/lib/vendor/agreement-types";
 import type { AgreementStatus } from "@/lib/vendor/agreement-types";
+import { PageHeader } from "@/components/ui/page-header";
+import { EmptyState } from "@/components/ui/empty-state";
 import { AgreementCard } from "@/components/vendor/agreement-card";
 import { AgreementFormModal } from "@/components/vendor/agreement-form-modal";
 
@@ -45,19 +47,21 @@ export default function AgreementsPage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-content-primary">{t("title")}</h1>
-        <button
-          onClick={() => setShowCreate(true)}
-          className="px-4 py-2 text-sm bg-brand-600 text-white rounded-lg hover:bg-brand-500 transition-colors flex items-center gap-1.5"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-          {t("create")}
-        </button>
-      </div>
+      <PageHeader
+        title={t("title")}
+        subtitle={t("subtitle")}
+        action={
+          <button
+            onClick={() => setShowCreate(true)}
+            className="px-4 py-2 text-sm bg-brand-600 text-white rounded-lg hover:bg-brand-500 transition-colors flex items-center gap-1.5"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            {t("create")}
+          </button>
+        }
+      />
 
       {/* Summary cards */}
       {!loading && (
@@ -107,18 +111,12 @@ export default function AgreementsPage() {
           ))}
         </div>
       ) : agreements.length === 0 ? (
-        <div className="bg-surface-primary rounded-xl border border-edge-primary p-8 text-center">
-          <svg className="w-12 h-12 text-content-quaternary mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
-          </svg>
-          <p className="text-content-tertiary">{t("noAgreements")}</p>
-          <button
-            onClick={() => setShowCreate(true)}
-            className="inline-flex items-center gap-1.5 mt-3 text-sm text-brand-400 hover:text-brand-300 transition-colors"
-          >
-            {t("createFirst")}
-          </button>
-        </div>
+        <EmptyState
+          icon="clipboard"
+          title={t("noAgreements")}
+          subtitle={t("emptySubtitle")}
+          action={{ label: t("createFirst"), onClick: () => setShowCreate(true) }}
+        />
       ) : (
         <div className="space-y-3">
           {agreements.map((a) => (

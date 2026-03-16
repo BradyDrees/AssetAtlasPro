@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useFormatDate } from "@/hooks/use-format-date";
 import type { RecurringInvoiceTemplate } from "@/lib/vendor/recurring-invoice-types";
 import {
   pauseRecurringTemplate,
@@ -24,6 +25,7 @@ interface RecurringInvoiceCardProps {
 
 export function RecurringInvoiceCard({ template, onMutate, basePath }: RecurringInvoiceCardProps) {
   const t = useTranslations("vendor.recurring");
+  const { formatDate } = useFormatDate();
   const [loading, setLoading] = useState<string | null>(null);
 
   async function handleAction(action: "pause" | "resume" | "cancel" | "generate") {
@@ -83,11 +85,11 @@ export function RecurringInvoiceCard({ template, onMutate, basePath }: Recurring
             </span>
             <span>{t(`frequency.${template.frequency}`)}</span>
             <span className={isOverdue ? "text-red-400 font-medium" : ""}>
-              {t("nextDue")}: {nextDue.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+              {t("nextDue")}: {formatDate(nextDue, { weekday: false })}
             </span>
             {template.last_generated && (
               <span className="text-content-quaternary">
-                {t("lastGenerated")}: {new Date(template.last_generated + "T00:00:00").toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                {t("lastGenerated")}: {formatDate(template.last_generated, { weekday: false, year: false })}
               </span>
             )}
           </div>

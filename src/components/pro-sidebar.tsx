@@ -443,9 +443,17 @@ export function ProSidebar({ user, hasPmRole = false, hasOwnerRole = false, vend
             </button>
           )}
 
-          {!collapsed && (
-            <p className="text-sm text-content-tertiary truncate mb-2">{user.email}</p>
-          )}
+          {/* User profile strip */}
+          <div className={`flex items-center gap-3 mb-2 ${collapsed ? "justify-center" : ""}`}>
+            <div className="w-8 h-8 rounded-full bg-amber-500/15 flex items-center justify-center flex-shrink-0">
+              <span className="text-sm font-bold text-amber-400">
+                {user.email?.charAt(0).toUpperCase() || "?"}
+              </span>
+            </div>
+            {!collapsed && (
+              <p className="text-sm text-content-secondary truncate min-w-0 flex-1">{user.email}</p>
+            )}
+          </div>
           <form action={signOut} onSubmit={() => {
             if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
               navigator.serviceWorker.controller.postMessage({ type: "CLEAR_AUTH_CACHE" });
@@ -453,16 +461,15 @@ export function ProSidebar({ user, hasPmRole = false, hasOwnerRole = false, vend
           }}>
             <button
               type="submit"
-              className={`text-sm text-red-500 hover:text-red-700 font-medium transition-colors ${
-                collapsed ? "w-full text-center" : "w-full text-left"
+              className={`flex items-center gap-2 text-sm text-content-quaternary hover:text-content-secondary font-medium transition-colors min-h-[44px] ${
+                collapsed ? "w-full justify-center" : "w-full text-left"
               }`}
               title={collapsed ? vt("signOut") : undefined}
             >
-              {collapsed ? (
-                <span className="text-xs">Out</span>
-              ) : (
-                vt("signOut")
-              )}
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+              </svg>
+              {!collapsed && vt("signOut")}
             </button>
           </form>
         </div>

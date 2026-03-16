@@ -1,5 +1,7 @@
 {
   "title": "Estimaciones",
+  "subtitle": "Crea y envia estimaciones profesionales a tus clientes",
+  "emptySubtitle": "Arma estimaciones detalladas con items, impuestos y terminos personalizados",
   "pmTitle": "Estimaciones de Contratistas",
   "active": "Activas",
   "closed": "Cerradas",

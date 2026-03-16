@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useFormatDate } from "@/hooks/use-format-date";
 import { addCallNotes } from "@/app/actions/messaging";
 import type { Product } from "./inbox-page";
 import { productTheme } from "./inbox-page";
@@ -27,13 +28,6 @@ function formatDuration(seconds: number | null): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-function formatCallTime(dateStr: string): string {
-  return new Date(dateStr).toLocaleTimeString(undefined, {
-    hour: "numeric",
-    minute: "2-digit",
-  });
-}
-
 export function CallLogCard({
   callId,
   direction,
@@ -49,6 +43,15 @@ export function CallLogCard({
 }: CallLogCardProps) {
   const t = useTranslations("messaging");
   const theme = productTheme[product];
+  const { formatDateTime } = useFormatDate();
+
+  const formatCallTime = (dateStr: string): string => {
+    const d = new Date(dateStr);
+    const hh = d.getHours();
+    const mm = String(d.getMinutes()).padStart(2, "0");
+    const ampm = hh >= 12 ? "PM" : "AM";
+    return `${hh % 12 || 12}:${mm} ${ampm}`;
+  };
 
   const [showNoteInput, setShowNoteInput] = useState(false);
   const [noteText, setNoteText] = useState("");

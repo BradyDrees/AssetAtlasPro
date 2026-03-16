@@ -1,5 +1,6 @@
 {
   "title": "Gastos",
+  "subtitle": "Rastrea costos de trabajo, recibos y gastos reembolsables",
   "addExpense": "Agregar Gasto",
   "editExpense": "Editar Gasto",
   "noExpenses": "Sin gastos aún",
@@ -51,5 +52,6 @@
   "edit": "Editar",
   "receipt": "Recibo adjunto",
   "reimbursable": "Reembolsable",
-  "empty": "Sin gastos aún"
+  "empty": "Sin gastos aún",
+  "emptySubtitle": "Registra gastos para rastrear costos y simplificar los impuestos"
 }

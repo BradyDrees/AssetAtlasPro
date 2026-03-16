@@ -3,6 +3,7 @@ import { requireVendorRole } from "@/lib/vendor/role-helpers";
 import { ProfileForm } from "@/components/vendor/profile-form";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default async function VendorProfilePage() {
   const auth = await requireVendorRole();
@@ -26,11 +27,7 @@ export default async function VendorProfilePage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-content-primary">
-          {t("title")}
-        </h1>
-      </div>
+      <PageHeader title={t("title")} subtitle={t("subtitle")} />
 
       {/* Credentials Summary Card */}
       <Link

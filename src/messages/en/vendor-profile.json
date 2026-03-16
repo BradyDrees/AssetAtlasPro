@@ -1,5 +1,6 @@
 {
   "title": "Business Profile",
+  "subtitle": "Manage your company info, credentials, and team settings",
   "editProfile": "Edit Profile",
   "saveChanges": "Save Changes",
   "loadError": "Failed to load profile data. Please try again.",

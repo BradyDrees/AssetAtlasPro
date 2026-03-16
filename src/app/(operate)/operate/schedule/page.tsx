@@ -1,6 +1,7 @@
 import { getPmWorkOrders } from "@/app/actions/pm-work-orders";
 import { rescheduleJobAsPm } from "@/app/actions/pm-work-orders";
 import { ScheduleView } from "@/components/vendor/schedule-view";
+import { PageHeader } from "@/components/ui/page-header";
 import { getTranslations } from "next-intl/server";
 import {
   toScheduleJob,
@@ -29,9 +30,7 @@ export default async function OperateSchedulePage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-5">
-      <h1 className="text-2xl font-bold text-content-primary">
-        {t("title")}
-      </h1>
+      <PageHeader title={t("title")} subtitle={t("subtitle")} />
       <ScheduleView
         jobs={scheduled}
         unscheduledJobs={unscheduled}

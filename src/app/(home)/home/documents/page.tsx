@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { getDocuments } from "@/app/actions/home-documents";
 import { DocumentVaultContent } from "./documents-content";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default async function DocumentsPage() {
   const t = await getTranslations("home.documents");
@@ -8,10 +9,7 @@ export default async function DocumentsPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-content-primary">{t("title")}</h1>
-        <p className="text-sm text-content-tertiary mt-1">{t("subtitle")}</p>
-      </div>
+      <PageHeader title={t("title")} subtitle={t("subtitle")} />
       <DocumentVaultContent
         initialDocuments={documents}
         initialExpiring={expiringSoon}

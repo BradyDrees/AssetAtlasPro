@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useFormatDate } from "@/hooks/use-format-date";
 import type { TodayJob } from "@/app/actions/vendor-dashboard";
 
 interface TodaysScheduleProps {
@@ -10,6 +11,7 @@ interface TodaysScheduleProps {
 
 export function TodaysSchedule({ jobs }: TodaysScheduleProps) {
   const dt = useTranslations("vendor.dashboard");
+  const { formatTime } = useFormatDate();
 
   return (
     <div className="bg-surface-primary rounded-xl border border-edge-primary p-5">
@@ -39,7 +41,7 @@ export function TodaysSchedule({ jobs }: TodaysScheduleProps) {
               <div className="w-16 text-center flex-shrink-0">
                 {job.scheduled_time_start ? (
                   <p className="text-xs font-mono text-content-secondary">
-                    {job.scheduled_time_start.slice(0, 5)}
+                    {formatTime(job.scheduled_time_start)}
                   </p>
                 ) : (
                   <p className="text-[10px] text-content-quaternary uppercase">

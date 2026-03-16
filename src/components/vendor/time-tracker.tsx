@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useFormatDate } from "@/hooks/use-format-date";
 import type { VendorWoTimeEntry } from "@/lib/vendor/work-order-types";
 import { GpsClock } from "./gps-clock";
 
@@ -23,6 +24,7 @@ export function TimeTracker({
   onMutate,
 }: TimeTrackerProps) {
   const t = useTranslations("vendor.jobs");
+  const { formatDate: fmtDate, formatDateTime: fmtDateTime } = useFormatDate();
 
   // Check if there's an open entry (no clock_out)
   const openEntry = timeEntries.find((e) => !e.clock_out) ?? null;
@@ -42,17 +44,14 @@ export function TimeTracker({
   }
 
   function formatTime(isoString: string): string {
-    return new Date(isoString).toLocaleTimeString(undefined, {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    const d = new Date(isoString);
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mm = String(d.getMinutes()).padStart(2, "0");
+    return fmtDateTime(isoString).split(", ").pop() ?? `${hh}:${mm}`;
   }
 
   function formatDate(isoString: string): string {
-    return new Date(isoString).toLocaleDateString(undefined, {
-      month: "short",
-      day: "numeric",
-    });
+    return fmtDate(isoString, { weekday: false, year: false });
   }
 
   function locationBadge(entry: VendorWoTimeEntry) {

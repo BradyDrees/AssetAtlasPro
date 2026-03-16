@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useFormatDate } from "@/hooks/use-format-date";
 import type { VendorInvoice } from "@/lib/vendor/invoice-types";
 import { INVOICE_STATUS_COLORS } from "@/lib/vendor/invoice-types";
 import type { InvoiceStatus } from "@/lib/vendor/types";
@@ -12,14 +13,12 @@ interface InvoiceCardProps {
 
 export function InvoiceCard({ invoice }: InvoiceCardProps) {
   const t = useTranslations("vendor.invoices");
+  const { formatDate } = useFormatDate();
 
   const statusColor =
     INVOICE_STATUS_COLORS[invoice.status as InvoiceStatus] ?? "";
 
-  const formattedDate = new Date(invoice.created_at).toLocaleDateString(
-    undefined,
-    { month: "short", day: "numeric", year: "numeric" }
-  );
+  const formattedDate = formatDate(invoice.created_at, { weekday: false });
 
   return (
     <Link
@@ -54,7 +53,7 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
           <span>{formattedDate}</span>
           {invoice.due_date && (
             <span>
-              {t("due")}: {new Date(invoice.due_date + "T00:00:00").toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+              {t("due")}: {formatDate(invoice.due_date, { weekday: false, year: false })}
             </span>
           )}
         </div>

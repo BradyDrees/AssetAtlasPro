@@ -10,6 +10,7 @@ import { DashboardMaintenanceAlerts } from "@/components/home/dashboard-maintena
 import { DashboardSetupChecklist } from "@/components/home/dashboard-setup-checklist";
 import { HealthScoreCard } from "@/components/home/health-score-card";
 import { SeasonalReminders } from "@/components/home/seasonal-reminders";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default async function HomeDashboardPage() {
   const [t, ts, data, setupProgress, healthScore, seasonalReminders] = await Promise.all([
@@ -26,11 +27,7 @@ export default async function HomeDashboardPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Page header */}
-      <div>
-        <h1 className="text-2xl font-bold text-content-primary">{t("title")}</h1>
-        <p className="text-sm text-content-tertiary mt-1">{t("subtitle")}</p>
-      </div>
+      <PageHeader title={t("title")} subtitle={t("subtitle")} />
 
       {/* Setup Checklist (hides when all 4 steps are complete) */}
       <DashboardSetupChecklist progress={setupProgress} />

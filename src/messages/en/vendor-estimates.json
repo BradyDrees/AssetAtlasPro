@@ -1,5 +1,7 @@
 {
   "title": "Estimates",
+  "subtitle": "Create and send professional estimates to your clients",
+  "emptySubtitle": "Build detailed estimates with line items, taxes, and custom terms",
   "pmTitle": "Vendor Estimates",
   "active": "Active",
   "closed": "Closed",

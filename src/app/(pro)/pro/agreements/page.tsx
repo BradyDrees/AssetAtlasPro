@@ -8,6 +8,8 @@ import type { ServiceAgreement } from "@/lib/vendor/agreement-types";
 import type { AgreementStatus } from "@/lib/vendor/agreement-types";
 import { AgreementCard } from "@/components/vendor/agreement-card";
 import { AgreementFormModal } from "@/components/vendor/agreement-form-modal";
+import { PageHeader } from "@/components/ui/page-header";
+import { EmptyState } from "@/components/ui/empty-state";
 
 const STATUS_TABS: { key: "all" | AgreementStatus; statuses?: AgreementStatus[] }[] = [
   { key: "all" },
@@ -45,18 +47,21 @@ export default function ProAgreementsPage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-content-primary">{t("title")}</h1>
-        <button
-          onClick={() => setShowCreate(true)}
-          className="px-4 py-2 text-sm bg-brand-600 text-white rounded-lg hover:bg-brand-500 transition-colors flex items-center gap-1.5"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-          {t("create")}
-        </button>
-      </div>
+      <PageHeader
+        title={t("title")}
+        subtitle={t("subtitle")}
+        action={
+          <button
+            onClick={() => setShowCreate(true)}
+            className="px-4 py-2 text-sm bg-brand-600 text-white rounded-lg hover:bg-brand-500 transition-colors flex items-center gap-1.5"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            {t("create")}
+          </button>
+        }
+      />
 
       {!loading && (
         <div className="grid grid-cols-3 gap-3">
@@ -99,12 +104,12 @@ export default function ProAgreementsPage() {
           ))}
         </div>
       ) : agreements.length === 0 ? (
-        <div className="bg-surface-primary rounded-xl border border-edge-primary p-8 text-center">
-          <p className="text-content-tertiary">{t("noAgreements")}</p>
-          <button onClick={() => setShowCreate(true)} className="inline-flex items-center gap-1.5 mt-3 text-sm text-brand-400 hover:text-brand-300 transition-colors">
-            {t("createFirst")}
-          </button>
-        </div>
+        <EmptyState
+          icon="clipboard"
+          title={t("noAgreements")}
+          subtitle={t("emptySubtitle")}
+          action={{ label: t("createFirst"), onClick: () => setShowCreate(true) }}
+        />
       ) : (
         <div className="space-y-3">
           {agreements.map((a) => (

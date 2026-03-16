@@ -1,5 +1,7 @@
 {
   "title": "Jobs",
+  "subtitle": "Manage work orders, track progress, and coordinate your team",
+  "emptySubtitle": "When you receive work orders or create jobs, they'll appear here",
   "incoming": "Incoming",
   "active": "Active",
   "completed": "Completed",

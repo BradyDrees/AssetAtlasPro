@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useFormatDate } from "@/hooks/use-format-date";
 import { StatusBadge } from "@/components/vendor/status-badge";
 import { PriorityDot } from "@/components/vendor/priority-dot";
 import { WoPhotosSection } from "@/components/operate/wo-photos-section";
@@ -52,6 +53,7 @@ export function WoDetailContent({
   activity,
 }: WoDetailContentProps) {
   const t = useTranslations("operate.workOrders");
+  const { formatDate: fmtDate, formatTime: fmtTime, formatDateTime } = useFormatDate();
   const [activeTab, setActiveTab] = useState<Tab>("overview");
 
   const tabs: { key: Tab; label: string; count?: number }[] = [
@@ -63,9 +65,9 @@ export function WoDetailContent({
   ];
 
   const formatDate = (d: string | null) =>
-    d ? new Date(d).toLocaleDateString() : "\u2014";
-  const formatTime = (t: string | null) =>
-    t ? t.slice(0, 5) : "";
+    d ? fmtDate(d, { weekday: false }) : "\u2014";
+  const formatTime = (tm: string | null) =>
+    tm ? fmtTime(tm) : "";
   const formatCurrency = (n: number) =>
     new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
   const formatDuration = (mins: number | null) => {
@@ -269,8 +271,8 @@ export function WoDetailContent({
                       )}
                     </p>
                     <p className="text-xs text-content-tertiary">
-                      {new Date(entry.clock_in).toLocaleString()}
-                      {entry.clock_out && ` \u2192 ${new Date(entry.clock_out).toLocaleTimeString()}`}
+                      {formatDateTime(entry.clock_in)}
+                      {entry.clock_out && ` \u2192 ${fmtTime(new Date(entry.clock_out).toTimeString().slice(0, 5))}`}
                     </p>
                     {entry.notes && (
                       <p className="text-xs text-content-quaternary mt-0.5 truncate">{entry.notes}</p>

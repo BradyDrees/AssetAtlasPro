@@ -1,5 +1,6 @@
 {
   "title": "Perfil Empresarial",
+  "subtitle": "Administra tu info de empresa, credenciales y configuracion del equipo",
   "editProfile": "Editar Perfil",
   "saveChanges": "Guardar Cambios",
   "loadError": "Error al cargar datos del perfil. Inténtalo de nuevo.",

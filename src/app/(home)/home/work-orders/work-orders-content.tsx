@@ -3,6 +3,9 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { PageHeader } from "@/components/ui/page-header";
+import { EmptyState } from "@/components/ui/empty-state";
+import { useFormatDate } from "@/hooks/use-format-date";
 
 interface WorkOrder {
   id: string;
@@ -42,16 +45,9 @@ const URGENCY_STYLES: Record<string, string> = {
   whenever: "bg-charcoal-500/20 text-charcoal-400",
 };
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
-
 export function WorkOrdersContent({ workOrders }: WorkOrdersContentProps) {
   const t = useTranslations("home.workOrders");
+  const { formatDate } = useFormatDate();
   const [tab, setTab] = useState<"active" | "history">("active");
   const [search, setSearch] = useState("");
   const [tradeFilter, setTradeFilter] = useState("");
@@ -84,21 +80,21 @@ export function WorkOrdersContent({ workOrders }: WorkOrdersContentProps) {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-content-primary">{t("title")}</h1>
-          <p className="text-sm text-content-tertiary mt-1">{t("subtitle")}</p>
-        </div>
-        <Link
-          href="/home/work-orders/new"
-          className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-          {t("newWorkOrder")}
-        </Link>
-      </div>
+      <PageHeader
+        title={t("title")}
+        subtitle={t("subtitle")}
+        action={
+          <Link
+            href="/home/work-orders/new"
+            className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            {t("newWorkOrder")}
+          </Link>
+        }
+      />
 
       {/* Search + Filter */}
       <div className="flex gap-3">
@@ -150,19 +146,11 @@ export function WorkOrdersContent({ workOrders }: WorkOrdersContentProps) {
 
       {/* Work order list */}
       {displayedOrders.length === 0 ? (
-        <div className="bg-surface-primary rounded-xl border border-edge-primary p-8 text-center">
-          <svg className="w-12 h-12 mx-auto mb-3 text-content-quaternary opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085" />
-          </svg>
-          <p className="text-sm text-content-quaternary">
-            {tab === "active" ? t("noActiveOrders") : t("noHistory")}
-          </p>
-          {tab === "active" && (
-            <Link href="/home/work-orders/new" className="inline-block mt-3 text-sm text-rose-500 hover:text-rose-400 font-medium">
-              {t("newWorkOrder")} →
-            </Link>
-          )}
-        </div>
+        <EmptyState
+          icon="briefcase"
+          title={tab === "active" ? t("noActiveOrders") : t("noHistory")}
+          action={tab === "active" ? { label: t("newWorkOrder"), href: "/home/work-orders/new" } : undefined}
+        />
       ) : (
         <div className="space-y-3">
           {displayedOrders.map((wo) => (
@@ -189,7 +177,7 @@ export function WorkOrdersContent({ workOrders }: WorkOrdersContentProps) {
                   </div>
                   <p className="text-sm text-content-tertiary line-clamp-2">{wo.description}</p>
                   <p className="text-xs text-content-quaternary mt-2">
-                    {formatDate(wo.created_at)}
+                    {formatDate(wo.created_at, { weekday: false })}
                   </p>
                 </div>
               </div>

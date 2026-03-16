@@ -1,6 +1,7 @@
 {
   "welcome": "Welcome back, {name}",
   "welcomeDefault": "Welcome to Your Vendor Dashboard",
+  "subtitle": "Your business at a glance -- jobs, revenue, and performance",
   "setupPrompt": "Complete your profile to get started",
   "stats": {
     "activeJobs": "Active Jobs",

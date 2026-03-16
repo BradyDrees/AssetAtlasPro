@@ -3,6 +3,7 @@
 import { useState, useCallback, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useFormatDate } from "@/hooks/use-format-date";
 import type { VendorCredential } from "@/lib/vendor/types";
 import { CREDENTIAL_STATUS_COLORS } from "@/lib/vendor/types";
 import { deleteCredential, revokeCredential } from "@/app/actions/vendor-profile";
@@ -30,6 +31,7 @@ function formatFileSize(bytes: number | null): string {
 export function CredentialCard({ credential }: CredentialCardProps) {
   const t = useTranslations("vendor.profile");
   const router = useRouter();
+  const { formatDate } = useFormatDate();
   const [isPending, startTransition] = useTransition();
   const [expanded, setExpanded] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -94,7 +96,7 @@ export function CredentialCard({ credential }: CredentialCardProps) {
 
               {credential.expiration_date && (
                 <p className={`text-xs mt-1 ${expirationColor}`}>
-                  {t("credentials.expires")}: {new Date(credential.expiration_date).toLocaleDateString()}
+                  {t("credentials.expires")}: {formatDate(credential.expiration_date, { weekday: false })}
                   {daysLeft !== null && daysLeft > 0 && (
                     <> ({daysLeft} {t("credentials.daysLeft")})</>
                   )}
@@ -126,14 +128,14 @@ export function CredentialCard({ credential }: CredentialCardProps) {
           {credential.issued_date && (
             <div className="flex items-center justify-between text-xs">
               <span className="text-content-tertiary">{t("credentials.issued")}</span>
-              <span className="text-content-primary">{new Date(credential.issued_date).toLocaleDateString()}</span>
+              <span className="text-content-primary">{formatDate(credential.issued_date, { weekday: false })}</span>
             </div>
           )}
 
           {credential.expiration_date && (
             <div className="flex items-center justify-between text-xs">
               <span className="text-content-tertiary">{t("credentials.expires")}</span>
-              <span className={expirationColor}>{new Date(credential.expiration_date).toLocaleDateString()}</span>
+              <span className={expirationColor}>{formatDate(credential.expiration_date, { weekday: false })}</span>
             </div>
           )}
 

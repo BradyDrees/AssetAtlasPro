@@ -1,5 +1,7 @@
 {
   "title": "Invoices",
+  "subtitle": "Generate invoices from approved estimates or create new ones",
+  "emptySubtitle": "Track payments, manage your billing pipeline, and get paid faster",
   "pmTitle": "Vendor Invoices",
   "new": "New Invoice",
   "pipeline": "Pipeline",

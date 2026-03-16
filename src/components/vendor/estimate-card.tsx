@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useFormatDate } from "@/hooks/use-format-date";
 import type { VendorEstimate } from "@/lib/vendor/estimate-types";
 import { ESTIMATE_STATUS_COLORS } from "@/lib/vendor/estimate-types";
 import type { EstimateStatus } from "@/lib/vendor/types";
@@ -12,6 +13,7 @@ interface EstimateCardProps {
 
 export function EstimateCard({ estimate }: EstimateCardProps) {
   const t = useTranslations("vendor.estimates");
+  const { formatDate } = useFormatDate();
 
   const statusColor =
     ESTIMATE_STATUS_COLORS[estimate.status as EstimateStatus] ?? "";
@@ -19,10 +21,7 @@ export function EstimateCard({ estimate }: EstimateCardProps) {
   const statusLabel =
     t(`status.${estimate.status}` as Parameters<typeof t>[0]);
 
-  const formattedDate = new Date(estimate.created_at).toLocaleDateString(
-    undefined,
-    { month: "short", day: "numeric", year: "numeric" }
-  );
+  const formattedDate = formatDate(estimate.created_at, { weekday: false });
 
   return (
     <Link

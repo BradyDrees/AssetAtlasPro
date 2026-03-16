@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useFormatDate } from "@/hooks/use-format-date";
 import type { ClientWithStats } from "@/app/actions/vendor-clients";
 
 interface ClientCardProps {
@@ -10,6 +11,7 @@ interface ClientCardProps {
 
 export function ClientCard({ client }: ClientCardProps) {
   const t = useTranslations("vendor.clients");
+  const { formatDate } = useFormatDate();
 
   const statusColors: Record<string, string> = {
     active: "bg-green-500/20 text-green-400 border-green-500/30",
@@ -66,7 +68,7 @@ export function ClientCard({ client }: ClientCardProps) {
       <div className="mt-3 flex items-center gap-2 text-xs text-content-quaternary">
         <span>{t("paymentTerms")}: {client.payment_terms}</span>
         <span>·</span>
-        <span>{t("since")}: {new Date(client.created_at).toLocaleDateString()}</span>
+        <span>{t("since")}: {formatDate(client.created_at, { weekday: false })}</span>
       </div>
     </Link>
   );

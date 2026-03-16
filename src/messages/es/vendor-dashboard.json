@@ -1,6 +1,7 @@
 {
   "welcome": "Bienvenido de nuevo, {name}",
   "welcomeDefault": "Bienvenido a tu Inicio",
+  "subtitle": "Tu negocio de un vistazo -- trabajos, ingresos y rendimiento",
   "setupPrompt": "Completa tu perfil para comenzar",
   "stats": {
     "activeJobs": "Trabajos Activos",

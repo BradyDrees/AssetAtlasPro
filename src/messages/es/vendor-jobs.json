@@ -1,5 +1,7 @@
 {
   "title": "Trabajos",
+  "subtitle": "Administra ordenes de trabajo, sigue el progreso y coordina tu equipo",
+  "emptySubtitle": "Cuando recibas ordenes de trabajo o crees trabajos, apareceran aqui",
   "incoming": "Entrantes",
   "active": "Activos",
   "completed": "Completados",

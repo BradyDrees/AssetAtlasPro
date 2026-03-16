@@ -1,7 +1,5 @@
 "use client";
 
-import { resetOfflineDBState } from "@/lib/offline/db";
-
 /**
  * Root error boundary — catches errors that nested error.tsx files can't,
  * including crashes during root layout rendering (e.g. Dexie IndexedDB
@@ -57,8 +55,7 @@ async function clearOfflineDataAndReload() {
       indexedDB.deleteDatabase("asset-atlas-offline");
     }
 
-    // 5. Reset in-memory singleton so next access re-creates cleanly
-    resetOfflineDBState();
+    // 5. In-memory singleton resets naturally after page reload (fresh JS context)
   } catch {
     // Best-effort — continue to reload even if cleanup partially fails
   }

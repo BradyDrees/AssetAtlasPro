@@ -171,6 +171,14 @@ function ClipboardCheckIcon() {
   );
 }
 
+function ActionsIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  );
+}
+
 interface VendorSidebarProps {
   user: User;
   hasPmRole?: boolean;
@@ -208,6 +216,7 @@ export function VendorSidebar({ user, hasPmRole = false, vendorRole = "owner" }:
   const navItems = isTech
     ? [
         { href: "/vendor/schedule", label: vt("mySchedule"), icon: <CalendarIcon />, matchExact: false },
+        { href: "/vendor/actions", label: vt("actions"), icon: <ActionsIcon />, matchExact: false },
         { href: "/vendor/jobs", label: vt("myJobs"), icon: <BriefcaseIcon />, matchExact: false },
         { href: "/vendor/inspections", label: vt("inspections"), icon: <ClipboardCheckIcon />, matchExact: false },
         { href: "/vendor/inbox", label: vt("messages"), icon: <ChatBubbleIcon />, matchExact: false, showUnreadBadge: true },
@@ -216,6 +225,7 @@ export function VendorSidebar({ user, hasPmRole = false, vendorRole = "owner" }:
     : isOfficeMgr
       ? [
           { href: "/vendor", label: vt("home"), icon: <HomeIcon />, matchExact: true },
+          { href: "/vendor/actions", label: vt("actions"), icon: <ActionsIcon />, matchExact: false },
           { href: "/vendor/jobs", label: vt("jobs"), icon: <BriefcaseIcon />, matchExact: false },
           { href: "/vendor/inspections", label: vt("inspections"), icon: <ClipboardCheckIcon />, matchExact: false },
           { href: "/vendor/schedule", label: vt("schedule"), icon: <CalendarIcon />, matchExact: false },
@@ -226,6 +236,7 @@ export function VendorSidebar({ user, hasPmRole = false, vendorRole = "owner" }:
       : [
           // Owner/Admin — full nav
           { href: "/vendor", label: vt("home"), icon: <HomeIcon />, matchExact: true },
+          { href: "/vendor/actions", label: vt("actions"), icon: <ActionsIcon />, matchExact: false },
           { href: "/vendor/jobs", label: vt("jobs"), icon: <BriefcaseIcon />, matchExact: false },
           { href: "/vendor/inspections", label: vt("inspections"), icon: <ClipboardCheckIcon />, matchExact: false },
           { href: "/vendor/schedule", label: vt("schedule"), icon: <CalendarIcon />, matchExact: false },

@@ -34,5 +34,6 @@
   "sms": "SMS",
   "reviews": "Reviews",
   "inventory": "Inventory",
-  "inspections": "Inspections"
+  "inspections": "Inspections",
+  "actions": "Actions"
 }

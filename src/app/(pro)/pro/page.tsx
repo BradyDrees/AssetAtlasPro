@@ -5,6 +5,7 @@ import { getCredentialSummary } from "@/app/actions/vendor-profile";
 import { getVendorScorecardSelf } from "@/app/actions/vendor-scorecard";
 import { getReviewAnalytics } from "@/app/actions/vendor-reviews";
 import { getLowStockAlerts } from "@/app/actions/vendor-inventory";
+import { getActionSummary } from "@/app/actions/vendor-actions";
 import { DashboardShell } from "@/components/vendor/dashboard-shell";
 import { DashboardStatsGrid } from "@/components/vendor/dashboard-stats";
 import { IncomingWorkOrders } from "@/components/vendor/incoming-work-orders";
@@ -16,6 +17,7 @@ import { DashboardReviewsWidget } from "@/components/vendor/dashboard-reviews-wi
 import { DashboardPerformanceWidget } from "@/components/vendor/dashboard-performance-widget";
 import { DashboardInventoryWidget } from "@/components/vendor/dashboard-inventory-widget";
 import { DashboardLeadSources } from "@/components/vendor/dashboard-lead-sources";
+import { DashboardActionsWidget } from "@/components/vendor/dashboard-actions-widget";
 import Link from "next/link";
 
 const VALID_RANGES = new Set<DateRangePreset>(["today", "week", "month", "quarter"]);
@@ -38,12 +40,13 @@ export default async function ProDashboardPage({
   const range = normalizeRange(resolvedParams?.range);
   const dt = await getTranslations("vendor.dashboard");
 
-  const [dashData, credSummary, reviewAnalytics, scorecardResult, lowStockResult] = await Promise.all([
+  const [dashData, credSummary, reviewAnalytics, scorecardResult, lowStockResult, actionSummary] = await Promise.all([
     getDashboardData(range),
     getCredentialSummary(),
     getReviewAnalytics(),
     getVendorScorecardSelf(),
     getLowStockAlerts(),
+    getActionSummary().catch(() => ({ totalCount: 0, criticalCount: 0, highCount: 0, categories: [], topItems: [] })),
   ]);
 
   const { stats, incoming, upcomingJobs, revenueBalance, expensesSummary, techScoreboard } = dashData;
@@ -72,6 +75,11 @@ export default async function ProDashboardPage({
       <DashboardShell range={range}>
         {/* Stats */}
         <DashboardStatsGrid stats={stats} />
+
+        {/* Action Items */}
+        {actionSummary.totalCount > 0 && (
+          <DashboardActionsWidget summary={actionSummary} />
+        )}
 
         {/* Revenue Balance */}
         <DashboardRevenueBalance

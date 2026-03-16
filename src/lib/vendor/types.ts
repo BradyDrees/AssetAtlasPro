@@ -125,7 +125,8 @@ export type VendorEntityType =
   | "inventory"
   | "checklist_template"
   | "checklist"
-  | "sub_assignment";
+  | "sub_assignment"
+  | "action_item";
 
 // ============================================
 // Work Order Types (Phase 2, defined early for state-machine)

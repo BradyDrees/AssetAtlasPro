@@ -38,6 +38,7 @@ export default getRequestConfig(async () => {
   const vendorReviews = (await import(`../messages/${locale}/vendor-reviews.json`)).default;
   const vendorInventory = (await import(`../messages/${locale}/vendor-inventory.json`)).default;
   const vendorChecklists = (await import(`../messages/${locale}/vendor-checklists.json`)).default;
+  const vendorActions = (await import(`../messages/${locale}/vendor-actions.json`)).default;
 
   // Shared messaging module (used across Pro, Vendor, Home, Operate)
   const messaging = (await import(`../messages/${locale}/messaging.json`)).default;
@@ -93,6 +94,7 @@ export default getRequestConfig(async () => {
       reviews: vendorReviews,
       inventory: vendorInventory,
       checklists: vendorChecklists,
+      actions: vendorActions,
     },
     operate: {
       workOrders: operateWorkOrders,

@@ -1,0 +1,90 @@
+{
+  "pageTitle": "Lista de Tareas",
+  "pageSubtitle": "Tareas que necesitan tu atención",
+  "widget": {
+    "title": "Tareas Pendientes",
+    "viewAll": "Ver Todo",
+    "noItems": "¡Estás al día!",
+    "critical": "{count} críticas",
+    "high": "{count} alta prioridad",
+    "itemCount": "{count, plural, =0 {Sin tareas} =1 {1 tarea} other {# tareas}}"
+  },
+  "filter": {
+    "all": "Todas",
+    "critical": "Críticas",
+    "high": "Alta",
+    "medium": "Media",
+    "low": "Baja"
+  },
+  "categories": {
+    "respond_wo": "Responder Solicitudes",
+    "schedule_wo": "Programar Trabajos",
+    "todays_jobs": "Trabajos de Hoy",
+    "followup_completed": "Llamadas de Seguimiento",
+    "send_estimate": "Enviar Presupuestos",
+    "followup_estimate": "Seguimiento de Presupuestos",
+    "estimate_changes": "Cambios en Presupuestos",
+    "create_invoice": "Crear Facturas",
+    "submit_invoice": "Enviar Facturas",
+    "overdue_invoice": "Facturas Vencidas",
+    "disputed_invoice": "Facturas en Disputa",
+    "unread_messages": "Mensajes sin Leer",
+    "expiring_credential": "Credenciales por Vencer",
+    "open_dispute": "Disputas Abiertas"
+  },
+  "items": {
+    "respondWo": "Responder solicitud de trabajo",
+    "respondWoSub": "Nueva asignación en {property} — responde para aceptar o rechazar",
+    "scheduleWo": "Programar trabajo",
+    "scheduleWoSub": "{property} necesita una fecha programada",
+    "todaysJob": "Trabajo de hoy",
+    "todaysJobSub": "{property} está programado para hoy",
+    "followupCompleted": "Llamada de seguimiento — Día {days}",
+    "followupCompletedSub": "Llama al cliente en {property} para verificar el trabajo completado",
+    "sendEstimate": "Enviar presupuesto",
+    "sendEstimateSub": "{title} está pendiente como borrador",
+    "followupEstimate": "Dar seguimiento al presupuesto",
+    "followupEstimateSub": "{title} está esperando aprobación",
+    "estimateChanges": "Atender cambios en presupuesto",
+    "estimateChangesSub": "{title} tiene cambios solicitados",
+    "createInvoice": "Crear factura",
+    "createInvoiceSub": "{title} fue aprobado — crea una factura",
+    "submitInvoice": "Enviar factura",
+    "submitInvoiceSub": "{number} todavía está en borrador",
+    "overdueInvoice": "Factura vencida",
+    "overdueInvoiceSub": "{number} tiene {days} días de atraso",
+    "disputedInvoice": "Factura en disputa",
+    "disputedInvoiceSub": "{number} fue disputada por el PM",
+    "unreadMessage": "Mensaje sin leer",
+    "unreadMessageSub": "Nuevo mensaje en {thread}",
+    "expiringCredential": "Credencial por vencer",
+    "expiringCredentialSub": "{name} vence en {days} días",
+    "openDispute": "Disputa abierta",
+    "openDisputeSub": "Una disputa requiere tu respuesta"
+  },
+  "actions": {
+    "markDone": "Listo",
+    "dismiss": "Ahora no",
+    "snooze": "Posponer",
+    "undo": "Deshacer",
+    "view": "Ver",
+    "snoozeTomorrow": "Mañana",
+    "snooze3Days": "En 3 días",
+    "snoozeNextMonday": "Próximo lunes"
+  },
+  "completed": {
+    "title": "Completadas Hoy",
+    "empty": "Aún no has completado tareas hoy",
+    "count": "{count} completadas hoy"
+  },
+  "productivity": {
+    "title": "Esta Semana",
+    "completed": "Completadas",
+    "dismissed": "Descartadas",
+    "snoozed": "Pospuestas"
+  },
+  "empty": {
+    "title": "¡Todo al día!",
+    "subtitle": "No hay tareas pendientes ahora. Buen trabajo manteniéndote al día."
+  }
+}

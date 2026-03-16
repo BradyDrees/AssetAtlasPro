@@ -1,0 +1,90 @@
+{
+  "pageTitle": "Action List",
+  "pageSubtitle": "Tasks that need your attention",
+  "widget": {
+    "title": "Pending Actions",
+    "viewAll": "View All",
+    "noItems": "You're all caught up!",
+    "critical": "{count} critical",
+    "high": "{count} high priority",
+    "itemCount": "{count, plural, =0 {No tasks} =1 {1 task} other {# tasks}}"
+  },
+  "filter": {
+    "all": "All",
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "categories": {
+    "respond_wo": "Respond to Requests",
+    "schedule_wo": "Schedule Jobs",
+    "todays_jobs": "Today's Jobs",
+    "followup_completed": "Follow-Up Calls",
+    "send_estimate": "Send Estimates",
+    "followup_estimate": "Follow Up on Estimates",
+    "estimate_changes": "Estimate Changes",
+    "create_invoice": "Create Invoices",
+    "submit_invoice": "Submit Invoices",
+    "overdue_invoice": "Overdue Invoices",
+    "disputed_invoice": "Disputed Invoices",
+    "unread_messages": "Unread Messages",
+    "expiring_credential": "Expiring Credentials",
+    "open_dispute": "Open Disputes"
+  },
+  "items": {
+    "respondWo": "Respond to work order",
+    "respondWoSub": "New assignment at {property} — respond to accept or decline",
+    "scheduleWo": "Schedule job",
+    "scheduleWoSub": "{property} needs a scheduled date",
+    "todaysJob": "Today's job",
+    "todaysJobSub": "{property} is scheduled for today",
+    "followupCompleted": "Follow-up call — Day {days}",
+    "followupCompletedSub": "Call the customer at {property} to check on completed work",
+    "sendEstimate": "Send estimate",
+    "sendEstimateSub": "{title} is sitting in draft",
+    "followupEstimate": "Follow up on estimate",
+    "followupEstimateSub": "{title} is waiting for approval",
+    "estimateChanges": "Address estimate changes",
+    "estimateChangesSub": "{title} has requested changes",
+    "createInvoice": "Create invoice",
+    "createInvoiceSub": "{title} was approved — create an invoice",
+    "submitInvoice": "Submit invoice",
+    "submitInvoiceSub": "{number} is still in draft",
+    "overdueInvoice": "Overdue invoice",
+    "overdueInvoiceSub": "{number} is {days} days past due",
+    "disputedInvoice": "Disputed invoice",
+    "disputedInvoiceSub": "{number} was disputed by the PM",
+    "unreadMessage": "Unread message",
+    "unreadMessageSub": "New message in {thread}",
+    "expiringCredential": "Expiring credential",
+    "expiringCredentialSub": "{name} expires in {days} days",
+    "openDispute": "Open dispute",
+    "openDisputeSub": "A dispute requires your response"
+  },
+  "actions": {
+    "markDone": "Done",
+    "dismiss": "Not Now",
+    "snooze": "Snooze",
+    "undo": "Undo",
+    "view": "View",
+    "snoozeTomorrow": "Tomorrow",
+    "snooze3Days": "In 3 days",
+    "snoozeNextMonday": "Next Monday"
+  },
+  "completed": {
+    "title": "Completed Today",
+    "empty": "You haven't completed any tasks today yet",
+    "count": "{count} completed today"
+  },
+  "productivity": {
+    "title": "This Week",
+    "completed": "Completed",
+    "dismissed": "Dismissed",
+    "snoozed": "Snoozed"
+  },
+  "empty": {
+    "title": "All Caught Up!",
+    "subtitle": "No pending tasks right now. Great job staying on top of things."
+  }
+}

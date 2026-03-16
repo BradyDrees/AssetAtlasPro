@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import { getRecurringTemplates } from "@/app/actions/vendor-recurring-invoices";
 import type { RecurringInvoiceTemplate } from "@/lib/vendor/recurring-invoice-types";
 import { RecurringInvoiceCard } from "@/components/vendor/recurring-invoice-card";
@@ -29,24 +28,11 @@ export default function RecurringInvoicesPage() {
     loadData();
   }, [loadData]);
 
-  const filtered = templates;
-
   return (
     <div className="max-w-4xl mx-auto space-y-4">
-      {/* Back link */}
-      <Link
-        href="/vendor/invoices"
-        className="inline-flex items-center gap-1 text-sm text-content-tertiary hover:text-content-primary"
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-        </svg>
-        {t("backToInvoices")}
-      </Link>
-
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-content-primary">{t("title")}</h1>
+        <h1 className="text-3xl font-bold text-content-primary tracking-tight">{t("title")}</h1>
         <button
           onClick={() => setShowCreate(true)}
           className="px-4 py-2 rounded-lg text-sm font-medium bg-brand-600 hover:bg-brand-700 text-white transition-colors"
@@ -82,7 +68,7 @@ export default function RecurringInvoicesPage() {
             </div>
           ))}
         </div>
-      ) : filtered.length === 0 ? (
+      ) : templates.length === 0 ? (
         <div className="bg-surface-primary rounded-xl border border-edge-primary p-8 text-center">
           <p className="text-content-tertiary text-sm">{t("noTemplates")}</p>
           <button
@@ -94,12 +80,12 @@ export default function RecurringInvoicesPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {filtered.map((tpl) => (
+          {templates.map((tpl) => (
             <RecurringInvoiceCard
               key={tpl.id}
               template={tpl}
               onMutate={loadData}
-              basePath="/vendor/invoices"
+              basePath="/pro/recurring"
             />
           ))}
         </div>

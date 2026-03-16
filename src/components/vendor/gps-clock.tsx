@@ -72,8 +72,34 @@ export function GpsClock({
         }
         setGeo({ lat, lng, status: "acquired", distanceM, isOnSite: isOnSiteVal });
       },
-      () => {
-        setGeo((prev) => ({ ...prev, status: "denied" }));
+      (err) => {
+        if (err.code === 1) {
+          // PERMISSION_DENIED — user said no, don't auto-retry
+          setGeo((prev) => ({ ...prev, status: "denied" }));
+        } else {
+          // POSITION_UNAVAILABLE or TIMEOUT — transient, auto-retry once
+          setGeo((prev) => ({ ...prev, status: "unavailable" }));
+          setTimeout(() => {
+            navigator.geolocation.getCurrentPosition(
+              (pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                let distanceM: number | null = null;
+                let isOnSiteVal: boolean | null = null;
+                if (propertyLat != null && propertyLng != null) {
+                  distanceM = haversine(lat, lng, propertyLat, propertyLng);
+                  isOnSiteVal = distanceM <= 200;
+                }
+                setGeo({ lat, lng, status: "acquired", distanceM, isOnSite: isOnSiteVal });
+              },
+              () => {
+                // Second attempt failed — stay on unavailable
+                setGeo((prev) => ({ ...prev, status: "unavailable" }));
+              },
+              { enableHighAccuracy: false, timeout: 15000 }
+            );
+          }, 2000);
+        }
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
@@ -168,7 +194,7 @@ export function GpsClock({
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
           </svg>
-          {t("time.gps.unavailable")}
+          {t("time.gps.optional")}
         </span>
       );
     }
@@ -215,7 +241,7 @@ export function GpsClock({
         {geo.status !== "requesting" && geo.status !== "acquired" && (
           <button
             onClick={requestLocation}
-            className="text-[10px] text-brand-400 hover:text-brand-300"
+            className="text-xs text-brand-400 hover:text-brand-300 font-medium"
           >
             {t("time.gps.retry")}
           </button>

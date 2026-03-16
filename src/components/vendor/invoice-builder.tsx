@@ -123,10 +123,10 @@ export function InvoiceBuilder({
     }
   }, [invoice.id, router, basePath]);
 
-  const subtotal = items.reduce((sum, i) => sum + Number(i.total || 0), 0);
+  const subtotal = Math.round(items.reduce((sum, i) => sum + Number(i.total || 0), 0) * 100) / 100;
   const taxPct = Number(invoice.tax_pct) || 0;
-  const taxAmount = subtotal * (taxPct / 100);
-  const total = subtotal + taxAmount;
+  const taxAmount = Math.round(subtotal * (taxPct / 100) * 100) / 100;
+  const total = Math.round((subtotal + taxAmount) * 100) / 100;
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">

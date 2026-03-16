@@ -113,9 +113,20 @@
     "hourlyRate": "Tarifa por Hora",
     "noEntries": "Sin registros de tiempo",
     "minutes": "min",
+    "staleWarning": "La entrada lleva más de 8 horas abierta",
+    "staleHint": "Toca editar para cerrar esta entrada manualmente o eliminarla",
+    "edit": "Editar",
+    "editClockOut": "Hora de Salida",
+    "editNotes": "Notas",
+    "notesPlaceholder": "Agregar notas...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "confirmDelete": "¿Eliminar este registro de tiempo? No se puede deshacer.",
     "gps": {
       "requesting": "Obteniendo ubicación...",
       "unavailable": "Ubicación no disponible",
+      "optional": "GPS opcional",
       "onSite": "En sitio",
       "offSite": "Fuera de sitio",
       "noPropertyLocation": "Ubicación de propiedad no configurada",
@@ -135,7 +146,9 @@
     "noHistory": "Sin trabajos previos en esta propiedad",
     "pastJobs": "Trabajos Previos",
     "totalInvoiced": "Total Facturado",
-    "previousWork": "Trabajos Anteriores"
+    "previousWork": "Trabajos Anteriores",
+    "loadError": "No se pudo cargar el historial de la propiedad",
+    "retry": "Reintentar"
   },
   "chat": {
     "title": "Chat con PM",

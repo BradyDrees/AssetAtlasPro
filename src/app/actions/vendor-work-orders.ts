@@ -819,6 +819,105 @@ export async function clockOut(
   return { data: data as VendorWoTimeEntry };
 }
 
+/** Edit a time entry — allows manual close or adjustment */
+export async function editTimeEntry(
+  entryId: string,
+  updates: {
+    clock_out?: string; // ISO timestamp for manual close
+    notes?: string;
+  }
+): Promise<{ data?: VendorWoTimeEntry; error?: string }> {
+  await requireVendorRole();
+  const supabase = await createClient();
+
+  // Fetch the existing entry
+  const { data: entry, error: fetchErr } = await supabase
+    .from("vendor_wo_time_entries")
+    .select("*")
+    .eq("id", entryId)
+    .single();
+
+  if (fetchErr || !entry) {
+    return { error: "Time entry not found" };
+  }
+
+  const updateData: Record<string, unknown> = {};
+
+  if (updates.notes !== undefined) {
+    updateData.notes = updates.notes;
+  }
+
+  if (updates.clock_out) {
+    const clockOutTime = new Date(updates.clock_out);
+    const clockInTime = new Date(entry.clock_in);
+
+    // Ensure clock_out is after clock_in
+    if (clockOutTime <= clockInTime) {
+      return { error: "Clock out must be after clock in" };
+    }
+
+    updateData.clock_out = clockOutTime.toISOString();
+    updateData.duration_minutes = Math.round(
+      (clockOutTime.getTime() - clockInTime.getTime()) / 60000
+    );
+  }
+
+  if (Object.keys(updateData).length === 0) {
+    return { data: entry as VendorWoTimeEntry };
+  }
+
+  const { data, error } = await supabase
+    .from("vendor_wo_time_entries")
+    .update(updateData)
+    .eq("id", entryId)
+    .select()
+    .single();
+
+  if (error) return { error: error.message };
+
+  await logActivity({
+    entityType: "work_order",
+    entityId: entry.work_order_id,
+    action: "time_entry_edited",
+    metadata: { entry_id: entryId },
+  });
+
+  return { data: data as VendorWoTimeEntry };
+}
+
+/** Delete a time entry */
+export async function deleteTimeEntry(
+  entryId: string
+): Promise<{ error?: string }> {
+  await requireVendorRole();
+  const supabase = await createClient();
+
+  // Fetch entry to get WO ID for activity log
+  const { data: entry } = await supabase
+    .from("vendor_wo_time_entries")
+    .select("work_order_id")
+    .eq("id", entryId)
+    .single();
+
+  const { error } = await supabase
+    .from("vendor_wo_time_entries")
+    .delete()
+    .eq("id", entryId);
+
+  if (error) return { error: error.message };
+
+  if (entry) {
+    await logActivity({
+      entityType: "work_order",
+      entityId: entry.work_order_id,
+      action: "time_entry_deleted",
+      metadata: { entry_id: entryId },
+    });
+  }
+
+  return {};
+}
+
 // ============================================
 // Workiz Enhancements — Tags, Job Type, Sub Status, Reschedule
 // ============================================

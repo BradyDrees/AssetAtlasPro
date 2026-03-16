@@ -359,7 +359,7 @@ export async function createInvoiceItem(
 
   const qty = input.quantity ?? 1;
   const price = input.unit_price ?? 0;
-  const total = qty * price;
+  const total = Math.round(qty * price * 100) / 100;
 
   const { data, error } = await supabase
     .from("vendor_invoice_items")
@@ -402,7 +402,7 @@ export async function updateInvoiceItem(
     if (current) {
       const qty = updates.quantity ?? current.quantity;
       const price = updates.unit_price ?? current.unit_price;
-      updateData.total = qty * price;
+      updateData.total = Math.round(qty * price * 100) / 100;
     }
   }
 
@@ -448,10 +448,9 @@ export async function recalculateInvoiceTotals(
     .select("total")
     .eq("invoice_id", invoiceId);
 
-  const subtotal = (items ?? []).reduce(
-    (sum, item) => sum + (Number(item.total) || 0),
-    0
-  );
+  const subtotal = Math.round(
+    (items ?? []).reduce((sum, item) => sum + (Number(item.total) || 0), 0) * 100
+  ) / 100;
 
   const { data: inv } = await supabase
     .from("vendor_invoices")
@@ -460,8 +459,8 @@ export async function recalculateInvoiceTotals(
     .single();
 
   const taxPct = Number(inv?.tax_pct) || 0;
-  const taxAmount = subtotal * (taxPct / 100);
-  const total = subtotal + taxAmount;
+  const taxAmount = Math.round(subtotal * (taxPct / 100) * 100) / 100;
+  const total = Math.round((subtotal + taxAmount) * 100) / 100;
 
   await supabase
     .from("vendor_invoices")

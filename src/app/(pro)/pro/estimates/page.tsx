@@ -104,7 +104,7 @@ export default function VendorEstimatesPage() {
       ) : (
         <div className="space-y-3">
           {estimates.map((est) => (
-            <EstimateCard key={est.id} estimate={est} />
+            <EstimateCard key={est.id} estimate={est} basePath="/pro" />
           ))}
         </div>
       )}

@@ -9,9 +9,10 @@ import type { EstimateStatus } from "@/lib/vendor/types";
 
 interface EstimateCardProps {
   estimate: VendorEstimate;
+  basePath?: string;
 }
 
-export function EstimateCard({ estimate }: EstimateCardProps) {
+export function EstimateCard({ estimate, basePath = "/vendor" }: EstimateCardProps) {
   const t = useTranslations("vendor.estimates");
   const { formatDate } = useFormatDate();
 
@@ -25,7 +26,7 @@ export function EstimateCard({ estimate }: EstimateCardProps) {
 
   return (
     <Link
-      href={`/vendor/estimates/${estimate.id}`}
+      href={`${basePath}/estimates/${estimate.id}`}
       className="block bg-surface-primary rounded-xl border border-edge-primary p-4 hover:border-brand-500/50 transition-colors"
     >
       <div className="flex items-start justify-between gap-3 mb-2">

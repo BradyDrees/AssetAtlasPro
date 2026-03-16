@@ -113,9 +113,20 @@
     "hourlyRate": "Hourly Rate",
     "noEntries": "No time entries",
     "minutes": "min",
+    "staleWarning": "Clock-in has been open for 8+ hours",
+    "staleHint": "Tap edit to manually close this entry or delete it",
+    "edit": "Edit",
+    "editClockOut": "Clock Out Time",
+    "editNotes": "Notes",
+    "notesPlaceholder": "Add notes...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirmDelete": "Delete this time entry? This cannot be undone.",
     "gps": {
       "requesting": "Getting location...",
       "unavailable": "Location unavailable",
+      "optional": "GPS optional",
       "onSite": "On-site",
       "offSite": "Off-site",
       "noPropertyLocation": "Property location not set",
@@ -135,7 +146,9 @@
     "noHistory": "No previous work at this property",
     "pastJobs": "Past Jobs",
     "totalInvoiced": "Total Invoiced",
-    "previousWork": "Previous Work Orders"
+    "previousWork": "Previous Work Orders",
+    "loadError": "Unable to load property history",
+    "retry": "Retry"
   },
   "chat": {
     "title": "PM Chat",

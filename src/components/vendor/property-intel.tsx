@@ -18,11 +18,18 @@ export function PropertyIntelPanel({ workOrderId }: PropertyIntelProps) {
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    const result = await getPropertyIntel(workOrderId);
-    if (result.error) {
-      setError(result.error);
-    } else if (result.data) {
-      setIntel(result.data);
+    try {
+      const timeout = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("timeout")), 10000)
+      );
+      const result = await Promise.race([getPropertyIntel(workOrderId), timeout]);
+      if (result.error) {
+        setError(result.error);
+      } else if (result.data) {
+        setIntel(result.data);
+      }
+    } catch {
+      setError("timeout");
     }
     setLoading(false);
   }, [workOrderId]);
@@ -44,7 +51,17 @@ export function PropertyIntelPanel({ workOrderId }: PropertyIntelProps) {
   }
 
   if (error || !intel) {
-    return null;
+    return (
+      <div className="text-center py-4 space-y-2">
+        <p className="text-xs text-content-quaternary">{t("intel.loadError")}</p>
+        <button
+          onClick={() => { setLoading(true); setError(null); load(); }}
+          className="text-xs text-brand-400 hover:text-brand-300 font-medium"
+        >
+          {t("intel.retry")}
+        </button>
+      </div>
+    );
   }
 
   if (intel.total_past_jobs === 0) {

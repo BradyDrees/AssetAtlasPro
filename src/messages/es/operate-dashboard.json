@@ -1,0 +1,50 @@
+{
+  "title": "Centro de Comando",
+  "today": "Hoy",
+  "alerts": "{count} Alertas",
+  "noAlerts": "Sin Alertas",
+  "quickAdd": "Nueva Orden de Trabajo",
+  "tabs": {
+    "portfolio": "Portafolio",
+    "feed": "Actividad",
+    "dispatch": "Despacho"
+  },
+  "portfolio": {
+    "title": "Propiedades",
+    "openWos": "{count} Abiertas",
+    "overdue": "{count} Vencidas",
+    "emergency": "{count} Emergencia",
+    "noProperties": "Sin propiedades activas",
+    "noPropertiesDesc": "Crea una orden de trabajo para ver tus propiedades aquí",
+    "unknownProperty": "Propiedad Desconocida",
+    "allProperties": "Todas las Propiedades",
+    "clearFilter": "Limpiar filtro"
+  },
+  "feed": {
+    "title": "Elementos Abiertos",
+    "filterAll": "Todos",
+    "filterOverdue": "Vencidos",
+    "filterEmergency": "Emergencia",
+    "filterScheduled": "Programados",
+    "noItems": "Sin ordenes de trabajo abiertas",
+    "noItemsDesc": "¡Todo al día!",
+    "overdueLabel": "Vencido",
+    "unassigned": "Sin Asignar",
+    "daysOpen": "{count}d abierto",
+    "scheduled": "Programado {date}"
+  },
+  "dispatch": {
+    "title": "Despacho de Hoy",
+    "jobsCount": "{count} trabajos",
+    "noJobs": "Sin trabajos programados hoy",
+    "noJobsDesc": "Sin técnicos despachados para hoy",
+    "unscheduled": "Sin Programar Hoy",
+    "needsAssignment": "Necesita Asignación",
+    "needsAssignmentDesc": "Trabajos abiertos sin técnico ni programación",
+    "timeWindow": "{start} – {end}"
+  },
+  "status": {
+    "updateSuccess": "Estado actualizado",
+    "updateFailed": "Error al actualizar estado"
+  }
+}

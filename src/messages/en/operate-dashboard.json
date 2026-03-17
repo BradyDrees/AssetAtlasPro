@@ -1,0 +1,50 @@
+{
+  "title": "Command Center",
+  "today": "Today",
+  "alerts": "{count} Alerts",
+  "noAlerts": "No Alerts",
+  "quickAdd": "New Work Order",
+  "tabs": {
+    "portfolio": "Portfolio",
+    "feed": "Feed",
+    "dispatch": "Dispatch"
+  },
+  "portfolio": {
+    "title": "Properties",
+    "openWos": "{count} Open",
+    "overdue": "{count} Overdue",
+    "emergency": "{count} Emergency",
+    "noProperties": "No active properties",
+    "noPropertiesDesc": "Create a work order to see your properties here",
+    "unknownProperty": "Unknown Property",
+    "allProperties": "All Properties",
+    "clearFilter": "Clear filter"
+  },
+  "feed": {
+    "title": "Open Items",
+    "filterAll": "All",
+    "filterOverdue": "Overdue",
+    "filterEmergency": "Emergency",
+    "filterScheduled": "Scheduled",
+    "noItems": "No open work orders",
+    "noItemsDesc": "All caught up!",
+    "overdueLabel": "Overdue",
+    "unassigned": "Unassigned",
+    "daysOpen": "{count}d open",
+    "scheduled": "Scheduled {date}"
+  },
+  "dispatch": {
+    "title": "Today's Dispatch",
+    "jobsCount": "{count} jobs",
+    "noJobs": "No scheduled jobs today",
+    "noJobsDesc": "No techs dispatched for today",
+    "unscheduled": "Unscheduled Today",
+    "needsAssignment": "Needs Assignment",
+    "needsAssignmentDesc": "Open jobs with no tech or schedule",
+    "timeWindow": "{start} – {end}"
+  },
+  "status": {
+    "updateSuccess": "Status updated",
+    "updateFailed": "Failed to update status"
+  }
+}

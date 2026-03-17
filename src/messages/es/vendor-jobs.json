@@ -6,7 +6,10 @@
   "active": "Activos",
   "completed": "Completados",
   "all": "Todos los Trabajos",
+  "archived": "Archivados",
   "unscheduled": "Sin Programar",
+  "noArchived": "Sin trabajos archivados",
+  "noArchivedSubtitle": "Cuando archives trabajos, aparecerán aquí",
   "noJobs": "Sin trabajos aún",
   "noIncoming": "Sin trabajos entrantes",
   "noUnscheduled": "Sin trabajos sin programar",
@@ -55,7 +58,12 @@
     "complete": "Completar",
     "donePendingApproval": "Hecho - Pendiente Aprobación",
     "putOnHold": "Poner en Espera",
-    "resume": "Reanudar"
+    "resume": "Reanudar",
+    "archive": "Archivar",
+    "unarchive": "Desarchivar",
+    "archiveConfirm": "¿Archivar este trabajo? Se ocultará de tu lista activa.",
+    "archivedBanner": "Este trabajo está archivado",
+    "archivedOn": "Archivado el {date}"
   },
   "detail": {
     "property": "Propiedad",
@@ -247,6 +255,17 @@
     "appointmentFailed": "Error al enviar el recordatorio",
     "reminderScheduled": "El recordatorio se enviará el día anterior",
     "noTenantPhone": "Sin celular del inquilino para recordatorio"
+  },
+  "techRating": {
+    "title": "Calificación del Técnico",
+    "subtitle": "Califica el trabajo de {name} en este trabajo",
+    "notesPlaceholder": "Agrega notas sobre su desempeño...",
+    "submit": "Enviar Calificación",
+    "submitting": "Enviando...",
+    "submitted": "¡Calificación guardada!",
+    "edit": "Editar Calificación",
+    "update": "Actualizar Calificación",
+    "noPermission": "Solo los administradores pueden calificar el desempeño del técnico"
   },
   "property": {
     "title": "Info de Propiedad",

@@ -118,6 +118,7 @@ export async function getDashboardData(): Promise<DashboardData> {
       .from("vendor_work_orders")
       .select("id, status, trade, description, property_name, vendor_org_id, created_at, scheduled_date, scheduled_time_start, scheduled_time_end, completed_at")
       .eq("homeowner_id", user.id)
+      .is("archived_at", null)
       .order("created_at", { ascending: false })
       .limit(50),
 
@@ -380,7 +381,8 @@ export async function getSetupProgress(): Promise<SetupProgress> {
     supabase
       .from("vendor_work_orders")
       .select("id", { count: "exact", head: true })
-      .eq("homeowner_id", user.id),
+      .eq("homeowner_id", user.id)
+      .is("archived_at", null),
   ]);
 
   const prop = propertyRes.data;
@@ -463,6 +465,7 @@ export async function getHealthScore(): Promise<HealthScoreResult | null> {
       .from("vendor_work_orders")
       .select("trade")
       .eq("homeowner_id", user.id)
+      .is("archived_at", null)
       .in("status", ["completed", "done_pending_approval", "invoiced", "paid"])
       .gte("completed_at", sixMonthsAgo),
 

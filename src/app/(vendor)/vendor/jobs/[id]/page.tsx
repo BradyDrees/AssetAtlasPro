@@ -8,6 +8,7 @@ import {
   getWorkOrder,
   getWorkOrderMaterials,
   getTimeEntries,
+  unarchiveWorkOrder,
 } from "@/app/actions/vendor-work-orders";
 import type { VendorWorkOrder, VendorWoMaterial, VendorWoTimeEntry } from "@/lib/vendor/work-order-types";
 import { StatusBadge } from "@/components/vendor/status-badge";
@@ -25,6 +26,7 @@ import { WoPhotoSection } from "@/components/vendor/wo-photo-section";
 import { SystemInfoForm } from "@/components/vendor/system-info-form";
 import { JobChecklist } from "@/components/vendor/job-checklist";
 import { JobSubAssignments } from "@/components/vendor/job-sub-assignments";
+import { TechRatingCard } from "@/components/vendor/tech-rating-card";
 import { createClient } from "@/lib/supabase/client";
 
 export default function JobDetailPage() {
@@ -46,6 +48,7 @@ export default function JobDetailPage() {
     total: number;
   } | null>(null);
   const [isVendorAdmin, setIsVendorAdmin] = useState(false);
+  const [techName, setTechName] = useState<string>("");
   const mt = useTranslations("vendor.messages");
 
   useEffect(() => {
@@ -74,6 +77,19 @@ export default function JobDetailPage() {
       setWo(woRes.data);
       setMaterials(matRes.data);
       setTimeEntries(timeRes.data);
+
+      // Resolve tech name from assigned_to
+      if (woRes.data?.assigned_to) {
+        const { data: techUser } = await supabase
+          .from("vendor_users")
+          .select("first_name, last_name")
+          .eq("id", woRes.data.assigned_to)
+          .maybeSingle();
+        if (techUser) {
+          const tu = techUser as { first_name: string | null; last_name: string | null };
+          setTechName([tu.first_name, tu.last_name].filter(Boolean).join(" ") || "Tech");
+        }
+      }
 
       // Fetch linked estimate (if this WO was created from an approved estimate)
       const { data: estData } = await supabase
@@ -137,6 +153,36 @@ export default function JobDetailPage() {
         {t("title")}
       </Link>
 
+      {/* Archived Banner */}
+      {wo.archived_at && (
+        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800 p-4 flex items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold text-amber-700 dark:text-amber-400">
+              {t("actions.archivedBanner")}
+            </p>
+            <p className="text-xs text-amber-600 dark:text-amber-500 mt-0.5">
+              {t("actions.archivedOn", {
+                date: new Date(wo.archived_at).toLocaleDateString(undefined, {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                }),
+              })}
+            </p>
+          </div>
+          <button
+            onClick={async () => {
+              await unarchiveWorkOrder(wo.id);
+              const woRes = await getWorkOrder(woId);
+              setWo(woRes.data);
+            }}
+            className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-brand-600 hover:bg-brand-700 text-white transition-colors"
+          >
+            {t("actions.unarchive")}
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div className="bg-surface-primary rounded-xl border border-edge-primary p-5">
         <div className="flex items-start justify-between gap-3 mb-4">
@@ -178,7 +224,17 @@ export default function JobDetailPage() {
         </div>
 
         {/* Actions */}
-        <JobActions woId={wo.id} currentStatus={wo.status} trackingToken={wo.tracking_token} tenantPhone={wo.tenant_phone} />
+        <JobActions
+          woId={wo.id}
+          currentStatus={wo.status}
+          trackingToken={wo.tracking_token}
+          tenantPhone={wo.tenant_phone}
+          archivedAt={wo.archived_at}
+          onArchive={async () => {
+            const woRes = await getWorkOrder(woId);
+            setWo(woRes.data);
+          }}
+        />
       </div>
 
       {/* Details grid */}
@@ -398,6 +454,16 @@ export default function JobDetailPage() {
                 {wo.completion_notes}
               </p>
             </div>
+          )}
+
+          {/* Tech Performance Rating */}
+          {["completed", "done_pending_approval", "invoiced", "paid"].includes(wo.status) && wo.assigned_to && (
+            <TechRatingCard
+              woId={wo.id}
+              techName={techName}
+              trade={wo.trade}
+              canRate={isVendorAdmin}
+            />
           )}
         </div>
 

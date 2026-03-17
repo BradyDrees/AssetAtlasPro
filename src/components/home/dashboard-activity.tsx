@@ -69,8 +69,9 @@ export function DashboardActivity({ events }: Props) {
     <div className="space-y-1">
       {events.map((evt) => {
         const cfg = EVENT_ICONS[evt.type];
+        const capitalize = (s: string) => s.replace(/\b\w/g, (c) => c.toUpperCase());
         const label = t(`activity.${evt.type}`, {
-          trade: evt.trade ?? "",
+          trade: evt.trade ? capitalize(evt.trade) : "",
           vendor: evt.vendor_name ?? "",
           rating: evt.meta?.rating != null ? String(evt.meta.rating) : "",
         });

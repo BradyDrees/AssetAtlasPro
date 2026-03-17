@@ -45,10 +45,10 @@ interface VendorProfileContentProps {
   badges: VendorBadges | null;
 }
 
-const RESPONSE_LABELS: Record<string, string> = {
-  same_day: "Same Day",
-  next_day: "Next Day",
-  within_48hrs: "Within 48 Hours",
+const RESPONSE_LABEL_KEYS: Record<string, string> = {
+  same_day: "sameDay",
+  next_day: "nextDay",
+  within_48hrs: "within48hrs",
 };
 
 export function VendorProfileContent({ vendor, ratings, initialSaved, initialPreferred, badges }: VendorProfileContentProps) {
@@ -112,7 +112,7 @@ export function VendorProfileContent({ vendor, ratings, initialSaved, initialPre
               </div>
               {vendor.response_time_label && (
                 <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400">
-                  {RESPONSE_LABELS[vendor.response_time_label] ?? vendor.response_time_label}
+                  {RESPONSE_LABEL_KEYS[vendor.response_time_label] ? t(RESPONSE_LABEL_KEYS[vendor.response_time_label]) : vendor.response_time_label}
                 </span>
               )}
               {vendor.emergency_available && (
@@ -122,7 +122,9 @@ export function VendorProfileContent({ vendor, ratings, initialSaved, initialPre
               )}
             </div>
             {vendor.city && (
-              <p className="text-sm text-content-tertiary mt-1">{vendor.city}, {vendor.state}</p>
+              <p className="text-sm text-content-tertiary mt-1">
+                {vendor.city.replace(/\b\w/g, (c) => c.toUpperCase())}, {vendor.state?.toUpperCase()}
+              </p>
             )}
           </div>
         </div>
@@ -168,7 +170,11 @@ export function VendorProfileContent({ vendor, ratings, initialSaved, initialPre
       {badges && (
         <div className="bg-surface-primary rounded-xl border border-edge-primary p-6">
           <h2 className="text-lg font-semibold text-content-primary mb-3">{t("trustBadges")}</h2>
-          <VendorTrustBadges badges={badges} size="md" />
+          {Object.values(badges).some(Boolean) ? (
+            <VendorTrustBadges badges={badges} size="md" />
+          ) : (
+            <p className="text-sm text-content-quaternary">{t("noCredentials")}</p>
+          )}
         </div>
       )}
 
@@ -199,7 +205,11 @@ export function VendorProfileContent({ vendor, ratings, initialSaved, initialPre
           </div>
           <div>
             <p className="text-xs text-content-quaternary">{t("responseTimeLabel")}</p>
-            <p className="text-sm text-content-primary">{vendor.response_time_label ? RESPONSE_LABELS[vendor.response_time_label] ?? vendor.response_time_label : "—"}</p>
+            <p className="text-sm text-content-primary">
+              {vendor.response_time_label
+                ? (RESPONSE_LABEL_KEYS[vendor.response_time_label] ? t(RESPONSE_LABEL_KEYS[vendor.response_time_label]) : vendor.response_time_label)
+                : t("noResponseTime")}
+            </p>
           </div>
           {vendor.phone && (
             <div>

@@ -191,7 +191,7 @@ export function WorkOrderDetailContent({ workOrder, photos, vendorOrg, googleRev
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-2 duration-300">
           <div className={`px-4 py-2.5 rounded-lg shadow-lg border ${STATUS_COLORS[statusToast] ?? "bg-surface-primary text-content-primary border-edge-primary"}`}>
             <p className="text-sm font-medium">
-              {t("statusUpdated")}: {t(statusToast) || statusToast.replace(/_/g, " ")}
+              {t("statusUpdated")}: {t(statusToast) || statusToast.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
             </p>
           </div>
         </div>
@@ -205,7 +205,7 @@ export function WorkOrderDetailContent({ workOrder, photos, vendorOrg, googleRev
         <div className="flex items-center justify-between mt-2">
           <h1 className="text-2xl font-bold text-content-primary capitalize">{workOrder.trade ?? t("detail")}</h1>
           <span className={`text-xs font-medium px-3 py-1 rounded-full border transition-all ${STATUS_COLORS[liveStatus] ?? "bg-charcoal-500/20 text-charcoal-400"}`}>
-            {t(liveStatus) || liveStatus.replace(/_/g, " ")}
+            {t(liveStatus) || liveStatus.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
           </span>
         </div>
       </div>
@@ -227,7 +227,13 @@ export function WorkOrderDetailContent({ workOrder, photos, vendorOrg, googleRev
           </div>
           <div>
             <p className="text-xs text-content-quaternary">{t("vendor")}</p>
-            <p className="text-sm text-content-primary">{vendorOrg ? vendorOrg.name : t("noVendorYet")}</p>
+            <p className="text-sm text-content-primary">
+              {vendorOrg
+                ? vendorOrg.name
+                : ["open", "matching", "no_match"].includes(liveStatus)
+                  ? t("noVendorYet")
+                  : t(liveStatus) || liveStatus.replace(/_/g, " ")}
+            </p>
           </div>
         </div>
         {workOrder.description && (
@@ -308,6 +314,14 @@ export function WorkOrderDetailContent({ workOrder, photos, vendorOrg, googleRev
             const isPast = idx <= currentIdx;
             const isCurrent = idx === currentIdx;
 
+            // Map timeline statuses to available dates
+            const dateForStatus: Record<string, string | null | undefined> = {
+              assigned: workOrder.created_at,
+              scheduled: workOrder.scheduled_date,
+              completed: workOrder.completed_at,
+            };
+            const ts = isPast ? dateForStatus[status] : null;
+
             return (
               <div key={status} className="flex items-start gap-3 relative">
                 {/* Connector line */}
@@ -328,10 +342,17 @@ export function WorkOrderDetailContent({ workOrder, photos, vendorOrg, googleRev
                     </svg>
                   )}
                 </div>
-                {/* Label */}
-                <p className={`text-sm pb-6 ${isPast ? "text-content-primary font-medium" : "text-content-quaternary"}`}>
-                  {status.charAt(0).toUpperCase() + status.slice(1).replace(/_/g, " ")}
-                </p>
+                {/* Label + timestamp */}
+                <div className="pb-6">
+                  <p className={`text-sm ${isPast ? "text-content-primary font-medium" : "text-content-quaternary"}`}>
+                    {t(status) || status.charAt(0).toUpperCase() + status.slice(1).replace(/_/g, " ")}
+                  </p>
+                  {ts && (
+                    <p className="text-[10px] text-content-quaternary mt-0.5">
+                      {new Date(ts).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                    </p>
+                  )}
+                </div>
               </div>
             );
           })}

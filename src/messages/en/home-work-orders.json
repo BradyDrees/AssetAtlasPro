@@ -131,5 +131,6 @@
   "aiAnalyzing": "Analyzing...",
   "aiSuggested": "AI suggested",
   "aiUnavailable": "AI analysis unavailable — continue manually",
-  "searchPlaceholder": "Search work orders..."
+  "searchPlaceholder": "Search work orders...",
+  "allTrades": "All Trades"
 }

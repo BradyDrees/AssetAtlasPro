@@ -41,7 +41,7 @@ export function CostGuideCard({ guides, collapsible = false }: Props) {
             {/* Price range bar */}
             <div className="w-full h-2 rounded-full bg-surface-tertiary mb-1 relative">
               <div
-                className="absolute h-full rounded-full bg-rose-400/40"
+                className="absolute h-full rounded-full bg-rose-400/60"
                 style={{ left: `${leftPct}%`, width: `${widthPct}%` }}
               />
               <div

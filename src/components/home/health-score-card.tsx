@@ -20,14 +20,16 @@ const GRADE_COLORS: Record<HealthGrade, string> = {
 
 export function HealthScoreCard({ score, grade, confidence }: Props) {
   const t = useTranslations("home.dashboard");
-  const color = GRADE_COLORS[grade];
+  const isLow = confidence === "low";
+  const color = isLow ? "#9ca3af" : GRADE_COLORS[grade];
 
   // SVG ring gauge
   const size = 120;
   const strokeWidth = 10;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (score / 100) * circumference;
+  const displayScore = isLow ? 0 : score;
+  const offset = circumference - (displayScore / 100) * circumference;
 
   return (
     <div className="bg-surface-primary rounded-xl border border-edge-primary p-6">
@@ -61,10 +63,16 @@ export function HealthScoreCard({ score, grade, confidence }: Props) {
           </svg>
           {/* Center text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-2xl font-bold text-content-primary">{score}</span>
-            <span className="text-xs font-semibold" style={{ color }}>
-              {grade}
-            </span>
+            {confidence === "low" ? (
+              <span className="text-xs font-semibold text-content-quaternary">—</span>
+            ) : (
+              <>
+                <span className="text-2xl font-bold text-content-primary">{score}</span>
+                <span className="text-xs font-semibold" style={{ color }}>
+                  {grade}
+                </span>
+              </>
+            )}
           </div>
         </div>
 

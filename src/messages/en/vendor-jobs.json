@@ -6,7 +6,10 @@
   "active": "Active",
   "completed": "Completed",
   "all": "All Jobs",
+  "archived": "Archived",
   "unscheduled": "Unscheduled",
+  "noArchived": "No archived jobs",
+  "noArchivedSubtitle": "When you archive jobs, they'll appear here",
   "noJobs": "No jobs yet",
   "noIncoming": "No incoming work orders",
   "noUnscheduled": "No unscheduled jobs",
@@ -55,7 +58,12 @@
     "complete": "Complete",
     "donePendingApproval": "Done - Pending Approval",
     "putOnHold": "Put On Hold",
-    "resume": "Resume"
+    "resume": "Resume",
+    "archive": "Archive",
+    "unarchive": "Unarchive",
+    "archiveConfirm": "Archive this job? It will be hidden from your active list.",
+    "archivedBanner": "This job is archived",
+    "archivedOn": "Archived on {date}"
   },
   "detail": {
     "property": "Property",
@@ -247,6 +255,17 @@
     "appointmentFailed": "Failed to send reminder",
     "reminderScheduled": "Reminder will be sent the day before",
     "noTenantPhone": "No tenant phone for reminder"
+  },
+  "techRating": {
+    "title": "Tech Performance Rating",
+    "subtitle": "Rate {name}'s work on this job",
+    "notesPlaceholder": "Add notes about their performance...",
+    "submit": "Submit Rating",
+    "submitting": "Submitting...",
+    "submitted": "Rating saved!",
+    "edit": "Edit Rating",
+    "update": "Update Rating",
+    "noPermission": "Only admins can rate technician performance"
   },
   "property": {
     "title": "Property Intel",

@@ -135,6 +135,7 @@ export async function getDashboardData(
   ] = await Promise.all([
     // Active jobs
     supabase.from("vendor_work_orders").select("id").eq("vendor_org_id", vendor_org_id)
+      .is("archived_at", null)
       .in("status", ["assigned","accepted","scheduled","en_route","on_site","in_progress"]),
     // Pending estimates
     supabase.from("vendor_estimates").select("id").eq("vendor_org_id", vendor_org_id)
@@ -147,16 +148,20 @@ export async function getDashboardData(
       .eq("status", "paid").gte("paid_at", fromISO).lte("paid_at", toISO),
     // Completed jobs in range
     supabase.from("vendor_work_orders").select("id").eq("vendor_org_id", vendor_org_id)
+      .is("archived_at", null)
       .eq("status", "completed").gte("completed_at", fromISO),
     // Incoming (unaccepted) work orders
     supabase.from("vendor_work_orders")
       .select("id, property_name, description, trade, priority, pm_user_id, created_at, vendor_selection_mode")
-      .eq("vendor_org_id", vendor_org_id).eq("status", "assigned")
+      .eq("vendor_org_id", vendor_org_id)
+      .is("archived_at", null)
+      .eq("status", "assigned")
       .order("created_at", { ascending: false }).limit(5),
     // Upcoming jobs (next 5 days)
     supabase.from("vendor_work_orders")
       .select("id, property_name, property_address, description, trade, status, priority, scheduled_time_start, scheduled_time_end, scheduled_date")
       .eq("vendor_org_id", vendor_org_id)
+      .is("archived_at", null)
       .gte("scheduled_date", todayStr)
       .not("status", "in", '("completed","invoiced","paid","declined")')
       .order("scheduled_date", { ascending: true })
@@ -183,11 +188,13 @@ export async function getDashboardData(
     // Tech scoreboard: completed jobs by assigned tech
     supabase.from("vendor_work_orders").select("assigned_to")
       .eq("vendor_org_id", vendor_org_id)
+      .is("archived_at", null)
       .eq("status", "completed")
       .not("assigned_to", "is", null),
     // Avg response time: WOs with responded_at in date range
     supabase.from("vendor_work_orders").select("created_at, responded_at")
       .eq("vendor_org_id", vendor_org_id)
+      .is("archived_at", null)
       .not("responded_at", "is", null)
       .gte("created_at", fromISO)
       .lte("created_at", toISO),
@@ -227,29 +234,41 @@ export async function getDashboardData(
     .sort((a, b) => b.revenue - a.revenue)
     .slice(0, 5);
 
-  // If we have PM IDs, look up their emails as names (best effort, single query)
+  // Look up PM names for top sources (batch, not N+1)
   const pmIds = Object.keys(pmRevenueMap);
   if (pmIds.length > 0) {
-    // Try to get names from vendor_pm_connections if available
+    const sourceNameMap: Record<string, string> = {};
+
+    // First try vendor_pm_connections for display names
     const { data: pmConnections } = await supabase
       .from("vendor_pm_connections")
       .select("pm_user_id, pm_display_name")
       .eq("vendor_org_id", vendor_org_id)
       .in("pm_user_id", pmIds);
+    for (const c of (pmConnections ?? [])) {
+      const conn = c as { pm_user_id: string; pm_display_name: string | null };
+      if (conn.pm_display_name) sourceNameMap[conn.pm_user_id] = conn.pm_display_name;
+    }
 
-    if (pmConnections) {
-      const nameMap: Record<string, string> = {};
-      for (const c of pmConnections) {
-        const conn = c as { pm_user_id: string; pm_display_name: string | null };
-        if (conn.pm_display_name) nameMap[conn.pm_user_id] = conn.pm_display_name;
+    // Fallback: fetch from profiles for any PMs not in connections
+    const missingPmIds = pmIds.filter((id) => !sourceNameMap[id]);
+    if (missingPmIds.length > 0) {
+      const { data: pmProfiles } = await supabase
+        .from("profiles")
+        .select("id, full_name")
+        .in("id", missingPmIds);
+      for (const p of (pmProfiles ?? [])) {
+        const profile = p as { id: string; full_name: string | null };
+        if (profile.full_name) sourceNameMap[profile.id] = profile.full_name;
       }
-      // Re-map topSources with names
-      let idx = 0;
-      for (const pmId of Object.keys(pmRevenueMap)) {
-        if (idx < topSources.length) {
-          topSources[idx].pm_name = nameMap[pmId] || `PM ${idx + 1}`;
-          idx++;
-        }
+    }
+
+    // Re-map topSources with names
+    let idx = 0;
+    for (const pmId of Object.keys(pmRevenueMap)) {
+      if (idx < topSources.length) {
+        topSources[idx].pm_name = sourceNameMap[pmId] || `PM ${idx + 1}`;
+        idx++;
       }
     }
   }
@@ -277,25 +296,64 @@ export async function getDashboardData(
       techNameMap[tech.id] = [tech.first_name, tech.last_name].filter(Boolean).join(" ") || "Tech";
     }
 
+    // Compute overall avg rating per tech from tech_ratings
+    const techAvgMap: Record<string, number> = {};
+    const { data: ratings } = await supabase
+      .from("tech_ratings")
+      .select("tech_user_id, rating")
+      .eq("vendor_org_id", vendor_org_id)
+      .in("tech_user_id", techIds);
+    if (ratings && ratings.length > 0) {
+      const ratingSums: Record<string, { sum: number; count: number }> = {};
+      for (const r of ratings) {
+        const row = r as { tech_user_id: string; rating: number };
+        if (!ratingSums[row.tech_user_id]) {
+          ratingSums[row.tech_user_id] = { sum: 0, count: 0 };
+        }
+        ratingSums[row.tech_user_id].sum += row.rating;
+        ratingSums[row.tech_user_id].count += 1;
+      }
+      for (const [techId, agg] of Object.entries(ratingSums)) {
+        techAvgMap[techId] = agg.sum / agg.count;
+      }
+    }
+
     techScoreboard = Object.entries(techJobMap)
       .map(([userId, count]) => ({
         user_id: userId,
         name: techNameMap[userId] || `Tech`,
         jobs_completed: count,
-        avg_rating: null,
+        avg_rating: techAvgMap[userId] ?? null,
       }))
       .sort((a, b) => b.jobs_completed - a.jobs_completed)
       .slice(0, 5);
   }
 
-  // Enrich incoming with PM names (simple approach)
-  const incoming: IncomingWorkOrder[] = (incomingResult.data ?? []).map((wo: Record<string, unknown>) => ({
+  // Enrich incoming with PM names (batch lookup — not N+1)
+  const incomingRows = incomingResult.data ?? [];
+  const incomingPmIds = [...new Set(
+    incomingRows
+      .map((wo: Record<string, unknown>) => wo.pm_user_id as string | null)
+      .filter(Boolean) as string[]
+  )];
+  const pmNameMap: Record<string, string> = {};
+  if (incomingPmIds.length > 0) {
+    const { data: pmProfiles } = await supabase
+      .from("profiles")
+      .select("id, full_name")
+      .in("id", incomingPmIds);
+    for (const p of (pmProfiles ?? [])) {
+      const profile = p as { id: string; full_name: string | null };
+      if (profile.full_name) pmNameMap[profile.id] = profile.full_name;
+    }
+  }
+  const incoming: IncomingWorkOrder[] = incomingRows.map((wo: Record<string, unknown>) => ({
     id: wo.id as string,
     property_name: wo.property_name as string | null,
     description: wo.description as string | null,
     trade: wo.trade as string | null,
     priority: wo.priority as string,
-    pm_name: null, // Skip N+1 query for now
+    pm_name: pmNameMap[wo.pm_user_id as string] ?? null,
     created_at: wo.created_at as string,
     vendor_selection_mode: (wo.vendor_selection_mode as string | null) ?? null,
   }));
@@ -347,6 +405,7 @@ export async function getTodaysJobs(): Promise<TodayJob[]> {
     .from("vendor_work_orders")
     .select("id, property_name, property_address, description, trade, status, priority, scheduled_time_start, scheduled_time_end, scheduled_date")
     .eq("vendor_org_id", vendor_org_id)
+    .is("archived_at", null)
     .eq("scheduled_date", todayStr)
     .not("status", "in", '("completed","invoiced","paid","declined")')
     .order("scheduled_time_start", { ascending: true });
@@ -372,7 +431,8 @@ export async function getLeadSourceBreakdown(): Promise<LeadSourceBucket[]> {
   const { data } = await supabase
     .from("vendor_work_orders")
     .select("lead_source")
-    .eq("vendor_org_id", vendor_org_id);
+    .eq("vendor_org_id", vendor_org_id)
+    .is("archived_at", null);
 
   if (!data) return [];
 

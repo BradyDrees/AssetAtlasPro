@@ -189,6 +189,7 @@ export async function getPmWorkOrders(
     .from("vendor_work_orders")
     .select("*", { count: "exact" })
     .eq("pm_user_id", user.id)
+    .is("archived_at", null)
     .range(from, to)
     .order("created_at", { ascending: false });
 

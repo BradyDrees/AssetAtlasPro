@@ -46,6 +46,7 @@ export async function GET(req: NextRequest) {
          scheduled_date, scheduled_start, scheduled_end,
          vendor_org_id, status`
       )
+      .is("archived_at", null)
       .gte("scheduled_date", `${tomorrowStr}T00:00:00`)
       .lt("scheduled_date", `${tomorrowStr}T23:59:59`)
       .not("tenant_phone", "is", null);

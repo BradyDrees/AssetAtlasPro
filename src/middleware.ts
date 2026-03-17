@@ -144,7 +144,9 @@ export async function middleware(request: NextRequest) {
   }
 
   // Redirect non-owner users away from /home → their default tier
-  if (roleCookie !== "owner" && pathname.startsWith("/home") && pathname !== "/home/onboarding") {
+  // Only redirect if user explicitly has a different role set (vendor or pm).
+  // Users without a role cookie (or with "owner") can access /home freely.
+  if (roleCookie && roleCookie !== "owner" && pathname.startsWith("/home") && pathname !== "/home/onboarding") {
     const url = request.nextUrl.clone();
     if (roleCookie === "vendor") {
       url.pathname = "/pro";

@@ -172,7 +172,7 @@ export function WorkOrdersContent({ workOrders }: WorkOrdersContentProps) {
                       </span>
                     )}
                     <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${STATUS_COLORS[wo.status] ?? "bg-charcoal-500/20 text-charcoal-400"}`}>
-                      {wo.status.replace(/_/g, " ")}
+                      {t(wo.status) || wo.status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
                     </span>
                   </div>
                   <p className="text-sm text-content-tertiary line-clamp-2">{wo.description}</p>

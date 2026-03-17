@@ -226,6 +226,7 @@ async function handleAutoFollowups() {
     const { data: candidateWos } = await supabase
       .from("vendor_work_orders")
       .select("id, vendor_org_id, homeowner_id, trade, description, completed_at, review_requested_at, review_reminder_count, review_last_contact_at")
+      .is("archived_at", null)
       .in("status", ["completed", "invoiced", "paid"])
       .not("homeowner_id", "is", null)
       .lt("review_reminder_count", 3)

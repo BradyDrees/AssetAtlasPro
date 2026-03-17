@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import type { WoStatus } from "@/lib/vendor/types";
 import { getValidWoTransitions } from "@/lib/vendor/state-machine";
-import { updateWorkOrderStatus } from "@/app/actions/vendor-work-orders";
+import { updateWorkOrderStatus, archiveWorkOrder, unarchiveWorkOrder } from "@/app/actions/vendor-work-orders";
 import { sendTrackingLinkSms } from "@/app/track/[token]/track-actions";
 
 interface JobActionsProps {
@@ -13,6 +13,8 @@ interface JobActionsProps {
   currentStatus: WoStatus;
   trackingToken?: string | null;
   tenantPhone?: string | null;
+  archivedAt?: string | null;
+  onArchive?: () => void;
 }
 
 /** Action label keys that map to status transitions */
@@ -36,15 +38,18 @@ const STATUS_TO_BUTTON_STYLE: Partial<Record<WoStatus, string>> = {
   on_hold: "bg-gray-500 hover:bg-gray-600 text-white",
 };
 
-export function JobActions({ woId, currentStatus, trackingToken, tenantPhone }: JobActionsProps) {
+export function JobActions({ woId, currentStatus, trackingToken, tenantPhone, archivedAt, onArchive }: JobActionsProps) {
   const t = useTranslations("vendor.jobs");
   const router = useRouter();
+  const pathname = usePathname();
   const [loading, setLoading] = useState<WoStatus | null>(null);
   const [showDeclineModal, setShowDeclineModal] = useState(false);
   const [trackingCopied, setTrackingCopied] = useState(false);
   const [sendingLink, setSendingLink] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
+  const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
+  const [archiving, setArchiving] = useState(false);
   const [declineReason, setDeclineReason] = useState("");
   const [completionNotes, setCompletionNotes] = useState("");
   const [scheduleDate, setScheduleDate] = useState("");
@@ -144,6 +149,32 @@ export function JobActions({ woId, currentStatus, trackingToken, tenantPhone }: 
     }
   }
 
+  async function handleArchive() {
+    setArchiving(true);
+    const { error } = await archiveWorkOrder(woId);
+    setArchiving(false);
+    setShowArchiveConfirm(false);
+    if (error) {
+      alert(error);
+    } else {
+      // Redirect to jobs list for the current tier
+      const basePath = pathname.startsWith("/pro") ? "/pro/jobs" : "/vendor/jobs";
+      router.push(basePath);
+    }
+  }
+
+  async function handleUnarchive() {
+    setArchiving(true);
+    const { error } = await unarchiveWorkOrder(woId);
+    setArchiving(false);
+    if (error) {
+      alert(error);
+    } else {
+      onArchive?.();
+      router.refresh();
+    }
+  }
+
   return (
     <>
       <div className="flex flex-wrap gap-2">
@@ -194,6 +225,27 @@ export function JobActions({ woId, currentStatus, trackingToken, tenantPhone }: 
             )}
           </>
         )}
+
+        {/* Archive / Unarchive — visually separated */}
+        <div className="w-full border-t border-edge-secondary mt-2 pt-2">
+          {archivedAt ? (
+            <button
+              onClick={handleUnarchive}
+              disabled={archiving}
+              className="px-4 py-2 rounded-lg text-sm font-medium bg-brand-600 hover:bg-brand-700 text-white transition-colors disabled:opacity-50"
+            >
+              {archiving ? "..." : t("actions.unarchive")}
+            </button>
+          ) : (
+            <button
+              onClick={() => setShowArchiveConfirm(true)}
+              disabled={archiving}
+              className="px-4 py-2 rounded-lg text-sm font-medium bg-surface-secondary text-content-tertiary hover:bg-surface-tertiary transition-colors disabled:opacity-50"
+            >
+              {t("actions.archive")}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Decline Modal */}
@@ -315,6 +367,35 @@ export function JobActions({ woId, currentStatus, trackingToken, tenantPhone }: 
                 className="px-4 py-2 rounded-lg text-sm font-medium bg-green-600 hover:bg-green-700 text-white disabled:opacity-50"
               >
                 {t("actions.complete")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Archive Confirmation Modal */}
+      {showArchiveConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-surface-primary rounded-xl border border-edge-primary p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-content-primary mb-2">
+              {t("actions.archive")}
+            </h3>
+            <p className="text-sm text-content-secondary mb-5">
+              {t("actions.archiveConfirm")}
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowArchiveConfirm(false)}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-content-secondary hover:bg-surface-secondary"
+              >
+                {t("time.cancel")}
+              </button>
+              <button
+                onClick={handleArchive}
+                disabled={archiving}
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-surface-tertiary text-content-primary hover:bg-surface-secondary disabled:opacity-50"
+              >
+                {archiving ? "..." : t("actions.archive")}
               </button>
             </div>
           </div>

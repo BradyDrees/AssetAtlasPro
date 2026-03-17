@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
   const { data: stalled, error } = await supabase
     .from("vendor_work_orders")
     .select("id, project_id, trade, homeowner_id, updated_at")
+    .is("archived_at", null)
     .eq("status", "assigned")
     .not("project_id", "is", null)
     .lt("updated_at", cutoff);

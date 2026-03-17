@@ -214,7 +214,9 @@ export function VendorMarketplaceContent({ vendors, badgeMap = {} }: { vendors: 
                     </div>
                   )}
                   {vendor.city && (
-                    <p className="text-xs text-content-quaternary mt-1">{vendor.city}, {vendor.state}</p>
+                    <p className="text-xs text-content-quaternary mt-1">
+                      {vendor.city.replace(/\b\w/g, (c: string) => c.toUpperCase())}, {vendor.state?.toUpperCase()}
+                    </p>
                   )}
                   {badgeMap[vendor.id] && (
                     <div className="mt-2">

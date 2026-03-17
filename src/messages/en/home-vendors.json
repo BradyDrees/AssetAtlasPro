@@ -47,5 +47,7 @@
   "badgeLicensed": "Licensed",
   "badgeBonded": "Bonded",
   "badgeBackground": "Background Check",
-  "trustBadges": "Trust & Credentials"
+  "trustBadges": "Trust & Credentials",
+  "noCredentials": "No credentials on file yet",
+  "noResponseTime": "Not available"
 }

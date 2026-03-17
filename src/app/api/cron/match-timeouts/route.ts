@@ -59,6 +59,7 @@ export async function GET(req: NextRequest) {
         .from("vendor_work_orders")
         .select("urgency")
         .eq("id", attempt.work_order_id)
+        .is("archived_at", null)
         .single();
 
       const urgency = wo?.urgency ?? "routine";
@@ -99,6 +100,7 @@ export async function GET(req: NextRequest) {
           .from("vendor_work_orders")
           .select("trade, description, urgency")
           .eq("id", attempt.work_order_id)
+          .is("archived_at", null)
           .single();
 
         await supabase.from("vendor_notifications").insert(
@@ -125,6 +127,7 @@ export async function GET(req: NextRequest) {
         .from("vendor_work_orders")
         .select("homeowner_id, trade")
         .eq("id", attempt.work_order_id)
+        .is("archived_at", null)
         .single();
 
       if (wo?.homeowner_id) {

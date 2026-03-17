@@ -3,14 +3,16 @@
 import { useTranslations } from "next-intl";
 import type { WoStatus } from "@/lib/vendor/types";
 
+export type WoTab = "incoming" | "active" | "completed" | "all" | "archived";
+
 interface WorkOrderFiltersProps {
-  activeTab: "incoming" | "active" | "completed" | "all";
-  onTabChange: (tab: "incoming" | "active" | "completed" | "all") => void;
+  activeTab: WoTab;
+  onTabChange: (tab: WoTab) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
 }
 
-const TABS = ["incoming", "active", "completed", "all"] as const;
+const TABS: WoTab[] = ["incoming", "active", "completed", "all", "archived"];
 
 /** Statuses for each filter tab */
 export const TAB_STATUS_MAP: Record<string, WoStatus[]> = {
@@ -18,6 +20,7 @@ export const TAB_STATUS_MAP: Record<string, WoStatus[]> = {
   active: ["accepted", "scheduled", "en_route", "on_site", "in_progress"],
   completed: ["completed", "invoiced", "paid"],
   all: [],
+  archived: [], // special-cased in page — not driven by status map
 };
 
 export function WorkOrderFilters({

@@ -32,6 +32,7 @@ export async function getVendorWorkOrders(filters?: {
   status?: WoStatus | WoStatus[];
   priority?: string;
   trade?: string;
+  archived?: boolean;
   page?: number;
   pageSize?: number;
 }): Promise<{ data: VendorWorkOrder[]; total: number; page: number; pageSize: number; error?: string }> {
@@ -49,6 +50,13 @@ export async function getVendorWorkOrders(filters?: {
     .eq("vendor_org_id", vendorAuth.vendor_org_id)
     .range(from, to)
     .order("created_at", { ascending: false });
+
+  // Archive filter — mutually exclusive
+  if (filters?.archived === true) {
+    query = query.not("archived_at", "is", null);
+  } else {
+    query = query.is("archived_at", null);
+  }
 
   // Tech role: only see assigned jobs
   if (vendorAuth.role === "tech") {
@@ -919,6 +927,99 @@ export async function deleteTimeEntry(
 }
 
 // ============================================
+// Archive / Unarchive
+// ============================================
+
+/** Archive a work order — soft-hide from active surfaces */
+export async function archiveWorkOrder(
+  woId: string
+): Promise<{ error?: string }> {
+  const vendorAuth = await requireVendorRole();
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  // Scoped fetch — only allow archiving WOs belonging to this org
+  const { data: wo, error: fetchErr } = await supabase
+    .from("vendor_work_orders")
+    .select("id")
+    .eq("id", woId)
+    .eq("vendor_org_id", vendorAuth.vendor_org_id)
+    .single();
+
+  if (fetchErr || !wo) return { error: "Work order not found" };
+
+  const { error } = await supabase
+    .from("vendor_work_orders")
+    .update({ archived_at: new Date().toISOString(), updated_by: user.id })
+    .eq("id", woId)
+    .eq("vendor_org_id", vendorAuth.vendor_org_id);
+
+  if (error) return { error: error.message };
+
+  await logActivity({
+    entityType: "work_order",
+    entityId: woId,
+    action: "work_order_archived",
+  });
+
+  // Revalidate all affected surfaces
+  const { revalidatePath } = await import("next/cache");
+  revalidatePath("/vendor/jobs");
+  revalidatePath("/pro/jobs");
+  revalidatePath(`/vendor/jobs/${woId}`);
+  revalidatePath(`/pro/jobs/${woId}`);
+  revalidatePath("/vendor");
+  revalidatePath("/pro");
+
+  return {};
+}
+
+/** Unarchive a work order — restore to active surfaces */
+export async function unarchiveWorkOrder(
+  woId: string
+): Promise<{ error?: string }> {
+  const vendorAuth = await requireVendorRole();
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  // Scoped fetch
+  const { data: wo, error: fetchErr } = await supabase
+    .from("vendor_work_orders")
+    .select("id")
+    .eq("id", woId)
+    .eq("vendor_org_id", vendorAuth.vendor_org_id)
+    .single();
+
+  if (fetchErr || !wo) return { error: "Work order not found" };
+
+  const { error } = await supabase
+    .from("vendor_work_orders")
+    .update({ archived_at: null, updated_by: user.id })
+    .eq("id", woId)
+    .eq("vendor_org_id", vendorAuth.vendor_org_id);
+
+  if (error) return { error: error.message };
+
+  await logActivity({
+    entityType: "work_order",
+    entityId: woId,
+    action: "work_order_unarchived",
+  });
+
+  const { revalidatePath } = await import("next/cache");
+  revalidatePath("/vendor/jobs");
+  revalidatePath("/pro/jobs");
+  revalidatePath(`/vendor/jobs/${woId}`);
+  revalidatePath(`/pro/jobs/${woId}`);
+  revalidatePath("/vendor");
+  revalidatePath("/pro");
+
+  return {};
+}
+
+// ============================================
 // Workiz Enhancements — Tags, Job Type, Sub Status, Reschedule
 // ============================================
 
@@ -1075,11 +1176,12 @@ export async function getSmartSchedulePreview(
 
   const supabase = await createClient();
 
-  // Fetch unscheduled jobs (no date or no time)
+  // Fetch unscheduled jobs (no date or no time) — exclude archived
   const { data: rawUnscheduled, error: unschedErr } = await supabase
     .from("vendor_work_orders")
     .select("*")
     .eq("vendor_org_id", vendorAuth.vendor_org_id)
+    .is("archived_at", null)
     .in("status", SCHEDULABLE_STATUSES as string[])
     .or("scheduled_date.is.null,scheduled_time_start.is.null");
 
@@ -1087,11 +1189,12 @@ export async function getSmartSchedulePreview(
     return { data: null, error: unschedErr.message };
   }
 
-  // Fetch existing scheduled jobs for the target date
+  // Fetch existing scheduled jobs for the target date — exclude archived
   const { data: rawScheduled, error: schedErr } = await supabase
     .from("vendor_work_orders")
     .select("*")
     .eq("vendor_org_id", vendorAuth.vendor_org_id)
+    .is("archived_at", null)
     .eq("scheduled_date", targetDate)
     .not("scheduled_time_start", "is", null);
 

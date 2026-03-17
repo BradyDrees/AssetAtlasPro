@@ -39,6 +39,8 @@ export interface VendorWorkOrder {
   completed_at: string | null;
   completion_notes: string | null;
   decline_reason: string | null;
+  // Archive
+  archived_at?: string | null;
   // Home tier fields
   homeowner_id?: string | null;
   homeowner_property_id?: string | null;

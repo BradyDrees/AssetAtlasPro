@@ -9,6 +9,7 @@ import { JobCard } from "@/components/vendor/job-card";
 import {
   WorkOrderFilters,
   TAB_STATUS_MAP,
+  type WoTab,
 } from "@/components/vendor/work-order-filters";
 import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -18,19 +19,22 @@ export default function VendorJobsPage() {
   const t = useTranslations("vendor.jobs");
   const [workOrders, setWorkOrders] = useState<VendorWorkOrder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<
-    "incoming" | "active" | "completed" | "all"
-  >("incoming");
+  const [activeTab, setActiveTab] = useState<WoTab>("incoming");
   const [searchQuery, setSearchQuery] = useState("");
   const [showNewJob, setShowNewJob] = useState(false);
 
   const loadWorkOrders = useCallback(async () => {
     setLoading(true);
-    const statuses = TAB_STATUS_MAP[activeTab];
-    const { data } = await getVendorWorkOrders(
-      statuses.length > 0 ? { status: statuses as WoStatus[] } : undefined
-    );
-    setWorkOrders(data);
+    if (activeTab === "archived") {
+      const { data } = await getVendorWorkOrders({ archived: true });
+      setWorkOrders(data);
+    } else {
+      const statuses = TAB_STATUS_MAP[activeTab];
+      const { data } = await getVendorWorkOrders(
+        statuses.length > 0 ? { status: statuses as WoStatus[] } : undefined
+      );
+      setWorkOrders(data);
+    }
     setLoading(false);
   }, [activeTab]);
 
@@ -94,8 +98,8 @@ export default function VendorJobsPage() {
       ) : filtered.length === 0 ? (
         <EmptyState
           icon="briefcase"
-          title={activeTab === "incoming" ? t("noIncoming") : t("noJobs")}
-          subtitle={t("emptySubtitle")}
+          title={activeTab === "incoming" ? t("noIncoming") : activeTab === "archived" ? t("noArchived") : t("noJobs")}
+          subtitle={activeTab === "archived" ? t("noArchivedSubtitle") : t("emptySubtitle")}
         />
       ) : (
         <div className="space-y-3">

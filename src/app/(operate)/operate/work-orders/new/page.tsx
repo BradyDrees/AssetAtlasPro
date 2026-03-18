@@ -57,10 +57,15 @@ export default function NewWorkOrderPage() {
   const [scheduledDate, setScheduledDate] = useState("");
 
   useEffect(() => {
-    getPmVendors().then(({ data }) => {
-      setVendors(data);
-      setLoadingVendors(false);
-    });
+    getPmVendors()
+      .then(({ data }) => {
+        setVendors(data);
+        setLoadingVendors(false);
+      })
+      .catch(() => {
+        // Server action failed (role check, network, etc.) — show empty state
+        setLoadingVendors(false);
+      });
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {

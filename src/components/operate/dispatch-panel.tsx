@@ -1,55 +1,66 @@
 "use client";
 
 import Link from "next/link";
-import { useTranslations } from "next-intl";
 import type { DispatchTech, DispatchJob } from "@/app/actions/operate-dashboard";
 import { StatusBadge } from "@/components/vendor/status-badge";
 import { PriorityDot } from "@/components/vendor/priority-dot";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TMessages = Record<string, any>;
+
+function t(messages: TMessages, key: string, params?: Record<string, string | number>): string {
+  const parts = key.split(".");
+  let val: unknown = messages;
+  for (const part of parts) {
+    if (val && typeof val === "object") val = (val as TMessages)[part];
+    else return key;
+  }
+  if (typeof val !== "string") return key;
+  if (!params) return val;
+  return val.replace(/\{(\w+)\}/g, (_, k: string) => String(params[k] ?? `{${k}}`));
+}
 
 interface DispatchPanelProps {
   techs: DispatchTech[];
   unscheduledToday: DispatchJob[];
   needsAssignment: DispatchJob[];
+  translations: TMessages;
 }
 
 export function DispatchPanel({
   techs,
   unscheduledToday,
   needsAssignment,
+  translations: msg,
 }: DispatchPanelProps) {
-  const t = useTranslations("operate.dashboard");
-
   const totalJobs = techs.reduce((sum, tech) => sum + tech.jobs.length, 0);
   const hasContent = techs.length > 0 || unscheduledToday.length > 0 || needsAssignment.length > 0;
 
   return (
     <div className="flex flex-col h-full min-w-0">
-      {/* Header */}
       <div className="flex items-center justify-between px-1 pb-2 flex-shrink-0">
         <h2 className="text-sm font-semibold text-content-primary">
-          {t("dispatch.title")}
+          {t(msg, "dispatch.title")}
         </h2>
         {totalJobs > 0 && (
           <span className="text-xs text-content-quaternary">
-            {t("dispatch.jobsCount", { count: totalJobs })}
+            {t(msg, "dispatch.jobsCount", { count: totalJobs })}
           </span>
         )}
       </div>
 
-      {/* Content */}
       <div className="flex-1 overflow-y-auto space-y-3 pr-1">
         {!hasContent ? (
           <div className="text-center py-8">
             <p className="text-sm text-content-tertiary">
-              {t("dispatch.noJobs")}
+              {t(msg, "dispatch.noJobs")}
             </p>
             <p className="text-xs text-content-quaternary mt-1">
-              {t("dispatch.noJobsDesc")}
+              {t(msg, "dispatch.noJobsDesc")}
             </p>
           </div>
         ) : (
           <>
-            {/* Today's Dispatch — grouped by tech */}
             {techs.map((tech) => (
               <div key={tech.id} className="space-y-1">
                 <div className="flex items-center justify-between">
@@ -61,34 +72,32 @@ export function DispatchPanel({
                   </span>
                 </div>
                 {tech.jobs.map((job) => (
-                  <DispatchJobCard key={job.id} job={job} t={t} />
+                  <DispatchJobCard key={job.id} job={job} msg={msg} />
                 ))}
               </div>
             ))}
 
-            {/* Unscheduled Today */}
             {unscheduledToday.length > 0 && (
               <div className="space-y-1">
                 <p className="text-xs font-medium text-amber-600">
-                  {t("dispatch.unscheduled")}
+                  {t(msg, "dispatch.unscheduled")}
                 </p>
                 {unscheduledToday.map((job) => (
-                  <DispatchJobCard key={job.id} job={job} t={t} />
+                  <DispatchJobCard key={job.id} job={job} msg={msg} />
                 ))}
               </div>
             )}
 
-            {/* Needs Assignment */}
             {needsAssignment.length > 0 && (
               <div className="space-y-1">
                 <p className="text-xs font-medium text-red-500">
-                  {t("dispatch.needsAssignment")}
+                  {t(msg, "dispatch.needsAssignment")}
                 </p>
                 <p className="text-[10px] text-content-quaternary -mt-0.5">
-                  {t("dispatch.needsAssignmentDesc")}
+                  {t(msg, "dispatch.needsAssignmentDesc")}
                 </p>
                 {needsAssignment.map((job) => (
-                  <DispatchJobCard key={job.id} job={job} t={t} />
+                  <DispatchJobCard key={job.id} job={job} msg={msg} />
                 ))}
               </div>
             )}
@@ -99,16 +108,7 @@ export function DispatchPanel({
   );
 }
 
-// ── Individual Dispatch Job Card ──
-
-function DispatchJobCard({
-  job,
-  t,
-}: {
-  job: DispatchJob;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  t: any;
-}) {
+function DispatchJobCard({ job, msg }: { job: DispatchJob; msg: TMessages }) {
   return (
     <Link
       href={`/operate/work-orders/${job.id}`}
@@ -127,25 +127,18 @@ function DispatchJobCard({
       </div>
 
       <div className="flex items-center gap-1.5 mt-1 flex-wrap min-w-0">
-        {/* Time window */}
         {job.scheduled_time_start && (
           <span className="text-[10px] text-content-tertiary font-medium">
-            {t("dispatch.timeWindow", {
+            {t(msg, "dispatch.timeWindow", {
               start: job.scheduled_time_start,
               end: job.scheduled_time_end ?? "—",
             })}
           </span>
         )}
-
         {job.trade && (
-          <span className="text-[10px] text-content-quaternary">
-            {job.trade}
-          </span>
+          <span className="text-[10px] text-content-quaternary">{job.trade}</span>
         )}
-
         <StatusBadge status={job.status} size="sm" />
-
-        {/* Vendor org name per job row */}
         <span className="text-[10px] text-content-quaternary truncate">
           {job.vendor_org_name}
         </span>

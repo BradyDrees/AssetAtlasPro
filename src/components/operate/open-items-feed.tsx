@@ -10,6 +10,21 @@ import { StatusBadge } from "@/components/vendor/status-badge";
 import { PriorityDot } from "@/components/vendor/priority-dot";
 import type { WoStatus } from "@/lib/vendor/types";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TMessages = Record<string, any>;
+
+function t(messages: TMessages, key: string, params?: Record<string, string | number>): string {
+  const parts = key.split(".");
+  let val: unknown = messages;
+  for (const part of parts) {
+    if (val && typeof val === "object") val = (val as TMessages)[part];
+    else return key;
+  }
+  if (typeof val !== "string") return key;
+  if (!params) return val;
+  return val.replace(/\{(\w+)\}/g, (_, k: string) => String(params[k] ?? `{${k}}`));
+}
+
 export type FeedFilter = "all" | "overdue" | "emergency" | "scheduled";
 
 interface OpenItemsFeedProps {
@@ -18,12 +33,9 @@ interface OpenItemsFeedProps {
   onFilterChange: (f: FeedFilter) => void;
   selectedProperty: string | null;
   todayStr: string;
+  translations: TMessages;
 }
 
-/**
- * PM-allowed transitions per current status.
- * Derived from the canonical state machine (wo-state-machine.ts).
- */
 const PM_TRANSITIONS: Partial<Record<WoStatus, WoStatus[]>> = {
   assigned: ["on_hold", "cancelled"],
   accepted: ["scheduled", "on_hold", "cancelled"],
@@ -48,18 +60,16 @@ export function OpenItemsFeed({
   onFilterChange,
   selectedProperty,
   todayStr,
+  translations: msg,
 }: OpenItemsFeedProps) {
-  const t = useTranslations("operate.dashboard");
   const tJobs = useTranslations("vendor.jobs");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  // Apply property filter client-side
   const propertyFiltered = selectedProperty
     ? items.filter((item) => item.property_key === selectedProperty)
     : items;
 
-  // Apply feed filter
   const filtered = propertyFiltered.filter((item) => {
     switch (filter) {
       case "overdue":
@@ -74,18 +84,17 @@ export function OpenItemsFeed({
   });
 
   const filters: { key: FeedFilter; label: string }[] = [
-    { key: "all", label: t("feed.filterAll") },
-    { key: "overdue", label: t("feed.filterOverdue") },
-    { key: "emergency", label: t("feed.filterEmergency") },
-    { key: "scheduled", label: t("feed.filterScheduled") },
+    { key: "all", label: t(msg, "feed.filterAll") },
+    { key: "overdue", label: t(msg, "feed.filterOverdue") },
+    { key: "emergency", label: t(msg, "feed.filterEmergency") },
+    { key: "scheduled", label: t(msg, "feed.filterScheduled") },
   ];
 
   return (
     <div className="flex flex-col h-full min-w-0">
-      {/* Header + filter pills */}
       <div className="flex-shrink-0 pb-2">
         <h2 className="text-sm font-semibold text-content-primary mb-2">
-          {t("feed.title")}
+          {t(msg, "feed.title")}
         </h2>
         <div className="flex gap-1.5 flex-wrap">
           {filters.map((f) => (
@@ -104,15 +113,14 @@ export function OpenItemsFeed({
         </div>
       </div>
 
-      {/* Feed list */}
       <div className="flex-1 overflow-y-auto space-y-2 pr-1">
         {filtered.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-sm text-content-tertiary">
-              {t("feed.noItems")}
+              {t(msg, "feed.noItems")}
             </p>
             <p className="text-xs text-content-quaternary mt-1">
-              {t("feed.noItemsDesc")}
+              {t(msg, "feed.noItemsDesc")}
             </p>
           </div>
         ) : (
@@ -121,7 +129,7 @@ export function OpenItemsFeed({
               key={item.id}
               item={item}
               tJobs={tJobs}
-              t={t}
+              msg={msg}
               isPending={isPending}
               startTransition={startTransition}
               router={router}
@@ -133,23 +141,19 @@ export function OpenItemsFeed({
   );
 }
 
-// ── Individual Feed Card ──
-
 interface FeedCardProps {
   item: FeedWorkOrder;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tJobs: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  t: any;
+  msg: TMessages;
   isPending: boolean;
   startTransition: (fn: () => void) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   router: any;
 }
 
-function FeedCard({ item, tJobs, t, isPending, startTransition, router }: FeedCardProps) {
+function FeedCard({ item, tJobs, msg, isPending, startTransition, router }: FeedCardProps) {
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-
   const transitions = PM_TRANSITIONS[item.status] ?? [];
 
   async function handleStatusChange(newStatus: WoStatus) {
@@ -167,7 +171,6 @@ function FeedCard({ item, tJobs, t, isPending, startTransition, router }: FeedCa
       href={`/operate/work-orders/${item.id}`}
       className="block bg-surface-primary rounded-lg border border-edge-tertiary p-3 hover:border-green-400/50 hover:shadow-sm transition-all"
     >
-      {/* Top row: property + priority */}
       <div className="flex items-start justify-between gap-2 min-w-0">
         <div className="flex items-center gap-1.5 min-w-0">
           <PriorityDot priority={item.priority} />
@@ -182,21 +185,18 @@ function FeedCard({ item, tJobs, t, isPending, startTransition, router }: FeedCa
         </div>
         {item.is_overdue && (
           <span className="flex-shrink-0 text-xs font-medium text-red-500 bg-red-500/10 px-1.5 py-0.5 rounded">
-            {t("feed.overdueLabel")}
+            {t(msg, "feed.overdueLabel")}
           </span>
         )}
       </div>
 
-      {/* Description */}
       {item.description && (
         <p className="text-xs text-content-tertiary mt-1 line-clamp-2">
           {item.description}
         </p>
       )}
 
-      {/* Bottom row: status, trade, vendor, tech, days open */}
       <div className="flex items-center gap-2 mt-2 flex-wrap min-w-0">
-        {/* Inline status dropdown */}
         <div className="relative">
           {transitions.length > 0 ? (
             <button
@@ -216,7 +216,6 @@ function FeedCard({ item, tJobs, t, isPending, startTransition, router }: FeedCa
 
           {statusDropdownOpen && (
             <>
-              {/* Backdrop to close dropdown */}
               <div
                 className="fixed inset-0 z-40"
                 onClick={(e) => {
@@ -247,21 +246,12 @@ function FeedCard({ item, tJobs, t, isPending, startTransition, router }: FeedCa
         </div>
 
         {item.trade && (
-          <span className="text-xs text-content-quaternary">
-            {item.trade}
-          </span>
+          <span className="text-xs text-content-quaternary">{item.trade}</span>
         )}
-
-        <span className="text-xs text-content-quaternary truncate">
-          {item.vendor_org_name}
-        </span>
-
-        <span className="text-xs text-content-quaternary truncate">
-          {item.tech_name}
-        </span>
-
+        <span className="text-xs text-content-quaternary truncate">{item.vendor_org_name}</span>
+        <span className="text-xs text-content-quaternary truncate">{item.tech_name}</span>
         <span className="text-xs text-content-quaternary ml-auto flex-shrink-0">
-          {t("feed.daysOpen", { count: item.days_open })}
+          {t(msg, "feed.daysOpen", { count: item.days_open })}
         </span>
       </div>
     </Link>

@@ -1,0 +1,162 @@
+{
+  "title": "Projects",
+  "subtitle": "Manage property operations and unit turns",
+  "views": {
+    "kanban": "Board",
+    "list": "List",
+    "calendar": "Calendar"
+  },
+  "calendarComingSoon": "Calendar view coming soon",
+  "newProject": "New Project",
+  "projectTypes": {
+    "unit_turn": "Unit Turn",
+    "renovation": "Renovation",
+    "capital": "Capital Project",
+    "seasonal": "Seasonal",
+    "custom": "Custom"
+  },
+  "statuses": {
+    "draft": "Draft",
+    "active": "Active",
+    "on_hold": "On Hold",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "stageStatuses": {
+    "pending": "Pending",
+    "in_progress": "In Progress",
+    "completed": "Completed",
+    "skipped": "Skipped"
+  },
+  "taskStatuses": {
+    "pending": "Pending",
+    "in_progress": "In Progress",
+    "completed": "Completed",
+    "blocked": "Blocked",
+    "skipped": "Skipped"
+  },
+  "priority": {
+    "normal": "Normal",
+    "urgent": "Urgent",
+    "emergency": "Emergency"
+  },
+  "card": {
+    "stages": "{done} of {total} stages",
+    "tasks": "{done} of {total} tasks",
+    "daysUntilMoveIn": "{days}d to move-in",
+    "overdue": "Overdue",
+    "dueIn": "Due in {days}d",
+    "dueToday": "Due today",
+    "costToDate": "Cost: ${amount}",
+    "noCost": "No cost",
+    "noStages": "No stages",
+    "advanceStage": "Advance Stage",
+    "currentStage": "Current: {stage}"
+  },
+  "filters": {
+    "searchPlaceholder": "Search properties...",
+    "allTypes": "All Types",
+    "allStatuses": "All Statuses"
+  },
+  "empty": {
+    "title": "No projects yet",
+    "subtitle": "Create your first project to get started.",
+    "columnEmpty": "No projects"
+  },
+  "list": {
+    "title": "Title",
+    "property": "Property",
+    "type": "Type",
+    "currentStage": "Current Stage",
+    "progress": "Progress",
+    "urgencyDate": "Due",
+    "cost": "Cost",
+    "noStage": "—"
+  },
+  "create": {
+    "title": "New Project",
+    "step1Title": "Project Type",
+    "step1Subtitle": "What kind of project is this?",
+    "step2Title": "Project Details",
+    "step2Subtitle": "Tell us about the property and timeline",
+    "step3Title": "Review Stages",
+    "step3Subtitle": "These stages will be created from the template",
+    "projectTitle": "Project Title",
+    "projectTitlePlaceholder": "e.g. Unit 204 Turn",
+    "propertyName": "Property Name",
+    "propertyNamePlaceholder": "e.g. Oakwood Apartments",
+    "propertyAddress": "Property Address",
+    "propertyAddressPlaceholder": "e.g. 123 Main St",
+    "unitNumber": "Unit Number",
+    "unitNumberPlaceholder": "e.g. 204",
+    "dueDate": "Due Date",
+    "moveInDate": "Move-in Date",
+    "budget": "Budget",
+    "budgetPlaceholder": "e.g. 5000",
+    "notes": "Notes",
+    "notesPlaceholder": "Any additional details...",
+    "template": "Template",
+    "noStages": "No stages — add manually after creation",
+    "stagesFromTemplate": "{count} stages from template",
+    "addStage": "Add Stage",
+    "stageName": "Stage Name",
+    "stageNamePlaceholder": "e.g. Inspection",
+    "back": "Back",
+    "next": "Next",
+    "create": "Create Project",
+    "creating": "Creating..."
+  },
+  "pipeline": {
+    "stageOf": "Stage {current} of {total}"
+  },
+  "archive": {
+    "archive": "Archive",
+    "unarchive": "Unarchive"
+  },
+  "detail": {
+    "backToProjects": "Back to Projects",
+    "stagesTitle": "Stage Pipeline",
+    "tasksTitle": "Tasks",
+    "addTask": "Add Task",
+    "addStage": "Add Stage",
+    "completeStage": "Complete Stage",
+    "skipStage": "Skip Stage",
+    "noTasks": "No tasks in this stage",
+    "noStages": "No stages yet. Add one to get started.",
+    "taskDescription": "Task description",
+    "taskDescriptionPlaceholder": "e.g. Replace kitchen faucet",
+    "assignTo": "Assign To",
+    "unassigned": "Unassigned",
+    "dispatch": "Dispatch as WO",
+    "dispatched": "WO Created",
+    "deleteTask": "Delete",
+    "markComplete": "Complete",
+    "markBlocked": "Blocked",
+    "addStageName": "Stage Name",
+    "addStageNamePlaceholder": "e.g. Inspection",
+    "addStageButton": "Add",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "projectInfo": "Project Info",
+    "editDetails": "Edit Details"
+  },
+  "comments": {
+    "title": "Comments",
+    "placeholder": "Add a comment...",
+    "send": "Send",
+    "noComments": "No comments yet",
+    "reply": "Reply",
+    "edited": "edited"
+  },
+  "cost": {
+    "title": "Cost Summary",
+    "taskCosts": "Task Costs",
+    "partsCosts": "Parts",
+    "woCosts": "Work Order Costs",
+    "total": "Total",
+    "budget": "Budget",
+    "remaining": "Remaining",
+    "overBudget": "Over Budget"
+  }
+}

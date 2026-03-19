@@ -1,0 +1,162 @@
+{
+  "title": "Proyectos",
+  "subtitle": "Administra operaciones de propiedades y rotaciones de unidades",
+  "views": {
+    "kanban": "Tablero",
+    "list": "Lista",
+    "calendar": "Calendario"
+  },
+  "calendarComingSoon": "Vista de calendario próximamente",
+  "newProject": "Nuevo Proyecto",
+  "projectTypes": {
+    "unit_turn": "Rotación de Unidad",
+    "renovation": "Renovación",
+    "capital": "Proyecto de Capital",
+    "seasonal": "Estacional",
+    "custom": "Personalizado"
+  },
+  "statuses": {
+    "draft": "Borrador",
+    "active": "Activo",
+    "on_hold": "En Pausa",
+    "completed": "Completado",
+    "cancelled": "Cancelado"
+  },
+  "stageStatuses": {
+    "pending": "Pendiente",
+    "in_progress": "En Progreso",
+    "completed": "Completado",
+    "skipped": "Omitido"
+  },
+  "taskStatuses": {
+    "pending": "Pendiente",
+    "in_progress": "En Progreso",
+    "completed": "Completado",
+    "blocked": "Bloqueado",
+    "skipped": "Omitido"
+  },
+  "priority": {
+    "normal": "Normal",
+    "urgent": "Urgente",
+    "emergency": "Emergencia"
+  },
+  "card": {
+    "stages": "{done} de {total} etapas",
+    "tasks": "{done} de {total} tareas",
+    "daysUntilMoveIn": "{days}d para mudanza",
+    "overdue": "Vencido",
+    "dueIn": "Vence en {days}d",
+    "dueToday": "Vence hoy",
+    "costToDate": "Costo: ${amount}",
+    "noCost": "Sin costo",
+    "noStages": "Sin etapas",
+    "advanceStage": "Avanzar Etapa",
+    "currentStage": "Actual: {stage}"
+  },
+  "filters": {
+    "searchPlaceholder": "Buscar propiedades...",
+    "allTypes": "Todos los Tipos",
+    "allStatuses": "Todos los Estados"
+  },
+  "empty": {
+    "title": "Sin proyectos aún",
+    "subtitle": "Crea tu primer proyecto para comenzar.",
+    "columnEmpty": "Sin proyectos"
+  },
+  "list": {
+    "title": "Título",
+    "property": "Propiedad",
+    "type": "Tipo",
+    "currentStage": "Etapa Actual",
+    "progress": "Progreso",
+    "urgencyDate": "Vencimiento",
+    "cost": "Costo",
+    "noStage": "—"
+  },
+  "create": {
+    "title": "Nuevo Proyecto",
+    "step1Title": "Tipo de Proyecto",
+    "step1Subtitle": "¿Qué tipo de proyecto es?",
+    "step2Title": "Detalles del Proyecto",
+    "step2Subtitle": "Cuéntanos sobre la propiedad y cronograma",
+    "step3Title": "Revisar Etapas",
+    "step3Subtitle": "Estas etapas se crearán desde la plantilla",
+    "projectTitle": "Título del Proyecto",
+    "projectTitlePlaceholder": "ej. Rotación Unidad 204",
+    "propertyName": "Nombre de Propiedad",
+    "propertyNamePlaceholder": "ej. Apartamentos Oakwood",
+    "propertyAddress": "Dirección de Propiedad",
+    "propertyAddressPlaceholder": "ej. Calle Principal 123",
+    "unitNumber": "Número de Unidad",
+    "unitNumberPlaceholder": "ej. 204",
+    "dueDate": "Fecha de Vencimiento",
+    "moveInDate": "Fecha de Mudanza",
+    "budget": "Presupuesto",
+    "budgetPlaceholder": "ej. 5000",
+    "notes": "Notas",
+    "notesPlaceholder": "Cualquier detalle adicional...",
+    "template": "Plantilla",
+    "noStages": "Sin etapas — agregar manualmente después de crear",
+    "stagesFromTemplate": "{count} etapas de la plantilla",
+    "addStage": "Agregar Etapa",
+    "stageName": "Nombre de Etapa",
+    "stageNamePlaceholder": "ej. Inspección",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "create": "Crear Proyecto",
+    "creating": "Creando..."
+  },
+  "pipeline": {
+    "stageOf": "Etapa {current} de {total}"
+  },
+  "archive": {
+    "archive": "Archivar",
+    "unarchive": "Desarchivar"
+  },
+  "detail": {
+    "backToProjects": "Volver a Proyectos",
+    "stagesTitle": "Pipeline de Etapas",
+    "tasksTitle": "Tareas",
+    "addTask": "Agregar Tarea",
+    "addStage": "Agregar Etapa",
+    "completeStage": "Completar Etapa",
+    "skipStage": "Omitir Etapa",
+    "noTasks": "Sin tareas en esta etapa",
+    "noStages": "Sin etapas aún. Agrega una para comenzar.",
+    "taskDescription": "Descripción de la tarea",
+    "taskDescriptionPlaceholder": "ej. Reemplazar grifo de cocina",
+    "assignTo": "Asignar A",
+    "unassigned": "Sin asignar",
+    "dispatch": "Despachar como OT",
+    "dispatched": "OT Creada",
+    "deleteTask": "Eliminar",
+    "markComplete": "Completar",
+    "markBlocked": "Bloqueado",
+    "addStageName": "Nombre de Etapa",
+    "addStageNamePlaceholder": "ej. Inspección",
+    "addStageButton": "Agregar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "projectInfo": "Info del Proyecto",
+    "editDetails": "Editar Detalles"
+  },
+  "comments": {
+    "title": "Comentarios",
+    "placeholder": "Agrega un comentario...",
+    "send": "Enviar",
+    "noComments": "Sin comentarios aún",
+    "reply": "Responder",
+    "edited": "editado"
+  },
+  "cost": {
+    "title": "Resumen de Costos",
+    "taskCosts": "Costos de Tareas",
+    "partsCosts": "Partes",
+    "woCosts": "Costos de Órdenes",
+    "total": "Total",
+    "budget": "Presupuesto",
+    "remaining": "Restante",
+    "overBudget": "Sobre Presupuesto"
+  }
+}

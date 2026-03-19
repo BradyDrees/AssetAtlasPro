@@ -2,8 +2,14 @@
 // Vendor Side — Core TypeScript Types
 // ============================================
 
-/** Roles a user can hold */
-export type AppRole = "pm" | "vendor" | "owner" | "tenant";
+/** Roles a user can hold (includes legacy "pm" for profiles.active_role) */
+export type AppRole = "pm" | "pm_admin" | "pm_manager" | "pm_member" | "vendor" | "owner" | "tenant";
+
+/** PM org-level roles (refined from legacy "pm") */
+export type PmOrgRole = "pm_admin" | "pm_manager" | "pm_member";
+
+/** All PM role values (including legacy) for DB queries */
+export const PM_ROLES: readonly string[] = ["pm_admin", "pm_manager", "pm_member"] as const;
 
 /** Org types for role scoping */
 export type OrgType = "pm_org" | "vendor_org";
@@ -283,6 +289,59 @@ export interface VendorNotification {
   reference_id: string | null;
   is_read: boolean;
   created_at: string;
+}
+
+// ============================================
+// Permissions
+// ============================================
+
+/** All granular permissions in the system */
+export type Permission =
+  // Team management
+  | "invite_team"
+  | "deactivate_team"
+  | "manage_roles"
+  // Work orders
+  | "create_wo"
+  | "assign_jobs"
+  | "view_jobs"
+  | "view_assigned_jobs"
+  | "update_job_status"
+  // Scheduling
+  | "manage_schedule"
+  // Billing & finance
+  | "manage_billing"
+  | "create_estimates"
+  | "create_invoices"
+  // PM org management
+  | "manage_pm_org_users"
+  | "create_projects"
+  | "manage_vendors"
+  | "manage_settings"
+  | "view_operate"
+  // Homeowner
+  | "manage_property"
+  | "create_home_wo"
+  | "manage_home_vendors"
+  // Tenant
+  | "view_property"
+  | "create_maintenance_request";
+
+// ============================================
+// Unified Auth Context
+// ============================================
+
+/** Unified auth context returned by getAuthContext() */
+export interface AuthContext {
+  userId: string;
+  isSuperAdmin: boolean;
+  activePlatformRole: AppRole;
+  orgId: string | null;
+  vendorOrgId: string | null;
+  vendorOrgRole: VendorOrgRole | null;
+  pmOrgId: string | null;
+  pmOrgRole: PmOrgRole | null;
+  grantedPermissions: Permission[];
 }
 
 // ============================================

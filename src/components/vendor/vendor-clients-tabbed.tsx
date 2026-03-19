@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { ClientCard } from "./client-card";
 import { ClientImport } from "./client-import";
 import { PipelineBoard } from "./pipeline-board";
+import { PendingRequestsTab } from "./pending-requests-tab";
 import { VendorInvitePmModal } from "./vendor-invite-pm-modal";
 import { ClientInviteModal } from "./client-invite-modal";
 import {
@@ -17,11 +18,13 @@ import {
 import type { ClientWithStats } from "@/app/actions/vendor-clients";
 import type { VendorClient, CreateClientInput } from "@/lib/vendor/expense-types";
 import type { ClientWithPipeline } from "@/app/actions/vendor-clients-direct";
+import type { PendingConnectionRequest } from "@/app/actions/vendor-connection-responses";
 
 interface VendorClientsTabbedProps {
   pmClients: ClientWithStats[];
   directClients: VendorClient[];
   pipelineClients?: ClientWithPipeline[];
+  pendingRequests?: PendingConnectionRequest[];
 }
 
 const CLIENT_TYPES = ["direct", "homeowner", "business", "other"] as const;
@@ -30,10 +33,13 @@ export function VendorClientsTabbed({
   pmClients,
   directClients: initialDirectClients,
   pipelineClients: initialPipelineClients,
+  pendingRequests = [],
 }: VendorClientsTabbedProps) {
   const t = useTranslations("vendor.clients");
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"pm" | "direct" | "pipeline">("pm");
+  const [activeTab, setActiveTab] = useState<"pm" | "direct" | "pipeline" | "requests">(
+    pendingRequests.length > 0 ? "requests" : "pm"
+  );
   const [directClients, setDirectClients] = useState(initialDirectClients);
   const [pipelineClients, setPipelineClients] = useState<ClientWithPipeline[]>(initialPipelineClients ?? []);
   const [search, setSearch] = useState("");
@@ -165,10 +171,25 @@ export function VendorClientsTabbed({
           >
             {t("tabs.pipeline")}
           </button>
+          {pendingRequests.length > 0 && (
+            <button
+              onClick={() => setActiveTab("requests")}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === "requests"
+                  ? "bg-surface-primary text-content-primary shadow-sm"
+                  : "text-content-tertiary hover:text-content-primary"
+              }`}
+            >
+              {t("tabs.requests") ?? "Requests"}
+              <span className="ml-1.5 text-xs bg-gold-500/20 text-gold-400 px-1.5 py-0.5 rounded-full">
+                {pendingRequests.length}
+              </span>
+            </button>
+          )}
         </div>
 
         {/* Action buttons — different per tab */}
-        {activeTab === "pipeline" ? (
+        {activeTab === "pipeline" || activeTab === "requests" ? (
           <div />
         ) : activeTab === "pm" ? (
           <div className="flex items-center gap-2">
@@ -588,6 +609,11 @@ export function VendorClientsTabbed({
       {/* Pipeline tab content */}
       {activeTab === "pipeline" && (
         <PipelineBoard clients={pipelineClients} onUpdate={refreshPipeline} />
+      )}
+
+      {/* Pending requests tab */}
+      {activeTab === "requests" && (
+        <PendingRequestsTab initialRequests={pendingRequests} />
       )}
 
       {/* PM tab modals — always in DOM so state isn't lost */}

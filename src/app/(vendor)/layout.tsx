@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireVendorRole, getUserRoles } from "@/lib/vendor/role-helpers";
+import { PM_ROLES } from "@/lib/vendor/types";
 import { VendorSidebar } from "@/components/vendor/vendor-sidebar";
 import { VendorBottomNav } from "@/components/vendor/vendor-bottom-nav";
 import { VendorShell } from "@/components/vendor/vendor-shell";
@@ -29,7 +30,7 @@ export default async function VendorLayout({
 
   // Check if user also has PM role (for role switcher)
   const roles = await getUserRoles();
-  const hasPmRole = roles.some((r) => r.role === "pm" && r.is_active);
+  const hasPmRole = roles.some((r) => PM_ROLES.includes(r.role) && r.is_active);
 
   // Theme + locale from cookies (zero-flash init)
   const cookieStore = await cookies();

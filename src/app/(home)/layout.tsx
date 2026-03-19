@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
+import { PM_ROLES } from "@/lib/vendor/types";
 import { HomeSidebar } from "@/components/home-sidebar";
 import { HomeBottomNav } from "@/components/home-bottom-nav";
 import { HomeShell } from "@/components/home-shell";
@@ -34,7 +35,7 @@ export default async function HomeLayout({
 
   // Check for other roles (for tier switcher)
   const hasVendorRole = roles.some((r) => r.role === "vendor" && r.is_active);
-  const hasPmRole = roles.some((r) => r.role === "pm" && r.is_active);
+  const hasPmRole = roles.some((r) => PM_ROLES.includes(r.role) && r.is_active);
 
   // Theme + locale from cookies
   const cookieStore = await cookies();

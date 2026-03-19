@@ -45,6 +45,7 @@ export default getRequestConfig(async () => {
 
   // Operate (PM) namespace files
   const operateWorkOrders = (await import(`../messages/${locale}/operate-work-orders.json`)).default;
+  const operateVendors = (await import(`../messages/${locale}/operate-vendors.json`)).default;
 
   // Home (homeowner) namespace files
   const homeNav = (await import(`../messages/${locale}/home-nav.json`)).default;
@@ -98,6 +99,7 @@ export default getRequestConfig(async () => {
     },
     operate: {
       workOrders: operateWorkOrders,
+      vendors: operateVendors,
     },
     home: {
       nav: homeNav,

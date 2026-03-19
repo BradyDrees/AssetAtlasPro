@@ -5,6 +5,7 @@ import { requireVendorRole, logActivity } from "@/lib/vendor/role-helpers";
 import { sendEmail } from "@/lib/email/resend-client";
 import { pmInviteEmail } from "@/lib/email/templates";
 import type { VendorPmRelationship } from "@/lib/vendor/types";
+import { PM_ROLES } from "@/lib/vendor/types";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://assetatlaspro.com";
 
@@ -222,7 +223,7 @@ export async function invitePm(
     .from("user_roles")
     .select("id")
     .eq("user_id", pmProfile.id)
-    .eq("role", "pm")
+    .in("role", [...PM_ROLES])
     .eq("is_active", true)
     .single();
 

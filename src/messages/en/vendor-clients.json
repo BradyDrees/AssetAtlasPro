@@ -165,7 +165,8 @@
   "tabs": {
     "pm": "PM Clients",
     "direct": "Direct Clients",
-    "pipeline": "Pipeline"
+    "pipeline": "Pipeline",
+    "requests": "Requests"
   },
   "pipeline": {
     "backToClients": "Back to Clients",

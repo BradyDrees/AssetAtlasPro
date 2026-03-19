@@ -1,0 +1,167 @@
+{
+  "title": "Unidades",
+  "subtitle": "Rastrea todas las unidades de tu portafolio",
+  "addUnit": "Agregar Unidad",
+  "columns": {
+    "unitNumber": "Unidad #",
+    "property": "Propiedad",
+    "type": "Tipo",
+    "status": "Estado",
+    "tenant": "Inquilino",
+    "leaseEnd": "Fin de Contrato",
+    "lifetimeCost": "Costo Total",
+    "openWOs": "OT Abiertas",
+    "lastInspection": "Última Inspección"
+  },
+  "unitTypes": {
+    "studio": "Estudio",
+    "1br": "1 Hab",
+    "2br": "2 Hab",
+    "3br": "3 Hab",
+    "4br": "4 Hab",
+    "other": "Otro"
+  },
+  "statuses": {
+    "occupied": "Ocupado",
+    "vacant": "Vacante",
+    "turn_in_progress": "Rotación en Progreso",
+    "ready_to_lease": "Listo para Arrendar"
+  },
+  "filters": {
+    "searchPlaceholder": "Buscar unidades...",
+    "allProperties": "Todas las Propiedades",
+    "allStatuses": "Todos los Estados",
+    "allTypes": "Todos los Tipos"
+  },
+  "empty": {
+    "title": "Sin unidades aún",
+    "subtitle": "Agrega tu primera unidad para comenzar a rastrear."
+  },
+  "create": {
+    "title": "Agregar Unidad",
+    "propertyName": "Nombre de Propiedad",
+    "propertyAddress": "Dirección",
+    "unitNumber": "Número de Unidad",
+    "unitType": "Tipo de Unidad",
+    "beds": "Habitaciones",
+    "baths": "Baños",
+    "sqft": "Pies Cuadrados",
+    "floor": "Piso",
+    "status": "Estado",
+    "tenantName": "Nombre del Inquilino",
+    "tenantEmail": "Email del Inquilino",
+    "tenantPhone": "Teléfono del Inquilino",
+    "leaseStart": "Inicio de Contrato",
+    "leaseEnd": "Fin de Contrato",
+    "notes": "Notas",
+    "save": "Guardar Unidad",
+    "saving": "Guardando...",
+    "cancel": "Cancelar"
+  },
+  "detail": {
+    "backToUnits": "Volver a Unidades",
+    "editUnit": "Editar Unidad"
+  },
+  "tabs": {
+    "overview": "Resumen",
+    "costLedger": "Libro de Costos",
+    "workOrders": "Órdenes de Trabajo",
+    "inspections": "Inspecciones",
+    "documents": "Documentos"
+  },
+  "overview": {
+    "unitInfo": "Información de la Unidad",
+    "tenantInfo": "Información del Inquilino",
+    "leaseInfo": "Información del Contrato",
+    "noTenant": "Sin inquilino asignado",
+    "noLease": "Sin fechas de contrato"
+  },
+  "costLedger": {
+    "title": "Libro de Costos",
+    "lifetimeTotal": "Total Histórico",
+    "date": "Fecha",
+    "description": "Descripción",
+    "category": "Categoría",
+    "laborCost": "Mano de Obra",
+    "partsCost": "Materiales",
+    "totalCost": "Total",
+    "vendor": "Proveedor",
+    "source": "Origen",
+    "yearTotal": "Total del Año",
+    "noEntries": "Sin entradas de costo aún",
+    "noEntriesHint": "Los costos aparecerán aquí automáticamente cuando las órdenes de trabajo vinculadas se completen.",
+    "addManual": "Agregar Entrada Manual",
+    "exportPdf": "Exportar PDF",
+    "filterDateRange": "Rango de Fechas",
+    "filterCategory": "Categoría",
+    "filterVendor": "Proveedor",
+    "allCategories": "Todas las Categorías",
+    "allVendors": "Todos los Proveedores",
+    "sources": {
+      "manual": "Manual",
+      "work_order": "Orden de Trabajo",
+      "turn": "Rotación de Unidad"
+    }
+  },
+  "workOrders": {
+    "title": "Órdenes de Trabajo",
+    "createWO": "Nueva Orden de Trabajo",
+    "noWOs": "Sin órdenes de trabajo para esta unidad",
+    "status": "Estado",
+    "trade": "Oficio",
+    "vendor": "Proveedor",
+    "created": "Creada",
+    "allStatuses": "Todos los Estados"
+  },
+  "inspections": {
+    "title": "Inspecciones",
+    "newInspection": "Nueva Inspección",
+    "noInspections": "Sin inspecciones aún",
+    "type": "Tipo",
+    "conductedBy": "Realizada Por",
+    "date": "Fecha",
+    "rating": "Calificación",
+    "notes": "Notas",
+    "photos": "Fotos",
+    "types": {
+      "move_in": "Entrada",
+      "move_out": "Salida",
+      "routine": "Rutina",
+      "annual": "Anual"
+    },
+    "form": {
+      "inspectionType": "Tipo de Inspección",
+      "conductedBy": "Realizada Por",
+      "date": "Fecha",
+      "rating": "Calificación de Condición (1-5)",
+      "notes": "Notas",
+      "notesPlaceholder": "Observaciones de la inspección...",
+      "save": "Guardar Inspección",
+      "saving": "Guardando..."
+    }
+  },
+  "documents": {
+    "title": "Documentos",
+    "upload": "Subir Documento",
+    "noDocuments": "Sin documentos aún",
+    "fileName": "Nombre del Archivo",
+    "type": "Tipo",
+    "uploaded": "Subido",
+    "size": "Tamaño",
+    "types": {
+      "lease": "Contrato",
+      "warranty": "Garantía",
+      "permit": "Permiso",
+      "invoice": "Factura",
+      "other": "Otro"
+    },
+    "form": {
+      "documentType": "Tipo de Documento",
+      "notes": "Notas",
+      "notesPlaceholder": "Notas opcionales...",
+      "selectFile": "Seleccionar Archivo",
+      "upload": "Subir",
+      "uploading": "Subiendo..."
+    }
+  }
+}

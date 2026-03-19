@@ -1,0 +1,167 @@
+{
+  "title": "Units",
+  "subtitle": "Track all units across your portfolio",
+  "addUnit": "Add Unit",
+  "columns": {
+    "unitNumber": "Unit #",
+    "property": "Property",
+    "type": "Type",
+    "status": "Status",
+    "tenant": "Tenant",
+    "leaseEnd": "Lease End",
+    "lifetimeCost": "Lifetime Cost",
+    "openWOs": "Open WOs",
+    "lastInspection": "Last Inspection"
+  },
+  "unitTypes": {
+    "studio": "Studio",
+    "1br": "1 BR",
+    "2br": "2 BR",
+    "3br": "3 BR",
+    "4br": "4 BR",
+    "other": "Other"
+  },
+  "statuses": {
+    "occupied": "Occupied",
+    "vacant": "Vacant",
+    "turn_in_progress": "Turn in Progress",
+    "ready_to_lease": "Ready to Lease"
+  },
+  "filters": {
+    "searchPlaceholder": "Search units...",
+    "allProperties": "All Properties",
+    "allStatuses": "All Statuses",
+    "allTypes": "All Types"
+  },
+  "empty": {
+    "title": "No units yet",
+    "subtitle": "Add your first unit to start tracking."
+  },
+  "create": {
+    "title": "Add Unit",
+    "propertyName": "Property Name",
+    "propertyAddress": "Property Address",
+    "unitNumber": "Unit Number",
+    "unitType": "Unit Type",
+    "beds": "Bedrooms",
+    "baths": "Bathrooms",
+    "sqft": "Square Feet",
+    "floor": "Floor",
+    "status": "Status",
+    "tenantName": "Tenant Name",
+    "tenantEmail": "Tenant Email",
+    "tenantPhone": "Tenant Phone",
+    "leaseStart": "Lease Start",
+    "leaseEnd": "Lease End",
+    "notes": "Notes",
+    "save": "Save Unit",
+    "saving": "Saving...",
+    "cancel": "Cancel"
+  },
+  "detail": {
+    "backToUnits": "Back to Units",
+    "editUnit": "Edit Unit"
+  },
+  "tabs": {
+    "overview": "Overview",
+    "costLedger": "Cost Ledger",
+    "workOrders": "Work Orders",
+    "inspections": "Inspections",
+    "documents": "Documents"
+  },
+  "overview": {
+    "unitInfo": "Unit Information",
+    "tenantInfo": "Tenant Information",
+    "leaseInfo": "Lease Information",
+    "noTenant": "No tenant assigned",
+    "noLease": "No lease dates set"
+  },
+  "costLedger": {
+    "title": "Cost Ledger",
+    "lifetimeTotal": "Lifetime Total",
+    "date": "Date",
+    "description": "Description",
+    "category": "Category",
+    "laborCost": "Labor",
+    "partsCost": "Parts",
+    "totalCost": "Total",
+    "vendor": "Vendor",
+    "source": "Source",
+    "yearTotal": "Year Total",
+    "noEntries": "No cost entries yet",
+    "noEntriesHint": "Costs will appear here automatically when linked work orders are completed.",
+    "addManual": "Add Manual Entry",
+    "exportPdf": "Export PDF",
+    "filterDateRange": "Date Range",
+    "filterCategory": "Category",
+    "filterVendor": "Vendor",
+    "allCategories": "All Categories",
+    "allVendors": "All Vendors",
+    "sources": {
+      "manual": "Manual",
+      "work_order": "Work Order",
+      "turn": "Unit Turn"
+    }
+  },
+  "workOrders": {
+    "title": "Work Orders",
+    "createWO": "New Work Order",
+    "noWOs": "No work orders for this unit",
+    "status": "Status",
+    "trade": "Trade",
+    "vendor": "Vendor",
+    "created": "Created",
+    "allStatuses": "All Statuses"
+  },
+  "inspections": {
+    "title": "Inspections",
+    "newInspection": "New Inspection",
+    "noInspections": "No inspections yet",
+    "type": "Type",
+    "conductedBy": "Conducted By",
+    "date": "Date",
+    "rating": "Rating",
+    "notes": "Notes",
+    "photos": "Photos",
+    "types": {
+      "move_in": "Move-in",
+      "move_out": "Move-out",
+      "routine": "Routine",
+      "annual": "Annual"
+    },
+    "form": {
+      "inspectionType": "Inspection Type",
+      "conductedBy": "Conducted By",
+      "date": "Date",
+      "rating": "Condition Rating (1-5)",
+      "notes": "Notes",
+      "notesPlaceholder": "Inspection observations...",
+      "save": "Save Inspection",
+      "saving": "Saving..."
+    }
+  },
+  "documents": {
+    "title": "Documents",
+    "upload": "Upload Document",
+    "noDocuments": "No documents yet",
+    "fileName": "File Name",
+    "type": "Type",
+    "uploaded": "Uploaded",
+    "size": "Size",
+    "types": {
+      "lease": "Lease",
+      "warranty": "Warranty",
+      "permit": "Permit",
+      "invoice": "Invoice",
+      "other": "Other"
+    },
+    "form": {
+      "documentType": "Document Type",
+      "notes": "Notes",
+      "notesPlaceholder": "Optional notes...",
+      "selectFile": "Select File",
+      "upload": "Upload",
+      "uploading": "Uploading..."
+    }
+  }
+}
